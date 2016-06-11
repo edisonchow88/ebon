@@ -15,8 +15,8 @@ define('TREVOL_PATH', 'TREVOL');
 // Database Configuration
 define('DB_DRIVER', 'amysqli');
 define('DB_HOSTNAME', 'localhost');
-define('DB_USERNAME', 'root');
-define('DB_PASSWORD', 'idyppi30');
+define('DB_USERNAME', 'test');
+define('DB_PASSWORD', '123123');
 define('DB_DATABASE', 'TREVOL');
 define('DB_PREFIX', 'tr_');
 // Unique AbanteCart store ID

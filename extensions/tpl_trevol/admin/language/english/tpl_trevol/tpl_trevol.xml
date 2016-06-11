@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions>
+  <definition>
+    <key>tpl_trevol_name</key>
+    <value><![CDATA[tpl_trevol]]></value>
+  </definition>
+  <definition>
+    <key>tpl_trevol_note</key>
+    <value><![CDATA[]]></value>
+  </definition>
+</definitions>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extension>
+    <extension_type>template</extension_type>
+    <copy_default></copy_default>
+    <extension_txt_id>tpl_trevol</extension_txt_id>
+    <extension_title>tpl_trevol</extension_title>
+    <category>template</category>
+    <version>1.0.0</version>
+    <priority>10</priority>
+    <cartversions>1.2</cartversions>
+    <install_php>true</install_php>
+    <install_sql>true</install_sql>
+    <help_note><![CDATA[]]></help_note>
+    <icon><![CDATA[icon.png]]></icon>
+    <icon_default>0</icon_default>
+    <header_comment><![CDATA[<?php
+
+
+if (! defined ( 'DIR_CORE' )) {
+header ( 'Location: static_pages/' );
+}
+
+]]></header_comment>
+    <route></route>
+    <languages>
+      <admin>
+        <item>english/tpl_trevol/tpl_trevol</item>
+      </admin>
+    </languages>
+  </extension>
+</project>

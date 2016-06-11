@@ -1,0 +1,1 @@
+<form id="<?php echo $id ?>" role="form" action="<?php echo $action ?>" method="<?php echo $method ?>" enctype="multipart/form-data" <?php echo $attr ?> >

@@ -1,7 +1,1 @@
 system/
-system/**/*
-system/logs/
-system/logs/error.txt
-system/logs/error.txt
-*.txt
-system/logs/error.txt

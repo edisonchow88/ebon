@@ -4,6 +4,10 @@ ORIGINAL LINE 4
 PIKACHU IS GREAT
 ORIGINAL LINE 5
 ORIGINAL LINE 6
+<<<<<<< HEAD
 ORIGINAL LINE 7
 
 MAYBE IS MEW
+=======
+aaabbssssss
+>>>>>>> refs/remotes/origin/testloh

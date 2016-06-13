@@ -3,7 +3,7 @@ if(!defined('DIR_CORE') || !IS_ADMIN){
 	header('Location: static_pages/');
 }
 
-class ModelTagTag extends Model{
+class ModelResourceTag extends Model{
 	
 	private $table = "tag";
 	private $table_description = "tag_description";

@@ -4,9 +4,9 @@
 
 <div id="content" class="panel panel-default">
 	<div class="panel-heading col-xs-12">
-    	<div class="col-xs-2 text-left"><a href="<?php echo $link['tag/tag_list'];?>" class="btn btn-default" role="button"><i class="fa fa-fw fa-desktop"></i> View Tag</a></div>
+    	<div class="col-xs-2 text-left"><a href="<?php echo $link['resource/tag_list'];?>" class="btn btn-default" role="button"><i class="fa fa-fw fa-desktop"></i> View Tag</a></div>
     	<div class="col-xs-8 text-center"><h5>Tag Type</h5></div>
-        <div class="col-xs-2 text-right"><a href="<?php echo $link['tag/type_form'];?>" class="btn btn-danger" role="button">Add Tag Type</a></div>
+        <div class="col-xs-2 text-right"><a href="<?php echo $link['resource/tag_type_form'];?>" class="btn btn-danger" role="button">Add Tag Type</a></div>
 	</div>
 
 	<div class="panel-body panel-body-nopadding tab-content col-xs-12">
@@ -87,7 +87,7 @@
 		/* Executes after data is loaded and rendered */
 		grid.find(".command-edit").on("click", function(e)
 		{
-			window.location.href = "<?php echo $link['tag/type_form']; ?>\&tag_type_id=" + $(this).data("row-id");
+			window.location.href = "<?php echo $link['resource/tag_type_form']; ?>\&tag_type_id=" + $(this).data("row-id");
 		})
 		.end().find(".command-delete").on("click", function(e)
 		{

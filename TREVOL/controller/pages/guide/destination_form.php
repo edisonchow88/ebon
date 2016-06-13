@@ -40,7 +40,7 @@ class ControllerPagesGuideDestinationForm extends AController {
 		}
 		
 		$this->loadModel('guide/destination');
-		$this->loadModel('tag/tag');
+		$this->loadModel('resource/tag');
 		$this->loadModel('resource/image');
 		
 		//for modal-add-parent
@@ -68,7 +68,7 @@ class ControllerPagesGuideDestinationForm extends AController {
 		$data = $this->model_guide_destination->getDestination($destination_id);
 		foreach($data as $k => $v) { $form[$k] = $v; } //auto generate input data
 		
-		$tag = $this->model_tag_tag->getTagByDestinationId($destination_id);
+		$tag = $this->model_resource_tag->getTagByDestinationId($destination_id);
 		$tag = array_values($tag); 
 		
 		$image = $this->model_resource_image->getImageByDestinationId($destination_id,'100%');
@@ -131,7 +131,7 @@ class ControllerPagesGuideDestinationForm extends AController {
 			$json_similar .= ']';
 		
 		//for javascript usage
-		$tag_option = $this->model_tag_tag->getTagChild(1);
+		$tag_option = $this->model_resource_tag->getTagChild(1);
 		if(count($tag_option) > 0) { $json_tag_option = json_encode(array_values($tag_option)); }
 		
 		$form['destination_id'] = $destination_id;

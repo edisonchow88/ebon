@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesTagTagForm extends AController {
+class ControllerPagesResourceTagForm extends AController {
 	/**
 	private $error = array();
 	public $data = array();
@@ -34,9 +34,9 @@ class ControllerPagesTagTagForm extends AController {
 			unset($this->session->data['success']);
 		}
 		
-		$link['tag/tag_list'] = $this->html->getSecureURL('tag/tag_list');
-		$link['tag/tag_form'] = $this->html->getSecureURL('tag/tag_form');
-		$link['tag/tag_post'] = $this->html->getSecureURL('tag/tag_post');
+		$link['resource/tag_list'] = $this->html->getSecureURL('resource/tag_list');
+		$link['resource/tag_form'] = $this->html->getSecureURL('resource/tag_form');
+		$link['resource/tag_post'] = $this->html->getSecureURL('resource/tag_post');
 		$link['fa_awesome'] = "http://fontawesome.io/icons/";
 		
 		$language = $this->language->getAvailableLanguages();
@@ -44,10 +44,10 @@ class ControllerPagesTagTagForm extends AController {
 			$language_option[$lang['language_id']] = $lang['name'];
 		}
 		
-		$this->loadModel('tag/tag');
+		$this->loadModel('resource/tag');
 		
 		//for modal-add-parent
-		$relation_data = $this->model_tag_tag->getTagAllRelation($tag_id);
+		$relation_data = $this->model_resource_tag->getTagAllRelation($tag_id);
 		foreach($relation_data as $row) {
 			$relation_tag_id = $row['tag_id'];
 			$type_color = $row['type_color'];
@@ -68,9 +68,9 @@ class ControllerPagesTagTagForm extends AController {
 		}
 		
 		//for form
-		$data = $this->model_tag_tag->getTag($tag_id);
-		$type_option = $this->model_tag_tag->getTagType();
-		$parent = $this->model_tag_tag->getTagParent($tag_id);
+		$data = $this->model_resource_tag->getTag($tag_id);
+		$type_option = $this->model_resource_tag->getTagType();
+		$parent = $this->model_resource_tag->getTagParent($tag_id);
 			$n = count($parent);
 			$i = 0;
 			$json_parent = '[';
@@ -89,7 +89,7 @@ class ControllerPagesTagTagForm extends AController {
 				if($i < $n) { $json_parent .= ','; }
 			}
 			$json_parent .= ']';
-		$child = $this->model_tag_tag->getTagChild($tag_id);
+		$child = $this->model_resource_tag->getTagChild($tag_id);
 			$n = count($child);
 			$i = 0;
 			$json_child = '[';
@@ -108,7 +108,7 @@ class ControllerPagesTagTagForm extends AController {
 				if($i < $n) { $json_child .= ','; }
 			}
 			$json_child .= ']';
-		$similar = $this->model_tag_tag->getTagSimilar($tag_id);
+		$similar = $this->model_resource_tag->getTagSimilar($tag_id);
 			$n = count($similar);
 			$i = 0;
 			$json_similar = '[';
@@ -167,7 +167,7 @@ class ControllerPagesTagTagForm extends AController {
 		$this->view->assign('json_child', $json_child);
 		$this->view->assign('json_similar', $json_similar);
 		
-		$this->processTemplate('pages/tag/tag_form.tpl' );
+		$this->processTemplate('pages/resource/tag_form.tpl' );
 
           //update controller data
         $this->extensions->hk_UpdateData($this,__FUNCTION__);

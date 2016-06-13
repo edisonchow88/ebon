@@ -91,7 +91,7 @@ class ControllerCommonHeader extends AController {
 			$this->view->assign('stores', $stores);
 			$this->view->assign('destination', $this->html->getSecureURL('guide/destination_list'));
 			$this->view->assign('attraction',$this->html->getSecureURL('catalog/product'));
-			$this->view->assign('tag',$this->html->getSecureURL('tag/tag_list'));
+			$this->view->assign('tag',$this->html->getSecureURL('resource/tag_list'));
 			$this->view->assign('image',$this->html->getSecureURL('resource/image_list'));
 			$this->view->assign('log',$this->html->getSecureURL('tool/error_log'));
 			$this->view->assign('language',$this->html->getSecureURL('localisation/language_definitions'));

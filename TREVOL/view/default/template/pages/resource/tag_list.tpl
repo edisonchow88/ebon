@@ -4,9 +4,9 @@
 
 <div id="content" class="panel panel-default">
 	<div class="panel-heading col-xs-12">
-    	<div class="col-xs-2 text-left"><a href="<?php echo $link['tag/type_list'];?>" class="btn btn-default" role="button"><i class="fa fa-fw fa-desktop"></i> View Tag Type</a></div>
+    	<div class="col-xs-2 text-left"><a href="<?php echo $link['resource/tag_type_list'];?>" class="btn btn-default" role="button"><i class="fa fa-fw fa-desktop"></i> View Tag Type</a></div>
     	<div class="col-xs-8 text-center"><h5>Tag</h5></div>
-        <div class="col-xs-2 text-right"><a href="<?php echo $link['tag/tag_form'];?>" class="btn btn-danger" role="button">Add Tag</a></div>
+        <div class="col-xs-2 text-right"><a href="<?php echo $link['resource/tag_form'];?>" class="btn btn-danger" role="button">Add Tag</a></div>
 	</div>
 
 	<div class="panel-body panel-body-nopadding tab-content col-xs-12">
@@ -50,7 +50,7 @@
             <div class="alert alert-danger" role="alert">
                 Are you sure you want to delete <b>Tag #<span id="tag-id-delete-text"></span></b> ?
             </div>
-            <form id="request-delete" action="<?php echo $link['tag/tag_post'];?>" method="post">
+            <form id="request-delete" action="<?php echo $link['resource/tag_post'];?>" method="post">
                 <input 
                     type="hidden" 
                     id="tag-id-delete-input" 
@@ -142,7 +142,7 @@
 		})
 		.end().find(".command-edit").on("click", function(e)
 		{
-			window.location.href = "<?php echo $link['tag/tag_form']; ?>\&tag_id=" + $(this).data("row-id");
+			window.location.href = "<?php echo $link['resource/tag_form']; ?>\&tag_id=" + $(this).data("row-id");
 		})
 		.end().find(".command-delete").on("click", function(e)
 		{

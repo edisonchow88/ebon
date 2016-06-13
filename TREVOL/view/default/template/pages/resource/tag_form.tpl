@@ -9,13 +9,13 @@
 <div id="content" class="panel panel-default">
 
 	<div class="panel-heading col-xs-12">
-    	<div class="col-xs-2 text-left"><a href="<?php echo $link['tag/tag_list'];?>" class="btn btn-default" role="button">Cancel</a></div>
+    	<div class="col-xs-2 text-left"><a href="<?php echo $link['resource/tag_list'];?>" class="btn btn-default" role="button">Cancel</a></div>
     	<div class="col-xs-8 text-center"><h5><?php echo $title;?></h5></div>
         <div class="col-xs-2 text-right"><a class="btn btn-danger" role="button" onclick="submitForm('main-form');">Save</a></div>
 	</div>
 
 	<div class="panel-body panel-body-nopadding tab-content col-xs-12">
-    	<form id="main-form" role="form" style="max-width:600px; margin:auto;" action="<?php echo $link['tag/tag_post'];?>" method="post">
+    	<form id="main-form" role="form" style="max-width:600px; margin:auto;" action="<?php echo $link['resource/tag_post'];?>" method="post">
         
         	<!-- Demo -->
         	<div style="width:100%; text-align:center;">
@@ -190,7 +190,7 @@
 	</div>
     
     <div class="panel-footer col-xs-12">
-    	<div class="col-xs-6 text-right"><a href="<?php echo $link['tag/tag_list'];?>" class="btn btn-default" role="button">Cancel</a></div>
+    	<div class="col-xs-6 text-right"><a href="<?php echo $link['resource/tag_list'];?>" class="btn btn-default" role="button">Cancel</a></div>
         <div class="col-xs-6 text-left"><a class="btn btn-danger" role="button" onclick="submitForm('main-form');">Save</a></div>
 	</div>
 </div>

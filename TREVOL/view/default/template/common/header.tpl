@@ -14,35 +14,35 @@
                 <li>
 					<div class="btn-group">
 						<a href="<?php echo $home; ?>" class="btn btn-default tp-icon">
-							<i class="fa fa-home fa-lg"></i></span><span class="hidden-sm hidden-xs"> Home</span>
+							<i class="fa fa-home fa-lg"></i></span><span class="hidden-sm hidden-xs"></span>
 						</a>
 					</div>
 				</li>
                 <li>
 					<div class="btn-group">
 						<a href="<?php echo $destination; ?>" class="btn btn-default tp-icon" title="Destination">
-							<i class="fa fa-map-marker fa-lg"></i><span class="hidden-sm hidden-xs"> Destination</span>
+							<i class="fa fa-map-marker fa-lg"></i><span class="hidden-sm hidden-xs"></span>
 						</a>
 					</div>
 				</li>
                 <li>
 					<div class="btn-group">
-						<a href="<?php echo $attraction; ?>" class="btn btn-default tp-icon" title="Attraction">
-							<i class="fa fa-camera-retro fa-lg"></i><span class="hidden-sm hidden-xs"> Attraction</span>
+						<a href="<?php echo $interest; ?>" class="btn btn-default tp-icon" title="Interest">
+							<i class="fa fa-camera-retro fa-lg"></i><span class="hidden-sm hidden-xs"></span>
 						</a>
 					</div>
 				</li>
                 <li>
 					<div class="btn-group">
 						<a href="<?php echo $tag; ?>" class="btn btn-default tp-icon" title="Tag">
-							<i class="fa fa-tag fa-lg"></i><span class="hidden-sm hidden-xs"> Tag</span>
+							<i class="fa fa-tag fa-lg"></i><span class="hidden-sm hidden-xs"></span>
 						</a>
 					</div>
 				</li>
                  <li>
 					<div class="btn-group">
 						<a href="<?php echo $image; ?>" class="btn btn-default tp-icon" title="Image">
-							<i class="fa fa-picture-o fa-lg"></i><span class="hidden-sm hidden-xs"> Image</span>
+							<i class="fa fa-picture-o fa-lg"></i><span class="hidden-sm hidden-xs"></span>
 						</a>
 					</div>
 				</li>
@@ -50,7 +50,7 @@
 					<div class="btn-group">
 						<a onClick="window.open('<?php echo $store; ?>');" class="btn btn-default tp-icon"
 						   data-toggle="dropdown" title="<?php echo $text_front; ?>">
-							<span class="glyphicon glyphicon-eye-open"></span><span class="hidden-sm hidden-xs"> Store</span>
+							<span class="hidden-sm hidden-xs">Store</span>
 						</a>
 					</div>
 				</li>

@@ -399,12 +399,28 @@ class ModelResourceTag extends Model{
 		$this->cache->delete('tag_type');
 	}
 	
-	//START: Destination Tag
+	//destination
 	public function getTagByDestinationId($destination_id) {
 		$sql = "
 				SELECT * 
 				FROM " . $this->db->table('destination_tag') . " 
 				WHERE destination_id = '" . (int)$destination_id . "' 
+			";
+		$query = $this->db->query($sql);
+		
+		foreach($query->rows as $result){
+			$output[$result[$i]] = $this->getTag($result['tag_id']);
+		}
+		
+		return $output;
+	}
+	
+	//interest
+	public function getTagByInterestId($interest_id) {
+		$sql = "
+				SELECT * 
+				FROM " . $this->db->table('interest_tag') . " 
+				WHERE interest_id = '" . (int)$interest_id . "' 
 			";
 		$query = $this->db->query($sql);
 		

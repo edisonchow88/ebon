@@ -3,16 +3,16 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesTagTagPost extends AController {
+class ControllerPagesResourceTagPost extends AController {
   	public function main() {
-		$this->loadModel('tag/tag');
+		$this->loadModel('resource/tag');
 		
 		if($this->request->post['action'] == "add") { $this->add(); }
 		else if($this->request->post['action'] == "edit") { $this->edit(); }
 		else if($this->request->post['action'] == "delete") { $this->delete(); }
 		else { $this->session->data['warning'] = "Error: No action has been sent via POST"; }
 		
-		$redirect = $this->html->getSecureURL('tag/tag_list');
+		$redirect = $this->html->getSecureURL('resource/tag_list');
 		$this->redirect($redirect);
 	}
 	
@@ -20,7 +20,7 @@ class ControllerPagesTagTagPost extends AController {
 		$data = $this->verify();
 		if($data == 'failed' ) { return; }
 		
-		$tag_id = $this->model_tag_tag->addTag($data); 
+		$tag_id = $this->model_resource_tag->addTag($data); 
 		$this->session->data['success'] = "Success: New <b>Tag #".$tag_id."</b> has been added";
 	}
 	
@@ -29,14 +29,14 @@ class ControllerPagesTagTagPost extends AController {
 		if($data == 'failed' ) { return; }
 		
 		$tag_id = $data['tag_id']; 
-		$this->model_tag_tag->editTag($tag_id, $data); 
+		$this->model_resource_tag->editTag($tag_id, $data); 
 		$this->session->data['success'] = "Success: <b>Tag #".$tag_id."</b> has been modified";
 	}
 	
 	public function delete() {
 		$tag_id = $this->request->post['tag_id'];
 		
-		$this->model_tag_tag->deleteTag($tag_id); 
+		$this->model_resource_tag->deleteTag($tag_id); 
 		$this->session->data['success'] = "Success: <b>Tag #".$tag_id."</b> has been deleted";
 		
 	}
@@ -127,10 +127,10 @@ class ControllerPagesTagTagPost extends AController {
 			$this->session->data['warning'] = $error_list;
 			
 			if($data['tag_id'] != '') {
-				$redirect = $this->html->getSecureURL('tag/tag_form','&tag_id='.$data['tag_id']);
+				$redirect = $this->html->getSecureURL('resource/tag_form','&tag_id='.$data['tag_id']);
 			}
 			else {
-				$redirect = $this->html->getSecureURL('tag/tag_form');
+				$redirect = $this->html->getSecureURL('resource/tag_form');
 			}
 			$this->redirect($redirect);
 			

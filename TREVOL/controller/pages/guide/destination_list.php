@@ -21,7 +21,7 @@ class ControllerPagesGuideDestinationList extends AController {
 			unset($this->session->data['success']);
 		}
 		
-		$this->loadModel('tag/tag');
+		$this->loadModel('resource/tag');
 		$this->loadModel('resource/image');
 		$this->loadModel('guide/destination');
 		$data = $this->model_guide_destination->getDestination();
@@ -36,7 +36,7 @@ class ControllerPagesGuideDestinationList extends AController {
 				//json_encode will only treat sequential array as object hence need to use array_values 
 				if(count($image) > 0) { $json_image = json_encode(array_values($image)); }
 			
-			$tag = $this->model_tag_tag->getTagByDestinationId($destination_id);
+			$tag = $this->model_resource_tag->getTagByDestinationId($destination_id);
 				if(count($tag) > 0) { $json_tag = json_encode(array_values($tag)); }
 				
 			$parent = $this->model_guide_destination->getDestinationParent($destination_id);

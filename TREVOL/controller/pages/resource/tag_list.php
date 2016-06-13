@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesTagTagList extends AController {
+class ControllerPagesResourceTagList extends AController {
 
   	public function main() {
         //init controller data
@@ -21,8 +21,8 @@ class ControllerPagesTagTagList extends AController {
 			unset($this->session->data['success']);
 		}
 		
-		$this->loadModel('tag/tag');
-		$data = $this->model_tag_tag->getTag();
+		$this->loadModel('resource/tag');
+		$data = $this->model_resource_tag->getTag();
 		
 		foreach($data as $row) {
 			$icon = $row['icon'];
@@ -38,7 +38,7 @@ class ControllerPagesTagTagList extends AController {
 				$json_name .= '"color":';
 				$json_name .= '"'.$row['type_color'].'"';
 				$json_name .= '}';
-			$parent = $this->model_tag_tag->getTagParent($tag_id);
+			$parent = $this->model_resource_tag->getTagParent($tag_id);
 				$n = count($parent);
 				$i = 0;
 				$json_parent = '[';
@@ -57,8 +57,8 @@ class ControllerPagesTagTagList extends AController {
 					if($i < $n) { $json_parent .= ','; }
 				}
 				$json_parent .= ']';
-			$child = $this->model_tag_tag->getTagChild($tag_id);
-			$similar = $this->model_tag_tag->getTagSimilar($tag_id);
+			$child = $this->model_resource_tag->getTagChild($tag_id);
+			$similar = $this->model_resource_tag->getTagSimilar($tag_id);
 				$n = count($similar);
 				$i = 0;
 				$json_similar = '[';
@@ -87,15 +87,15 @@ class ControllerPagesTagTagList extends AController {
 			$result[$tag_id]['similar'] = $json_similar;
 		}
 		
-		$link['tag/type_list'] = $this->html->getSecureURL('tag/type_list');
-		$link['tag/tag_list'] = $this->html->getSecureURL('tag/tag_list');
-		$link['tag/tag_form'] = $this->html->getSecureURL('tag/tag_form');
-		$link['tag/tag_post'] = $this->html->getSecureURL('tag/tag_post');
+		$link['resource/tag_type_list'] = $this->html->getSecureURL('resource/tag_type_list');
+		$link['resource/tag_list'] = $this->html->getSecureURL('resource/tag_list');
+		$link['resource/tag_form'] = $this->html->getSecureURL('resource/tag_form');
+		$link['resource/tag_post'] = $this->html->getSecureURL('resource/tag_post');
 		
 		$this->view->assign('link', $link); 
 		$this->view->assign('result', $result);
 		
-		$this->processTemplate('pages/tag/tag_list.tpl' );
+		$this->processTemplate('pages/resource/tag_list.tpl' );
 
           //update controller data
         $this->extensions->hk_UpdateData($this,__FUNCTION__);

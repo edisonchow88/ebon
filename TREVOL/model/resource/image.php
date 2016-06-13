@@ -139,6 +139,22 @@ class ModelResourceImage extends Model{
 		}
 		return $output;
 	}
+	
+	//interest
+	public function getImageByInterestId($interest_id,$width='') {
+		$sql = "
+				SELECT * 
+				FROM " . $this->db->table('interest_image') . " 
+				WHERE interest_id = '" . (int)$interest_id . "' 
+				ORDER BY sort_order ASC
+			";
+		$query = $this->db->query($sql);
+		
+		foreach($query->rows as $result){
+			$output[$result['sort_order']] = $this->getImage($result['image_id'],$width);
+		}
+		return $output;
+	}
 }
 
 ?>

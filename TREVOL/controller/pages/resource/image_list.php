@@ -52,16 +52,13 @@ class ControllerPagesResourceImageList extends AController {
 		$link['resource/image_list'] = $this->html->getSecureURL('resource/image_list');
 		$link['resource/image_form'] = $this->html->getSecureURL('resource/image_form');
 		$link['resource/image_post'] = $this->html->getSecureURL('resource/image_post');
+		$link['resource/image_source_list'] = $this->html->getSecureURL('resource/image_source_list');
 		
-		$source = array();
-		$source[] = array("name"=>"google","link"=>"http://images.google.com/");
-		$source[] = array("name"=>"shutterstock","link"=>"http://www.shutterstock.com/");
-		$source[] = array("name"=>"flickr","link"=>"https://www.flickr.com/");
-		$source[] = array("name"=>"pixabay","link"=>"https://pixabay.com/");
-		$source[] = array("name"=>"pexels","link"=>"https://www.pexels.com/");
+		$source = $this->model_resource_image->getImageSource();
+		
 		
 		//include modal
-		$this->addChild('modal/resource/image_box', 'modal_add_image', 'modal/resource/image_box.tpl');
+		$this->addChild('modal/resource/image_box', 'modal_upload_image', 'modal/resource/image_box.tpl');
 		
 		$this->view->assign('link', $link); 
 		$this->view->assign('result', $result);

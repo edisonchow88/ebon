@@ -6,11 +6,12 @@ if(!defined('DIR_CORE') || !IS_ADMIN){
 class ModelResourceImage extends Model{
 	
 	private $table = "image";
+	private $table_source = "image_source";
 	private $path = "resources/image/cropped/";
 	private $default_width = "100px";
 	
-	public function getFields() {
-		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$this->db->table($this->table)."'";
+	public function getFields($table) {
+		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
 		$query = $this->db->query($sql);
 		foreach($query->rows as $result){
 			$output[] = $result['COLUMN_NAME'];
@@ -18,8 +19,8 @@ class ModelResourceImage extends Model{
 		return $output;
 	}
 	
-	public function getDefaults() {
-		$sql = "SELECT * FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$this->db->table($this->table)."'";
+	public function getDefaults($table) {
+		$sql = "SELECT * FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
 		$query = $this->db->query($sql);
 		foreach($query->rows as $result){
 			$output[$result['COLUMN_NAME']] = $result['COLUMN_DEFAULT'];
@@ -154,6 +155,92 @@ class ModelResourceImage extends Model{
 			$output[$result['sort_order']] = $this->getImage($result['image_id'],$width);
 		}
 		return $output;
+	}
+	
+	//source
+	public function getImageSource($image_source_id='') {
+		if($image_source_id == '') {
+			$sql = "
+				SELECT * 
+				FROM " . $this->db->table($this->table_source) . " 
+				ORDER BY sort_order ASC 
+			";
+		}
+		else {
+			$sql = "
+				SELECT * 
+				FROM " . $this->db->table($this->table_source) . " 
+				WHERE image_source_id = '" . (int)$image_source_id . "' 
+			";
+
+		}
+		$query = $this->db->query($sql);
+		
+		if($image_source_id == '') {
+			foreach($query->rows as $result){
+				$output[$result['image_source_id']] = $result;
+			}
+		}
+		else {
+			$output = $query->row;
+		}
+		
+		return $output;
+	}
+	
+	public function addImageSource($data) {
+		//this function is limited to ONE table only
+		$keys = array();
+		$values = array();
+		foreach($data as $key => $value) {
+			$keys[] = $key;
+			$values[] = "'".$value."'";
+		}
+		$field_keys = implode(", ", $keys);
+		$field_values = implode(", ", $values);
+		
+		$sql = "
+				INSERT INTO `" . $this->db->table($this->table_source) . "`
+				(".$field_keys.")
+				VALUES (".$field_values.")
+			";
+		$query = $this->db->query($sql);
+		
+		$image_source_id = $this->db->getLastId();
+		
+		$this->cache->delete('image_source');
+		
+		return $image_source_id;
+	}
+	
+	public function editImageSource($image_source_id, $data) {
+		$fields = $this->getFields($this->db->table($this->table_source));
+		
+		$update = array();
+		foreach($fields as $f){
+			if(isset($data[$f]))
+				$update[] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+		}
+		
+		if(!empty($update)){
+			$sql = "UPDATE " . $this->db->table($this->table_source) . " 
+				SET " . implode(',', $update) . "
+				WHERE image_source_id = '" . (int)$image_source_id . "'
+			";
+			$query = $this->db->query($sql);
+		}
+		
+		$this->cache->delete('image_source');
+	}
+	
+	public function deleteImageSource($image_source_id) {
+		$sql = "
+				DELETE FROM " . $this->db->table($this->table_source) . " 
+				WHERE image_source_id = '" . (int)$image_source_id . "'
+			";
+		$query = $this->db->query($sql);
+		
+		$this->cache->delete('image_source');
 	}
 }
 

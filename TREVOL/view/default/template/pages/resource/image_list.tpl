@@ -21,7 +21,7 @@
 
 <div id="content" class="panel panel-default">
 	<div class="panel-heading col-xs-12">
-    	<div class="col-xs-2 text-left"></div>
+    	<div class="col-xs-2 text-left"><a href="<?php echo $link['resource/image_source_list']; ?>" class="btn btn-default" role="button"><i class="fa fa-fw fa-desktop"></i> View Image Source</a></div>
     	<div class="col-xs-8 text-center"><h5>Image</h5></div>
         <div class="col-xs-2 text-right"><a data-toggle="modal" data-target="#modal-upload-image" class="btn btn-danger" role="button">Upload Image</a></div>
 	</div>
@@ -87,7 +87,7 @@
 </div>
 <!-- END: Modal -->
 
-<?php echo $modal_add_image; ?>
+<?php echo $modal_upload_image; ?>
 
 <script>
 	var grid = $("#grid").bootgrid({

@@ -53,6 +53,7 @@ class ControllerPagesResourceImageList extends AController {
 		$link['resource/image_form'] = $this->html->getSecureURL('resource/image_form');
 		$link['resource/image_post'] = $this->html->getSecureURL('resource/image_post');
 		$link['resource/image_source_list'] = $this->html->getSecureURL('resource/image_source_list');
+		$link['resource/image_type_list'] = $this->html->getSecureURL('resource/image_type_list');
 		
 		$source = $this->model_resource_image->getImageSource();
 		

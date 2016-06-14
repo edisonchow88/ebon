@@ -15,6 +15,7 @@
 
 <link rel="stylesheet" type="text/css" href="<?php echo $template_dir; ?>stylesheet/stylesheet.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo $template_dir; ?>stylesheet/jquery.bootgrid-1.3.1/jquery.bootgrid.min.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $template_dir; ?>stylesheet/trevol.css" />
 
 <?php foreach ($styles as $style) { ?>
 <link rel="<?php echo $style['rel']; ?>" type="text/css" href="<?php echo $style['href']; ?>"

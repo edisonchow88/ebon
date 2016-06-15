@@ -18,8 +18,8 @@ class ControllerPagesResourceImageSourceForm extends AController {
 			$form['action'] = 'edit';
 			$image_source_id = $this->request->get['image_source_id'];
 			
-			$this->loadModel("resource/image");
-			$data = $this->model_resource_image->getImageSource($image_source_id);
+			$this->loadModel("resource/image_source");
+			$data = $this->model_resource_image_source->getImageSource($image_source_id);
 			foreach($data as $k => $v) { $form[$k] = $v; } //auto generate input data
 		}
 		

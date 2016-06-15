@@ -5,7 +5,7 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 
 class ControllerPagesResourceImageSourcePost extends AController {
   	public function main() {
-		$this->loadModel('resource/image');
+		$this->loadModel('resource/image_source');
 		
 		if($this->request->post['action'] == "add") { $this->add(); }
 		else if($this->request->post['action'] == "edit") { $this->edit(); }
@@ -20,7 +20,7 @@ class ControllerPagesResourceImageSourcePost extends AController {
 		$data = $this->verify();
 		if($data == 'failed' ) { return; }
 		
-		$image_source_id = $this->model_resource_image->addImageSource($data); 
+		$image_source_id = $this->model_resource_image_source->addImageSource($data); 
 		$this->session->data['success'] = "Success: New <b>Image Source #".$image_source_id."</b> has been added";
 	}
 	
@@ -29,14 +29,14 @@ class ControllerPagesResourceImageSourcePost extends AController {
 		if($data == 'failed' ) { return; }
 		
 		$image_source_id = $data['image_source_id']; 
-		$this->model_resource_image->editImageSource($image_source_id, $data); 
+		$this->model_resource_image_source->editImageSource($image_source_id, $data); 
 		$this->session->data['success'] = "Success: <b>Image Source #".$image_source_id."</b> has been modified";
 	}
 	
 	public function delete() {
 		$image_source_id = $this->request->post['image_source_id'];
 		
-		$this->model_resource_image->deleteImageSource($image_source_id); 
+		$this->model_resource_image_source->deleteImageSource($image_source_id); 
 		$this->session->data['success'] = "Success: <b>Image Source #".$image_source_id."</b> has been deleted";
 		
 	}

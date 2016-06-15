@@ -21,8 +21,8 @@ class ControllerPagesResourceImageSourceList extends AController {
 			unset($this->session->data['success']);
 		}
 		
-		$this->loadModel('resource/image');
-		$data = $this->model_resource_image->getImageSource();
+		$this->loadModel('resource/image_source');
+		$data = $this->model_resource_image_source->getImageSource();
 		
 		foreach($data as $key => $value) {
 			$result[$key] = $value;

@@ -3,16 +3,16 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesResourceImageTypePost extends AController {
+class ControllerPagesResourceImageLicensePost extends AController {
   	public function main() {
-		$this->loadModel('resource/image_type');
+		$this->loadModel('resource/image_license');
 		
 		if($this->request->post['action'] == "add") { $this->add(); }
 		else if($this->request->post['action'] == "edit") { $this->edit(); }
 		else if($this->request->post['action'] == "delete") { $this->delete(); }
 		else { $this->session->data['warning'] = "Error: No action has been sent via POST"; }
 		
-		$redirect = $this->html->getSecureURL('resource/image_type_list');
+		$redirect = $this->html->getSecureURL('resource/image_license_list');
 		$this->redirect($redirect);
 	}
 	
@@ -20,31 +20,31 @@ class ControllerPagesResourceImageTypePost extends AController {
 		$data = $this->verify();
 		if($data == 'failed' ) { return; }
 		
-		$image_type_id = $this->model_resource_image_type->addImageType($data); 
-		$this->session->data['success'] = "Success: New <b>Image Type #".$image_type_id."</b> has been added";
+		$image_license_id = $this->model_resource_image_license->addImageLicense($data); 
+		$this->session->data['success'] = "Success: New <b>Image License #".$image_license_id."</b> has been added";
 	}
 	
 	public function edit() {
 		$data = $this->verify();
 		if($data == 'failed' ) { return; }
 		
-		$image_type_id = $data['image_type_id']; 
-		if($this->model_resource_image_type->editImageType($image_type_id, $data)) {
-			$this->session->data['success'] = "Success: <b>Image Type #".$image_type_id."</b> has been modified";
+		$image_license_id = $data['image_license_id']; 
+		if($this->model_resource_image_license->editImageLicense($image_license_id, $data)) {
+			$this->session->data['success'] = "Success: <b>Image License #".$image_license_id."</b> has been modified";
 		}
 		else {
-			$this->session->data['warning'] = "Error: Fail to edit <b>Image Type #".$image_type_id."</b>";
+			$this->session->data['warning'] = "Error: Fail to edit <b>Image License #".$image_license_id."</b>";
 		}
 	}
 	
 	public function delete() {
-		$image_type_id = $this->request->post['image_type_id'];
+		$image_license_id = $this->request->post['image_license_id'];
 		
-		if($this->model_resource_image_type->deleteImageType($image_type_id)) {
-			$this->session->data['success'] = "Success: <b>Image Type #".$image_type_id."</b> has been deleted";
+		if($this->model_resource_image_license->deleteImageLicense($image_license_id)) {
+			$this->session->data['success'] = "Success: <b>Image License #".$image_license_id."</b> has been deleted";
 		}
 		else {
-			$this->session->data['warning'] = "Error: Fail to delete <b>Image Type #".$image_type_id."</b>";
+			$this->session->data['warning'] = "Error: Fail to delete <b>Image License #".$image_license_id."</b>";
 		}
 		
 	}
@@ -67,11 +67,11 @@ class ControllerPagesResourceImageTypePost extends AController {
 			$error_list .= '</ul>';
 			$this->session->data['warning'] = $error_list;
 			
-			if($data['image_type_id'] != '') {
-				$redirect = $this->html->getSecureURL('resource/image_type_form','&image_type_id='.$data['image_type_id']);
+			if($data['image_license_id'] != '') {
+				$redirect = $this->html->getSecureURL('resource/image_license_form','&image_license_id='.$data['image_license_id']);
 			}
 			else {
-				$redirect = $this->html->getSecureURL('resource/image_type_form');
+				$redirect = $this->html->getSecureURL('resource/image_license_form');
 			}
 			$this->redirect($redirect);
 			

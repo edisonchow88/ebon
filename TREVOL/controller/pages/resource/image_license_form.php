@@ -3,23 +3,23 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesResourceImageTypeForm extends AController {
+class ControllerPagesResourceImageLicenseForm extends AController {
 
   	public function main() {
         //init controller data
         $this->extensions->hk_InitData($this,__FUNCTION__);
 		
-		if(!isset($this->request->get['image_type_id'])) {
-			$title = 'Add Image Type';
+		if(!isset($this->request->get['image_license_id'])) {
+			$title = 'Add Image License';
 			$form['action'] = 'add';
 		}
 		else {
-			$title = 'Edit Image Type';
+			$title = 'Edit Image License';
 			$form['action'] = 'edit';
-			$image_type_id = $this->request->get['image_type_id'];
+			$image_license_id = $this->request->get['image_license_id'];
 			
-			$this->loadModel("resource/image_type");
-			$data = $this->model_resource_image_type->getImageType($image_type_id);
+			$this->loadModel("resource/image_license");
+			$data = $this->model_resource_image_license->getImageLicense($image_license_id);
 			foreach($data as $k => $v) { $form[$k] = $v; } //auto generate input data
 		}
 		
@@ -34,15 +34,15 @@ class ControllerPagesResourceImageTypeForm extends AController {
 			unset($this->session->data['success']);
 		}
 		
-		$link['resource/image_type_list'] = $this->html->getSecureURL('resource/image_type_list');
-		$link['resource/image_type_form'] = $this->html->getSecureURL('resource/image_type_form');
-		$link['resource/image_type_post'] = $this->html->getSecureURL('resource/image_type_post');
+		$link['resource/image_license_list'] = $this->html->getSecureURL('resource/image_license_list');
+		$link['resource/image_license_form'] = $this->html->getSecureURL('resource/image_license_form');
+		$link['resource/image_license_post'] = $this->html->getSecureURL('resource/image_license_post');
 		
 		$this->view->assign('title', $title);
 		$this->view->assign('link', $link);
 		$this->view->assign('form', $form);
 		
-		$this->processTemplate('pages/resource/image_type_form.tpl' );
+		$this->processTemplate('pages/resource/image_license_form.tpl' );
 
           //update controller data
         $this->extensions->hk_UpdateData($this,__FUNCTION__);

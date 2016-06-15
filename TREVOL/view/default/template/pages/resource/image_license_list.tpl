@@ -5,8 +5,8 @@
 <div id="content" class="panel panel-default">
 	<div class="panel-heading col-xs-12">
     	<div class="col-xs-2 text-left"><a href="<?php echo $link['resource/image_list']; ?>" class="btn btn-default" role="button"><i class="fa fa-fw fa-desktop"></i> View Image</a></div>
-    	<div class="col-xs-8 text-center"><h5>Image Type</h5></div>
-        <div class="col-xs-2 text-right"><a href="<?php echo $link['resource/image_type_form']; ?>" class="btn btn-danger" role="button">Add Image Type</a></div>
+    	<div class="col-xs-8 text-center"><h5>Image License</h5></div>
+        <div class="col-xs-2 text-right"><a href="<?php echo $link['resource/image_license_form']; ?>" class="btn btn-danger" role="button">Add Image License</a></div>
 	</div>
 
 	<div class="panel-body panel-body-nopadding tab-content col-xs-12">
@@ -42,17 +42,17 @@
         <div class="modal-content">
             <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Delete Image Type</h4>
+            <h4 class="modal-title">Delete Image License</h4>
             </div>
         <div class="modal-body">
             <div class="alert alert-danger" role="alert">
-                Are you sure you want to delete <b>Image Type #<span id="image-type-id-delete-text"></span></b> ?
+                Are you sure you want to delete <b>Image License #<span id="modal-delete-text"></span></b> ?
             </div>
-            <form id="form-delete" action="<?php echo $link['resource/image_type_post'];?>" method="post">
+            <form id="form-delete" action="<?php echo $link['resource/image_license_post'];?>" method="post">
                 <input 
                     type="hidden" 
-                    id="image-type-id-delete-input" 
-                    name="image_type_id" 
+                    id="modal-delete-input" 
+                    name="image_license_id" 
                 />
                 <input 
                     type="hidden" 
@@ -63,7 +63,7 @@
         </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" onclick="deleteImageType();">Delete</button>
+                <button type="button" class="btn btn-danger" onclick="deleteImageLicense();">Delete</button>
             </div>
         </div>
     </div>
@@ -94,12 +94,12 @@
 		/* Executes after data is loaded and rendered */
 		grid.find(".command-edit").on("click", function(e)
 		{
-			window.location.href = "<?php echo $link['resource/image_type_form']; ?>\&image_type_id=" + $(this).data("row-id");
+			window.location.href = "<?php echo $link['resource/image_license_form']; ?>\&image_license_id=" + $(this).data("row-id");
 		})
 		.end().find(".command-delete").on("click", function(e)
 		{
-			document.getElementById("image-type-id-delete-text").innerHTML = $(this).data("row-id");
-			document.getElementById("image-type-id-delete-input").value = $(this).data("row-id");
+			document.getElementById("modal-delete-text").innerHTML = $(this).data("row-id");
+			document.getElementById("modal-delete-input").value = $(this).data("row-id");
 			$($(this).attr("data-target")).modal("show");
 		});
 	});
@@ -109,7 +109,7 @@
 		$("#grid").bootgrid("search");
 	}
 	
-	function deleteImageType() {
+	function deleteImageLicense() {
 		document.getElementById("form-delete").submit();
 	}	
 	

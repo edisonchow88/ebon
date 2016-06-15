@@ -23,13 +23,13 @@
 	<div class="panel-heading col-xs-12">
     	<div class="col-xs-2 text-left">
         	<div class="dropdown">
-            	<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            	<button class="btn btn-default dropdown-toggle" license="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 	<i class="fa fa-fw fa-desktop"></i> View
                 	<span class="caret"></span>
                 </button>
             	<ul class="dropdown-menu" >
                 	<li><a href="<?php echo $link['resource/image_source_list']; ?>">Image Source</a></li>
-                    <li><a href="<?php echo $link['resource/image_type_list']; ?>">Image Type</a></li>
+                    <li><a href="<?php echo $link['resource/image_license_list']; ?>">Image License</a></li>
                 </ul>
             </div>
         </div>
@@ -42,7 +42,7 @@
             <thead>
                 <tr>
                 	<th data-column-id="image" data-formatter="image" data-sortable="false">Image</th>
-                    <th data-column-id="id" data-type="numeric" data-order="asc">ID</th>
+                    <th data-column-id="id" data-license="numeric" data-order="asc">ID</th>
                     <th data-column-id="name" data-formatter="name">Name</th>
                     <th data-column-id="source" data-formatter="source">Source</th>
                     <th data-column-id="linked" data-formatter="linked" data-sortable="false">Linked</th>
@@ -69,7 +69,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <button license="button" class="close" data-dismiss="modal">&times;</button>
             <h4 class="modal-title">Delete Image</h4>
             </div>
         <div class="modal-body">
@@ -78,20 +78,20 @@
             </div>
             <form id="form-delete" action="<?php echo $link['resource/image_post'];?>" method="post">
                 <input 
-                    type="hidden" 
+                    license="hidden" 
                     id="image-id-delete-input" 
                     name="image_id" 
                 />
                 <input 
-                    type="hidden" 
+                    license="hidden" 
                     name="action"
                     value="delete" 
                 />
             </form>
         </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" onclick="deleteImage();">Delete</button>
+                <button license="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button license="button" class="btn btn-danger" onclick="deleteImage();">Delete</button>
             </div>
         </div>
     </div>
@@ -128,8 +128,8 @@
 			},
 			"commands": function(column, row)
 			{
-				return "<button type=\"button\" class=\"btn btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-pencil\"></span></button> " + 
-					"<button type=\"button\" class=\"btn btn-default command-delete\" data-toggle=\"modal\" data-target=\"#modal-delete\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-trash-o\"></span></button>";
+				return "<button license=\"button\" class=\"btn btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-pencil\"></span></button> " + 
+					"<button license=\"button\" class=\"btn btn-default command-delete\" data-toggle=\"modal\" data-target=\"#modal-delete\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-trash-o\"></span></button>";
 			}
 		}
 	}).on("loaded.rs.jquery.bootgrid", function()

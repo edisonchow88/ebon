@@ -51,7 +51,7 @@
 			"name": function(column, row)
 			{
 				var name = JSON.parse(row.name);
-				return "<span class=\"label label-pill search-child\" data-row-name=\"" + name.name + "\" style=\"background-color:"+name.type_color+"\">" + name.name + "</span>";
+				return "<span class=\"label label-pill\" data-row-name=\"" + name.name + "\" style=\"background-color:"+name.type_color+"\">" + name.name + "</span>";
 			},
 			"command": function(column, row)
 			{
@@ -105,9 +105,9 @@
 	}
 	
 	function showTagTime() {
-		document.getElementById("container-tag-time-id").innerHTML = '';
+		document.getElementById("container-tag-time").innerHTML = '';
 		for(i=0;i<my_tag_time.length;i++) {
-			document.getElementById("container-tag-time-id").innerHTML += "<span class='label label-pill' style='background-color:" + my_tag_time[i].type_color + "; margin-right:5px;'>" + my_tag_time[i].name  + "<a class='btn-xs' style='cursor:pointer;' onclick='removeTagTime(" + my_tag_time[i].tag_id  + ");'><span class='fa fa-times-circle fa-inverse small'></span></a></span>";
+			document.getElementById("container-tag-time").innerHTML += "<span class='label label-pill' style='background-color:" + my_tag_time[i].type_color + "; margin-right:5px;'>" + my_tag_time[i].name  + "<a class='btn-xs' style='cursor:pointer;' onclick='removeTagTime(" + my_tag_time[i].tag_id  + ");'><span class='fa fa-times-circle fa-inverse small'></span></a></span>";
 		}
 		document.getElementById("input-tag-time-id").value = JSON.stringify(my_tag_time);
 	}

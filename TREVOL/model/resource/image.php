@@ -126,6 +126,47 @@ class ModelResourceImage extends Model{
 			}
 		}
 		
+		//delete destination
+		
+		/*
+		$sql = "
+				SELECT * FROM " . $this->db->table('destination_image') . " 
+				WHERE image_id = '" . (int)$this->db->escape($data['image_id']) . "'
+			";
+		$query = $this->db->query($sql);
+		$output = $query->rows;
+		
+		$difference = array_diff($output, $data['destination_id']);
+		
+		foreach($difference as $row) {
+			$sql = "
+				DELETE FROM " . $this->db->table('destination_image') . " 
+				WHERE image_id = '" . (int)$this->db->escape($data['image_id']) . "' 
+				AND destionation_id = '" . (int)$this->db->escape($row['destination_id']) . "' 
+			";
+			$query = $this->db->query($sql);
+		}
+		*/
+		
+		$sql = "
+				DELETE FROM " . $this->db->table('destination_image') . " 
+				WHERE image_id = '" . (int)$this->db->escape($data['image_id']) . "'
+			";
+		$query = $this->db->query($sql);
+		
+		//add destination
+		if($data['destination_id'] != '') {
+			foreach($data['destination_id'] as $destination) {
+				$sql = "
+						INSERT INTO " . $this->db->table('destination_image') . " 
+						SET 
+							image_id = '" . (int)$this->db->escape($data['image_id']) . "', 
+							destination_id = '" . (int)$this->db->escape($destination['destination_id']) . "'
+					";
+				$query = $this->db->query($sql);
+			}
+		}
+		
 		$this->cache->delete('image');
 		
 		return true;
@@ -154,7 +195,7 @@ class ModelResourceImage extends Model{
 		$query = $this->db->query($sql);
 		
 		foreach($query->rows as $result){
-			$output[$result['sort_order']] = $this->getImage($result['image_id'],$width);
+			$output[$result['image_id']] = $this->getImage($result['image_id'],$width);
 		}
 		return $output;
 	}
@@ -170,7 +211,7 @@ class ModelResourceImage extends Model{
 		$query = $this->db->query($sql);
 		
 		foreach($query->rows as $result){
-			$output[$result['sort_order']] = $this->getImage($result['image_id'],$width);
+			$output[$result['image_id']] = $this->getImage($result['image_id'],$width);
 		}
 		return $output;
 	}

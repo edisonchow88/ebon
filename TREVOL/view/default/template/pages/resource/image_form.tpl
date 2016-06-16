@@ -138,10 +138,9 @@
                         type="hidden"
                         class="form-control"
                         id="input-tag-time-id"
-                        name="tag_time_id" 
-                        value=""
+                        name="tag_time_id"
                     />
-                	<div id="container-tag-time-id" style="position:absolute; top:5px; left:40px; z-index:10; width:100%;"></div>
+                	<div id="container-tag-time" style="position:absolute; top:5px; left:40px; z-index:10; width:100%;"></div>
                 </div>
             </div>
             <section>Linked</section>
@@ -150,12 +149,17 @@
                     Destination
                 </label>
                 <div class="input-group col-sm-9 col-xs-12">
+                    <span class="input-group-btn" style="z-index:20;">
+                        <button class="btn btn-default" type="button" data-toggle="modal" data-target="#modal-image-destination"><i class="fa fa-plus"></i></button>
+                    </span>
                     <input
+                        <input
                         type="hidden"
                         class="form-control"
                         id="input-destination-id"
                         name="destination_id" 
                     />
+                	<div id="container-image-destination" style="position:absolute; top:5px; left:40px; z-index:10; width:100%;"></div>
                 </div>
             </div>
             <div class="form-group">
@@ -259,8 +263,10 @@
 
 <!-- START: Modal -->
 <?php echo $modal_tag_time; ?>
+<?php echo $modal_image_destination; ?>
 <script>
-	setTagTime(<?php echo $form['tag_time_id']; ?>)
+	setTagTime(<?php echo $form['tag_time']; ?>)
+	setImageDestination(<?php echo $form['image_destination']; ?>)
 </script>
 <!-- END: Modal -->
 

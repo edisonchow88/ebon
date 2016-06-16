@@ -54,27 +54,47 @@ class ControllerPagesResourceImagePost extends AController {
 		}
 		unset($data['action']); //avoid insert non-exist column
 		
-		//$data['tag_time_id'] = json_decode($data['tag_time_id']);
 		if($data['tag_time_id'] != '[]') { //avoid add empty row to database
 			$string = $data['tag_time_id']; 
 			$string = str_replace("[","",$string);
 			$string = str_replace("]","",$string);
-			$tag_time = explode("},{",$string);
+			$result = explode("},{",$string);
 			$i = 0;
-			foreach($tag_time as $tag) {
-				$tag = str_replace("{","",$tag);
-				$tag = str_replace("}","",$tag);
-				$properties = explode(",",$tag);
-				$tag_time[$i] = array();
+			foreach($result as $element) {
+				$element = str_replace("{","",$element);
+				$element = str_replace("}","",$element);
+				$properties = explode(",",$element);
+				$result[$i] = array();
 				foreach($properties as $property) {
 					$property = str_replace("&quot;","",$property);
 					$property = explode(":",$property);
-					$tag_time[$i][$property[0]] = $property[1];
+					$result[$i][$property[0]] = $property[1];
 				};
 				$i += 1;
 			}
-			$data['tag_time_id'] = $tag_time;
-		} 
+			$data['tag_time_id'] = $result;
+		}
+		
+		if($data['destination_id'] != '[]') { //avoid add empty row to database
+			$string = $data['destination_id']; 
+			$string = str_replace("[","",$string);
+			$string = str_replace("]","",$string);
+			$destination = explode("},{",$string);
+			$i = 0;
+			foreach($destination as $element) {
+				$element = str_replace("{","",$element);
+				$element = str_replace("}","",$element);
+				$properties = explode(",",$element);
+				$destination[$i] = array();
+				foreach($properties as $property) {
+					$property = str_replace("&quot;","",$property);
+					$property = explode(":",$property);
+					$destination[$i][$property[0]] = $property[1];
+				};
+				$i += 1;
+			}
+			$data['destination_id'] = $destination;
+		}  
 		
 		$error = array();
 		if($data['name'] == '') { $error[] = "Please key in the name."; }

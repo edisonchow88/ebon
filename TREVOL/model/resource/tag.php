@@ -400,6 +400,22 @@ class ModelResourceTag extends Model{
 		$this->cache->delete('tag_type');
 	}
 	
+	//image
+	public function getTagByImageId($image_id) {
+		$sql = "
+				SELECT * 
+				FROM " . $this->db->table('image_tag') . " 
+				WHERE image_id = '" . (int)$image_id . "' 
+			";
+		$query = $this->db->query($sql);
+		
+		foreach($query->rows as $result){
+			$output[$result['tag_id']] = $this->getTag($result['tag_id']);
+		}
+		
+		return $output;
+	}
+	
 	//destination
 	public function getTagByDestinationId($destination_id) {
 		$sql = "

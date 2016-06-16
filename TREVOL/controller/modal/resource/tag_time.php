@@ -18,7 +18,7 @@ class ControllerModalResourceTagTime extends AController {
 			$json['name'] .= '"name":';
 			$json['name'] .= '"'.$row['name'].'"';
 			$json['name'] .= ',';
-			$json['name'] .= '"color":';
+			$json['name'] .= '"type_color":';
 			$json['name'] .= '"'.$row['type_color'].'"';
 			$json['name'] .= '}';
 			

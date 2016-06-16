@@ -3,16 +3,16 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesTagTagPost extends AController {
+class ControllerPagesResourceImagePost extends AController {
   	public function main() {
-		$this->loadModel('tag/tag');
+		$this->loadModel('resource/image');
 		
 		if($this->request->post['action'] == "add") { $this->add(); }
 		else if($this->request->post['action'] == "edit") { $this->edit(); }
 		else if($this->request->post['action'] == "delete") { $this->delete(); }
 		else { $this->session->data['warning'] = "Error: No action has been sent via POST"; }
 		
-		$redirect = $this->html->getSecureURL('tag/tag_list');
+		$redirect = $this->html->getSecureURL('resource/image_list');
 		$this->redirect($redirect);
 	}
 	
@@ -20,101 +20,63 @@ class ControllerPagesTagTagPost extends AController {
 		$data = $this->verify();
 		if($data == 'failed' ) { return; }
 		
-		$tag_id = $this->model_tag_tag->addTag($data); 
-		$this->session->data['success'] = "Success: New <b>Tag #".$tag_id."</b> has been added";
+		$image_id = $this->model_resource_image->addImage($data); 
+		$this->session->data['success'] = "Success: New <b>Image #".$image_id."</b> has been added";
 	}
 	
 	public function edit() {
 		$data = $this->verify();
 		if($data == 'failed' ) { return; }
 		
-		$tag_id = $data['tag_id']; 
-		$this->model_tag_tag->editTag($tag_id, $data); 
-		$this->session->data['success'] = "Success: <b>Tag #".$tag_id."</b> has been modified";
+		$image_id = $data['image_id']; 
+		if($this->model_resource_image->editImage($image_id, $data)) {
+			$this->session->data['success'] = "Success: <b>Image #".$image_id."</b> has been modified";
+		}
+		else {
+			$this->session->data['warning'] = "Error: Fail to edit <b>Image #".$image_id."</b>";
+		}
 	}
 	
 	public function delete() {
-		$tag_id = $this->request->post['tag_id'];
+		$image_id = $this->request->post['image_id'];
 		
-		$this->model_tag_tag->deleteTag($tag_id); 
-		$this->session->data['success'] = "Success: <b>Tag #".$tag_id."</b> has been deleted";
-		
+		if($this->model_resource_image->deleteImage($image_id)) {
+			$this->session->data['success'] = "Success: <b>Image #".$image_id."</b> has been deleted";
+		}
+		else {
+			$this->session->data['warning'] = "Error: Fail to delete <b>Image #".$image_id."</b>";
+		}
 	}
 	
 	public function verify() {
-		$data['tag_id'] = $this->request->post['tag_id'];
-		$data['tag_type_id'] = $this->request->post['tag_type_id'];
-		$data['icon'] = $this->request->post['icon'];
-		$data['language_id'] = $this->request->post['language_id'];
-		$data['name'] = $this->request->post['name'];
-		$data['description'] = $this->request->post['description'];
+		foreach($_POST as $key => $value) {
+			$data[$key] = $value;
+		}
+		unset($data['action']); //avoid insert non-exist column
 		
-		if($this->request->post['parent'] != '[]') { //avoid add empty row to database
-			$string = $this->request->post['parent']; 
+		//$data['tag_time_id'] = json_decode($data['tag_time_id']);
+		if($data['tag_time_id'] != '[]') { //avoid add empty row to database
+			$string = $data['tag_time_id']; 
 			$string = str_replace("[","",$string);
 			$string = str_replace("]","",$string);
-			$parent = explode("},{",$string);
+			$tag_time = explode("},{",$string);
 			$i = 0;
-			foreach($parent as $tag) {
+			foreach($tag_time as $tag) {
 				$tag = str_replace("{","",$tag);
 				$tag = str_replace("}","",$tag);
 				$properties = explode(",",$tag);
-				$parent[$i] = array();
+				$tag_time[$i] = array();
 				foreach($properties as $property) {
 					$property = str_replace("&quot;","",$property);
 					$property = explode(":",$property);
-					$parent[$i][$property[0]] = $property[1];
+					$tag_time[$i][$property[0]] = $property[1];
 				};
 				$i += 1;
 			}
-			$data['parent'] = $parent;
-		}
-		
-		if($this->request->post['child'] != '[]') { //avoid add empty row to database
-			$string = $this->request->post['child']; 
-			$string = str_replace("[","",$string);
-			$string = str_replace("]","",$string);
-			$child = explode("},{",$string);
-			$i = 0;
-			foreach($child as $tag) {
-				$tag = str_replace("{","",$tag);
-				$tag = str_replace("}","",$tag);
-				$properties = explode(",",$tag);
-				$child[$i] = array();
-				foreach($properties as $property) {
-					$property = str_replace("&quot;","",$property);
-					$property = explode(":",$property);
-					$child[$i][$property[0]] = $property[1];
-				};
-				$i += 1;
-			}
-			$data['child'] = $child;
-		}
-		
-		if($this->request->post['similar'] != '[]') { //avoid add empty row to database
-			$string = $this->request->post['similar']; 
-			$string = str_replace("[","",$string);
-			$string = str_replace("]","",$string);
-			$similar = explode("},{",$string);
-			$i = 0;
-			foreach($similar as $tag) {
-				$tag = str_replace("{","",$tag);
-				$tag = str_replace("}","",$tag);
-				$properties = explode(",",$tag);
-				$similar[$i] = array();
-				foreach($properties as $property) {
-					$property = str_replace("&quot;","",$property);
-					$property = explode(":",$property);
-					$similar[$i][$property[0]] = $property[1];
-				};
-				$i += 1;
-			}
-			$data['similar'] = $similar;
-		}
+			$data['tag_time_id'] = $tag_time;
+		} 
 		
 		$error = array();
-		if($data['tag_type_id'] == '') { $error[] = "Please select a tag type."; }
-		if($data['language_id'] == '') { $error[] = "Please select a language."; }
 		if($data['name'] == '') { $error[] = "Please key in the name."; }
 		
 		if(count($error) > 0) { 
@@ -126,11 +88,11 @@ class ControllerPagesTagTagPost extends AController {
 			$error_list .= '</ul>';
 			$this->session->data['warning'] = $error_list;
 			
-			if($data['tag_id'] != '') {
-				$redirect = $this->html->getSecureURL('tag/tag_form','&tag_id='.$data['tag_id']);
+			if($data['image_id'] != '') {
+				$redirect = $this->html->getSecureURL('resource/image_form','&image_id='.$data['image_id']);
 			}
 			else {
-				$redirect = $this->html->getSecureURL('tag/tag_form');
+				$redirect = $this->html->getSecureURL('resource/image_form');
 			}
 			$this->redirect($redirect);
 			

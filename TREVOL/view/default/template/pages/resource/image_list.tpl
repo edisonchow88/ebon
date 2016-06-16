@@ -8,7 +8,7 @@
             <ul class="nav navbar-nav">
             	<li><div style="padding:15px;"><b>Source :</b></div></li>
             	<?php 
-                    foreach($source as $e) {
+                    foreach($reference['source'] as $e) {
                         echo "<li>";
                         echo "<a href=".$e['link']." target='_blank'>".$e['name']."</a>";
                         echo "</li>";
@@ -23,7 +23,7 @@
 	<div class="panel-heading col-xs-12">
     	<div class="col-xs-2 text-left">
         	<div class="dropdown">
-            	<button class="btn btn-default dropdown-toggle" license="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            	<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 	<i class="fa fa-fw fa-desktop"></i> View
                 	<span class="caret"></span>
                 </button>
@@ -42,9 +42,10 @@
             <thead>
                 <tr>
                 	<th data-column-id="image" data-formatter="image" data-sortable="false">Image</th>
-                    <th data-column-id="id" data-license="numeric" data-order="asc">ID</th>
+                    <th data-column-id="id" data-type="numeric" data-order="asc">ID</th>
                     <th data-column-id="name" data-formatter="name">Name</th>
-                    <th data-column-id="source" data-formatter="source">Source</th>
+                    <th data-column-id="link" data-formatter="link">Link</th>
+                    <th data-column-id="license" data-formatter="license">License</th>
                     <th data-column-id="linked" data-formatter="linked" data-sortable="false">Linked</th>
                     <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
                 </tr>
@@ -69,7 +70,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-            <button license="button" class="close" data-dismiss="modal">&times;</button>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
             <h4 class="modal-title">Delete Image</h4>
             </div>
         <div class="modal-body">
@@ -78,20 +79,20 @@
             </div>
             <form id="form-delete" action="<?php echo $link['resource/image_post'];?>" method="post">
                 <input 
-                    license="hidden" 
+                    type="hidden" 
                     id="image-id-delete-input" 
                     name="image_id" 
                 />
                 <input 
-                    license="hidden" 
+                    type="hidden" 
                     name="action"
                     value="delete" 
                 />
             </form>
         </div>
             <div class="modal-footer">
-                <button license="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button license="button" class="btn btn-danger" onclick="deleteImage();">Delete</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="deleteImage();">Delete</button>
             </div>
         </div>
     </div>
@@ -113,9 +114,16 @@
 			{
 				return row.name;
 			},
-			"source": function(column, row)
+			"link": function(column, row)
 			{
-				return "<a href=\"" + row.source + "\" target=\"_blank\">Link</a>";
+				if(row.link == '') { return; }
+				return "<a href=\"" + row.link + "\" target=\"_blank\">Link</a>";
+			},
+			"license": function(column, row)
+			{
+				if(row.license == '') { return; }
+				var license = JSON.parse(row.license);
+				return "<a href=\"" + license.link + "\" target=\"_blank\" data-toggle=\"tooltip\" data-placement=\"right\" title=\"" + license.description + "\">" + license.name + "</a>";
 			},
 			"linked": function(column, row)
 			{
@@ -128,12 +136,13 @@
 			},
 			"commands": function(column, row)
 			{
-				return "<button license=\"button\" class=\"btn btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-pencil\"></span></button> " + 
-					"<button license=\"button\" class=\"btn btn-default command-delete\" data-toggle=\"modal\" data-target=\"#modal-delete\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-trash-o\"></span></button>";
+				return "<button type=\"button\" class=\"btn btn-default command-edit\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-pencil\"></span></button> " + 
+					"<button type=\"button\" class=\"btn btn-default command-delete\" data-toggle=\"modal\" data-target=\"#modal-delete\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-trash-o\"></span></button>";
 			}
 		}
 	}).on("loaded.rs.jquery.bootgrid", function()
 	{
+		$('[data-toggle="tooltip"]').tooltip();
 		/* Executes after data is loaded and rendered */
 		grid.find(".search-linked").on("click", function(e)
 		{

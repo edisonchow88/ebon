@@ -22,30 +22,38 @@ class ControllerPagesResourceImageList extends AController {
 		}
 		
 		$this->loadModel('resource/image');
+		$this->loadModel('resource/image_license');
+		$this->loadModel('resource/image_source');
+		
 		$data = $this->model_resource_image->getImage();
 		
 		foreach($data as $row) {
-			$image_id = $row['image_id'];
-			$name = $row['name'];
-			$path = $row['path'];
-			$source = $row['source'];
 			//$linked = $this->model_resource_image->getImageLinked($image_id);
+			$image_id = $row['image_id'];
 			
 			$json_image = '{';
 				$json_image .= '"name":';
-				$json_image .= '"'.$name.'"';
+				$json_image .= '"'.$row['name'].'"';
 				$json_image .= ',';
 				$json_image .= '"path":';
-				$json_image .= '"'.$path.'"';
+				$json_image .= '"'.$row['path'].'"';
 				$json_image .= ',';
 				$json_image .= '"width":';
 				$json_image .= '"100px"';
 				$json_image .= '}';
 			
+			if($row['image_license_id'] > 0) {
+				$json['image_license'] = json_encode($this->model_resource_image_license->getImageLicense($row['image_license_id']));
+			}
+			else {
+				$json['image_license'] = '';
+			}
+			
 			$result[$image_id]['image'] = $json_image;
 			$result[$image_id]['image_id'] = $image_id;
-			$result[$image_id]['name'] = $name;
-			$result[$image_id]['source'] = $source;
+			$result[$image_id]['name'] = $row['name'];
+			$result[$image_id]['link'] = $row['link'];
+			$result[$image_id]['license'] = $json['image_license'];
 			$result[$image_id]['linked'] = count($linked);
 		}
 		
@@ -55,15 +63,14 @@ class ControllerPagesResourceImageList extends AController {
 		$link['resource/image_source_list'] = $this->html->getSecureURL('resource/image_source_list');
 		$link['resource/image_license_list'] = $this->html->getSecureURL('resource/image_license_list');
 		
-		$source = $this->model_resource_image->getImageSource();
-		
+		$reference['source'] = $this->model_resource_image_source->getImageSource();
 		
 		//include modal
 		$this->addChild('modal/resource/image_box', 'modal_upload_image', 'modal/resource/image_box.tpl');
 		
 		$this->view->assign('link', $link); 
 		$this->view->assign('result', $result);
-		$this->view->assign('source', $source); 
+		$this->view->assign('reference', $reference);
 		
 		$this->processTemplate('pages/resource/image_list.tpl' );
 

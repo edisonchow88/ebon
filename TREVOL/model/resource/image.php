@@ -6,27 +6,9 @@ if(!defined('DIR_CORE') || !IS_ADMIN){
 class ModelResourceImage extends Model{
 	
 	private $table = "image";
-	private $table_source = "image_source";
+	private $table_tag = "image_tag";
 	private $path = "resources/image/cropped/";
 	private $default_width = "100px";
-	
-	public function getFields($table) {
-		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
-		$query = $this->db->query($sql);
-		foreach($query->rows as $result){
-			$output[] = $result['COLUMN_NAME'];
-		}
-		return $output;
-	}
-	
-	public function getDefaults($table) {
-		$sql = "SELECT * FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
-		$query = $this->db->query($sql);
-		foreach($query->rows as $result){
-			$output[$result['COLUMN_NAME']] = $result['COLUMN_DEFAULT'];
-		}
-		return $output;
-	}
 	
 	public function getImage($image_id='',$width='') {
 		if($width=='') { $width = $this->default_width; }
@@ -90,29 +72,63 @@ class ModelResourceImage extends Model{
 		
 		$image_id = $this->db->getLastId();
 		
+		//add tag
+		if($data['tag_time_id'] != '') {
+			foreach($data['tag_time_id'] as $tag) {
+				$sql = "
+						INSERT INTO " . $this->db->table($this->table_tag) . " 
+						SET 
+							image_id = '" . (int)$this->db->escape($data['image_id']) . "', 
+							tag_id = '" . (int)$this->db->escape($tag['tag_id']) . "'
+					";
+				$query = $this->db->query($sql);
+			}
+		}
+		
 		$this->cache->delete('image');
 		
 		return $image_id;
 	}
 	
 	public function editImage($image_id, $data) {
-		$fields = $this->getFields();
+		$sql = "UPDATE " . $this->db->table($this->table) . " 
+			SET 
+				image_id = '" . $this->db->escape($data['image_id']) . "', 
+				name = '" . $this->db->escape($data['name']) . "', 
+				filename = '" . $this->db->escape($data['filename']) . "', 
+				size = '" . $this->db->escape($data['size']) . "', 
+				photographer = '" . $this->db->escape($data['photographer']) . "', 
+				link = '" . $this->db->escape($data['link']) . "', 
+				image_source_id = '" . $this->db->escape($data['image_source_id']) . "', 
+				image_license_id = '" . $this->db->escape($data['image_license_id']) . "', 
+				date_modified = NOW() 
+			WHERE image_id = '" . (int)$this->db->escape($data['image_id']) . "'
+		";
+		$query = $this->db->query($sql);
 		
-		$update = array();
-		foreach($fields as $f){
-			if(isset($data[$f]))
-				$update[] = $f . " = '" . $this->db->escape($data[$f]) . "'";
-		}
-		
-		if(!empty($update)){
-			$sql = "UPDATE " . $this->db->table($this->table) . " 
-				SET " . implode(',', $update) . "
-				WHERE image_id = '" . (int)$image_id . "'
+		//delete all tag
+		$sql = "
+				DELETE FROM " . $this->db->table($this->table_tag) . " 
+				WHERE image_id = '" . (int)$this->db->escape($data['image_id']) . "'
 			";
-			$query = $this->db->query($sql);
+		$query = $this->db->query($sql);
+		
+		//add tag
+		if($data['tag_time_id'] != '') {
+			foreach($data['tag_time_id'] as $tag_time) {
+				$sql = "
+						INSERT INTO " . $this->db->table($this->table_tag) . " 
+						SET 
+							image_id = '" . (int)$this->db->escape($data['image_id']) . "', 
+							tag_id = '" . (int)$this->db->escape($tag_time['tag_id']) . "'
+					";
+				$query = $this->db->query($sql);
+			}
 		}
 		
 		$this->cache->delete('image');
+		
+		return true;
 	}
 	
 	public function deleteImage($image_id) {
@@ -123,6 +139,8 @@ class ModelResourceImage extends Model{
 		$query = $this->db->query($sql);
 		
 		$this->cache->delete('image');
+		
+		return true;
 	}
 	
 	//destination

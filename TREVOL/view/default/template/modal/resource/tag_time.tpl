@@ -40,7 +40,7 @@
 	var my_tag_time = new Array();
 	var my_temp_tag_time = new Array();
 	
-	var my_grid_modal_tag_add = $("#grid-modal-tag-time").bootgrid({
+	var my_grid_modal_tag_time = $("#grid-modal-tag-time").bootgrid({
 		caseSensitive: false,
 		columnSelection: false,
 		formatters: {
@@ -62,7 +62,7 @@
 	}).on("loaded.rs.jquery.bootgrid", function()
 	{
 		/* Executes after data is loaded and rendered */
-		my_grid_modal_tag_add.find(".command-add").on("click", function(e)
+		my_grid_modal_tag_time.find(".command-add").on("click", function(e)
 		{
 			var tag_id = $(this).data("tag-id").toString(); //have to make sure id is a string to avoid failure when compare with function trueIfNotExist();
 			var name = $(this).data("name");

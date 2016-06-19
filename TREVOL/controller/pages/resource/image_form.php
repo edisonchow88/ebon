@@ -60,6 +60,7 @@ class ControllerPagesResourceImageForm extends AController {
 		//include modal
 		$this->addChild('modal/resource/tag_time', 'modal_tag_time', 'modal/resource/tag_time.tpl');
 		$this->addChild('modal/resource/image_destination', 'modal_image_destination', 'modal/resource/image_destination.tpl');
+		$this->addChild('modal/resource/replace_image', 'modal_replace_image', 'modal/resource/replace_image.tpl');
 		
 		$this->view->assign('title', $title);
 		$this->view->assign('link', $link);

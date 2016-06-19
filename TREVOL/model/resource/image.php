@@ -38,7 +38,7 @@ class ModelResourceImage extends Model{
 				$output[$result['image_id']]['name'] = ucwords($result['name']);
 				$output[$result['image_id']]['width'] = $width;
 				$output[$result['image_id']]['path'] = $this->path.$result['filename'];
-				$output[$result['image_id']]['image'] = "<img src='".$output[$result['image_id']]['path']."' title='".$output[$result['image_id']]['name']."' width='".$width."'/>";
+				$output[$result['image_id']]['image'] = "<img id='image-".$output[$result['image_id']]['image_id']."' src='".$output[$result['image_id']]['path']."' title='".$output[$result['image_id']]['name']."' width='".$width."'/>";
 			}
 		}
 		else {
@@ -46,44 +46,35 @@ class ModelResourceImage extends Model{
 			$output['name'] = ucwords($output['name']);
 			$output['width'] = $width;
 			$output['path'] = $this->path.$output['filename'];
-			$output['image'] = "<img src='".$output['path']."' title='".$output['name']."' width='".$width."'/>";
+			$output['image'] = "<img id='image-".$output['image_id']."' src='".$output['path']."' title='".$output['name']."' width='".$width."'/>";
 		}
 		
 		return $output;
 	}
 	
 	public function addImage($data) {
-		//this function is limited to ONE table only
-		$keys = array();
-		$values = array();
-		foreach($data as $key => $value) {
-			$keys[] = $key;
-			$values[] = "'".$value."'";
-		}
-		$field_keys = implode(", ", $keys);
-		$field_values = implode(", ", $values);
-		
 		$sql = "
-				INSERT INTO `" . $this->db->table($this->table) . "`
-				(".$field_keys.")
-				VALUES (".$field_values.")
+				INSERT INTO `" . $this->db->table($this->table) . "` 
+				SET 
+					name = '" . $this->db->escape($data['name']) . "', 
+					size = '" . $this->db->escape($data['size']) . "', 
+					photographer = '" . $this->db->escape($data['photographer']) . "', 
+					link = '" . $this->db->escape($data['link']) . "', 
+					image_source_id = '" . $this->db->escape($data['image_source_id']) . "', 
+					image_license_id = '" . $this->db->escape($data['image_license_id']) . "', 
+					date_added = NOW(), 
+					date_modified = NOW() 
 			";
 		$query = $this->db->query($sql);
 		
 		$image_id = $this->db->getLastId();
 		
-		//add tag
-		if($data['tag_time_id'] != '') {
-			foreach($data['tag_time_id'] as $tag) {
-				$sql = "
-						INSERT INTO " . $this->db->table($this->table_tag) . " 
-						SET 
-							image_id = '" . (int)$this->db->escape($data['image_id']) . "', 
-							tag_id = '" . (int)$this->db->escape($tag['tag_id']) . "'
-					";
-				$query = $this->db->query($sql);
-			}
-		}
+		$sql = "UPDATE " . $this->db->table($this->table) . " 
+			SET 
+				filename = '" . $image_id . $this->db->escape($data['image_type']) . "' 
+			WHERE image_id = '" . (int)$image_id . "'
+		";
+		$query = $this->db->query($sql);
 		
 		$this->cache->delete('image');
 		

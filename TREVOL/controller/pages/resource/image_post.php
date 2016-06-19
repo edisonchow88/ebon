@@ -20,8 +20,37 @@ class ControllerPagesResourceImagePost extends AController {
 		$data = $this->verify();
 		if($data == 'failed' ) { return; }
 		
+		//verify file type
+		$file_type = $_FILES['file']['type'];
+		if($file_type == "image/jpeg") {
+			$image_type = ".jpg";
+		}
+		else if($file_type == "image/png") {
+			$image_type = ".png";
+		}
+		else {
+			$this->session->data['warning'] = "Error: Fail to upload new image due to invalid file type.";
+			return false;
+		}
+		$data['image_type'] = $image_type;
+		
+		//add row to database
 		$image_id = $this->model_resource_image->addImage($data); 
-		$this->session->data['success'] = "Success: New <b>Image #".$image_id."</b> has been added";
+		
+		//name the image
+		$ds = DIRECTORY_SEPARATOR;
+		$upload_directory = DIR_RESOURCE . "image" . $ds . "cropped" . $ds;
+		$upload_file = $upload_directory . $image_id . $image_type;
+		
+		$tmp_name = $_FILES['file']['tmp_name'];
+		$this->session->data['success'] = $tmp_name." yes ".$upload_file;
+		
+		//move the image
+		if (move_uploaded_file($tmp_name, $upload_file)) {
+			$this->session->data['success'] = "Success: New <b>Image #".$image_id."</b> has been added";
+		} else {
+			$this->session->data['warning'] = "Error: Please check the folder permission";
+		}
 	}
 	
 	public function edit() {
@@ -54,7 +83,7 @@ class ControllerPagesResourceImagePost extends AController {
 		}
 		unset($data['action']); //avoid insert non-exist column
 		
-		if($data['tag_time_id'] != '[]') { //avoid add empty row to database
+		if($data['tag_time_id'] != '[]' && isset($data['tag_time_id'])) { //avoid add empty row to database
 			$string = $data['tag_time_id']; 
 			$string = str_replace("[","",$string);
 			$string = str_replace("]","",$string);
@@ -75,7 +104,7 @@ class ControllerPagesResourceImagePost extends AController {
 			$data['tag_time_id'] = $result;
 		}
 		
-		if($data['destination_id'] != '[]') { //avoid add empty row to database
+		if($data['destination_id'] != '[]' && isset($data['destination_id'])) { //avoid add empty row to database
 			$string = $data['destination_id']; 
 			$string = str_replace("[","",$string);
 			$string = str_replace("]","",$string);

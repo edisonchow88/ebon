@@ -66,7 +66,7 @@ class ControllerPagesResourceImageList extends AController {
 		$reference['source'] = $this->model_resource_image_source->getImageSource();
 		
 		//include modal
-		$this->addChild('modal/resource/image_box', 'modal_upload_image', 'modal/resource/image_box.tpl');
+		$this->addChild('modal/resource/upload_image', 'modal_upload_image', 'modal/resource/upload_image.tpl');
 		
 		$this->view->assign('link', $link); 
 		$this->view->assign('result', $result);

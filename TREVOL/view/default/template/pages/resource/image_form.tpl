@@ -1,3 +1,20 @@
+<style>
+	#demo-replace-image-button {
+		position:absolute; 
+		top:0; 
+		left:0; 
+		opacity:0; 
+		width:100%; 
+		height:100%; 
+		background-color:#000;
+		cursor:pointer;
+	}
+	
+	#demo-replace-image-button:hover {
+		opacity:.9;
+	}
+</style>
+
 <!-- START: Alert -->
 <?php include($tpl_common_dir . 'action_confirm.tpl'); ?>
 <!-- END: Alert -->
@@ -15,12 +32,18 @@
         
         	<!-- Demo -->
         	<div style="width:100%; text-align:center;">
-            	<div id="demo" style="background-color:#CCC; width:300px; height:300px; margin:auto;">
+            	<div id="demo" style="background-color:#CCC; width:300px; height:300px; margin:auto; position:relative;">
                     <?php if($form['image'] != '') { echo $form['image'];  } else {?>
                         <div style="border:thin dashed #999; width:100%; height:100%;">
                            <div style="margin-top:120px;">No image</div>
                         </div>
                     <?php } ?>
+                    <div id="demo-replace-image-button">
+                    	<div style="margin:auto; padding-top:100px; text-align:center;" data-toggle="modal" data-target="#modal-replace-image">
+                            <i class="fa fa-upload fa-5x"></i>
+                            <br /><br />Replace Image
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -204,7 +227,7 @@
                         name="size" 
                         value="<?php echo $form['size']; ?>"
                     />
-                    <?php echo $form['size']; ?>
+                    <span id="text-size"><?php echo $form['size']; ?></span>
                 </div>
             </div>
             <div class="form-group">
@@ -219,7 +242,7 @@
                         name="filename" 
                         value="<?php echo $form['filename']; ?>"
                     />
-                    <?php echo $form['filename']; ?>
+                    <span id="text-filename"><?php echo $form['filename']; ?></span>
                 </div>
             </div>
             <div class="form-group">
@@ -264,6 +287,7 @@
 <!-- START: Modal -->
 <?php echo $modal_tag_time; ?>
 <?php echo $modal_image_destination; ?>
+<?php echo $modal_replace_image; ?>
 <script>
 	setTagTime(<?php echo $form['tag_time']; ?>)
 	setImageDestination(<?php echo $form['image_destination']; ?>)

@@ -28,6 +28,9 @@ class ControllerPagesResourceImagePost extends AController {
 		else if($file_type == "image/png") {
 			$image_type = ".png";
 		}
+		else if($file_type == "image/gif") {
+			$image_type = ".gif";
+		}
 		else {
 			$this->session->data['warning'] = "Error: Fail to upload new image due to invalid file type.";
 			return false;

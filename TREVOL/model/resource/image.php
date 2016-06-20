@@ -164,15 +164,22 @@ class ModelResourceImage extends Model{
 	}
 	
 	public function deleteImage($image_id) {
+		//delete image file
+		$image = $this->getImage($image_id);
+		if(unlink($image['path'])) {
+		
+		//delete row from database
 		$sql = "
 				DELETE FROM " . $this->db->table($this->table) . " 
 				WHERE image_id = '" . (int)$image_id . "'
 			";
 		$query = $this->db->query($sql);
 		
+		//delete cache
 		$this->cache->delete('image');
 		
 		return true;
+		}
 	}
 	
 	//destination

@@ -71,6 +71,7 @@
             <h4 class="modal-title text-center">Upload Image</h4>
             </div>
             <div class="modal-body">
+            	<div id="form-upload-image-warning"></div>
             	<div style="width:100%; text-align:center;">
                     <form id="form-upload-image" method="post" enctype="multipart/form-data">
                     	<div id="demo">
@@ -118,6 +119,12 @@
                                     id="input-file" 
                                     name="file"
                                 >
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="col-xs-12 text-center">
+                                <span id="text-filename"></span>
                             </div>
                         </div>
                         
@@ -258,11 +265,24 @@
 		xmlhttp.onreadystatechange = function() {
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 				var json = JSON.parse(xmlhttp.responseText);
-				document.getElementById('input-size').value = json.size;
-				document.getElementById('input-file').files = document.getElementById('input-temp-file').files;
-				document.getElementById('text-size').innerHTML = formatBytes(json.size,0);
-				document.getElementById('form-add-image').style.display = 'block';
-				document.getElementById('modal-upload-image-footer').style.display = 'block';
+				document.getElementById('form-upload-image-warning').innerHTML = "";
+				if(json.warning.length > 0) {
+					var content;
+					content = "<div class='alert alert-danger'>Error:<br/><ul>";
+					for(i=0;i<json.warning.length;i++) {
+						content += "<li>"+json.warning[i]+"</li>";
+					}
+					content += "</ul></div>";
+					document.getElementById('form-upload-image-warning').innerHTML = content;
+				}
+				else {
+					document.getElementById('input-size').value = json.size;
+					document.getElementById('input-file').files = document.getElementById('input-temp-file').files;
+					document.getElementById('text-size').innerHTML = formatBytes(json.size,0);
+					document.getElementById('text-filename').innerHTML = json.name;
+					document.getElementById('form-add-image').style.display = 'block';
+					document.getElementById('modal-upload-image-footer').style.display = 'block';
+				}
 			} else {
 				document.getElementById('modal-body').innerHTML = json.alert;
 			}

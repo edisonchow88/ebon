@@ -39,6 +39,8 @@ class ControllerModalTravelAddTransport extends AController {
 		$modal_input[$i]['name'] = 'icon';
 		$modal_input[$i]['type'] = 'text';
 		$modal_input[$i]['required'] = true;
+		$modal_input[$i]['help'] = 'fa-awesome';
+		$modal_input[$i]['link'] = 'http://fontawesome.io/icons/';
 		//END: input
 		
 		$modal_ajax['travel/ajax_transport'] = $this->html->getSecureURL('travel/ajax_transport');

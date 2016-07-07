@@ -8,6 +8,7 @@
             </div>
         <div class="modal-body">
         	<div id="modal-form-edit-transport-alert"></div>
+            <div id="modal-form-edit-transport-demo" class="text-center"></div>
             <form id="modal-form-edit-transport">
                 <input 
                     type="hidden" 
@@ -52,6 +53,14 @@
                                 echo 'value="'.$i['value'].'" ';
                                 echo 'placeholder="'.$i['placeholder'].'" ';
                                 echo '/>';
+                                if(isset($i['help'])) {
+                                    echo '<span class="input-group-btn">';
+                                    echo '<a class="btn btn-default" target="_blank" href="'.$i['link'].'" data-toggle="tooltip" data-replacement="top" title="'.$i['help'].'">';
+                                    echo '<i class="fa fa-fw fa-question-circle">';
+                                    echo '</i>';
+                                    echo '</a>';
+                                    echo '</span>';
+                                }
                                 echo '<span id="modal-form-edit-transport-text-'.$i['id'].'">';
                                 if($i['type'] == 'hidden') {
                                     echo $i['text'];
@@ -145,6 +154,7 @@
 						}
 					}
 				?>
+				updateEditTransportDemo();
 			} else {
 				<!-- if connection failed -->
 				document.getElementById('modal-form-edit-transport-alert').innerHTML = json.alert;
@@ -153,4 +163,15 @@
 		xmlhttp.open("POST", query, true);
 		xmlhttp.send(form_data);
 	}
+	
+	function updateEditTransportDemo() {
+		var icon = document.getElementById('modal-form-edit-transport-input-icon').value;
+		var name = document.getElementById('modal-form-edit-transport-input-name').value;
+		document.getElementById('modal-form-edit-transport-demo').innerHTML = "<i class='fa fa-fw fa-5x "+icon+"'></i>";
+		document.getElementById('modal-form-edit-transport-demo').innerHTML += "<br/><span style='text-transform:capitalize;'>"+name+"</span>";
+	}
+	
+	$("#modal-form-edit-transport").change(function(e) {
+		updateEditTransportDemo();
+	});
 </script>

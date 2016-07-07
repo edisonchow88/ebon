@@ -46,6 +46,10 @@
 		rowCount: -1,
 		columnSelection: false,
 		formatters: {
+			"icon": function(column, row)
+			{
+				return "<i class='fa fa-fw " + row.icon + "' data-toggle='tooltip' title='" + row.icon + "'></i>";
+			},
 			"commands": function(column, row)
 			{
 				return "<button type=\"button\" class=\"btn btn-default command-edit\" data-toggle=\"modal\" data-target=\"#modal-edit-transport\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-pencil\"></span></button> " + 
@@ -56,6 +60,7 @@
 	}).on("loaded.rs.jquery.bootgrid", function()
 	{
 		/* Executes after data is loaded and rendered */
+		$('[data-toggle="tooltip"]').tooltip();
 		grid.find(".command-edit").on("click", function(e)
 		{
 			document.getElementById("modal-form-get-transport-input-transport-id").value = $(this).data("row-id");

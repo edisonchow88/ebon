@@ -10,14 +10,6 @@ class ControllerModalTravelEditTransport extends AController {
         $this->extensions->hk_InitData($this,__FUNCTION__);
 		
 		//START: input [ORDER IS IMPORTANT]
-		$i = 'id';
-		$modal_input[$i]['label'] = 'Id';
-		$modal_input[$i]['id'] = 'transport-id';
-		$modal_input[$i]['name'] = 'transport_id';
-		$modal_input[$i]['type'] = 'hidden';
-		$modal_input[$i]['required'] = false;
-		$modal_input[$i]['json'] = 'transport_id';
-		
 		$i = 'section_description';
 		$modal_input[$i]['section'] = 'Description';
 		
@@ -46,6 +38,16 @@ class ControllerModalTravelEditTransport extends AController {
 		$modal_input[$i]['name'] = 'icon';
 		$modal_input[$i]['type'] = 'text';
 		$modal_input[$i]['required'] = true;
+		$modal_input[$i]['help'] = 'fa-awesome';
+		$modal_input[$i]['link'] = 'http://fontawesome.io/icons/';
+		
+		$i = 'id';
+		$modal_input[$i]['label'] = 'Id';
+		$modal_input[$i]['id'] = 'transport-id';
+		$modal_input[$i]['name'] = 'transport_id';
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['json'] = 'transport_id';
 		//END: input
 		
 		$modal_ajax['travel/ajax_transport'] = $this->html->getSecureURL('travel/ajax_transport');

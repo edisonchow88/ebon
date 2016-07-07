@@ -8,6 +8,7 @@
             </div>
         <div class="modal-body">
         	<div id="modal-form-add-transport-alert"></div>
+            <div id="modal-form-add-transport-demo" class="text-center"></div>
             <form id="modal-form-add-transport">
                 <input 
                     type="hidden" 
@@ -52,6 +53,14 @@
                                 echo 'value="'.$i['value'].'" ';
                                 echo 'placeholder="'.$i['placeholder'].'" ';
                                 echo '/>';
+                                if(isset($i['help'])) {
+                                    echo '<span class="input-group-btn">';
+                                    echo '<a class="btn btn-default" target="_blank" href="'.$i['link'].'" data-toggle="tooltip" data-replacement="top" title="'.$i['help'].'">';
+                                    echo '<i class="fa fa-fw fa-question-circle">';
+                                    echo '</i>';
+                                    echo '</a>';
+                                    echo '</span>';
+                                }
                                 echo '<span id="modal-form-add-transport-text-'.$i['id'].'">';
                                 if($i['type'] == 'hidden') {
                                     echo $i['text'];
@@ -110,4 +119,11 @@
 		xmlhttp.open("POST", query, true);
 		xmlhttp.send(form_data);
 	}
+	
+	$("#modal-form-add-transport").change(function(e) {
+		var icon = document.getElementById('modal-form-add-transport-input-icon').value;
+		var name = document.getElementById('modal-form-add-transport-input-name').value;
+		document.getElementById('modal-form-add-transport-demo').innerHTML = "<i class='fa fa-fw fa-5x "+icon+"'></i>";
+		document.getElementById('modal-form-add-transport-demo').innerHTML += "<br/><span style='text-transform:capitalize;'>"+name+"</span>";
+	});
 </script>

@@ -55,7 +55,9 @@ class ModelTravelTrip extends Model{
 				$output[$result['trip_id']] = $result;
 				$output[$result['trip_id']]['name'] = ucwords($result['name']);
 				$output[$result['trip_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
-				$output[$result['trip_id']]['user'] = $this->model_user_user->getUser($result['user_id']); //IMPORTANT: need to call model at controller in order to work
+				$output[$result['trip_id']]['user'] = $this->model_user_user->getUser($result['user_id']); //IMPORTANT: need to call model at controller
+				$output[$result['trip_id']]['status'] = $this->model_travel_status->getStatus($result['status_id']); //IMPORTANT: need to call model at controller
+				$output[$result['trip_id']]['transport'] = $this->model_travel_transport->getTransport($result['transport_id']); //IMPORTANT: need to call model at controller
 			}
 		}
 		else {
@@ -63,7 +65,9 @@ class ModelTravelTrip extends Model{
 			$output = $query->row;
 			$output['name'] = ucwords($result['name']);
 			$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
-			$output['user'] = $this->model_user_user->getUser($result['user_id']); //IMPORTANT: need to call model at controller in order to work
+			$output['user'] = $this->model_user_user->getUser($result['user_id']); //IMPORTANT: need to call model at controller
+			$output['status'] = $this->model_travel_status->getStatus($result['status_id']); //IMPORTANT: need to call model at controller
+			$output['transport'] = $this->model_travel_transport->getTransport($result['transport_id']); //IMPORTANT: need to call model at controller
 		}
 		
 		return $output;

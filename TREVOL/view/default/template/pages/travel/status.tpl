@@ -49,7 +49,7 @@
 		formatters: {
 			"color": function(column, row)
 			{
-				return "<i class='fa fa-fw fa-circle' style='color:" + row.color + ";' data-toggle='tooltip' title='" + row.color + "'></i>";
+				return "<i class='fa fa-fw fa-circle' style='color:" + row.color + ";' data-toggle='tooltip' data-placement='right' title='" + row.color + "'></i>";
 			},
 			"icon": function(column, row)
 			{

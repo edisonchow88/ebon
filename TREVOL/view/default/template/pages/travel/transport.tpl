@@ -48,7 +48,7 @@
 		formatters: {
 			"icon": function(column, row)
 			{
-				return "<i class='fa fa-fw " + row.icon + "' data-toggle='tooltip' title='" + row.icon + "'></i>";
+				return "<i class='fa fa-fw " + row.icon + "' data-toggle='tooltip' data-placement='right' title='" + row.icon + "'></i>";
 			},
 			"commands": function(column, row)
 			{

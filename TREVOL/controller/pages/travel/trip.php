@@ -22,6 +22,8 @@ class ControllerPagesTravelTrip extends AController {
 		}
 		
 		$this->loadModel('travel/trip');
+		$this->loadModel('travel/status');
+		$this->loadModel('travel/transport');
 		$this->loadModel('user/user'); //IMPORTANT: ModelTravelTrip unable to load other, hence need to load this model at controller
 		
 		$data = $this->model_travel_trip->getTrip();
@@ -31,11 +33,11 @@ class ControllerPagesTravelTrip extends AController {
 			
 			//following sequence is important
 			$result[$trip_id]['trip_id'] = $row['trip_id'];
-			$result[$trip_id]['user_id'] = $row['user']['username'];
-			$result[$trip_id]['status_id'] = $row['status_id'];
+			$result[$trip_id]['status'] = json_encode($row['status']);
 			$result[$trip_id]['name'] = $row['name'];
 			$result[$trip_id]['description'] = $row['description'];
-			$result[$trip_id]['transport_id'] = $row['transport_id'];
+			$result[$trip_id]['transport'] = json_encode($row['transport']);
+			$result[$trip_id]['user_id'] = $row['user']['username'];
 			$result[$trip_id]['travel_date'] = $row['travel_date'];
 			$result[$trip_id]['date_added'] = $row['date_added'];
 			$result[$trip_id]['date_modified'] = $row['date_modified'];

@@ -14,11 +14,11 @@
             <thead>
                 <tr>
                     <th data-column-id="id" data-type="numeric">ID</th>
-                    <th data-column-id="user" data-formatter="user">Admin</th>
                     <th data-column-id="status" data-formatter="status">Status</th>
                     <th data-column-id="name" data-formatter="name">Name</th>
                     <th data-column-id="description" data-formatter="description">Description</th>
                     <th data-column-id="transport" data-formatter="transport">Transport</th>
+                    <th data-column-id="user" data-formatter="user">Admin</th>
                     <th data-column-id="travel_date" data-formatter="travel_date" data-order="desc">Travel Date</th>
                     <th data-column-id="date_added" data-formatter="date_added" data-visible="false">Date Added</th>
                     <th data-column-id="date_modified" data-formatter="date_modified" data-visible="false">Date Modified</th>
@@ -52,6 +52,20 @@
 		rowCount: -1,
 		columnSelection: false,
 		formatters: {
+			"description": function(column, row)
+			{
+				return "<i class='fa fa-fw fa-ellipsis-h' data-toggle='tooltip' data-placement='right' title='" + row.description + "'></i>";
+			},
+			"status": function(column, row)
+			{
+				var status = JSON.parse(row.status);
+				return "<i class='fa fa-fw fa-circle' style='color:" + status.color + ";' data-toggle='tooltip' data-placement='right' title='" + status.name + "'></i>";
+			},
+			"transport": function(column, row)
+			{
+				var transport = JSON.parse(row.transport);
+				return "<i class='fa fa-fw " + transport.icon + "' data-toggle='tooltip' data-placement='right' title='" + transport.name + "'></i>";
+			},
 			"commands": function(column, row)
 			{
 				return "<button type=\"button\" class=\"btn btn-default command-edit\" data-toggle=\"modal\" data-target=\"#modal-edit-trip\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-pencil\"></span></button> " + 
@@ -62,6 +76,7 @@
 	}).on("loaded.rs.jquery.bootgrid", function()
 	{
 		/* Executes after data is loaded and rendered */
+		$('[data-toggle="tooltip"]').tooltip();
 		grid.find(".command-edit").on("click", function(e)
 		{
 			document.getElementById("modal-form-get-trip-input-trip-id").value = $(this).data("row-id");

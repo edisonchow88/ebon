@@ -8,6 +8,7 @@
             </div>
         <div class="modal-body">
         	<div id="modal-form-add-trip-alert"></div>
+            <div id="modal-form-add-trip-demo" class="text-center"></div>
             <form id="modal-form-add-trip">
                 <input 
                     type="hidden" 
@@ -32,7 +33,7 @@
                             }
                             echo '</div>';
                             echo '<div class="input-group col-sm-8 col-xs-12">';
-                              if($i['type'] == 'textarea') {
+                            if($i['type'] == 'textarea') {
                             	echo '<textarea ';
                                 echo 'class="form-control" ';
                                 echo 'rows="5" ';
@@ -42,6 +43,21 @@
                                 echo '>';
                                 echo $i['value'];
                                 echo '</textarea>';
+                            }
+                            else if($i['type'] == 'select') {
+                            	echo '<select ';
+                                echo 'class="form-control" ';
+                                echo 'id="modal-form-edit-trip-input-'.$i['id'].'" ';
+                                echo 'name="'.$i['name'].'" ';
+                                echo '>';
+                                foreach($i['option'] as $o) {
+                                	echo '<option ';
+                                    echo 'value="'.$o[$i['name']].'"';
+                                    echo '>';
+                                    echo $o['name'];
+                                    echo '</option>';
+                                }
+                                echo '</select>';
                             }
                             else {
                                 echo '<input ';
@@ -110,4 +126,9 @@
 		xmlhttp.open("POST", query, true);
 		xmlhttp.send(form_data);
 	}
+	
+	$("#modal-form-add-trip").change(function(e) {
+		var name = document.getElementById('modal-form-add-trip-input-name').value;
+		document.getElementById('modal-form-add-trip-demo').innerHTML = "<span style='text-transform:capitalize;'>"+name+"</span>";
+	});
 </script>

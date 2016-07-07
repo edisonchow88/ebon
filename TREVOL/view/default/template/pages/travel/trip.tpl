@@ -54,7 +54,9 @@
 		formatters: {
 			"description": function(column, row)
 			{
-				return "<i class='fa fa-fw fa-ellipsis-h' data-toggle='tooltip' data-placement='right' title='" + row.description + "'></i>";
+				if(row.description != '') {
+					return "<i class='fa fa-fw fa-ellipsis-h' data-toggle='tooltip' data-placement='right' title='" + row.description + "'></i>";
+				}
 			},
 			"status": function(column, row)
 			{

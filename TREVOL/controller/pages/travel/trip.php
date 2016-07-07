@@ -37,7 +37,7 @@ class ControllerPagesTravelTrip extends AController {
 			$result[$trip_id]['name'] = $row['name'];
 			$result[$trip_id]['description'] = $row['description'];
 			$result[$trip_id]['transport'] = json_encode($row['transport']);
-			$result[$trip_id]['user_id'] = $row['user']['username'];
+			$result[$trip_id]['user'] = $row['user']['username'];
 			$result[$trip_id]['travel_date'] = $row['travel_date'];
 			$result[$trip_id]['date_added'] = $row['date_added'];
 			$result[$trip_id]['date_modified'] = $row['date_modified'];

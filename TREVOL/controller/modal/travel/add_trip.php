@@ -53,7 +53,8 @@ class ControllerModalTravelAddTrip extends AController {
 		$modal_input[$i]['label'] = 'Status';
 		$modal_input[$i]['id'] = 'status-id';
 		$modal_input[$i]['name'] = 'status_id';
-		$modal_input[$i]['type'] = 'text';
+		$modal_input[$i]['type'] = 'select';
+		$modal_input[$i]['option'] = $this->model_travel_status->getStatus();
 		$modal_input[$i]['required'] = false;
 		$modal_input[$i]['value'] = 1;
 		
@@ -61,7 +62,8 @@ class ControllerModalTravelAddTrip extends AController {
 		$modal_input[$i]['label'] = 'Transport';
 		$modal_input[$i]['id'] = 'transport-id';
 		$modal_input[$i]['name'] = 'transport_id';
-		$modal_input[$i]['type'] = 'text';
+		$modal_input[$i]['type'] = 'select';
+		$modal_input[$i]['option'] = $this->model_travel_transport->getTransport();
 		$modal_input[$i]['required'] = false;
 		$modal_input[$i]['value'] = 1;
 		

@@ -10,14 +10,6 @@ class ControllerModalTravelEditTrip extends AController {
         $this->extensions->hk_InitData($this,__FUNCTION__);
 		
 		//START: input [ORDER IS IMPORTANT]
-		$i = 'id';
-		$modal_input[$i]['label'] = 'Id';
-		$modal_input[$i]['id'] = 'trip-id';
-		$modal_input[$i]['name'] = 'trip_id';
-		$modal_input[$i]['type'] = 'hidden';
-		$modal_input[$i]['required'] = false;
-		$modal_input[$i]['json'] = 'trip_id';
-		
 		$i = 'section_description';
 		$modal_input[$i]['section'] = 'Description';
 		
@@ -59,14 +51,16 @@ class ControllerModalTravelEditTrip extends AController {
 		$modal_input[$i]['label'] = 'Status';
 		$modal_input[$i]['id'] = 'status-id';
 		$modal_input[$i]['name'] = 'status_id';
-		$modal_input[$i]['type'] = 'text';
+		$modal_input[$i]['type'] = 'select';
+		$modal_input[$i]['option'] = $this->model_travel_status->getStatus();
 		$modal_input[$i]['required'] = false;
 		
 		$i = 'transport';
 		$modal_input[$i]['label'] = 'Transport';
 		$modal_input[$i]['id'] = 'transport-id';
 		$modal_input[$i]['name'] = 'transport_id';
-		$modal_input[$i]['type'] = 'text';
+		$modal_input[$i]['type'] = 'select';
+		$modal_input[$i]['option'] = $this->model_travel_transport->getTransport();
 		$modal_input[$i]['required'] = false;
 		
 		$i = 'travel_date';
@@ -91,6 +85,14 @@ class ControllerModalTravelEditTrip extends AController {
 		$modal_input[$i]['type'] = 'hidden';
 		$modal_input[$i]['required'] = false;
 		$modal_input[$i]['json'] = 'date_modified';
+		
+		$i = 'id';
+		$modal_input[$i]['label'] = 'Id';
+		$modal_input[$i]['id'] = 'trip-id';
+		$modal_input[$i]['name'] = 'trip_id';
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['json'] = 'trip_id';
 		//END: input
 		
 		$modal_ajax['travel/ajax_trip'] = $this->html->getSecureURL('travel/ajax_trip');

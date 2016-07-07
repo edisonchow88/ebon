@@ -8,6 +8,7 @@
             </div>
         <div class="modal-body">
         	<div id="modal-form-edit-trip-alert"></div>
+            <div id="modal-form-edit-trip-demo" class="text-center"></div>
             <form id="modal-form-edit-trip">
                 <input 
                     type="hidden" 
@@ -43,6 +44,21 @@
                                 echo $i['value'];
                                 echo '</textarea>';
                             }
+                            else if($i['type'] == 'select') {
+                            	echo '<select ';
+                                echo 'class="form-control" ';
+                                echo 'id="modal-form-edit-trip-input-'.$i['id'].'" ';
+                                echo 'name="'.$i['name'].'" ';
+                                echo '>';
+                                foreach($i['option'] as $o) {
+                                	echo '<option ';
+                                    echo 'value="'.$o[$i['name']].'"';
+                                    echo '>';
+                                    echo $o['name'];
+                                    echo '</option>';
+                                }
+                                echo '</select>';
+                            }
                             else {
                                 echo '<input ';
                                 echo 'type="'.$i['type'].'" ';
@@ -52,6 +68,14 @@
                                 echo 'value="'.$i['value'].'" ';
                                 echo 'placeholder="'.$i['placeholder'].'" ';
                                 echo '/>';
+                                if(isset($i['help'])) {
+                                    echo '<span class="input-group-btn">';
+                                    echo '<a class="btn btn-default" target="_blank" href="'.$i['link'].'" data-toggle="tooltip" data-replacement="top" title="'.$i['help'].'">';
+                                    echo '<i class="fa fa-fw fa-question-circle">';
+                                    echo '</i>';
+                                    echo '</a>';
+                                    echo '</span>';
+                                }
                                 echo '<span id="modal-form-edit-trip-text-'.$i['id'].'">';
                                 if($i['type'] == 'hidden') {
                                     echo $i['text'];
@@ -145,6 +169,7 @@
 						}
 					}
 				?>
+				updateEditTripDemo();
 			} else {
 				<!-- if connection failed -->
 				document.getElementById('modal-form-edit-trip-alert').innerHTML = json.alert;
@@ -153,4 +178,13 @@
 		xmlhttp.open("POST", query, true);
 		xmlhttp.send(form_data);
 	}
+	
+	function updateEditTripDemo() {
+		var name = document.getElementById('modal-form-edit-trip-input-name').value;
+		document.getElementById('modal-form-edit-trip-demo').innerHTML = "<span style='text-transform:capitalize;'>"+name+"</span>";
+	}
+	
+	$("#modal-form-edit-trip").change(function(e) {
+		updateEditTripDemo();
+	});
 </script>

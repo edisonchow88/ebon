@@ -16,7 +16,8 @@
                     <th data-column-id="id" data-type="numeric">Id</th>
                     <th data-column-id="color" data-formatter="color">Color</th>
                     <th data-column-id="name" data-formatter="name">Name</th>
-                    <th data-column-id="sort_order" data-formatter="sort_order" data-order="asc">Sort</th>
+                    <th data-column-id="sort_order" data-formatter="sort_order">Sort</th>
+                    <th data-column-id="priority" data-formatter="priority" data-order="asc">Priority</th>
                     <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
                 </tr>
             </thead>

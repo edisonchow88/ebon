@@ -45,6 +45,12 @@ class ControllerModalTravelAddStatus extends AController {
 		$modal_input[$i]['id'] = 'sort-order';
 		$modal_input[$i]['name'] = 'sort_order';
 		$modal_input[$i]['type'] = 'text';
+		
+		$i = 'priority';
+		$modal_input[$i]['label'] = 'Priority';
+		$modal_input[$i]['id'] = 'priority';
+		$modal_input[$i]['name'] = 'priority';
+		$modal_input[$i]['type'] = 'text';
 		//END: input
 		
 		$modal_ajax['travel/ajax_status'] = $this->html->getSecureURL('travel/ajax_status');

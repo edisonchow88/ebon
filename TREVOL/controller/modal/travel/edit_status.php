@@ -45,6 +45,12 @@ class ControllerModalTravelEditStatus extends AController {
 		$modal_input[$i]['name'] = 'sort_order';
 		$modal_input[$i]['type'] = 'text';
 		
+		$i = 'priority';
+		$modal_input[$i]['label'] = 'Priority';
+		$modal_input[$i]['id'] = 'priority';
+		$modal_input[$i]['name'] = 'priority';
+		$modal_input[$i]['type'] = 'text';
+		
 		$i = 'id';
 		$modal_input[$i]['label'] = 'Id';
 		$modal_input[$i]['id'] = 'status_id';

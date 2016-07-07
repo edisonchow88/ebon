@@ -35,7 +35,7 @@ class ModelTravelStatus extends Model{
 				FROM " . $this->db->table($this->table) . " t1 
 				LEFT JOIN ".$this->db->table($this->table_description)." t2 
 				ON t1.status_id = t2.status_id 
-				ORDER BY t2.name ASC 
+				ORDER BY t1.sort_order ASC 
 			";
 		}
 		else {

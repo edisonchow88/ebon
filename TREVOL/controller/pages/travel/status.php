@@ -33,6 +33,7 @@ class ControllerPagesTravelStatus extends AController {
 			$result[$status_id]['color'] = $row['color'];
 			$result[$status_id]['name'] = $row['name'];
 			$result[$status_id]['sort_order'] = $row['sort_order'];
+			$result[$status_id]['priority'] = $row['priority'];
 		}
 		
 		//include modal

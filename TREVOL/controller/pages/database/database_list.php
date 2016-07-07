@@ -30,7 +30,10 @@ class ControllerPagesDatabaseDatabaseList extends AController {
 			//following sequence is important
 			$result[$database_id]['database_id'] = $row['database_id'];
 			$result[$database_id]['name'] = $row['name'];
+			$result[$database_id]['folder'] = $row['folder'];
+			$result[$database_id]['filename'] = $row['filename'];
 			$result[$database_id]['sort_order'] = $row['sort_order'];
+			$result[$database_id]['link'] = $this->html->getSecureURL(strtolower($row['folder'].'/'.$row['filename']));
 		}
 		
 		$link['database/database_list'] = $this->html->getSecureURL('database/database_list');

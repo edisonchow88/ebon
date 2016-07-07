@@ -32,7 +32,7 @@ class ModelDatabaseDatabase extends Model{
 			$sql = "
 				SELECT * 
 				FROM " . $this->db->table($this->table) . "
-				ORDER BY sort_order ASC, database_id ASC 
+				ORDER BY sort_order ASC, name ASC 
 			";
 		}
 		else {
@@ -48,12 +48,14 @@ class ModelDatabaseDatabase extends Model{
 		if($database_id == '') {
 			foreach($query->rows as $result){
 				$output[$result['database_id']] = $result;
-				$output[$result['database_id']]['name'] = ucwords($result['name']);
+				$output[$result['database_id']]['folder'] = ucwords($result['folder']);
+				$output[$result['database_id']]['filename'] = ucwords($result['filename']);
 			}
 		}
 		else {
 			$output = $query->row;
-			$output['name'] = ucwords($output['name']);
+			$output['folder'] = ucwords($output['folder']);
+			$output['filename'] = ucwords($output['filename']);
 		}
 		
 		return $output;
@@ -64,7 +66,7 @@ class ModelDatabaseDatabase extends Model{
 		$values = array();
 		foreach($data as $key => $value) {
 			$keys[] = $key;
-			$values[] = "'".$value."'";
+			$values[] = "'".$this->db->escape(strtolower($value))."'";
 		}
 		$field_keys = implode(", ", $keys);
 		$field_values = implode(", ", $values);
@@ -89,7 +91,7 @@ class ModelDatabaseDatabase extends Model{
 		$update = array();
 		foreach($fields as $f){
 			if(isset($data[$f]))
-				$update[] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+				$update[] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 		}
 		
 		if(!empty($update)){

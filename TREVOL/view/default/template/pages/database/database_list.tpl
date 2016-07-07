@@ -14,8 +14,11 @@
             <thead>
                 <tr>
                     <th data-column-id="id" data-type="numeric">ID</th>
-                    <th data-column-id="name" data-formatter="name">Name</th>
+                    <th data-column-id="name" data-formatter="name" data-width="300px">Name</th>
+                    <th data-column-id="folder" data-formatter="folder">Folder</th>
+                    <th data-column-id="filename" data-formatter="filename">Filename</th>
                     <th data-column-id="sort_order" data-formatter="sort_order" data-order="asc">Sort</th>
+                    <th data-column-id="link" data-formatter="link" data-visible="false">Link</th>
                     <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
                 </tr>
             </thead>
@@ -52,9 +55,16 @@
 			},
 			"commands": function(column, row)
 			{
-				return "<button type=\"button\" class=\"btn btn-danger command-view\" data-row-name=\"" + row.name + "\"><span class=\"fa fa-eye\"></span></button> " + 
-				"<button type=\"button\" class=\"btn btn-default command-edit\" data-toggle=\"modal\" data-target=\"#modal-edit-database\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-pencil\"></span></button> " + 
-					"<button type=\"button\" class=\"btn btn-default command-delete\" data-toggle=\"modal\" data-target=\"#modal-delete-database\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-trash-o\"></span></button>";
+				if(row.folder != '' || row.filename != '') {
+					return "<button type=\"button\" class=\"btn btn-danger command-view\" data-row-link=\"" + row.link + "\"><span class=\"fa fa-fw fa-eye\"></span></button> " + 
+					"<button type=\"button\" class=\"btn btn-default command-edit\" data-toggle=\"modal\" data-target=\"#modal-edit-database\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-pencil\"></span></button> " + 
+						"<button type=\"button\" class=\"btn btn-default command-delete\" data-toggle=\"modal\" data-target=\"#modal-delete-database\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-trash-o\"></span></button>";
+				}
+				else {
+					return "<button type=\"button\" class=\"btn btn-default command-view disabled\"><span class=\"fa fa-fw fa-ban\"></span></button> " + 
+				"<button type=\"button\" class=\"btn btn-default command-edit\" data-toggle=\"modal\" data-target=\"#modal-edit-database\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-pencil\"></span></button> " + 
+					"<button type=\"button\" class=\"btn btn-default command-delete\" data-toggle=\"modal\" data-target=\"#modal-delete-database\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-trash-o\"></span></button>";
+				}
 			}
 		}
 	}).on("loaded.rs.jquery.bootgrid", function()
@@ -74,7 +84,7 @@
 		})
 		.end().find(".command-view").on("click", function(e)
 		{
-			window.location.href = "<?php echo $link['database/" + $(this).data("row-name") + "_form']; ?>";
+			window.location.href = $(this).data("row-link");
 		});
 	});
 	

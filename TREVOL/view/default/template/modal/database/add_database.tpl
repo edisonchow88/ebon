@@ -25,8 +25,38 @@
                         <input
                             type="text"
                             class="form-control"
-                            id="modal-form-add-database-name" 
+                            id="modal-form-add-database-input-name" 
                             name="name" 
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3 col-xs-12">
+                        Folder
+                    </label>
+                    <div class="control-label col-sm-1 col-xs-2">
+                    </div>
+                    <div class="input-group col-sm-8 col-xs-10">
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="modal-form-add-database-input-folder" 
+                            name="folder"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3 col-xs-12">
+                        Filename
+                    </label>
+                    <div class="control-label col-sm-1 col-xs-2">
+                    </div>
+                    <div class="input-group col-sm-8 col-xs-10">
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="modal-form-add-database-input-filename" 
+                            name="filename"
                         />
                     </div>
                 </div>
@@ -40,7 +70,7 @@
                         <input
                             type="text"
                             class="form-control"
-                            id="modal-form-add-database-sort-order" 
+                            id="modal-form-add-database-input-sort-order" 
                             name="sort_order" 
                             value="0" 
                         />

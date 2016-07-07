@@ -48,6 +48,36 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label col-sm-3 col-xs-12">
+                        Folder
+                    </label>
+                    <div class="control-label col-sm-1 col-xs-2">
+                    </div>
+                    <div class="input-group col-sm-8 col-xs-10">
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="modal-form-edit-database-input-folder" 
+                            name="folder" 
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3 col-xs-12">
+                        Filename
+                    </label>
+                    <div class="control-label col-sm-1 col-xs-2">
+                    </div>
+                    <div class="input-group col-sm-8 col-xs-10">
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="modal-form-edit-database-input-filename" 
+                            name="filename" 
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3 col-xs-12">
                         Sort
                     </label>
                     <div class="control-label col-sm-1 col-xs-2">
@@ -137,6 +167,8 @@
 				document.getElementById("modal-form-edit-database-text-database-id").innerHTML = json.database_id;
 				document.getElementById("modal-form-edit-database-input-database-id").value = json.database_id;
 				document.getElementById("modal-form-edit-database-input-name").value = json.name;
+				document.getElementById("modal-form-edit-database-input-folder").value = json.folder;
+				document.getElementById("modal-form-edit-database-input-filename").value = json.filename;
 				document.getElementById("modal-form-edit-database-input-sort-order").value = json.sort_order;
 			} else {
 				<!-- if connection failed -->

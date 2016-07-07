@@ -33,7 +33,7 @@
                             }
                             echo '</div>';
                             echo '<div class="input-group col-sm-8 col-xs-12">';
-                              if($i['type'] == 'textarea') {
+                            if($i['type'] == 'textarea') {
                             	echo '<textarea ';
                                 echo 'class="form-control" ';
                                 echo 'rows="5" ';
@@ -43,6 +43,21 @@
                                 echo '>';
                                 echo $i['value'];
                                 echo '</textarea>';
+                            }
+                            else if($i['type'] == 'select') {
+                            	echo '<select ';
+                                echo 'class="form-control" ';
+                                echo 'id="modal-form-edit-trip-input-'.$i['id'].'" ';
+                                echo 'name="'.$i['name'].'" ';
+                                echo '>';
+                                foreach($i['option'] as $o) {
+                                	echo '<option ';
+                                    echo 'value="'.$o[$i['name']].'"';
+                                    echo '>';
+                                    echo $o['name'];
+                                    echo '</option>';
+                                }
+                                echo '</select>';
                             }
                             else {
                                 echo '<input ';

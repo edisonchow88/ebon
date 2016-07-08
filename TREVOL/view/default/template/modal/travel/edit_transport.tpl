@@ -47,7 +47,7 @@
                             else if($i['type'] == 'select') {
                             	echo '<select ';
                                 echo 'class="form-control" ';
-                                echo 'id="modal-form-edit-trip-input-'.$i['id'].'" ';
+                                echo 'id="modal-form-edit-transport-input-'.$i['id'].'" ';
                                 echo 'name="'.$i['name'].'" ';
                                 echo '>';
                                 foreach($i['option'] as $o) {

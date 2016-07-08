@@ -14,7 +14,7 @@
             <thead>
                 <tr>
                     <th data-column-id="id" data-type="numeric">ID</th>
-                    <th data-column-id="name" data-formatter="name" data-width="300px">Name</th>
+                    <th data-column-id="name" data-formatter="name" data-width="300px" data-order="asc">Name</th>
                     <th data-column-id="folder" data-formatter="folder">Folder</th>
                     <th data-column-id="filename" data-formatter="filename">Filename</th>
                     <th data-column-id="sort_order" data-formatter="sort_order" data-order="asc">Sort</th>
@@ -48,6 +48,7 @@
 		caseSensitive: false,
 		rowCount: -1,
 		columnSelection: false,
+		multiSort: true,
 		formatters: {
 			"name": function(column, row)
 			{

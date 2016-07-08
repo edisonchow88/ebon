@@ -36,9 +36,8 @@ class ControllerPagesTravelPlan extends AController {
 			$result[$plan_id]['plan_id'] = $row['plan_id'];
 			$result[$plan_id]['trip_id'] = $row['trip_id'];
 			$result[$plan_id]['trip'] = $row['trip']['name'];
-			$result[$plan_id]['code'] = $row['code'];
 			$result[$plan_id]['name'] = $row['name'];
-			$result[$plan_id]['transport_id'] = $row['transport_id'];
+			$result[$plan_id]['transport'] = json_encode($row['transport']);
 			$result[$plan_id]['sort_order'] = $row['sort_order'];
 			$result[$plan_id]['travel_date'] = $row['travel_date'];
 			$result[$plan_id]['date_added'] = $row['date_added'];

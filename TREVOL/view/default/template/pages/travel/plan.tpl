@@ -16,7 +16,6 @@
                     <th data-column-id="id" data-type="numeric">Id</th>
                     <th data-column-id="trip_id" data-formatter="trip_id" data-order="desc">Trip Id</th>
                     <th data-column-id="trip" data-formatter="trip">Trip</th>
-                    <th data-column-id="code" data-formatter="code">Code</th>
                     <th data-column-id="name" data-formatter="name">Name</th>
                     <th data-column-id="transport" data-formatter="transport">Transport</th>
                     <th data-column-id="sort_order" data-formatter="sort_order">Sort</th>
@@ -60,6 +59,11 @@
 			"icon": function(column, row)
 			{
 				return "<i class='fa fa-fw " + row.icon + "' data-toggle='tooltip' title='" + row.icon + "'></i>";
+			},
+			"transport": function(column, row)
+			{
+				var transport = JSON.parse(row.transport);
+				return "<i class='fa fa-fw " + transport.icon + "' data-toggle='tooltip' data-placement='right' title='" + transport.name + "'></i>";
 			},
 			"commands": function(column, row)
 			{

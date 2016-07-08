@@ -90,6 +90,18 @@ class ModelTravelPlan extends Model{
 		
 		$plan_id = $this->db->getLastId();
 		
+		//START: update latest date
+		$update = array();
+		$update[] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'";
+		$update[] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'";
+		$sql = "
+			UPDATE " . $this->db->table($this->table) . " 
+			SET " . implode(',', $update) . "
+			WHERE plan_id = '" . (int)$plan_id . "'
+		";
+		$query = $this->db->query($sql);
+		//END
+		
 		//START:table_description
 		$fields = $this->getFields($this->db->table($this->table_description));
 		
@@ -122,6 +134,7 @@ class ModelTravelPlan extends Model{
 			if(isset($data[$f]))
 				$update[] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 		}
+		$update[] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'";
 		
 		if(!empty($update)){
 			$sql = "

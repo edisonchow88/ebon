@@ -55,14 +55,6 @@ class ControllerModalTravelEditTrip extends AController {
 		$modal_input[$i]['option'] = $this->model_travel_status->getStatus();
 		$modal_input[$i]['required'] = false;
 		
-		$i = 'transport';
-		$modal_input[$i]['label'] = 'Transport';
-		$modal_input[$i]['id'] = 'transport-id';
-		$modal_input[$i]['name'] = 'transport_id';
-		$modal_input[$i]['type'] = 'select';
-		$modal_input[$i]['option'] = $this->model_travel_transport->getTransport();
-		$modal_input[$i]['required'] = false;
-		
 		$i = 'travel_date';
 		$modal_input[$i]['label'] = 'Travel Date';
 		$modal_input[$i]['id'] = 'travel-date';

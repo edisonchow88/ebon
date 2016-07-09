@@ -26,7 +26,7 @@ class ModelTravelPlan extends Model{
 		return $output;
 	}
 	
-	public function getPlan($plan_id='') {
+	public function getPlan($plan_id='',$trip_id='') {
 		$plan = array();
 		
 		if($plan_id == '') {
@@ -35,6 +35,9 @@ class ModelTravelPlan extends Model{
 				FROM " . $this->db->table($this->table) . " t1 
 				LEFT JOIN ".$this->db->table($this->table_description)." t2 
 				ON t1.plan_id = t2.plan_id 
+			";
+			if($trip_id != '') { $sql .= " WHERE t1.trip_id = '" . (int)$this->db->escape($trip_id) . "' "; }
+			$sql .= "
 				ORDER BY t1.trip_id DESC, t1.sort_order ASC 
 			";
 		}
@@ -69,6 +72,10 @@ class ModelTravelPlan extends Model{
 		}
 		
 		return $output;
+	}
+	
+	public function getPlanByTripId($trip_id) {
+		return $this->getPlan('',$trip_id);
 	}
 	
 	public function addPlan($data) {

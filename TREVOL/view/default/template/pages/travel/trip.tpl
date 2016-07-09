@@ -17,6 +17,7 @@
                     <th data-column-id="status" data-formatter="status">Status</th>
                     <th data-column-id="name" data-formatter="name">Name</th>
                     <th data-column-id="description" data-formatter="description">Description</th>
+                    <th data-column-id="plan" data-formatter="plan">Plan</th>
                     <th data-column-id="user" data-formatter="user">Admin</th>
                     <th data-column-id="travel_date" data-formatter="travel_date" data-order="desc">Travel Date</th>
                     <th data-column-id="date_added" data-formatter="date_added" data-visible="false">Date Added</th>
@@ -55,6 +56,12 @@
 			{
 				if(row.description != '') {
 					return "<i class='fa fa-fw fa-ellipsis-h' data-toggle='tooltip' data-placement='right' title='" + row.description + "'></i>";
+				}
+			},
+			"plan": function(column, row)
+			{
+				if(row.plan != 0) {
+					return "<a class='btn btn-default'>"+row.plan+"</a>";
 				}
 			},
 			"status": function(column, row)

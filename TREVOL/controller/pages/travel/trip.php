@@ -22,6 +22,7 @@ class ControllerPagesTravelTrip extends AController {
 		}
 		
 		$this->loadModel('travel/trip');
+		$this->loadModel('travel/plan');
 		$this->loadModel('travel/status');
 		$this->loadModel('travel/transport');
 		$this->loadModel('user/user'); //IMPORTANT: ModelTravelTrip unable to load other, hence need to load this model at controller
@@ -31,11 +32,14 @@ class ControllerPagesTravelTrip extends AController {
 		foreach($data as $row) {
 			$trip_id = $row['trip_id'];
 			
+			$plan = $this->model_travel_plan->getPlanByTripId($trip_id);
+			
 			//following sequence is important
 			$result[$trip_id]['trip_id'] = $row['trip_id'];
 			$result[$trip_id]['status'] = json_encode($row['status']);
 			$result[$trip_id]['name'] = $row['name'];
 			$result[$trip_id]['description'] = $row['description'];
+			$result[$trip_id]['plan'] = count($plan);
 			$result[$trip_id]['user'] = $row['user']['username'];
 			$result[$trip_id]['travel_date'] = $row['travel_date'];
 			$result[$trip_id]['date_added'] = $row['date_added'];

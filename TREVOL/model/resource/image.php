@@ -11,6 +11,7 @@ class ModelResourceImage extends Model{
 	private $default_width = "100px";
 	
 	public function getImage($image_id='',$width='') {
+		if($image_id == 0) { return; } //avoid return an array
 		if($width=='') { $width = $this->default_width; }
 		
 		$image = array();

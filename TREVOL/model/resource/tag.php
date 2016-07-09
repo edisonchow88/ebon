@@ -29,6 +29,8 @@ class ModelResourceTag extends Model{
 	}
 	
 	public function getTag($tag_id='',$tag_type_id='') {
+		if($tag_id == 0) { return; } //avoid return an array
+		
 		$tag = array();
 		
 		if($tag_id == '') {

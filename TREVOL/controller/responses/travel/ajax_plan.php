@@ -11,7 +11,7 @@ class ControllerResponsesTravelAjaxPlan extends AController {
 		$this->loadModel('travel/plan');
 		$this->loadModel('travel/trip');
 		$this->loadModel('travel/status');
-		$this->loadModel('travel/transport');
+		$this->loadModel('travel/mode');
 		$this->loadModel('user/user');
 		
 		foreach($_POST as $key => $value) {

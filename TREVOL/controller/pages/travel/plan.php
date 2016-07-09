@@ -23,7 +23,7 @@ class ControllerPagesTravelPlan extends AController {
 		
 		$this->loadModel('travel/trip');
 		$this->loadModel('travel/status');
-		$this->loadModel('travel/transport');
+		$this->loadModel('travel/mode');
 		$this->loadModel('travel/plan');
 		$this->loadModel('user/user');
 		
@@ -37,7 +37,7 @@ class ControllerPagesTravelPlan extends AController {
 			$result[$plan_id]['trip_id'] = $row['trip_id'];
 			$result[$plan_id]['trip'] = $row['trip']['name'];
 			$result[$plan_id]['name'] = $row['name'];
-			$result[$plan_id]['transport'] = json_encode($row['transport']);
+			$result[$plan_id]['mode'] = json_encode($row['mode']);
 			$result[$plan_id]['sort_order'] = $row['sort_order'];
 			$result[$plan_id]['travel_date'] = $row['travel_date'];
 			$result[$plan_id]['date_added'] = $row['date_added'];

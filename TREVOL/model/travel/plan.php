@@ -59,7 +59,7 @@ class ModelTravelPlan extends Model{
 				$output[$result['plan_id']]['name'] = ucwords($result['name']);
 				$output[$result['plan_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 				$output[$result['plan_id']]['trip'] = $this->model_travel_trip->getTrip($result['trip_id']); //IMPORTANT: need to call model at controller
-				$output[$result['plan_id']]['transport'] = $this->model_travel_transport->getTransport($result['transport_id']); //IMPORTANT: need to call model at controller
+				$output[$result['plan_id']]['mode'] = $this->model_travel_mode->getMode($result['mode_id']); //IMPORTANT: need to call model at controller
 			}
 		}
 		else {
@@ -68,7 +68,7 @@ class ModelTravelPlan extends Model{
 			$output['name'] = ucwords($result['name']);
 			$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 			$output['trip'] = $this->model_travel_trip->getTrip($result['trip_id']); //IMPORTANT: need to call model at controller
-			$output['transport'] = $this->model_travel_transport->getTransport($result['transport_id']); //IMPORTANT: need to call model at controller
+			$output['mode'] = $this->model_travel_mode->getMode($result['mode_id']); //IMPORTANT: need to call model at controller
 		}
 		
 		return $output;

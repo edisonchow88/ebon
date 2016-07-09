@@ -17,7 +17,7 @@
                     <th data-column-id="trip_id" data-formatter="trip_id" data-order="desc">Trip Id</th>
                     <th data-column-id="trip" data-formatter="trip">Trip</th>
                     <th data-column-id="name" data-formatter="name">Name</th>
-                    <th data-column-id="transport" data-formatter="transport">Transport</th>
+                    <th data-column-id="mode" data-formatter="mode">Mode</th>
                     <th data-column-id="sort_order" data-formatter="sort_order">Sort</th>
                     <th data-column-id="travel_date" data-formatter="travel_date" data-order="desc">Travel Date</th>
                     <th data-column-id="date_added" data-formatter="date_added" data-visible="false">Date Added</th>
@@ -60,10 +60,10 @@
 			{
 				return "<i class='fa fa-fw " + row.icon + "' data-toggle='tooltip' title='" + row.icon + "'></i>";
 			},
-			"transport": function(column, row)
+			"mode": function(column, row)
 			{
-				var transport = JSON.parse(row.transport);
-				return "<i class='fa fa-fw " + transport.icon + "' data-toggle='tooltip' data-placement='right' title='" + transport.name + "'></i>";
+				var mode = JSON.parse(row.mode);
+				return "<i class='fa fa-fw " + mode.icon + "' data-toggle='tooltip' data-placement='right' title='" + mode.name + "'></i>";
 			},
 			"commands": function(column, row)
 			{

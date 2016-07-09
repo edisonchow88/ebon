@@ -45,12 +45,12 @@ class ControllerModalTravelAddPlan extends AController {
 		$i = 'section_general';
 		$modal_input[$i]['section'] = 'General';
 		
-		$i = 'transport';
-		$modal_input[$i]['label'] = 'Transport';
-		$modal_input[$i]['id'] = 'transport-id';
-		$modal_input[$i]['name'] = 'transport_id';
+		$i = 'mode';
+		$modal_input[$i]['label'] = 'Mode';
+		$modal_input[$i]['id'] = 'mode-id';
+		$modal_input[$i]['name'] = 'mode_id';
 		$modal_input[$i]['type'] = 'select';
-		$modal_input[$i]['option'] = $this->model_travel_transport->getTransport();
+		$modal_input[$i]['option'] = $this->model_travel_mode->getMode();
 		$modal_input[$i]['required'] = false;
 		$modal_input[$i]['value'] = 1;
 		

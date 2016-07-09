@@ -63,7 +63,7 @@
 				}
 			} else {
 				<!-- if connection failed -->
-				document.getElementById('modal-form-delete-day-alert').innerHTML = xmlhttp.statusText;
+				document.getElementById('modal-form-delete-day-alert').innerHTML = xmlhttp.responseText;
 			}
 		};
 		xmlhttp.open("POST", query, true);

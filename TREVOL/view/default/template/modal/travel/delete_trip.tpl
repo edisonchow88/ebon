@@ -63,7 +63,7 @@
 				}
 			} else {
 				<!-- if connection failed -->
-				document.getElementById('modal-form-delete-trip-alert').innerHTML = json.alert;
+				document.getElementById('modal-form-delete-trip-alert').innerHTML = xmlhttp.responseText;
 			}
 		};
 		xmlhttp.open("POST", query, true);

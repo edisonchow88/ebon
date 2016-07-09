@@ -85,8 +85,11 @@ class ModelTravelPlan extends Model{
 		$update = array();
 		foreach($fields as $f){
 			if(isset($data[$f]))
-				$update[] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 		}
+		
+		if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+		if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 		
 		$sql = "
 			INSERT INTO `" . $this->db->table($this->table) . "` 
@@ -96,18 +99,6 @@ class ModelTravelPlan extends Model{
 		//END
 		
 		$plan_id = $this->db->getLastId();
-		
-		//START: update latest date
-		$update = array();
-		$update[] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'";
-		$update[] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'";
-		$sql = "
-			UPDATE " . $this->db->table($this->table) . " 
-			SET " . implode(',', $update) . "
-			WHERE plan_id = '" . (int)$plan_id . "'
-		";
-		$query = $this->db->query($sql);
-		//END
 		
 		//START:table_description
 		$fields = $this->getFields($this->db->table($this->table_description));
@@ -139,9 +130,9 @@ class ModelTravelPlan extends Model{
 		$update = array();
 		foreach($fields as $f){
 			if(isset($data[$f]))
-				$update[] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 		}
-		$update[] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'";
+		if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 		
 		if(!empty($update)){
 			$sql = "

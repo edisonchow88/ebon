@@ -73,6 +73,18 @@ class ModelResourceTag extends Model{
 		return $output;
 	}
 	
+	public function getTagByTypeName($type_name) {
+		$sql = "
+			SELECT * 
+			FROM " . $this->db->table($this->table_type) . " 
+			WHERE type_name = '" . $type_name . "' 
+		";
+		$query = $this->db->query($sql);
+		$result = $query->row;
+		$tag_type_id = $result['tag_type_id'];
+		return $this->getTag('',$tag_type_id);
+	}
+	
 	public function getTagRelation($x,$y) {
 		$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE x = '" . (int)$x . "' AND y = '" . (int)$y . "'";
 		$query = $this->db->query($sql);

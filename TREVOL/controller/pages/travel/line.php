@@ -23,8 +23,8 @@ class ControllerPagesTravelLine extends AController {
 		
 		$this->loadModel('travel/trip');
 		$this->loadModel('travel/status');
-		$this->loadModel('travel/transport');
 		$this->loadModel('travel/plan');
+		$this->loadModel('travel/mode');
 		$this->loadModel('travel/line');
 		$this->loadModel('resource/tag');
 		$this->loadModel('user/user');

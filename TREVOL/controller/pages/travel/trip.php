@@ -22,10 +22,10 @@ class ControllerPagesTravelTrip extends AController {
 		}
 		
 		$this->loadModel('travel/trip');
-		$this->loadModel('travel/plan');
 		$this->loadModel('travel/status');
-		$this->loadModel('travel/transport');
-		$this->loadModel('user/user'); //IMPORTANT: ModelTravelTrip unable to load other, hence need to load this model at controller
+		$this->loadModel('travel/plan');
+		$this->loadModel('travel/mode');
+		$this->loadModel('user/user');
 		
 		$data = $this->model_travel_trip->getTrip();
 		

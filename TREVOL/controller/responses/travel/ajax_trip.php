@@ -9,9 +9,10 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 
 	public function main() {
 		$this->loadModel('travel/trip');
-		$this->loadModel('travel/status'); //IMPORTANT: ModelTravelTrip unable to load other, hence need to load this model at controller
-		$this->loadModel('travel/transport'); //IMPORTANT: ModelTravelTrip unable to load other, hence need to load this model at controller
-		$this->loadModel('user/user'); //IMPORTANT: ModelTravelTrip unable to load other, hence need to load this model at controller
+		$this->loadModel('travel/status');
+		$this->loadModel('travel/plan');
+		$this->loadModel('travel/mode');
+		$this->loadModel('user/user');
 		
 		foreach($_POST as $key => $value) {
 			$this->data[$key] = $value;

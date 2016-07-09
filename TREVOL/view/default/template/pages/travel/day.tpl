@@ -10,7 +10,7 @@
 	</div>
 
 	<div class="panel-body panel-body-nopadding tab-content col-xs-12">
-    	<table id="grid" class="table table-condensed table-hover table-sdayed">
+    	<table id="grid" class="table table-condensed table-hover table-striped">
             <thead>
                 <tr>
                 	<!-- START: Column -->

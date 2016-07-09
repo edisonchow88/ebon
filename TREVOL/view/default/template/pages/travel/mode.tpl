@@ -5,12 +5,12 @@
 <div id="content" class="panel panel-default">
 	<div class="panel-heading col-xs-12">
     	<div class="col-xs-2 text-left"></div>
-    	<div class="col-xs-8 text-center"><h5>Transport</h5></div>
-        <div class="col-xs-2 text-right"><a data-toggle="modal" data-target="#modal-add-transport" class="btn btn-danger" role="button">Add Transport</a></div>
+    	<div class="col-xs-8 text-center"><h5>Mode</h5></div>
+        <div class="col-xs-2 text-right"><a data-toggle="modal" data-target="#modal-add-mode" class="btn btn-danger" role="button">Add Mode</a></div>
 	</div>
 
 	<div class="panel-body panel-body-nopadding tab-content col-xs-12">
-    	<table id="grid" class="table table-condensed table-hover table-stransported">
+    	<table id="grid" class="table table-condensed table-hover table-smodeed">
             <thead>
                 <tr>
                     <th data-column-id="id" data-type="numeric">ID</th>
@@ -35,9 +35,9 @@
 </div>
 
 <!-- START: Modal -->
-	<?php echo $modal_add_transport; ?>
-    <?php echo $modal_edit_transport; ?>
-	<?php echo $modal_delete_transport; ?>
+	<?php echo $modal_add_mode; ?>
+    <?php echo $modal_edit_mode; ?>
+	<?php echo $modal_delete_mode; ?>
 <!-- END: Modal -->
 
 <script>
@@ -52,8 +52,8 @@
 			},
 			"commands": function(column, row)
 			{
-				return "<button type=\"button\" class=\"btn btn-default command-edit\" data-toggle=\"modal\" data-target=\"#modal-edit-transport\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-pencil\"></span></button> " + 
-					"<button type=\"button\" class=\"btn btn-default command-delete\" data-toggle=\"modal\" data-target=\"#modal-delete-transport\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-trash-o\"></span></button>";
+				return "<button type=\"button\" class=\"btn btn-default command-edit\" data-toggle=\"modal\" data-target=\"#modal-edit-mode\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-pencil\"></span></button> " + 
+					"<button type=\"button\" class=\"btn btn-default command-delete\" data-toggle=\"modal\" data-target=\"#modal-delete-mode\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-trash-o\"></span></button>";
 				
 			}
 		}
@@ -63,14 +63,14 @@
 		$('[data-toggle="tooltip"]').tooltip();
 		grid.find(".command-edit").on("click", function(e)
 		{
-			document.getElementById("modal-form-get-transport-input-transport-id").value = $(this).data("row-id");
-			getTransport(); <!-- the code is written in modal tpl -->
+			document.getElementById("modal-form-get-mode-input-mode-id").value = $(this).data("row-id");
+			getMode(); <!-- the code is written in modal tpl -->
 			$($(this).attr("data-target")).modal("show");
 		})
 		.end().find(".command-delete").on("click", function(e)
 		{
-			document.getElementById("modal-form-delete-transport-input-transport-id").value = $(this).data("row-id");
-			document.getElementById("modal-form-delete-transport-text-transport-id").innerHTML = $(this).data("row-id");
+			document.getElementById("modal-form-delete-mode-input-mode-id").value = $(this).data("row-id");
+			document.getElementById("modal-form-delete-mode-text-mode-id").innerHTML = $(this).data("row-id");
 			$($(this).attr("data-target")).modal("show");
 		});
 	});

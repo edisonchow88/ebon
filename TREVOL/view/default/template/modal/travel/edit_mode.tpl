@@ -1,19 +1,19 @@
 <!-- START: Modal -->
-<div class="modal fade" id="modal-add-transport" role="dialog">
+<div class="modal fade" id="modal-edit-mode" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Add Transport</h4>
+            <h4 class="modal-title">Edit Mode</h4>
             </div>
         <div class="modal-body">
-        	<div id="modal-form-add-transport-alert"></div>
-            <div id="modal-form-add-transport-demo" class="text-center"></div>
-            <form id="modal-form-add-transport">
+        	<div id="modal-form-edit-mode-alert"></div>
+            <div id="modal-form-edit-mode-demo" class="text-center"></div>
+            <form id="modal-form-edit-mode">
                 <input 
                     type="hidden" 
                     name="action"
-                    value="add" 
+                    value="edit" 
                 />
                 <?php
                     foreach($modal_input as $i) {
@@ -33,11 +33,11 @@
                             }
                             echo '</div>';
                             echo '<div class="input-group col-sm-8 col-xs-12">';
-                              if($i['type'] == 'textarea') {
+                            if($i['type'] == 'textarea') {
                             	echo '<textarea ';
                                 echo 'class="form-control" ';
                                 echo 'rows="5" ';
-                                echo 'id="modal-form-add-transport-input-'.$i['id'].'" ';
+                                echo 'id="modal-form-edit-mode-input-'.$i['id'].'" ';
                                 echo 'name="'.$i['name'].'" ';
                                 echo 'placeholder="'.$i['placeholder'].'" ';
                                 echo '>';
@@ -47,7 +47,7 @@
                             else if($i['type'] == 'select') {
                             	echo '<select ';
                                 echo 'class="form-control" ';
-                                echo 'id="modal-form-add-transport-input-'.$i['id'].'" ';
+                                echo 'id="modal-form-edit-mode-input-'.$i['id'].'" ';
                                 echo 'name="'.$i['name'].'" ';
                                 echo '>';
                                 foreach($i['option'] as $o) {
@@ -63,7 +63,7 @@
                                 echo '<input ';
                                 echo 'type="'.$i['type'].'" ';
                                 echo 'class="form-control" ';
-                                echo 'id="modal-form-add-transport-input-'.$i['id'].'" ';
+                                echo 'id="modal-form-edit-mode-input-'.$i['id'].'" ';
                                 echo 'name="'.$i['name'].'" ';
                                 echo 'value="'.$i['value'].'" ';
                                 echo 'placeholder="'.$i['placeholder'].'" ';
@@ -76,7 +76,7 @@
                                     echo '</a>';
                                     echo '</span>';
                                 }
-                                echo '<span id="modal-form-add-transport-text-'.$i['id'].'">';
+                                echo '<span id="modal-form-edit-mode-text-'.$i['id'].'">';
                                 if($i['type'] == 'hidden') {
                                     echo $i['text'];
                                 }
@@ -88,10 +88,22 @@
                     }
                 ?>
             </form>
+            <form id="modal-form-get-mode">
+                <input 
+                    type="hidden" 
+                    name="action"
+                    value="get" 
+                />
+                <input
+                    type="hidden"
+                    id="modal-form-get-mode-input-mode-id" 
+                    name="mode_id" 
+                />
+            </form>
         </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" onclick="addTransport();">Save</button>
+                <button type="button" class="btn btn-danger" onclick="editMode();">Save</button>
             </div>
         </div>
     </div>
@@ -99,15 +111,15 @@
 <!-- END: Modal -->
 
 <script>
-	function addTransport() {
-		var form_element = document.querySelector("#modal-form-add-transport");
+	function editMode() {
+		var form_element = document.querySelector("#modal-form-edit-mode");
 		var form_data = new FormData(form_element);
 		var xmlhttp = new XMLHttpRequest();
-		var url = "<?php echo $modal_ajax['travel/ajax_transport']; ?>";
+		var url = "<?php echo $modal_ajax['travel/ajax_mode']; ?>";
 		var data = "";
 		var query = url + data;
 		xmlhttp.onreadystatechange = function() {
-			document.getElementById('modal-form-add-transport-alert').innerHTML = "";
+			document.getElementById('modal-form-edit-mode-alert').innerHTML = "";
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 				<!-- if connection success -->
 				var json = JSON.parse(xmlhttp.responseText);
@@ -120,7 +132,7 @@
 						content += "<li>"+json.warning[i]+"</li>";
 					}
 					content += "</ul></div>";
-					document.getElementById('modal-form-add-transport-alert').innerHTML = content;
+					document.getElementById('modal-form-edit-mode-alert').innerHTML = content;
 				}
 				else if(typeof json.success != 'undefined') {
 					<!-- if success -->
@@ -128,17 +140,53 @@
 				}
 			} else {
 				<!-- if connection failed -->
-				document.getElementById('modal-form-add-transport-alert').innerHTML = json.alert;
+				document.getElementById('modal-form-edit-mode-alert').innerHTML = json.alert;
 			}
 		};
 		xmlhttp.open("POST", query, true);
 		xmlhttp.send(form_data);
 	}
 	
-	$("#modal-form-add-transport").change(function(e) {
-		var icon = document.getElementById('modal-form-add-transport-input-icon').value;
-		var name = document.getElementById('modal-form-add-transport-input-name').value;
-		document.getElementById('modal-form-add-transport-demo').innerHTML = "<i class='fa fa-fw fa-5x "+icon+"'></i>";
-		document.getElementById('modal-form-add-transport-demo').innerHTML += "<br/><span style='text-transform:capitalize;'>"+name+"</span>";
+	function getMode() {
+		var form_element = document.querySelector("#modal-form-get-mode");
+		var form_data = new FormData(form_element);
+		var xmlhttp = new XMLHttpRequest();
+		var url = "<?php echo $modal_ajax['travel/ajax_mode']; ?>";
+		var data = "";
+		var query = url + data;
+		xmlhttp.onreadystatechange = function() {
+			document.getElementById('modal-form-edit-mode-alert').innerHTML = "";
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				<!-- if connection success -->
+				var json = JSON.parse(xmlhttp.responseText);
+				<?php
+                    foreach($modal_input as $i) {
+						if(!isset($i['section'])) { 
+							echo "document.getElementById('modal-form-edit-mode-input-".$i['id']."').value = json.".$i['name'].";";
+							if(isset($i['json'])) {
+								echo "document.getElementById('modal-form-edit-mode-text-".$i['id']."').innerHTML = json.".$i['json'].";";
+							}
+						}
+					}
+				?>
+				updateEditModeDemo();
+			} else {
+				<!-- if connection failed -->
+				document.getElementById('modal-form-edit-mode-alert').innerHTML = json.alert;
+			}
+		};
+		xmlhttp.open("POST", query, true);
+		xmlhttp.send(form_data);
+	}
+	
+	function updateEditModeDemo() {
+		var icon = document.getElementById('modal-form-edit-mode-input-icon').value;
+		var name = document.getElementById('modal-form-edit-mode-input-name').value;
+		document.getElementById('modal-form-edit-mode-demo').innerHTML = "<i class='fa fa-fw fa-5x "+icon+"'></i>";
+		document.getElementById('modal-form-edit-mode-demo').innerHTML += "<br/><span style='text-transform:capitalize;'>"+name+"</span>";
+	}
+	
+	$("#modal-form-edit-mode").change(function(e) {
+		updateEditModeDemo();
 	});
 </script>

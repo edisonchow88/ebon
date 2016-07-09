@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerModalTravelAddTransport extends AController {
+class ControllerModalTravelEditMode extends AController {
 
   	public function main() {
         //init controller data
@@ -20,8 +20,7 @@ class ControllerModalTravelAddTransport extends AController {
 		$modal_input[$i]['name'] = 'language_id';
 		$modal_input[$i]['type'] = 'hidden';
 		$modal_input[$i]['required'] = false;
-		$modal_input[$i]['value'] = $language['language_id'];
-		$modal_input[$i]['text'] = $language['name'];
+		$modal_input[$i]['json'] = 'language.name';
 		
 		$i = 'name';
 		$modal_input[$i]['label'] = 'Name';
@@ -41,14 +40,22 @@ class ControllerModalTravelAddTransport extends AController {
 		$modal_input[$i]['required'] = true;
 		$modal_input[$i]['help'] = 'fa-awesome';
 		$modal_input[$i]['link'] = 'http://fontawesome.io/icons/';
+		
+		$i = 'id';
+		$modal_input[$i]['label'] = 'Id';
+		$modal_input[$i]['id'] = 'mode-id';
+		$modal_input[$i]['name'] = 'mode_id';
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['json'] = 'mode_id';
 		//END: input
 		
-		$modal_ajax['travel/ajax_transport'] = $this->html->getSecureURL('travel/ajax_transport');
+		$modal_ajax['travel/ajax_mode'] = $this->html->getSecureURL('travel/ajax_mode');
 		
 		$this->view->assign('modal_ajax', $modal_ajax);
 		$this->view->assign('modal_input', $modal_input);
 		
-		$this->processTemplate('modal/travel/add_transport.tpl' );
+		$this->processTemplate('modal/travel/edit_mode.tpl' );
 
           //update controller data
         $this->extensions->hk_UpdateData($this,__FUNCTION__);

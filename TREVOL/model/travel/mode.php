@@ -3,10 +3,10 @@ if(!defined('DIR_CORE') || !IS_ADMIN){
 	header('Location: static_pages/');
 }
 
-class ModelTravelTransport extends Model{
+class ModelTravelMode extends Model{
 	
-	private $table = "trip_transport";
-	private $table_description = "trip_transport_description";
+	private $table = "trip_mode";
+	private $table_description = "trip_mode_description";
 	
 	public function getFields($table) {
 		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
@@ -26,15 +26,15 @@ class ModelTravelTransport extends Model{
 		return $output;
 	}
 	
-	public function getTransport($transport_id='') {
-		$transport = array();
+	public function getMode($mode_id='') {
+		$mode = array();
 		
-		if($transport_id == '') {
+		if($mode_id == '') {
 			$sql = "
 				SELECT * 
 				FROM " . $this->db->table($this->table) . " t1 
 				LEFT JOIN ".$this->db->table($this->table_description)." t2 
-				ON t1.transport_id = t2.transport_id 
+				ON t1.mode_id = t2.mode_id 
 				ORDER BY t2.name ASC 
 			";
 		}
@@ -43,18 +43,18 @@ class ModelTravelTransport extends Model{
 				SELECT * 
 				FROM " . $this->db->table($this->table) . " t1 
 				LEFT JOIN ".$this->db->table($this->table_description)." t2 
-				ON t1.transport_id = t2.transport_id 
-				WHERE t1.transport_id = '" . (int)$transport_id . "' 
+				ON t1.mode_id = t2.mode_id 
+				WHERE t1.mode_id = '" . (int)$mode_id . "' 
 			";
 
 		}
 		$query = $this->db->query($sql);
 		
-		if($transport_id == '') {
+		if($mode_id == '') {
 			foreach($query->rows as $result){
-				$output[$result['transport_id']] = $result;
-				$output[$result['transport_id']]['name'] = ucwords($result['name']);
-				$output[$result['transport_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+				$output[$result['mode_id']] = $result;
+				$output[$result['mode_id']]['name'] = ucwords($result['name']);
+				$output[$result['mode_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 			}
 		}
 		else {
@@ -67,7 +67,7 @@ class ModelTravelTransport extends Model{
 		return $output;
 	}
 	
-	public function addTransport($data) {
+	public function addMode($data) {
 		//START: table
 		$fields = $this->getFields($this->db->table($this->table));
 		
@@ -84,13 +84,13 @@ class ModelTravelTransport extends Model{
 		$query = $this->db->query($sql);
 		//END
 		
-		$transport_id = $this->db->getLastId();
+		$mode_id = $this->db->getLastId();
 		
 		//START:table_description
 		$fields = $this->getFields($this->db->table($this->table_description));
 		
 		$update = array();
-		$update[] = "transport_id = '" . $transport_id. "'";
+		$update[] = "mode_id = '" . $mode_id. "'";
 		
 		foreach($fields as $f){
 			if(isset($data[$f]))
@@ -104,12 +104,12 @@ class ModelTravelTransport extends Model{
 		$query = $this->db->query($sql);
 		//END
 		
-		$this->cache->delete('transport');
+		$this->cache->delete('mode');
 		
-		return $transport_id;
+		return $mode_id;
 	}
 	
-	public function editTransport($transport_id, $data) {
+	public function editMode($mode_id, $data) {
 		//START: table
 		$fields = $this->getFields($this->db->table($this->table));
 		
@@ -123,7 +123,7 @@ class ModelTravelTransport extends Model{
 			$sql = "
 				UPDATE " . $this->db->table($this->table) . " 
 				SET " . implode(',', $update) . "
-				WHERE transport_id = '" . (int)$transport_id . "'
+				WHERE mode_id = '" . (int)$mode_id . "'
 			";
 			$query = $this->db->query($sql);
 		}
@@ -142,21 +142,21 @@ class ModelTravelTransport extends Model{
 			$sql = "
 				UPDATE " . $this->db->table($this->table_description) . " 
 				SET " . implode(',', $update) . "
-				WHERE transport_id = '" . (int)$transport_id . "'
+				WHERE mode_id = '" . (int)$mode_id . "'
 			";
 			$query = $this->db->query($sql);
 		}
 		//END
 		
-		$this->cache->delete('transport');
+		$this->cache->delete('mode');
 		return true;
 	}
 	
-	public function deleteTransport($transport_id) {
+	public function deleteMode($mode_id) {
 		//START: table
 		$sql = "
 			DELETE FROM " . $this->db->table($this->table) . " 
-			WHERE transport_id = '" . (int)$transport_id . "'
+			WHERE mode_id = '" . (int)$mode_id . "'
 		";
 		$query = $this->db->query($sql);
 		//END
@@ -164,12 +164,12 @@ class ModelTravelTransport extends Model{
 		//START: table_description
 		$sql = "
 			DELETE FROM " . $this->db->table($this->table_description) . " 
-			WHERE transport_id = '" . (int)$transport_id . "'
+			WHERE mode_id = '" . (int)$mode_id . "'
 		";
 		$query = $this->db->query($sql);
 		//END
 		
-		$this->cache->delete('transport');
+		$this->cache->delete('mode');
 		return true;
 	}
 }

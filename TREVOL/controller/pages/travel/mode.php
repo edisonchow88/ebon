@@ -3,13 +3,13 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesTravelTransport extends AController {
+class ControllerPagesTravelMode extends AController {
 
   	public function main() {
         //init controller data
         $this->extensions->hk_InitData($this,__FUNCTION__);
 
-    	$title = "Transport";
+    	$title = "Mode";
     	$this->document->setTitle($title);
 
 		$this->view->assign('error_warning', $this->session->data['warning']);
@@ -21,27 +21,27 @@ class ControllerPagesTravelTransport extends AController {
 			unset($this->session->data['success']);
 		}
 		
-		$this->loadModel('travel/transport');
+		$this->loadModel('travel/mode');
 		
-		$data = $this->model_travel_transport->getTransport();
+		$data = $this->model_travel_mode->getMode();
 		
 		foreach($data as $row) {
-			$transport_id = $row['transport_id'];
+			$mode_id = $row['mode_id'];
 			
 			//following sequence is important
-			$result[$transport_id]['transport_id'] = $row['transport_id'];
-			$result[$transport_id]['icon'] = $row['icon'];
-			$result[$transport_id]['name'] = $row['name'];
+			$result[$mode_id]['mode_id'] = $row['mode_id'];
+			$result[$mode_id]['icon'] = $row['icon'];
+			$result[$mode_id]['name'] = $row['name'];
 		}
 		
 		//include modal
-		$this->addChild('modal/travel/add_transport', 'modal_add_transport', 'modal/travel/add_transport.tpl');
-		$this->addChild('modal/travel/edit_transport', 'modal_edit_transport', 'modal/travel/edit_transport.tpl');
-		$this->addChild('modal/travel/delete_transport', 'modal_delete_transport', 'modal/travel/delete_transport.tpl');
+		$this->addChild('modal/travel/add_mode', 'modal_add_mode', 'modal/travel/add_mode.tpl');
+		$this->addChild('modal/travel/edit_mode', 'modal_edit_mode', 'modal/travel/edit_mode.tpl');
+		$this->addChild('modal/travel/delete_mode', 'modal_delete_mode', 'modal/travel/delete_mode.tpl');
 		
 		$this->view->assign('result', $result);
 		
-		$this->processTemplate('pages/travel/transport.tpl' );
+		$this->processTemplate('pages/travel/mode.tpl' );
 
         //update controller data
         $this->extensions->hk_UpdateData($this,__FUNCTION__);

@@ -209,9 +209,9 @@ class ControllerPagesTravelActivity extends AController {
 		//END
 		
 		//START: include modal
-		$this->addChild('modal/travel/add_activity', 'modal_add_activity', 'modal/travel/add_activity.tpl');
-		$this->addChild('modal/travel/edit_activity', 'modal_edit_activity', 'modal/travel/edit_activity.tpl');
-		$this->addChild('modal/travel/delete_activity', 'modal_delete_activity', 'modal/travel/delete_activity.tpl');
+		//$this->addChild('modal/travel/add_activity', 'modal_add_activity', 'modal/travel/add_activity.tpl');
+		//$this->addChild('modal/travel/edit_activity', 'modal_edit_activity', 'modal/travel/edit_activity.tpl');
+		//$this->addChild('modal/travel/delete_activity', 'modal_delete_activity', 'modal/travel/delete_activity.tpl');
 		//END
 		
 		$this->view->assign('column', $column);

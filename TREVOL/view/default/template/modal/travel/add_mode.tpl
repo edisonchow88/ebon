@@ -54,7 +54,7 @@
                                 	echo '<option ';
                                     echo 'value="'.$o[$i['name']].'"';
                                     echo '>';
-                                    echo $o['name'];
+                                    if(isset($o['name'])) { echo $o['name']; } else { echo $o[$i['name']]; }
                                     echo '</option>';
                                 }
                                 echo '</select>';
@@ -128,17 +128,23 @@
 				}
 			} else {
 				<!-- if connection failed -->
-				document.getElementById('modal-form-add-mode-alert').innerHTML = json.alert;
+				document.getElementById('modal-form-add-line-alert').innerHTML = xmlhttp.responseText;
 			}
 		};
 		xmlhttp.open("POST", query, true);
 		xmlhttp.send(form_data);
 	}
 	
-	$("#modal-form-add-mode").change(function(e) {
+	function updateAddModeDemo() {
 		var icon = document.getElementById('modal-form-add-mode-input-icon').value;
 		var name = document.getElementById('modal-form-add-mode-input-name').value;
 		document.getElementById('modal-form-add-mode-demo').innerHTML = "<i class='fa fa-fw fa-5x "+icon+"'></i>";
 		document.getElementById('modal-form-add-mode-demo').innerHTML += "<br/><span style='text-transform:capitalize;'>"+name+"</span>";
+	}
+	
+	$("#modal-form-add-mode").change(function(e) {
+		updateAddModeDemo();
 	});
+	
+	updateAddModeDemo();
 </script>

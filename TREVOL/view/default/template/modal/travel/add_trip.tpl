@@ -54,7 +54,7 @@
                                 	echo '<option ';
                                     echo 'value="'.$o[$i['name']].'"';
                                     echo '>';
-                                    echo $o['name'];
+                                    if(isset($o['name'])) { echo $o['name']; } else { echo $o[$i['name']]; }
                                     echo '</option>';
                                 }
                                 echo '</select>';
@@ -120,15 +120,21 @@
 				}
 			} else {
 				<!-- if connection failed -->
-				document.getElementById('modal-form-add-trip-alert').innerHTML = json.alert;
+				document.getElementById('modal-form-add-trip-alert').innerHTML = xmlhttp.responseText;
 			}
 		};
 		xmlhttp.open("POST", query, true);
 		xmlhttp.send(form_data);
 	}
 	
-	$("#modal-form-add-trip").change(function(e) {
+	function updateAddTripDemo() {
 		var name = document.getElementById('modal-form-add-trip-input-name').value;
 		document.getElementById('modal-form-add-trip-demo').innerHTML = "<span style='text-transform:capitalize;'>"+name+"</span>";
+	}
+	
+	$("#modal-form-add-trip").change(function(e) {
+		updateAddTripDemo();
 	});
+	
+	updateAddTripDemo();
 </script>

@@ -54,7 +54,7 @@
                                 	echo '<option ';
                                     echo 'value="'.$o[$i['name']].'"';
                                     echo '>';
-                                    echo $o['name'];
+                                    if(isset($o['name'])) { echo $o['name']; } else { echo $o[$i['name']]; }
                                     echo '</option>';
                                 }
                                 echo '</select>';
@@ -128,7 +128,7 @@
 				}
 			} else {
 				<!-- if connection failed -->
-				document.getElementById('modal-form-add-line-alert').innerHTML = xmlhttp.statusText;
+				document.getElementById('modal-form-add-line-alert').innerHTML = xmlhttp.responseText;
 			}
 		};
 		xmlhttp.open("POST", query, true);

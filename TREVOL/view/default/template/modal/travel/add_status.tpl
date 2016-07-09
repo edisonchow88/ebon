@@ -54,7 +54,7 @@
                                 	echo '<option ';
                                     echo 'value="'.$o[$i['name']].'"';
                                     echo '>';
-                                    echo $o['name'];
+                                    if(isset($o['name'])) { echo $o['name']; } else { echo $o[$i['name']]; }
                                     echo '</option>';
                                 }
                                 echo '</select>';
@@ -128,16 +128,22 @@
 				}
 			} else {
 				<!-- if connection failed -->
-				document.getElementById('modal-form-add-status-alert').innerHTML = json.alert;
+				document.getElementById('modal-form-add-status-alert').innerHTML = xmlhttp.responseText;
 			}
 		};
 		xmlhttp.open("POST", query, true);
 		xmlhttp.send(form_data);
 	}
 	
-	$("#modal-form-add-status").change(function(e) {
+	function updateAddStatusDemo() {
 		var color = document.getElementById('modal-form-add-status-input-color').value;
 		var name = document.getElementById('modal-form-add-status-input-name').value;
 		document.getElementById('modal-form-add-status-demo').innerHTML = "<i class='fa fa-fw fa-circle' style='color:"+color+";'></i>&nbsp;<span style='text-transform:capitalize;'>"+name+"</span>";
+	}
+	
+	$("#modal-form-add-status").change(function(e) {
+		updateAddStatusDemo();
 	});
+	
+	updateAddStatusDemo();
 </script>

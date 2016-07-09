@@ -88,17 +88,21 @@ class ControllerCommonHeader extends AController {
 					'href' => $result['config_url']
 				);
 			}
+			
+			$link['destination'] = $this->html->getSecureURL('guide/destination_list');
+			$link['interest'] = $this->html->getSecureURL('guide/interest_list');
+			$link['poi'] = $this->html->getSecureURL('guide/poi');
+			$link['tag'] = $this->html->getSecureURL('resource/tag_list');
+			$link['image'] = $this->html->getSecureURL('resource/image_list');
+			$link['database'] = $this->html->getSecureURL('database/database_list');
+			$link['log'] = $this->html->getSecureURL('tool/error_log');
+			$link['language'] = $this->html->getSecureURL('localisation/language_definitions');
+			$link['logout'] = $this->html->getSecureURL('index/logout');
+			$link['store'] = HTTP_CATALOG;
+			
+			$this->view->assign('link', $link);
 			$this->view->assign('stores', $stores);
-			$this->view->assign('destination', $this->html->getSecureURL('guide/destination_list'));
-			$this->view->assign('interest',$this->html->getSecureURL('guide/interest_list'));
-			$this->view->assign('tag',$this->html->getSecureURL('resource/tag_list'));
-			$this->view->assign('image',$this->html->getSecureURL('resource/image_list'));
-			$this->view->assign('database',$this->html->getSecureURL('database/database_list'));
-			$this->view->assign('log',$this->html->getSecureURL('tool/error_log'));
-			$this->view->assign('language',$this->html->getSecureURL('localisation/language_definitions'));
-
-			$this->view->assign('logout', $this->html->getSecureURL('index/logout'));
-			$this->view->assign('store', HTTP_CATALOG);
+			
 			// add dynamic menu based on dataset scheme
 			$this->addChild('common/menu', 'menu', 'common/menu.tpl');
 

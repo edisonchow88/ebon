@@ -142,7 +142,7 @@ class ModelGuidePoi extends Model{
 		
 		foreach($fields as $f){
 			if(isset($data[$f]))
-				$update[] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 		}
 		
 		$sql = "
@@ -164,7 +164,7 @@ class ModelGuidePoi extends Model{
 		$update = array();
 		foreach($fields as $f){
 			if(isset($data[$f]))
-				$update[] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 		}
 		if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 		
@@ -184,7 +184,7 @@ class ModelGuidePoi extends Model{
 		$update = array();
 		foreach($fields as $f){
 			if(isset($data[$f]))
-				$update[] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 		}
 		
 		if(!empty($update)){
@@ -326,7 +326,7 @@ class ModelGuidePoi extends Model{
 					$update = array();
 					foreach($fields as $f){
 						if(isset($data[$f]))
-							$update[] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 					}
 					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 					
@@ -464,7 +464,7 @@ class ModelGuidePoi extends Model{
 					$update = array();
 					foreach($fields as $f){
 						if(isset($data[$f]))
-							$update[] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
 					}
 					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 					
@@ -498,6 +498,144 @@ class ModelGuidePoi extends Model{
 			//END
 			
 			$this->cache->delete('poi_google');
+			return true;
+		}
+	//END
+	
+	//START: [Wikipedia]
+		public function getPoiWikipedia($wikipedia_id='',$poi_id='') {
+			$wikipedia = array();
+			
+			//START: Run SQL
+				if($wikipedia_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_wikipedia) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' 
+						";
+					}
+					$sql .= "
+						ORDER BY wikipedia_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_wikipedia) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' AND t1.wikipedia_id = '" . (int)$wikipedia_id . "' 
+						";
+					}
+					else {
+						$sql .= "
+							WHERE wikipedia_id = '" . (int)$wikipedia_id . "' 
+						";
+					}
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				if($wikipedia_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['wikipedia_id']] = $result;
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getPoiWikipediaByPoiId($poi_id) {
+			return $this->getPoiWikipedia('',$poi_id);
+		}
+		
+		public function addPoiWikipedia($data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_wikipedia));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+						}
+					}
+				
+					if(isset($update['w_date_added'])) { $update['w_date_added'] = "w_date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					if(isset($update['w_date_modified'])) { $update['w_date_modified'] = "w_date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				//END
+				
+				//START: Run SQL
+					$sql = "
+						INSERT INTO `" . $this->db->table($this->table_wikipedia) . "` 
+						SET " . implode(',', $update) . "
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$wikipedia_id = $this->db->getLastId();
+			
+			$this->cache->delete('poi_wikipedia');
+			
+			return $wikipedia_id;
+		}
+		
+		public function editPoiWikipedia($wikipedia_id, $data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_wikipedia));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+					}
+					if(isset($update['w_date_modified'])) { $update['w_date_modified'] = "w_date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_wikipedia) . " 
+							SET " . implode(',', $update) . "
+							WHERE wikipedia_id = '" . (int)$wikipedia_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_wikipedia');
+			return true;
+		}
+		
+		public function deletePoiWikipedia($wikipedia_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_wikipedia) . " 
+						WHERE wikipedia_id = '" . (int)$wikipedia_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_wikipedia');
 			return true;
 		}
 	//END

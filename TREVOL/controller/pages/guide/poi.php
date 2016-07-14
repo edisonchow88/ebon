@@ -216,6 +216,7 @@ class ControllerPagesGuidePoi extends AController {
 		
 		//START: define link
 			$link['guide/poi_subset/alias'] = $this->html->getSecureURL('guide/poi_subset/alias');
+			$link['guide/poi_subset/description'] = $this->html->getSecureURL('guide/poi_subset/description');
 			$link['guide/poi_subset/google'] = $this->html->getSecureURL('guide/poi_subset/google');
 			$link['guide/poi_subset/wikipedia'] = $this->html->getSecureURL('guide/poi_subset/wikipedia');
 		//END

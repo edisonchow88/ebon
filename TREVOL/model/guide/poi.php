@@ -364,6 +364,146 @@ class ModelGuidePoi extends Model{
 		}
 	//END
 	
+	//START: [Description]
+		public function getPoiDescription($description_id='',$poi_id='') {
+			$description = array();
+			
+			//START: Run SQL
+				if($description_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_description) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' 
+						";
+					}
+					$sql .= "
+						ORDER BY description_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_description) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' AND t1.description_id = '" . (int)$description_id . "' 
+						";
+					}
+					else {
+						$sql .= "
+							WHERE description_id = '" . (int)$description_id . "' 
+						";
+					}
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				if($description_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['description_id']] = $result;
+						$output[$result['description_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+					$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getPoiDescriptionByPoiId($poi_id) {
+			return $this->getPoiDescription('',$poi_id);
+		}
+		
+		public function addPoiDescription($data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_description));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+						}
+					}
+				
+					if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				//END
+				
+				//START: Run SQL
+					$sql = "
+						INSERT INTO `" . $this->db->table($this->table_description) . "` 
+						SET " . implode(',', $update) . "
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$description_id = $this->db->getLastId();
+			
+			$this->cache->delete('poi_description');
+			
+			return $description_id;
+		}
+		
+		public function editPoiDescription($description_id, $data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_description));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_description) . " 
+							SET " . implode(',', $update) . "
+							WHERE description_id = '" . (int)$description_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_description');
+			return true;
+		}
+		
+		public function deletePoiDescription($description_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_description) . " 
+						WHERE description_id = '" . (int)$description_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_description');
+			return true;
+		}
+	//END
+	
 	//START: [Google]
 		public function getPoiGoogle($google_id='',$poi_id='') {
 			$google = array();

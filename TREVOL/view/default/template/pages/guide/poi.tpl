@@ -175,7 +175,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Description'>"
-							+ "<a class='btn btn-sm btn-info command-view-poi-description' data-toggle='modal' data-target='#modal-view-poi-description' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm btn-info command-view-poi-description' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-ellipsis-h'>"
 								+ "</span>"
 							+ "</a>"
@@ -325,6 +325,10 @@
 		.end().find(".command-view-poi-alias").on("click", function(e)
 		{
 			window.location.href = "<?php echo $link['guide/poi_subset/alias']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-poi-description").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/description']; ?>\&poi_id=" + $(this).data("row-id");
 		})
 		.end().find(".command-view-poi-google").on("click", function(e)
 		{

@@ -214,7 +214,14 @@ class ControllerPagesGuidePoi extends AController {
 		//$this->addChild('modal/guide/view_poi_summary', 'modal_view_poi_summary', 'modal/guide/view_poi_summary.tpl');
 		//END
 		
+		//START: define link
+			$link['guide/poi_subset/alias'] = $this->html->getSecureURL('guide/poi_subset/alias');
+			$link['guide/poi_subset/google'] = $this->html->getSecureURL('guide/poi_subset/google');
+			$link['guide/poi_subset/wikipedia'] = $this->html->getSecureURL('guide/poi_subset/wikipedia');
+		//END
+		
 		$this->view->assign('column', $column);
+		$this->view->assign('link', $link);
 		$this->view->assign('result', $result);
 		
 		$this->processTemplate('pages/guide/poi.tpl' );

@@ -167,7 +167,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Alias'>"
-							+ "<a class='btn btn-sm btn-info command-view-poi-alias' data-toggle='modal' data-target='#modal-view-poi-alias' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm btn-info command-view-poi-alias'data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-at'>"
 								+ "</span>"
 							+ "</a>"
@@ -263,7 +263,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Google'>"
-							+ "<a class='btn btn-sm btn-primary command-view-poi-google' data-toggle='modal' data-target='#modal-view-poi-google' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm btn-primary command-view-poi-google' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-google'>"
 								+ "</span>"
 							+ "</a>"
@@ -271,7 +271,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Wiki'>"
-							+ "<a class='btn btn-sm btn-primary command-view-poi-wiki' data-toggle='modal' data-target='#modal-view-poi-wiki' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm btn-primary command-view-poi-wiki' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-wikipedia-w'>"
 								+ "</span>"
 							+ "</a>"
@@ -321,6 +321,18 @@
 		.end().find(".command-view-poi-summary").on("click", function(e)
 		{
 			$($(this).attr("data-target")).modal("show");
+		})
+		.end().find(".command-view-poi-alias").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/alias']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-poi-google").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/google']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-poi-wikipedia").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/wikipedia']; ?>\&poi_id=" + $(this).data("row-id");
 		});
 	});
 	

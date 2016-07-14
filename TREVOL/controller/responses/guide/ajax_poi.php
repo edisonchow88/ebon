@@ -85,6 +85,18 @@ class ControllerResponsesGuideAjaxPoi extends AController {
 		if($this->data['name'] == '') {
 			$result['warning'][] = 'Please input <b>Name</b>';
 		}
+		
+		if($this->data['blurb'] == '') {
+			$result['warning'][] = 'Please input <b>Blurb</b>';
+		}
+		
+		if($this->data['latitude'] == '') {
+			$result['warning'][] = 'Please input <b>Latitiude</b>';
+		}
+		
+		if($this->data['longitude'] == '') {
+			$result['warning'][] = 'Please input <b>Longitude</b>';
+		}
 		//END
 		
 		if(count($result['warning']) > 0) { 

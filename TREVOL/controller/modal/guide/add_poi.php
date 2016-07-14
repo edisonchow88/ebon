@@ -177,6 +177,46 @@ class ControllerModalGuideAddPoi extends AController {
 		$modal_input[$i]['required'] = false;
 		$modal_input[$i]['text'] = 'Undefined';
 		
+		$i = 'g_url';
+		$modal_input[$i]['label'] = 'Url';
+		$modal_input[$i]['id'] = str_replace("_","-",$i);
+		$modal_input[$i]['name'] = $i;
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['text'] = 'Undefined';
+		
+		$i = 'g_type';
+		$modal_input[$i]['label'] = 'Type';
+		$modal_input[$i]['id'] = str_replace("_","-",$i);
+		$modal_input[$i]['name'] = $i;
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['text'] = 'Undefined';
+		
+		$i = 'g_address_component';
+		$modal_input[$i]['label'] = 'Component';
+		$modal_input[$i]['id'] = str_replace("_","-",$i);
+		$modal_input[$i]['name'] = $i;
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['text'] = 'Undefined';
+		
+		$i = 'g_address';
+		$modal_input[$i]['label'] = 'Address';
+		$modal_input[$i]['id'] = str_replace("_","-",$i);
+		$modal_input[$i]['name'] = $i;
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['text'] = 'Undefined';
+		
+		$i = 'g_phone';
+		$modal_input[$i]['label'] = 'Phone';
+		$modal_input[$i]['id'] = str_replace("_","-",$i);
+		$modal_input[$i]['name'] = $i;
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['text'] = 'Undefined';
+		
 		$i = 'g_lat';
 		$modal_input[$i]['label'] = 'Latitude';
 		$modal_input[$i]['id'] = str_replace("_","-",$i);
@@ -187,6 +227,54 @@ class ControllerModalGuideAddPoi extends AController {
 		
 		$i = 'g_lng';
 		$modal_input[$i]['label'] = 'Longitude';
+		$modal_input[$i]['id'] = str_replace("_","-",$i);
+		$modal_input[$i]['name'] = $i;
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['text'] = 'Undefined';
+		
+		$i = 'g_hour';
+		$modal_input[$i]['label'] = 'Hour';
+		$modal_input[$i]['id'] = str_replace("_","-",$i);
+		$modal_input[$i]['name'] = $i;
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['text'] = 'Undefined';
+		
+		$i = 'g_photo';
+		$modal_input[$i]['label'] = 'Photo';
+		$modal_input[$i]['id'] = str_replace("_","-",$i);
+		$modal_input[$i]['name'] = $i;
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['text'] = 'Undefined';
+		
+		$i = 'g_rating';
+		$modal_input[$i]['label'] = 'Rating';
+		$modal_input[$i]['id'] = str_replace("_","-",$i);
+		$modal_input[$i]['name'] = $i;
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['text'] = 'Undefined';
+		
+		$i = 'g_review';
+		$modal_input[$i]['label'] = 'Review';
+		$modal_input[$i]['id'] = str_replace("_","-",$i);
+		$modal_input[$i]['name'] = $i;
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['text'] = 'Undefined';
+		
+		$i = 'g_utc_offset';
+		$modal_input[$i]['label'] = 'UTC Offset';
+		$modal_input[$i]['id'] = str_replace("_","-",$i);
+		$modal_input[$i]['name'] = $i;
+		$modal_input[$i]['type'] = 'hidden';
+		$modal_input[$i]['required'] = false;
+		$modal_input[$i]['text'] = 'Undefined';
+		
+		$i = 'g_bankrupt';
+		$modal_input[$i]['label'] = 'Bankrupt';
 		$modal_input[$i]['id'] = str_replace("_","-",$i);
 		$modal_input[$i]['name'] = $i;
 		$modal_input[$i]['type'] = 'hidden';
@@ -227,8 +315,8 @@ class ControllerModalGuideAddPoi extends AController {
 		$modal_input[$i]['required'] = false;
 		$modal_input[$i]['text'] = 'Undefined';
 		
-		$i = 'w_blurb';
-		$modal_input[$i]['label'] = 'Blurb';
+		$i = 'w_extract';
+		$modal_input[$i]['label'] = 'Extract';
 		$modal_input[$i]['id'] = str_replace("_","-",$i);
 		$modal_input[$i]['name'] = $i;
 		$modal_input[$i]['type'] = 'hidden';
@@ -255,7 +343,6 @@ class ControllerModalGuideAddPoi extends AController {
 		//END: input
 		
 		$modal_ajax['guide/ajax_poi'] = $this->html->getSecureURL('guide/ajax_poi');
-		//$modal_ajax['wikipedia'] = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=content&redirects=true&callback=?&titles=';
 		$modal_ajax['wikipedia'] = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&callback=?&redirects=true&titles=';
 		
 		$modal_link['wikipedia'] = 'https://en.wikipedia.org/wiki/Main_Page';

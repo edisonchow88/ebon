@@ -8,7 +8,6 @@
             </div>
         <div class="modal-body">
         	<div id="modal-add-poi-form-alert"></div>
-            <div id="modal-add-poi-form-demo" class="text-center"></div>
         	<form id="modal-add-poi-form-search">
             	<div class="form-group">
                     <div class="input-group">
@@ -23,14 +22,17 @@
                     	<span class="input-group-btn">
                         	<a class="btn btn-default" href="<?php echo $modal_link['wikipedia']; ?>" target="_blank"><i class="fa fa-fw fa-wikipedia-w"></i></a>
                         </span>
-                        <input id="modal-add-poi-input-search-wiki" class="form-control" type="text" placeholder="( Paste wikipedia link here and press Auto Complete)">
+                        <input id="modal-add-poi-input-search-wiki" class="form-control" type="text" placeholder="Search Wikipedia (key in the title)">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="button" onclick="searchWikipedia();">Auto Complete</button>
                         </span>
                     </div>
                 </div>
-                <div id="result"></div>
             </form>
+            <div id="modal-add-poi-form-demo" class="row" style="margin:0 !important;">
+            	<div id="modal-add-poi-form-demo-map" class="col-xs-8" style="height:150px;"></div>
+            	<div id="modal-add-poi-form-demo-photo" class="col-xs-4 text-right nopadding"></div>
+            </div>
             <br />
             
             <!-- START: Nav tabs -->
@@ -144,7 +146,12 @@
                                     }
                                     echo '<span id="modal-add-poi-form-text-'.$i['id'].'">';
                                     if($i['type'] == 'hidden') {
-                                        echo $i['text'];
+                                    	if (strpos($i['text'], 'http') !== false) {
+                                        	echo '<a href="'.$i['text'].'" target="_blank">Link</a>';
+                                    	}
+                                        else {
+                                        	echo $i['text'];
+                                        }
                                     }
                                     echo '</span>';
                                 }
@@ -189,6 +196,7 @@
 					}
 					content += "</ul></div>";
 					document.getElementById('modal-add-poi-form-alert').innerHTML = content;
+					$('#modal-add-poi').scrollTop(0);
 				}
 				else if(typeof json.success != 'undefined') {
 					<!-- if success -->
@@ -203,6 +211,7 @@
 		xmlhttp.send(form_data);
 	}
 	
+	/* [DISABLED AS DEMO IS UPDATED BY GOOGLE SEARCH]
 	function updateAddPoiDemo() {
 		var name = document.getElementById('modal-add-poi-form-input-name').value;
 		document.getElementById('modal-add-poi-form-demo').innerHTML = "<span style='text-transform:capitalize;'>"+name+"</span>";
@@ -213,34 +222,56 @@
 	});
 	
 	updateAddPoiDemo();
+	*/
 </script>
 
 <!-- Search Wikipedia -->
 	<script>
         function searchWikipedia() {
 			var url = '<?php echo $modal_ajax["wikipedia"]; ?>';
-			var title = document.getElementById('modal-add-poi-input-search-wiki').value.replace(/ /g,'_');
+			var title = toTitleCase(document.getElementById('modal-add-poi-input-search-wiki').value);
+			title = title.replace(/ /g,'_');
 			var search_wikipedia_url = url + title;
 			$.getJSON(search_wikipedia_url ,function(data) {
 				$.each(data.query.pages, function(i, item) {
 					document.getElementById('modal-add-poi-form-alert').innerHTML = '';
 					if(typeof item.missing != 'undefined') {
 						<!-- if error -->
+						<!-- START: post alert -->
 						var content;
 						content = "<div class='alert alert-warning'>Location cannot be found via Wikipedia. You may key in the info manually.</div>";
 						document.getElementById('modal-add-poi-form-alert').innerHTML = content;
+						<!-- END -->
 					}
 					else {
+						<!-- if success -->
+						<!-- START: get value -->
+						var str = item.extract;
+						var title = item.title;
+						<!-- END -->
+						
+						<!-- START: process value -->
+						str = str.replace(/ *\([^)]*\) */g, " "); //remove any text between ()
+						str = str.replace(/\n/g, '\n\n'); //add additional new line for each paragraph
+						<!-- END -->
+						
+						<!-- START: input value -->
+						document.getElementById('modal-add-poi-form-input-blurb').value = str.split('\.')[0] + '.';
+						document.getElementById('modal-add-poi-form-input-description').value = str;
+						
+						document.getElementById('modal-add-poi-form-input-w-title').value = title;
+						document.getElementById('modal-add-poi-form-input-w-extract').value = str;
+						
+						document.getElementById('modal-add-poi-form-text-w-title').innerHTML = title;
+						document.getElementById('modal-add-poi-form-text-w-extract').innerHTML = str;
+						<!-- END -->
+						
+						<!-- START: post alert -->
 						var content;
 						content = "<div class='alert alert-success'>Input has been autocompleted.</div>";
 						document.getElementById('modal-add-poi-form-alert').innerHTML = content;
-						var str = item.extract;
-						str = str.replace(/ *\([^)]*\) */g, " "); //remove any text between ()
-						str = str.replace(/\n/g, '\n\n'); //add additional new line for each paragraph
-						document.getElementById('modal-add-poi-form-input-blurb').value = str.split('\.')[0] + '.';
-						document.getElementById('modal-add-poi-form-input-description').value = str;
+						<!-- END -->
 					}
-		
 				});
 			});
         }
@@ -251,6 +282,10 @@
 				searchWikipedia();
             }
         });
+		
+		function toTitleCase(str) {
+			return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+		}
     </script>
 <!-- END -->
 
@@ -262,52 +297,183 @@
     </style>
     
     <script>
-        function initPlaceFinder() {
-        
-            var input = document.getElementById('modal-add-poi-input-search-google');
-            
-            var autocomplete = new google.maps.places.Autocomplete(input);
-            
-            autocomplete.addListener('place_changed', function() {
-                document.getElementById('modal-add-poi-form-alert').innerHTML = "";
-                
-                var place = autocomplete.getPlace();
-                if (!place.geometry) {
+		function initPlaceFinder() {
+			var map = new google.maps.Map(document.getElementById('modal-add-poi-form-demo-map'), {
+				zoom: 0,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+			
+			// Create the search box and link it to the UI element.
+			var input = document.getElementById('modal-add-poi-input-search-google');
+			var searchBox = new google.maps.places.SearchBox(input);
+			
+			// Bias the SearchBox results towards current map's viewport.
+			map.addListener('bounds_changed', function() {
+				searchBox.setBounds(map.getBounds());
+			});
+			
+			<!-- START: [IMPORTANT] Render Google Map else it will not appear in Bootstrap Modal -->
+			$('#modal-add-poi').on('shown.bs.modal', function () {
+				google.maps.event.trigger(map, 'resize');
+				map.setCenter(new google.maps.LatLng(5, 100));
+			});
+			<!-- END -->
+			
+			var markers = [];
+			// Listen for the event fired when the user selects a prediction and retrieve
+			// more details for that place.
+			searchBox.addListener('places_changed', function() {
+				document.getElementById('modal-add-poi-form-alert').innerHTML = "";
+				
+				var places = searchBox.getPlaces();
+				
+				if (places.length == 0) {
 					var content;
                     content = "<div class='alert alert-warning'>Location cannot be found via Google. You may key in the info manually.</div>";
                     document.getElementById('modal-add-poi-form-alert').innerHTML = content;
                     return;
-                }
-                
-                autocompleteAddPoiForm(place);
-            });
-        }
+				}
+				else if(places.length > 1) {
+					var content;
+                    content = "<div class='alert alert-warning'>There is more than one result in Google. Please be specific.</div>";
+                    document.getElementById('modal-add-poi-form-alert').innerHTML = content;
+                    return;
+				}
+				
+				// Clear out the old markers.
+				markers.forEach(function(marker) {
+					marker.setMap(null);
+				});
+				markers = [];
+				
+				// For each place, get the icon, name and location.
+				var bounds = new google.maps.LatLngBounds();
+				places.forEach(function(place) {
+					if (!place.geometry) {
+						var content;
+						content = "<div class='alert alert-warning'>Location cannot be found via Google. You may key in the info manually.</div>";
+						document.getElementById('modal-add-poi-form-alert').innerHTML = content;
+						return;
+					}
+					
+					var icon = {
+						url: place.icon,
+						size: new google.maps.Size(71, 71),
+						origin: new google.maps.Point(0, 0),
+						anchor: new google.maps.Point(17, 34),
+						scaledSize: new google.maps.Size(25, 25)
+					};
+					
+					// Create a marker for each place.
+					markers.push(new google.maps.Marker({
+						map: map,
+						icon: icon,
+						title: place.name,
+						position: place.geometry.location
+					}));
+					
+					autocompleteAddPoiForm(place);
+					
+					if (place.geometry.viewport) {
+						// Only geocodes have viewport.
+						bounds.union(place.geometry.viewport);
+					} else {
+						bounds.extend(place.geometry.location);
+					}
+				});
+				map.fitBounds(bounds);
+			});
+		}
         
         function autocompleteAddPoiForm(place) {
-			<!-- START: wikipedia autocomplete -->
-			var title = place.name.replace(/ /g,'_');
-			document.getElementById('modal-add-poi-input-search-wiki').value = title;
-			searchWikipedia();
+			<!-- START: reset form -->
+			document.getElementById('modal-add-poi-form').reset();
 			<!-- END -->
 			
-            var lat = place.geometry.location.lat().toFixed(7);
+			<!-- START: filter empty string -->
+			var place_id = place.place_id;
+			var name = place.name;
+			if (typeof place.url != 'undefined') { var url = place.url; } else { var url = ''; }
+			if (typeof place.address_components != 'undefined') { var address_component  = place.address_components; } else { var address_component  = ''; }
+			if (typeof place.formatted_address != 'undefined') { var address  = place.formatted_address; } else { var address  = ''; }
+			var lat = place.geometry.location.lat().toFixed(7);
             var lng = place.geometry.location.lng().toFixed(7);
-            if (typeof place.website != 'undefined') { var website = place.website; } else { var website = ''; }
-            if (typeof place.opening_hours != 'undefined') { var hour = place.opening_hours; } else { var hour = ''; }
-            
+			if (typeof place.types != 'undefined') { var type = place.types; } else { var type = ''; }
+			if (typeof place.types != 'undefined') { var type = place.types; } else { var type = ''; }
+			if (typeof place.website != 'undefined') { var website = place.website; } else { var website = ''; }
+			if (typeof place.vicinity != 'undefined') { var vicinity = place.vicinity; } else { var vicinity = ''; }
+			if (typeof place.international_phone_number != 'undefined') { var phone = place.international_phone_number; } else { var phone = ''; }
+			if (typeof place.opening_hours != 'undefined') { var hour = place.opening_hours; } else { var hour = ''; }
+			if (typeof place.photos != 'undefined') {
+				var photo = new Array();
+				for(i=0;i<place.photos.length;i++) {
+					photo[i] = place.photos[i];
+					photo[i].url = place.photos[i].getUrl({'maxWidth': 300, 'maxHeight': 300});
+				}
+			}
+			else {
+				var photo = '';
+			}
+			if (typeof place.rating != 'undefined') { var rating = place.rating; } else { var rating = ''; }
+			if (typeof place.reviews != 'undefined') { var review = place.reviews; } else { var review = ''; }
+			if (typeof place.utc_offset != 'undefined') { var utc_offset = place.utc_offset; } else { var utc_offset = ''; }
+			if (typeof place.permenantly_closed != 'undefined') { var bankrupt = place.permenantly_closed; } else { var bankrupt = ''; }
+			<!-- END -->
+			
+			<!-- START: fill the form -->
             document.getElementById('modal-add-poi-form-input-name').value = place.name;
             document.getElementById('modal-add-poi-form-input-lat').value = lat;
             document.getElementById('modal-add-poi-form-input-lng').value = lng;
             
             document.getElementById('modal-add-poi-form-input-g-place-id').value = place.place_id;
+			document.getElementById('modal-add-poi-form-input-g-name').value = name;
+			
+            document.getElementById('modal-add-poi-form-input-g-place-id').value = place_id;
+			document.getElementById('modal-add-poi-form-input-g-name').value = name;
+            document.getElementById('modal-add-poi-form-input-g-website').value = website;
+            document.getElementById('modal-add-poi-form-input-g-vicinity').value = vicinity;
+			document.getElementById('modal-add-poi-form-input-g-url').value = url;
+			document.getElementById('modal-add-poi-form-input-g-type').value = JSON.stringify(type);
+			document.getElementById('modal-add-poi-form-input-g-address-component').value = JSON.stringify(address_component);
+			document.getElementById('modal-add-poi-form-input-g-address').value = address;
+			document.getElementById('modal-add-poi-form-input-g-phone').value = phone;
             document.getElementById('modal-add-poi-form-input-g-lat').value = lat;
             document.getElementById('modal-add-poi-form-input-g-lng').value = lng;
-            document.getElementById('modal-add-poi-form-input-g-website').value = website;
+			document.getElementById('modal-add-poi-form-input-g-hour').value = JSON.stringify(hour);
+			document.getElementById('modal-add-poi-form-input-g-photo').value = JSON.stringify(photo);
+			document.getElementById('modal-add-poi-form-input-g-rating').value = rating;
+			document.getElementById('modal-add-poi-form-input-g-review').value = JSON.stringify(review);
+			document.getElementById('modal-add-poi-form-input-g-utc-offset').value = utc_offset;
+			document.getElementById('modal-add-poi-form-input-g-bankrupt').value = bankrupt;
             
-            document.getElementById('modal-add-poi-form-text-g-place-id').innerHTML = place.place_id;
+            document.getElementById('modal-add-poi-form-text-g-place-id').innerHTML = place_id;
+			document.getElementById('modal-add-poi-form-text-g-name').innerHTML = name;
+            document.getElementById('modal-add-poi-form-text-g-website').innerHTML = website;
+            document.getElementById('modal-add-poi-form-text-g-vicinity').innerHTML = vicinity;
+			if(url != '') { document.getElementById('modal-add-poi-form-text-g-url').innerHTML = '<a href="'+url+'" target="_blank">Link</a>'; }
+			var display_type = JSON.stringify(type).replace(/\,/g,', ').replace(/\[/g,'').replace(/\]/g,'').replace(/\"/g,'');
+			document.getElementById('modal-add-poi-form-text-g-type').innerHTML = display_type;
+			document.getElementById('modal-add-poi-form-text-g-address-component').innerHTML = address_component;
+			document.getElementById('modal-add-poi-form-text-g-address').innerHTML = address;
+			document.getElementById('modal-add-poi-form-text-g-phone').innerHTML = phone;
             document.getElementById('modal-add-poi-form-text-g-lat').innerHTML = lat;
             document.getElementById('modal-add-poi-form-text-g-lng').innerHTML = lng;
-            document.getElementById('modal-add-poi-form-text-g-website').innerHTML = website;
+			document.getElementById('modal-add-poi-form-text-g-hour').innerHTML = hour;
+			document.getElementById('modal-add-poi-form-text-g-photo').innerHTML = photo;
+			document.getElementById('modal-add-poi-form-text-g-rating').innerHTML = rating;
+			document.getElementById('modal-add-poi-form-text-g-review').innerHTML = review;
+			document.getElementById('modal-add-poi-form-text-g-utc-offset').innerHTML = utc_offset;
+			document.getElementById('modal-add-poi-form-text-g-bankrupt').innerHTML = bankrupt;
+			<!-- END -->
+			
+			<!-- START: Demo Photo -->
+			if (typeof place.photos != 'undefined') { document.getElementById('modal-add-poi-form-demo-photo').innerHTML = "<img src='"+photo[0].url+"' width='150' height='150'>"; }
+			<!-- END -->
+			
+			<!-- START: initiate wikipedia autocomplete -->
+			document.getElementById('modal-add-poi-input-search-wiki').value = place.name;
+			searchWikipedia();
+			<!-- END -->
         }
         
         //IMPORATNT: Disable form submit by enter key

@@ -308,14 +308,14 @@
 		$('[data-toggle="tooltip"]').tooltip();
 		grid.find(".command-edit").on("click", function(e)
 		{
-			document.getElementById("modal-form-get-poi-input-poi-id").value = $(this).data("row-id");
+			document.getElementById("modal-get-poi-form-input-poi-id").value = $(this).data("row-id");
 			getPoi(); <!-- the code is written in modal tpl -->
 			$($(this).attr("data-target")).modal("show");
 		})
 		.end().find(".command-delete").on("click", function(e)
 		{
-			document.getElementById("modal-form-delete-poi-input-poi-id").value = $(this).data("row-id");
-			document.getElementById("modal-form-delete-poi-text-poi-id").innerHTML = $(this).data("row-id");
+			document.getElementById("modal-delete-poi-form-input-poi-id").value = $(this).data("row-id");
+			document.getElementById("modal-delete-poi-form-text-poi-id").innerHTML = $(this).data("row-id");
 			$($(this).attr("data-target")).modal("show");
 		})
 		.end().find(".command-view-poi-summary").on("click", function(e)

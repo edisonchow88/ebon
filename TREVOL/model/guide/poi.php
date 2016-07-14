@@ -112,44 +112,34 @@ class ModelGuidePoi extends Model{
 	}
 	
 	public function addPoi($data) {
-		//START: table
-		$fields = $this->getFields($this->db->table($this->table));
-		
-		$update = array();
-		foreach($fields as $f){
-			if(isset($data[$f])) {
-				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+		//START: Run SQL
+			$fields = $this->getFields($this->db->table($this->table));
+			
+			$update = array();
+			foreach($fields as $f){
+				if(isset($data[$f])) {
+					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				}
 			}
-		}
-		
-		if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
-		if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-		
-		$sql = "
-			INSERT INTO `" . $this->db->table($this->table) . "` 
-			SET " . implode(',', $update) . "
-		";
-		$query = $this->db->query($sql);
+			
+			if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			
+			$sql = "
+				INSERT INTO `" . $this->db->table($this->table) . "` 
+				SET " . implode(',', $update) . "
+			";
+			$query = $this->db->query($sql);
 		//END
 		
 		$poi_id = $this->db->getLastId();
 		
-		//START:table_description
-		$fields = $this->getFields($this->db->table($this->table_description));
-		
-		$update = array();
-		$update[] = "poi_id = '" . $poi_id. "'";
-		
-		foreach($fields as $f){
-			if(isset($data[$f]))
-				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-		}
-		
-		$sql = "
-			INSERT INTO `" . $this->db->table($this->table_description) . "` 
-			SET " . implode(',', $update) . "
-		";
-		$query = $this->db->query($sql);
+		//START: Run Chain Reaction
+			$data['poi_id'] = $poi_id;
+			$this->addPoiAlias($data);
+			$this->addPoiDescription($data);
+			if($data['g_place_id'] != '') { $this->addPoiGoogle($data); }
+			if($data['w_title'] != '') { $this->addPoiWikipedia($data); }
 		//END
 		
 		$this->cache->delete('poi');
@@ -158,43 +148,24 @@ class ModelGuidePoi extends Model{
 	}
 	
 	public function editPoi($poi_id, $data) {
-		//START: table
-		$fields = $this->getFields($this->db->table($this->table));
-		
-		$update = array();
-		foreach($fields as $f){
-			if(isset($data[$f]))
-				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-		}
-		if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-		
-		if(!empty($update)){
-			$sql = "
-				UPDATE " . $this->db->table($this->table) . " 
-				SET " . implode(',', $update) . "
-				WHERE poi_id = '" . (int)$poi_id . "'
-			";
-			$query = $this->db->query($sql);
-		}
-		//END
-		
-		//START: table_description
-		$fields = $this->getFields($this->db->table($this->table_description));
-		
-		$update = array();
-		foreach($fields as $f){
-			if(isset($data[$f]))
-				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-		}
-		
-		if(!empty($update)){
-			$sql = "
-				UPDATE " . $this->db->table($this->table_description) . " 
-				SET " . implode(',', $update) . "
-				WHERE poi_id = '" . (int)$poi_id . "'
-			";
-			$query = $this->db->query($sql);
-		}
+		//START: Run SQL
+			$fields = $this->getFields($this->db->table($this->table));
+			
+			$update = array();
+			foreach($fields as $f){
+				if(isset($data[$f]))
+					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+			}
+			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			
+			if(!empty($update)){
+				$sql = "
+					UPDATE " . $this->db->table($this->table) . " 
+					SET " . implode(',', $update) . "
+					WHERE poi_id = '" . (int)$poi_id . "'
+				";
+				$query = $this->db->query($sql);
+			}
 		//END
 		
 		$this->cache->delete('poi');
@@ -202,20 +173,19 @@ class ModelGuidePoi extends Model{
 	}
 	
 	public function deletePoi($poi_id) {
-		//START: table
-		$sql = "
-			DELETE FROM " . $this->db->table($this->table) . " 
-			WHERE poi_id = '" . (int)$poi_id . "'
-		";
-		$query = $this->db->query($sql);
+		//START: Run SQL
+			$sql = "
+				DELETE FROM " . $this->db->table($this->table) . " 
+				WHERE poi_id = '" . (int)$poi_id . "'
+			";
+			$query = $this->db->query($sql);
 		//END
 		
-		//START: table_description
-		$sql = "
-			DELETE FROM " . $this->db->table($this->table_description) . " 
-			WHERE poi_id = '" . (int)$poi_id . "'
-		";
-		$query = $this->db->query($sql);
+		//START: Run Chain Reaction
+			$this->deletePoiAliasByPoiId($poi_id);
+			$this->deletePoiDescriptionByPoiId($poi_id);
+			$this->deletePoiGoogleByPoiId($poi_id);
+			$this->deletePoiWikipediaByPoiId($poi_id);
 		//END
 		
 		$this->cache->delete('poi');
@@ -353,6 +323,23 @@ class ModelGuidePoi extends Model{
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_alias) . " 
 						WHERE alias_id = '" . (int)$alias_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_alias');
+			return true;
+		}
+		
+		public function deletePoiAliasByPoiId($poi_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_alias) . " 
+						WHERE poi_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END
@@ -502,6 +489,23 @@ class ModelGuidePoi extends Model{
 			$this->cache->delete('poi_description');
 			return true;
 		}
+		
+		public function deletePoiDescriptionByPoiId($poi_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_description) . " 
+						WHERE poi_id = '" . (int)$poi_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_description');
+			return true;
+		}
 	//END
 	
 	//START: [Google]
@@ -640,6 +644,23 @@ class ModelGuidePoi extends Model{
 			$this->cache->delete('poi_google');
 			return true;
 		}
+		
+		public function deletePoiGoogleByPoiId($poi_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_google) . " 
+						WHERE poi_id = '" . (int)$poi_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_google');
+			return true;
+		}
 	//END
 	
 	//START: [Wikipedia]
@@ -769,6 +790,23 @@ class ModelGuidePoi extends Model{
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_wikipedia) . " 
 						WHERE wikipedia_id = '" . (int)$wikipedia_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_wikipedia');
+			return true;
+		}
+		
+		public function deletePoiWikipediaByPoiId($poi_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_wikipedia) . " 
+						WHERE poi_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END

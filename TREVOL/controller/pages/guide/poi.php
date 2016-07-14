@@ -209,8 +209,8 @@ class ControllerPagesGuidePoi extends AController {
 		
 		//START: include modal
 		$this->addChild('modal/guide/add_poi', 'modal_add_poi', 'modal/guide/add_poi.tpl');
-		//$this->addChild('modal/guide/edit_poi', 'modal_edit_poi', 'modal/guide/edit_poi.tpl');
-		//$this->addChild('modal/guide/delete_poi', 'modal_delete_poi', 'modal/guide/delete_poi.tpl');
+		$this->addChild('modal/guide/edit_poi', 'modal_edit_poi', 'modal/guide/edit_poi.tpl');
+		$this->addChild('modal/guide/delete_poi', 'modal_delete_poi', 'modal/guide/delete_poi.tpl');
 		//$this->addChild('modal/guide/view_poi_summary', 'modal_view_poi_summary', 'modal/guide/view_poi_summary.tpl');
 		//END
 		

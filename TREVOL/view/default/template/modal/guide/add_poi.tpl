@@ -29,6 +29,7 @@
                     </div>
                 </div>
             </form>
+            <br />
             <div id="modal-add-poi-form-demo" class="row" style="margin:0 !important;">
             	<div id="modal-add-poi-form-demo-map" class="col-xs-8" style="height:150px;"></div>
             	<div id="modal-add-poi-form-demo-photo" class="col-xs-4 text-right nopadding"></div>

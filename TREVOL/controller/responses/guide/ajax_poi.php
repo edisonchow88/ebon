@@ -41,7 +41,7 @@ class ControllerResponsesGuideAjaxPoi extends AController {
 	}
 	
 	public function add() {
-		if($this->verify() == 'failed') { return; }
+		if($this->verify_add() == 'failed') { return; }
 		
 		$poi_id = $this->model_guide_poi->addPoi($this->data); 
 		$this->session->data['success'] = 'Success: New <b>Poi #'.$poi_id.'</b> has been added';
@@ -53,7 +53,7 @@ class ControllerResponsesGuideAjaxPoi extends AController {
 	}
 	
 	public function edit() {
-		if($this->verify() == 'failed') { return; }
+		if($this->verify_edit() == 'failed') { return; }
 		
 		$poi_id = $this->data['poi_id']; 
 		$execution = $this->model_guide_poi->editPoi($poi_id, $this->data); 
@@ -80,23 +80,49 @@ class ControllerResponsesGuideAjaxPoi extends AController {
 		}
 	}
 	
-	public function verify() {
+	public function verify_add() {
 		//START: set requirement
-		if($this->data['name'] == '') {
-			$result['warning'][] = 'Please input <b>Name</b>';
-		}
+			if($this->data['name'] == '') {
+				$result['warning'][] = 'Please input <b>Name</b>';
+			}
+			
+			if($this->data['blurb'] == '') {
+				$result['warning'][] = 'Please input <b>Blurb</b>';
+			}
+			
+			if($this->data['lat'] == '') {
+				$result['warning'][] = 'Please input <b>Latitiude</b>';
+			}
+			
+			if($this->data['lng'] == '') {
+				$result['warning'][] = 'Please input <b>Longitude</b>';
+			}
+			
+			if($this->data['status'] == '') {
+				$result['warning'][] = 'Please input <b>Status</b>';
+			}
+		//END
 		
-		if($this->data['blurb'] == '') {
-			$result['warning'][] = 'Please input <b>Blurb</b>';
+		if(count($result['warning']) > 0) { 
+			$response = json_encode($result);
+			echo $response;	
+			return 'failed';
 		}
-		
-		if($this->data['latitude'] == '') {
-			$result['warning'][] = 'Please input <b>Latitiude</b>';
-		}
-		
-		if($this->data['longitude'] == '') {
-			$result['warning'][] = 'Please input <b>Longitude</b>';
-		}
+	}
+	
+	public function verify_edit() {
+		//START: set requirement
+			if($this->data['lat'] == '') {
+				$result['warning'][] = 'Please input <b>Latitiude</b>';
+			}
+			
+			if($this->data['lng'] == '') {
+				$result['warning'][] = 'Please input <b>Longitude</b>';
+			}
+			
+			if($this->data['status'] == '') {
+				$result['warning'][] = 'Please input <b>Status</b>';
+			}
 		//END
 		
 		if(count($result['warning']) > 0) { 

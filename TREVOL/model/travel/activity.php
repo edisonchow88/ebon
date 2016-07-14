@@ -91,8 +91,10 @@ class ModelTravelActivity extends Model{
 		$update = array();
 		foreach($fields as $f){
 			if(isset($data[$f]))
-				$update[] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 		}
+		if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+		if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 		
 		$sql = "
 			INSERT INTO `" . $this->db->table($this->table) . "` 
@@ -111,7 +113,7 @@ class ModelTravelActivity extends Model{
 		
 		foreach($fields as $f){
 			if(isset($data[$f]))
-				$update[] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 		}
 		
 		$sql = "
@@ -133,8 +135,9 @@ class ModelTravelActivity extends Model{
 		$update = array();
 		foreach($fields as $f){
 			if(isset($data[$f]))
-				$update[] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 		}
+		if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 		
 		if(!empty($update)){
 			$sql = "
@@ -152,7 +155,7 @@ class ModelTravelActivity extends Model{
 		$update = array();
 		foreach($fields as $f){
 			if(isset($data[$f]))
-				$update[] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 		}
 		
 		if(!empty($update)){

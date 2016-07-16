@@ -201,7 +201,7 @@ class ControllerPagesGuidePoi extends AController {
 		$i = 'commands';
 		$column[$i]['name'] = $i;
 		$column[$i]['title'] = '';
-		$column[$i]['width'] = '720px';
+		$column[$i]['width'] = '730px';
 		$column[$i]['align'] = 'right';
 		$column[$i]['sortable'] = 'false';
 		$column[$i]['searchable'] = 'false';
@@ -211,12 +211,14 @@ class ControllerPagesGuidePoi extends AController {
 		$this->addChild('modal/guide/add_poi', 'modal_add_poi', 'modal/guide/add_poi.tpl');
 		$this->addChild('modal/guide/edit_poi', 'modal_edit_poi', 'modal/guide/edit_poi.tpl');
 		$this->addChild('modal/guide/delete_poi', 'modal_delete_poi', 'modal/guide/delete_poi.tpl');
-		//$this->addChild('modal/guide/view_poi_summary', 'modal_view_poi_summary', 'modal/guide/view_poi_summary.tpl');
+		$this->addChild('modal/guide/toggle_poi_status', 'modal_toggle_poi_status', 'modal/guide/toggle_poi_status.tpl');
+		$this->addChild('modal/guide/view_poi_summary', 'modal_view_poi_summary', 'modal/guide/view_poi_summary.tpl');
 		//END
 		
 		//START: define link
 			$link['guide/poi_subset/alias'] = $this->html->getSecureURL('guide/poi_subset/alias');
 			$link['guide/poi_subset/description'] = $this->html->getSecureURL('guide/poi_subset/description');
+			$link['guide/poi_subset/destination'] = $this->html->getSecureURL('guide/poi_subset/destination');
 			$link['guide/poi_subset/google'] = $this->html->getSecureURL('guide/poi_subset/google');
 			$link['guide/poi_subset/wikipedia'] = $this->html->getSecureURL('guide/poi_subset/wikipedia');
 		//END

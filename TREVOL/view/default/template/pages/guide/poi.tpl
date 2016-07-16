@@ -1,6 +1,7 @@
 <!-- START: Alert -->
 <?php include($tpl_common_dir . 'action_confirm.tpl'); ?>
 <!-- END: Alert -->
+
 <div id="content" class="panel panel-default">
 	<div class="panel-heading col-xs-12">
     	<div class="col-xs-2 text-left"></div>
@@ -53,6 +54,7 @@
 	<?php echo $modal_add_poi; ?>
     <?php echo $modal_edit_poi; ?>
 	<?php echo $modal_delete_poi; ?>
+    <?php echo $modal_toggle_poi_status; ?>
     <?php echo $modal_view_poi_summary; ?>
 <!-- END: Modal -->
 
@@ -88,12 +90,16 @@
 			},
 			"row_status": function(column, row)
 			{
+				str = "<span id='poi-status-"+row.id+"' class='btn command-toggle-poi-status' data-row-id='"+row.id+"'>";
 				if(row.row_status == 1) {
-					return "<i class='fa fa-fw fa-toggle-on' data-toggle='tooltip' data-placement='right' title='ON'></i>";
+					str += "<i class='fa fa-fw fa-toggle-on'></i> <span class='small'>ON</span>";
 				}
 				else if(row.row_status == 0) {
-					return "<i class='fa fa-fw fa-toggle-off' data-toggle='tooltip' data-placement='right' title='OFF'></i>";
+					str += "<i class='fa fa-fw fa-toggle-off'></i> <span class='small'>OFF</span>";
 				}
+				str += "</span>";
+				return str;
+				
 			},
 			"date_added": function(column, row)
 			{
@@ -126,7 +132,7 @@
 			{
 				var image = JSON.parse(row.image);
 				if(image !== '' && image !== 'undefined' && image !== null) {
-					return "<img src=\"" + image.path + "\" title=\"" + image.name + "\" width=\"" + image.width + "\" />";
+					return "<img src=\"" + image.path + "\" title=\"" + image.name + "\" width=\"" + image.width + "\" height=\"" + image.width + "\" />";
 				}
 			},
 			"duration": function(column, row)
@@ -207,7 +213,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Destination'>"
-							+ "<a class='btn btn-sm btn-warning command-view-poi-destination' data-toggle='modal' data-target='#modal-view-poi-destination' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm btn-warning command-view-poi-destination' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-map-marker'>"
 								+ "</span>"
 							+ "</a>"
@@ -318,8 +324,15 @@
 			document.getElementById("modal-delete-poi-form-text-poi-id").innerHTML = $(this).data("row-id");
 			$($(this).attr("data-target")).modal("show");
 		})
+		.end().find(".command-toggle-poi-status").on("click", function(e)
+		{
+			document.getElementById("modal-toggle-poi-status-form-input-poi-id").value = $(this).data("row-id");
+			togglePoiStatus(); <!-- the code is written in modal tpl -->
+		})
 		.end().find(".command-view-poi-summary").on("click", function(e)
 		{
+			document.getElementById("modal-get-poi-summary-form-input-poi-id").value = $(this).data("row-id");
+			getPoiSummary(); <!-- the code is written in modal tpl -->
 			$($(this).attr("data-target")).modal("show");
 		})
 		.end().find(".command-view-poi-alias").on("click", function(e)
@@ -329,6 +342,10 @@
 		.end().find(".command-view-poi-description").on("click", function(e)
 		{
 			window.location.href = "<?php echo $link['guide/poi_subset/description']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-poi-destination").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/destination']; ?>\&poi_id=" + $(this).data("row-id");
 		})
 		.end().find(".command-view-poi-google").on("click", function(e)
 		{

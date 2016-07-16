@@ -7,13 +7,9 @@
             <h4 class="modal-title">View Poi Summary</h4>
             </div>
         <div class="modal-body">
-        	<div id="modal-form-view-poi-summary-alert"></div>
-            <div id="modal-form-view-poi-summary-demo" class="text-center"></div>
-            <form id="modal-form-view-poi-summary-search">
-                <input id="modal-form-view-poi-summary-input-search" class="form-control" type="text" placeholder="Search Place">
-                <div id="result"></div>
-            </form>
-            <form id="modal-form-view-poi-summary">
+        	<div id="modal-view-poi-summary-form-alert"></div>
+            <div id="modal-view-poi-summary-form-demo" class="text-center"></div>
+            <form id="modal-view-poi-summary-form">
                 <input 
                     type="hidden" 
                     name="action"
@@ -38,10 +34,11 @@
                             echo '</div>';
                             echo '<div class="input-group col-sm-8 col-xs-12">';
                             if($i['type'] == 'textarea') {
-                            	echo '<textarea ';
+                                echo '<textarea ';
                                 echo 'class="form-control" ';
-                                echo 'rows="5" ';
-                                echo 'id="modal-form-view-poi-summary-input-'.$i['id'].'" ';
+                                if(isset($i['row'])) { $r = $i['row']; } else { $r = 5; }
+                                echo 'rows="'.$r.'" ';
+                                echo 'id="modal-view-poi-summary-form-input-'.$i['id'].'" ';
                                 echo 'name="'.$i['name'].'" ';
                                 echo 'placeholder="'.$i['placeholder'].'" ';
                                 echo '>';
@@ -51,7 +48,7 @@
                             else if($i['type'] == 'select') {
                             	echo '<select ';
                                 echo 'class="form-control" ';
-                                echo 'id="modal-form-view-poi-summary-input-'.$i['id'].'" ';
+                                echo 'id="modal-view-poi-summary-form-input-'.$i['id'].'" ';
                                 echo 'name="'.$i['name'].'" ';
                                 echo '>';
                                 foreach($i['option'] as $o) {
@@ -67,7 +64,7 @@
                                 echo '<input ';
                                 echo 'type="'.$i['type'].'" ';
                                 echo 'class="form-control" ';
-                                echo 'id="modal-form-view-poi-summary-input-'.$i['id'].'" ';
+                                echo 'id="modal-view-poi-summary-form-input-'.$i['id'].'" ';
                                 echo 'name="'.$i['name'].'" ';
                                 echo 'value="'.$i['value'].'" ';
                                 echo 'placeholder="'.$i['placeholder'].'" ';
@@ -80,7 +77,7 @@
                                     echo '</a>';
                                     echo '</span>';
                                 }
-                                echo '<span id="modal-form-view-poi-summary-text-'.$i['id'].'">';
+                                echo '<span id="modal-view-poi-summary-form-text-'.$i['id'].'">';
                                 if($i['type'] == 'hidden') {
                                     echo $i['text'];
                                 }
@@ -92,10 +89,21 @@
                     }
                 ?>
             </form>
+            <form id="modal-get-poi-summary-form">
+                <input 
+                    type="hidden" 
+                    name="action"
+                    value="get_summary" 
+                />
+                <input
+                    type="hidden"
+                    id="modal-get-poi-summary-form-input-poi-id" 
+                    name="poi_id" 
+                />
+            </form>
         </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" onclick="viewPoiSummary();">Save</button>
             </div>
         </div>
     </div>
@@ -103,50 +111,34 @@
 <!-- END: Modal -->
 
 <script>
-	function viewPoiSummary() {
-		var form_element = document.querySelector("#modal-form-view-poi-summary");
+	function getPoiSummary() {
+		var form_element = document.querySelector("#modal-get-poi-summary-form");
 		var form_data = new FormData(form_element);
 		var xmlhttp = new XMLHttpRequest();
 		var url = "<?php echo $modal_ajax['guide/ajax_poi']; ?>";
 		var data = "";
 		var query = url + data;
 		xmlhttp.onreadystatechange = function() {
-			document.getElementById('modal-form-view-poi-summary-alert').innerHTML = "";
+			document.getElementById('modal-view-poi-summary-form-alert').innerHTML = "";
 			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 				<!-- if connection success -->
 				var json = JSON.parse(xmlhttp.responseText);
-				
-				if(typeof json.warning != 'undefined') {
-					<!-- if error -->
-					var content;
-					content = "<div class='alert alert-danger'>Error:<br/><ul>";
-					for(i=0;i<json.warning.length;i++) {
-						content += "<li>"+json.warning[i]+"</li>";
+				<?php
+                    foreach($modal_input as $i) {
+						if(!isset($i['section'])) { 
+							echo "document.getElementById('modal-view-poi-summary-form-input-".$i['id']."').value = json.".$i['name'].";";
+							if(isset($i['json'])) {
+								echo "document.getElementById('modal-view-poi-summary-form-text-".$i['id']."').innerHTML = json.".$i['json'].";";
+							}
+						}
 					}
-					content += "</ul></div>";
-					document.getElementById('modal-form-view-poi-summary-alert').innerHTML = content;
-				}
-				else if(typeof json.success != 'undefined') {
-					<!-- if success -->
-					window.location.reload(true);
-				}
+				?>
 			} else {
 				<!-- if connection failed -->
-				document.getElementById('modal-form-view-poi-summary-alert').innerHTML = xmlhttp.responseText;
+				document.getElementById('modal-view-poi-summary-form-alert').innerHTML = xmlhttp.responseText;
 			}
 		};
 		xmlhttp.open("POST", query, true);
 		xmlhttp.send(form_data);
 	}
-	
-	function updateAddPoiDemo() {
-		var name = document.getElementById('modal-form-view-poi-summary-input-name').value;
-		document.getElementById('modal-form-view-poi-summary-demo').innerHTML = "<span style='text-transform:capitalize;'>"+name+"</span>";
-	}
-	
-	$("#modal-form-view-poi-summary").change(function(e) {
-		updateAddPoiDemo();
-	});
-	
-	updateAddPoiDemo();
 </script>

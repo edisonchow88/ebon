@@ -13,10 +13,10 @@ class ControllerResponsesGuideAjaxPoi extends AController {
 		$this->loadModel('resource/tag');
 		$this->loadModel('resource/image');
 		//END
-		
+			
 		foreach($_POST as $key => $value) {
 			$this->data[$key] = $value;
-		}
+		}	
 		
 		$action = $this->data['action'];
 		unset($this->data['action']);
@@ -25,6 +25,8 @@ class ControllerResponsesGuideAjaxPoi extends AController {
 		else if($action == 'add') { $this->add(); }
 		else if($action == 'edit') { $this->edit(); }
 		else if($action == 'delete') { $this->delete(); }
+		else if($action == 'toggle_status') { $this->toggle_status(); }
+		else if($action == 'get_summary') { $this->get_summary(); }
 		else { 
 		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 			$result['warning'][] = 'No action has been sent via POST'; 
@@ -130,5 +132,19 @@ class ControllerResponsesGuideAjaxPoi extends AController {
 			echo $response;	
 			return 'failed';
 		}
+	}
+	
+	public function toggle_status() {
+		$poi_id = $this->data['poi_id']; 
+		$result = $this->model_guide_poi->togglePoiStatus($poi_id);
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function get_summary() {
+		$poi_id = $this->data['poi_id']; 
+		$result = $this->model_guide_poi->getPoiSummary($poi_id);
+		$response = json_encode($result);
+		echo $response;
 	}
 }

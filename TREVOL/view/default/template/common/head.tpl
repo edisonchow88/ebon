@@ -15,6 +15,8 @@
 
 <link rel="stylesheet" type="text/css" href="<?php echo $template_dir; ?>stylesheet/stylesheet.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo $template_dir; ?>stylesheet/jquery.bootgrid-1.3.1/jquery.bootgrid.min.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $template_dir; ?>stylesheet/trevol.css" />
+<link rel="stylesheet" type="text/css" href="<?php echo $template_dir; ?>stylesheet/tooltip.css" />
 
 <?php foreach ($styles as $style) { ?>
 <link rel="<?php echo $style['rel']; ?>" type="text/css" href="<?php echo $style['href']; ?>"
@@ -36,6 +38,7 @@
 </script>
 <script type="text/javascript" src="<?php echo $template_dir; ?>javascript/jquery/jquery-migrate-1.2.1.min.js"></script>
 <script type="text/javascript" src="<?php echo $template_dir; ?>javascript/jquery/jquery-ui/jquery-ui-1.10.4.custom.min.js"></script>
+<script type="text/javascript" src="<?php echo $template_dir; ?>javascript/tooltip.js"></script>
 <script type="text/javascript" src="<?php echo $template_dir; ?>javascript/bootstrap.min.js"></script>
 <script type="text/javascript" src="<?php echo $template_dir; ?>javascript/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="<?php echo $template_dir; ?>javascript/ckeditor/adapters/jquery.js"></script>

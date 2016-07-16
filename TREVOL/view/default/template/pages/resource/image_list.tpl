@@ -8,7 +8,7 @@
             <ul class="nav navbar-nav">
             	<li><div style="padding:15px;"><b>Source :</b></div></li>
             	<?php 
-                    foreach($source as $e) {
+                    foreach($reference['source'] as $e) {
                         echo "<li>";
                         echo "<a href=".$e['link']." target='_blank'>".$e['name']."</a>";
                         echo "</li>";
@@ -21,7 +21,18 @@
 
 <div id="content" class="panel panel-default">
 	<div class="panel-heading col-xs-12">
-    	<div class="col-xs-2 text-left"></div>
+    	<div class="col-xs-2 text-left">
+        	<div class="dropdown">
+            	<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                	<i class="fa fa-fw fa-desktop"></i> View
+                	<span class="caret"></span>
+                </button>
+            	<ul class="dropdown-menu" >
+                	<li><a href="<?php echo $link['resource/image_source_list']; ?>">Image Source</a></li>
+                    <li><a href="<?php echo $link['resource/image_license_list']; ?>">Image License</a></li>
+                </ul>
+            </div>
+        </div>
     	<div class="col-xs-8 text-center"><h5>Image</h5></div>
         <div class="col-xs-2 text-right"><a data-toggle="modal" data-target="#modal-upload-image" class="btn btn-danger" role="button">Upload Image</a></div>
 	</div>
@@ -33,7 +44,8 @@
                 	<th data-column-id="image" data-formatter="image" data-sortable="false">Image</th>
                     <th data-column-id="id" data-type="numeric" data-order="asc">ID</th>
                     <th data-column-id="name" data-formatter="name">Name</th>
-                    <th data-column-id="source" data-formatter="source">Source</th>
+                    <th data-column-id="link" data-formatter="link">Link</th>
+                    <th data-column-id="license" data-formatter="license">License</th>
                     <th data-column-id="linked" data-formatter="linked" data-sortable="false">Linked</th>
                     <th data-column-id="commands" data-formatter="commands" data-sortable="false">Commands</th>
                 </tr>
@@ -87,7 +99,7 @@
 </div>
 <!-- END: Modal -->
 
-<?php echo $modal_add_image; ?>
+<?php echo $modal_upload_image; ?>
 
 <script>
 	var grid = $("#grid").bootgrid({
@@ -102,9 +114,16 @@
 			{
 				return row.name;
 			},
-			"source": function(column, row)
+			"link": function(column, row)
 			{
-				return "<a href=\"" + row.source + "\" target=\"_blank\">Link</a>";
+				if(row.link == '') { return; }
+				return "<a href=\"" + row.link + "\" target=\"_blank\">Link</a>";
+			},
+			"license": function(column, row)
+			{
+				if(row.license == '') { return; }
+				var license = JSON.parse(row.license);
+				return "<a href=\"" + license.link + "\" target=\"_blank\" data-toggle=\"tooltip\" data-placement=\"right\" title=\"" + license.description + "\">" + license.name + "</a>";
 			},
 			"linked": function(column, row)
 			{
@@ -123,6 +142,7 @@
 		}
 	}).on("loaded.rs.jquery.bootgrid", function()
 	{
+		$('[data-toggle="tooltip"]').tooltip();
 		/* Executes after data is loaded and rendered */
 		grid.find(".search-linked").on("click", function(e)
 		{

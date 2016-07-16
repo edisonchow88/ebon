@@ -320,6 +320,21 @@ class ModelGuideDestination extends Model{
 		$this->cache->delete('destination');
 	}
 	
+	//image
+	public function getDestinationByImageId($image_id) {
+		$sql = "
+				SELECT * 
+				FROM " . $this->db->table('destination_image') . " 
+				WHERE image_id = '" . (int)$image_id . "' 
+			";
+		$query = $this->db->query($sql);
+		
+		foreach($query->rows as $result){
+			$output[$result['destination_id']] = $this->getDestination($result['destination_id']);
+		}
+		
+		return $output;
+	}
 }
 
 ?>

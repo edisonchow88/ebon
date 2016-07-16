@@ -28,7 +28,9 @@ class ModelResourceTag extends Model{
 		return $output;
 	}
 	
-	public function getTag($tag_id='') {
+	public function getTag($tag_id='',$tag_type_id='') {
+		if($tag_id == '0') { return; } //avoid return an array
+		
 		$tag = array();
 		
 		if($tag_id == '') {
@@ -39,8 +41,9 @@ class ModelResourceTag extends Model{
 				ON t1.tag_id = t2.tag_id 
 				LEFT JOIN ".$this->db->table($this->table_type)." t3 
 				ON t1.tag_type_id = t3.tag_type_id 
-				ORDER BY t3.type_name ASC, t1.tag_id ASC 
 			";
+			if($tag_type_id != '') $sql .= "WHERE t1.tag_type_id = '" . (int)$this->db->escape($tag_type_id) . "' ";
+			$sql .= "ORDER BY t3.type_name ASC, t1.tag_id ASC";
 		}
 		else {
 			$sql = "
@@ -52,7 +55,7 @@ class ModelResourceTag extends Model{
 				ON t1.tag_type_id = t3.tag_type_id 
 				WHERE t1.tag_id = '" . (int)$tag_id . "' 
 			";
-
+			if($tag_type_id != '') $sql .= "AND t1.tag_type_id = '" . $this->db->escape($tag_type_id) . "'";
 		}
 		$query = $this->db->query($sql);
 		
@@ -70,6 +73,18 @@ class ModelResourceTag extends Model{
 		}
 		
 		return $output;
+	}
+	
+	public function getTagByTypeName($type_name) {
+		$sql = "
+			SELECT * 
+			FROM " . $this->db->table($this->table_type) . " 
+			WHERE type_name = '" . $type_name . "' 
+		";
+		$query = $this->db->query($sql);
+		$result = $query->row;
+		$tag_type_id = $result['tag_type_id'];
+		return $this->getTag('',$tag_type_id);
 	}
 	
 	public function getTagRelation($x,$y) {
@@ -397,6 +412,22 @@ class ModelResourceTag extends Model{
 			";
 		$query = $this->db->query($sql);
 		$this->cache->delete('tag_type');
+	}
+	
+	//image
+	public function getTagByImageId($image_id) {
+		$sql = "
+				SELECT * 
+				FROM " . $this->db->table('image_tag') . " 
+				WHERE image_id = '" . (int)$image_id . "' 
+			";
+		$query = $this->db->query($sql);
+		
+		foreach($query->rows as $result){
+			$output[$result['tag_id']] = $this->getTag($result['tag_id']);
+		}
+		
+		return $output;
 	}
 	
 	//destination

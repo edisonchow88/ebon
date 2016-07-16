@@ -40,43 +40,53 @@ class ControllerPagesResourceTagList extends AController {
 				$json_name .= '}';
 			$parent = $this->model_resource_tag->getTagParent($tag_id);
 				$n = count($parent);
-				$i = 0;
-				$json_parent = '[';
-				foreach($parent as $tag) {
-					$i += 1;
-					$json_parent .= '{';
-					$json_parent .= '"tag_id":';
-					$json_parent .= '"'.$tag['tag_id'].'"';
-					$json_parent .= ',';
-					$json_parent .= '"name":';
-					$json_parent .= '"'.$tag['name'].'"';
-					$json_parent .= ',';
-					$json_parent .= '"color":';
-					$json_parent .= '"'.$tag['type_color'].'"';
-					$json_parent .= '}';
-					if($i < $n) { $json_parent .= ','; }
+				if($n > 0) {
+					$i = 0;
+					$json_parent = '[';
+					foreach($parent as $tag) {
+						$i += 1;
+						$json_parent .= '{';
+						$json_parent .= '"tag_id":';
+						$json_parent .= '"'.$tag['tag_id'].'"';
+						$json_parent .= ',';
+						$json_parent .= '"name":';
+						$json_parent .= '"'.$tag['name'].'"';
+						$json_parent .= ',';
+						$json_parent .= '"color":';
+						$json_parent .= '"'.$tag['type_color'].'"';
+						$json_parent .= '}';
+						if($i < $n) { $json_parent .= ','; }
+					}
+					$json_parent .= ']';
 				}
-				$json_parent .= ']';
+				else {
+					$json_parent = '';
+				}
 			$child = $this->model_resource_tag->getTagChild($tag_id);
 			$similar = $this->model_resource_tag->getTagSimilar($tag_id);
 				$n = count($similar);
-				$i = 0;
-				$json_similar = '[';
-				foreach($similar as $tag) {
-					$i += 1;
-					$json_similar .= '{';
-					$json_similar .= '"tag_id":';
-					$json_similar .= '"'.$tag['tag_id'].'"';
-					$json_similar .= ',';
-					$json_similar .= '"name":';
-					$json_similar .= '"'.$tag['name'].'"';
-					$json_similar .= ',';
-					$json_similar .= '"color":';
-					$json_similar .= '"'.$tag['type_color'].'"';
-					$json_similar .= '}';
-					if($i < $n) { $json_similar .= ','; }
+				if(n > 0) {
+					$i = 0;
+					$json_similar = '[';
+					foreach($similar as $tag) {
+						$i += 1;
+						$json_similar .= '{';
+						$json_similar .= '"tag_id":';
+						$json_similar .= '"'.$tag['tag_id'].'"';
+						$json_similar .= ',';
+						$json_similar .= '"name":';
+						$json_similar .= '"'.$tag['name'].'"';
+						$json_similar .= ',';
+						$json_similar .= '"color":';
+						$json_similar .= '"'.$tag['type_color'].'"';
+						$json_similar .= '}';
+						if($i < $n) { $json_similar .= ','; }
+					}
+					$json_similar .= ']';
 				}
-				$json_similar .= ']';
+				else {
+					$json_similar = '';
+				}
 			
 			$result[$tag_id]['icon'] = $icon;
 			$result[$tag_id]['tag_id'] = $tag_id;

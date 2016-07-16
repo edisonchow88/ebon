@@ -7,50 +7,57 @@
 			<ul class="headermenu">
                 <li class="hidden-xs">
 					<div class="btn-group">
-						<a href="<?php echo $home; ?>" class="btn btn-default tp-icon">TREVOL
+						<a href="<?php echo $home; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Home">TREVOL
 						</a>
 					</div>
 				</li>
                 <li>
-					<div class="btn-group">
-						<a href="<?php echo $home; ?>" class="btn btn-default tp-icon">
-							<i class="fa fa-home fa-lg"></i></span><span class="hidden-sm hidden-xs"></span>
-						</a>
-					</div>
-				</li>
                 <li>
 					<div class="btn-group">
-						<a href="<?php echo $destination; ?>" class="btn btn-default tp-icon" title="Destination">
+						<a href="<?php echo $link['destination']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Destination">
 							<i class="fa fa-map-marker fa-lg"></i><span class="hidden-sm hidden-xs"></span>
 						</a>
 					</div>
 				</li>
                 <li>
 					<div class="btn-group">
-						<a href="<?php echo $interest; ?>" class="btn btn-default tp-icon" title="Interest">
+						<a href="<?php echo $link['interest']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Interest">
+							<i class="fa fa-gratipay fa-lg"></i><span class="hidden-sm hidden-xs"></span>
+						</a>
+					</div>
+				</li>
+                <li>
+					<div class="btn-group">
+						<a href="<?php echo $link['poi']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Poi">
 							<i class="fa fa-camera-retro fa-lg"></i><span class="hidden-sm hidden-xs"></span>
 						</a>
 					</div>
 				</li>
                 <li>
 					<div class="btn-group">
-						<a href="<?php echo $tag; ?>" class="btn btn-default tp-icon" title="Tag">
+						<a href="<?php echo $link['tag']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Tag">
 							<i class="fa fa-tag fa-lg"></i><span class="hidden-sm hidden-xs"></span>
 						</a>
 					</div>
 				</li>
                  <li>
 					<div class="btn-group">
-						<a href="<?php echo $image; ?>" class="btn btn-default tp-icon" title="Image">
+						<a href="<?php echo $link['image']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Image">
 							<i class="fa fa-picture-o fa-lg"></i><span class="hidden-sm hidden-xs"></span>
+						</a>
+					</div>
+				</li>
+                <li>
+					<div class="btn-group">
+						<a href="<?php echo $link['database']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Database">
+							<i class="fa fa-database fa-lg"></i><span class="hidden-sm hidden-xs"></span>
 						</a>
 					</div>
 				</li>
 				<li>
 					<div class="btn-group">
-						<a onClick="window.open('<?php echo $store; ?>');" class="btn btn-default tp-icon"
-						   data-toggle="dropdown" title="<?php echo $text_front; ?>">
-							<span class="hidden-sm hidden-xs">Store</span>
+						<a href="<?php echo $link['store']; ?>" target="_blank" class="btn btn-default tp-icon"  data-toggle="tooltip" data-placement="bottom" title="store">
+							<span>Store</span>
 						</a>
 					</div>
 				</li>
@@ -69,7 +76,7 @@
 
 						<div class="dropdown-menu dropdown-menu-head pull-right">
 							<ul class="dropdown-list gen-list">
-								<li><a href="<?php echo $logout; ?>"><i
+								<li><a href="<?php echo $link['logout']; ?>"><i
 												class="fa fa-unlock"></i><?php echo $text_logout; ?></a></li>
 							</ul>
 						</div>
@@ -77,14 +84,14 @@
 				</li>
                 <li>
 					<div class="btn-group">
-						<a href="<?php echo $language; ?>" class="btn btn-default tp-icon" title="Language">
+						<a href="<?php echo $link['language']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Language">
 							<i class="fa fa-language fa-lg"></i>
 						</a>
 					</div>
 				</li>
                 <li>
 					<div class="btn-group">
-						<a href="<?php echo $log; ?>" class="btn btn-default tp-icon" title="Log">
+						<a href="<?php echo $link['log']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Log">
 							<i class="fa fa-exclamation-triangle fa-lg"></i>
 						</a>
 					</div>

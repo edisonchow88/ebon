@@ -134,6 +134,7 @@ class ModelGuidePoi extends Model{
 		public function getPoiSummary($poi_id) {
 			$result['alias'] = $this->getPoiAliasByPoiId($poi_id);
 			$result['description'] = $this->getPoiDescriptionByPoiId($poi_id);
+			$result['destination'] = $this->getPoiDestinationByPoiId($poi_id);
 			$result['google'] = $this->getPoiGoogleByPoiId($poi_id);
 			$result['wikipedia'] = $this->getPoiWikipediaByPoiId($poi_id);
 			

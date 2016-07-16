@@ -77,6 +77,14 @@ class ControllerModalGuideViewPoiSummary extends AController {
 			$modal_input[$i]['required'] = false;
 			$modal_input[$i]['json'] = $i;
 			
+			$i = 'destination';
+			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+			$modal_input[$i]['id'] = str_replace("_","-",$i);
+			$modal_input[$i]['name'] = $i;
+			$modal_input[$i]['type'] = 'hidden';
+			$modal_input[$i]['required'] = false;
+			$modal_input[$i]['json'] = $i;
+			
 			$i = 'google';
 			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 			$modal_input[$i]['id'] = str_replace("_","-",$i);

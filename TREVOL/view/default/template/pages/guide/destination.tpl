@@ -196,7 +196,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Image'>"
-							+ "<a class='btn btn-sm btn-success command-view-destination-image' data-toggle='modal' data-target='#modal-view-destination-image' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm btn-success command-view-destination-image' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-picture-o'>"
 								+ "</span>"
 							+ "</a>"
@@ -204,7 +204,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Tag'>"
-							+ "<a class='btn btn-sm btn-success command-view-destination-tag' data-toggle='modal' data-target='#modal-view-destination-tag' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm btn-success command-view-destination-tag' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-tag'>"
 								+ "</span>"
 							+ "</a>"
@@ -293,6 +293,14 @@
 		.end().find(".command-view-destination-description").on("click", function(e)
 		{
 			window.location.href = "<?php echo $link['guide/destination_subset/description']; ?>\&destination_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-destination-image").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/destination_subset/image']; ?>\&destination_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-destination-tag").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/destination_subset/tag']; ?>\&destination_id=" + $(this).data("row-id");
 		})
 		.end().find(".command-view-destination-relation").on("click", function(e)
 		{

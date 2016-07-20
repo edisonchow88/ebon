@@ -636,6 +636,161 @@ class ModelGuideDestination extends Model{
 		}
 	//END
 	
+	//START: [Tag]
+		public function getDestinationTag($tag_id='',$destination_id='') {
+			//START: Run SQL
+				if($tag_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_tag) . " 
+					";
+					if($destination_id != '') {
+						$sql .= "
+							WHERE destination_id = '" . (int)$destination_id . "' 
+						";
+					}
+					$sql .= "
+						ORDER BY tag_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_tag) . " 
+					";
+					if($destination_id != '') {
+						$sql .= "
+							WHERE destination_id = '" . (int)$destination_id . "' AND tag_id = '" . (int)$tag_id . "' 
+						";
+					}
+					else {
+						$sql .= "
+							WHERE tag_id = '" . (int)$tag_id . "' 
+						";
+					}
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				if($tag_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['tag_id']] = $result;
+						$output[$result['tag_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+					$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getDestinationTagByDestinationId($destination_id) {
+			return $this->getDestinationTag('',$destination_id);
+		}
+		
+		public function addDestinationTag($data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_tag));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+						}
+					}
+				
+					if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				//END
+				
+				//START: Run SQL
+					$sql = "
+						INSERT INTO `" . $this->db->table($this->table_tag) . "` 
+						SET " . implode(',', $update) . "
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$tag_id = $this->db->getLastId();
+			
+			$this->cache->delete('destination_tag');
+			
+			return $tag_id;
+		}
+		
+		public function editDestinationTag($tag_id, $data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_tag));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_tag) . " 
+							SET " . implode(',', $update) . "
+							WHERE tag_id = '" . (int)$tag_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('destination_tag');
+			return true;
+		}
+		
+		public function deleteDestinationTag($tag_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_tag) . " 
+						WHERE tag_id = '" . (int)$tag_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('destination_tag');
+			return true;
+		}
+		
+		public function deleteDestinationTagByDestinationId($destination_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_tag) . " 
+						WHERE destination_id = '" . (int)$destination_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('destination_tag');
+			return true;
+		}
+	//END
+	
 	//START: [Google]
 		public function getDestinationGoogle($google_id='',$destination_id='') {
 			//START: Run SQL

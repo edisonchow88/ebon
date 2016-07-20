@@ -47,6 +47,7 @@ class ControllerPagesGuideDestination extends AController {
 				$result[$destination_id]['image'] = json_encode($row['image']);
 				$result[$destination_id]['name'] = $row['name'];
 				$result[$destination_id]['tag'] = json_encode($row['tag']);
+				$result[$destination_id]['parent'] = json_encode($row['parent']);
 				$result[$destination_id]['blurb'] = $row['blurb'];
 				$result[$destination_id]['description'] = $row['description'];
 				$result[$destination_id]['lat'] = $row['lat'];
@@ -79,7 +80,7 @@ class ControllerPagesGuideDestination extends AController {
 			$column[$i]['name'] = 'id';
 			$column[$i]['title'] = 'Id';
 			$column[$i]['type'] = 'numeric';
-			$column[$i]['width'] = '';
+			$column[$i]['width'] = '60px';
 			$column[$i]['order'] = 'desc';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
@@ -89,9 +90,9 @@ class ControllerPagesGuideDestination extends AController {
 			
 			$i = 'image';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = 'Image';
+			$column[$i]['title'] = '';
 			$column[$i]['type'] = '';
-			$column[$i]['width'] = '';
+			$column[$i]['width'] = '60px';
 			$column[$i]['order'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
@@ -119,7 +120,19 @@ class ControllerPagesGuideDestination extends AController {
 			$column[$i]['order'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'false';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'true';
+			
+			$i = 'parent';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = 'Parent';
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
 			
@@ -210,7 +223,7 @@ class ControllerPagesGuideDestination extends AController {
 			$i = 'commands';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = '';
-			$column[$i]['width'] = '730px';
+			$column[$i]['width'] = '500px';
 			$column[$i]['align'] = 'right';
 			$column[$i]['sortable'] = 'false';
 			$column[$i]['searchable'] = 'false';
@@ -221,7 +234,7 @@ class ControllerPagesGuideDestination extends AController {
 			$this->addChild('modal/guide/edit_destination', 'modal_edit_destination', 'modal/guide/edit_destination.tpl');
 			$this->addChild('modal/guide/delete_destination', 'modal_delete_destination', 'modal/guide/delete_destination.tpl');
 			$this->addChild('modal/guide/toggle_destination_status', 'modal_toggle_destination_status', 'modal/guide/toggle_destination_status.tpl');
-			//$this->addChild('modal/guide/view_destination_summary', 'modal_view_destination_summary', 'modal/guide/view_destination_summary.tpl');
+			$this->addChild('modal/guide/view_destination_summary', 'modal_view_destination_summary', 'modal/guide/view_destination_summary.tpl');
 		//END
 		
 		//START: set link

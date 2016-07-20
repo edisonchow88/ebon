@@ -55,6 +55,8 @@ class ModelGuideDestination extends Model{
 					ON t1.destination_id = t4.destination_id 
 					LEFT JOIN ".$this->db->table($this->table_tag)." t5
 					ON t1.destination_id = t5.destination_id 
+					LEFT JOIN ".$this->db->table($this->table_relation)." t6
+					ON t1.destination_id = t6.destination_id 
 				";
 				if($keyword != '') {
 					$sql .= "
@@ -83,6 +85,8 @@ class ModelGuideDestination extends Model{
 					ON t1.destination_id = t4.destination_id 
 					LEFT JOIN ".$this->db->table($this->table_tag)." t5
 					ON t1.destination_id = t5.destination_id 
+					LEFT JOIN ".$this->db->table($this->table_relation)." t6
+					ON t1.destination_id = t6.destination_id 
 					WHERE t1.destination_id = '" . (int)$destination_id . "' 
 					GROUP BY t1.destination_id 
 				";
@@ -109,6 +113,9 @@ class ModelGuideDestination extends Model{
 							$image['width'] = '30px';
 							$output[$result['destination_id']]['image'] = $image;
 						}
+						if(isset($result['parent_id'])) { 
+							$output[$result['destination_id']]['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['parent_id']); 
+						}
 					//END
 				}
 			}
@@ -130,8 +137,33 @@ class ModelGuideDestination extends Model{
 						$image['width'] = '30px';
 						$output['image'] = $image;
 					}
+					if(isset($result['parent_id'])) { 
+						$output['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['parent_id']); 
+					}
 				//END
 			}
+			//END
+			
+			return $output;
+		}
+		
+		public function getDestinationSpecialTagByDestinationId($destination_id) {
+			//START: Run SQL
+				$sql = "
+					SELECT DISTINCT destination_id, name
+					FROM " . $this->db->table($this->table_alias) . " 
+					WHERE destination_id = '" . (int)$destination_id . "' 
+					ORDER BY ranking desc 
+					LIMIT 1
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				$result = $query->row;
+				$output = $query->row;
+				$output['name'] = ucwords($result['name']);
+				$output['type_color'] = '#5cb85c';
 			//END
 			
 			return $output;
@@ -140,7 +172,6 @@ class ModelGuideDestination extends Model{
 		public function getDestinationSummary($destination_id) {
 			$result['alias'] = $this->getDestinationAliasByDestinationId($destination_id);
 			$result['description'] = $this->getDestinationDescriptionByDestinationId($destination_id);
-			$result['destination'] = $this->getDestinationDestinationByDestinationId($destination_id);
 			$result['google'] = $this->getDestinationGoogleByDestinationId($destination_id);
 			$result['wikipedia'] = $this->getDestinationWikipediaByDestinationId($destination_id);
 			
@@ -169,8 +200,6 @@ class ModelGuideDestination extends Model{
 				foreach($query->rows as $result) {
 					$output[$result['destination_id']] = $result;
 					$output[$result['destination_id']]['name'] = ucwords($result['name']);
-					$output[$result['destination_id']]['destination'] = array_values($this->getDestinationDestinationByDestinationId($result['destination_id']));
-					if(count($output[$result['destination_id']]['destination']) < 1) { $output[$result['destination_id']]['destination'][0]['name'] = ''; }
 				}
 			//END
 			
@@ -603,159 +632,6 @@ class ModelGuideDestination extends Model{
 			//END
 			
 			$this->cache->delete('destination_description');
-			return true;
-		}
-	//END
-	
-	//START: [Destination]
-		public function getDestinationDestination($relation_id='',$destination_id='') {
-			//START: Run SQL
-				if($relation_id == '') {
-					$sql = "
-						SELECT *
-						FROM " . $this->db->table($this->table_destination) . " 
-					";
-					if($destination_id != '') {
-						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' 
-						";
-					}
-					$sql .= "
-						ORDER BY relation_id DESC 
-					";
-				}
-				else {
-					$sql = "
-						SELECT *
-						FROM " . $this->db->table($this->table_destination) . " 
-					";
-					if($destination_id != '') {
-						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' AND relation_id = '" . (int)$relation_id . "' 
-						";
-					}
-					else {
-						$sql .= "
-							WHERE relation_id = '" . (int)$relation_id . "' 
-						";
-					}
-				}
-				$query = $this->db->query($sql);
-			//END
-			
-			//START: Set Output
-				if($relation_id == '') {
-					foreach($query->rows as $result){
-						$output[$result['relation_id']] = $result;
-					}
-				}
-				else {
-					$result = $query->row;
-					$output = $query->row;
-				}
-			//END
-			
-			return $output;
-		}
-		
-		public function getDestinationDestinationByDestinationId($destination_id) {
-			return $this->getDestinationDestination('',$destination_id);
-		}
-		
-		public function addDestinationDestination($data) {
-			//START: [Main Table]
-			
-				//START: Set Data
-					$fields = $this->getFields($this->db->table($this->table_destination));
-					
-					$update = array();
-					foreach($fields as $f){
-						if(isset($data[$f])) {
-							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-						}
-					}
-				
-					if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
-					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-				//END
-				
-				//START: Run SQL
-					$sql = "
-						INSERT INTO `" . $this->db->table($this->table_destination) . "` 
-						SET " . implode(',', $update) . "
-					";
-					$query = $this->db->query($sql);
-				//END
-				
-			//END
-			
-			$relation_id = $this->db->getLastId();
-			
-			$this->cache->delete('destination_destination');
-			
-			return $relation_id;
-		}
-		
-		public function editDestinationDestination($relation_id, $data) {
-			//START: [Main Table]
-			
-				//START: Set Data
-					$fields = $this->getFields($this->db->table($this->table_destination));
-					
-					$update = array();
-					foreach($fields as $f){
-						if(isset($data[$f]))
-							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-					}
-					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-					
-					if(!empty($update)){
-						$sql = "
-							UPDATE " . $this->db->table($this->table_destination) . " 
-							SET " . implode(',', $update) . "
-							WHERE relation_id = '" . (int)$relation_id . "'
-						";
-						$query = $this->db->query($sql);
-					}
-				//END
-				
-			//END
-			
-			$this->cache->delete('destination_destination');
-			return true;
-		}
-		
-		public function deleteDestinationDestination($relation_id) {
-			//START: [Main Table]
-			
-				//START: table
-					$sql = "
-						DELETE FROM " . $this->db->table($this->table_destination) . " 
-						WHERE relation_id = '" . (int)$relation_id . "'
-					";
-					$query = $this->db->query($sql);
-				//END
-				
-			//END
-			
-			$this->cache->delete('destination_destination');
-			return true;
-		}
-		
-		public function deleteDestinationDestinationByDestinationId($destination_id) {
-			//START: [Main Table]
-			
-				//START: table
-					$sql = "
-						DELETE FROM " . $this->db->table($this->table_destination) . " 
-						WHERE destination_id = '" . (int)$destination_id . "'
-					";
-					$query = $this->db->query($sql);
-				//END
-				
-			//END
-			
-			$this->cache->delete('destination_destination');
 			return true;
 		}
 	//END

@@ -125,7 +125,14 @@
 			{
 				var tag = JSON.parse(row.tag);
 				if(tag !== '' && tag !== 'undefined' && tag !== null) {
-					return "<a class=\"label label-pill\" style=\"background-color:"+tag.type_color+";\">" + tag.name + "</a>";
+					return "<a class=\"label label-pill search-tag\" data-row-name=\"" + tag.name + "\" style=\"background-color:"+tag.type_color+";\">" + tag.name + "</a>";
+				}
+			},
+			"parent": function(column, row)
+			{
+				var parent = JSON.parse(row.parent);
+				if(parent !== '' && parent !== 'undefined' && parent !== null) {
+					return "<a class=\"label label-pill search-parent\" data-row-name=\"" + parent.name + "\" style=\"background-color:"+parent.type_color+";\">" + parent.name + "</a>";
 				}
 			},
 			"image": function(column, row)
@@ -298,6 +305,14 @@
 		.end().find(".command-view-destination-wikipedia").on("click", function(e)
 		{
 			window.location.href = "<?php echo $link['guide/destination_subset/wikipedia']; ?>\&destination_id=" + $(this).data("row-id");
+		})
+		.end().find(".search-tag").on("click", function(e)
+		{
+			$("#grid").bootgrid("search", $(this).data("row-name"));
+		})
+		.end().find(".search-parent").on("click", function(e)
+		{
+			$("#grid").bootgrid("search", $(this).data("row-name"));
 		});
 	});
 	

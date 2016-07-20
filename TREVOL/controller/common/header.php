@@ -89,7 +89,7 @@ class ControllerCommonHeader extends AController {
 				);
 			}
 			
-			$link['destination'] = $this->html->getSecureURL('guide/destination_list');
+			$link['destination'] = $this->html->getSecureURL('guide/destination');
 			$link['interest'] = $this->html->getSecureURL('guide/interest_list');
 			$link['poi'] = $this->html->getSecureURL('guide/poi');
 			$link['tag'] = $this->html->getSecureURL('resource/tag_list');

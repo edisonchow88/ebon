@@ -636,6 +636,165 @@ class ModelGuideDestination extends Model{
 		}
 	//END
 	
+	//START: [Image]
+		public function getDestinationImage($relation_id='',$destination_id='') {
+			//START: Run SQL
+				if($relation_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_image) . " 
+					";
+					if($destination_id != '') {
+						$sql .= "
+							WHERE destination_id = '" . (int)$destination_id . "' 
+						";
+					}
+					$sql .= "
+						ORDER BY relation_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_image) . " 
+					";
+					if($destination_id != '') {
+						$sql .= "
+							WHERE destination_id = '" . (int)$destination_id . "' AND relation_id = '" . (int)$relation_id . "' 
+						";
+					}
+					else {
+						$sql .= "
+							WHERE relation_id = '" . (int)$relation_id . "' 
+						";
+					}
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				if($relation_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['relation_id']] = $result;
+						if(isset($result['image_id'])) { 
+							$output[$result['relation_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],'30px');
+						}
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+					if(isset($result['image_id'])) { 
+						$output['image'] = $this->model_resource_image->getImage($result['image_id'],'30px');
+					}
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getDestinationImageByDestinationId($destination_id) {
+			return $this->getDestinationImage('',$destination_id);
+		}
+		
+		public function addDestinationImage($data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_image));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+				
+					if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				//END
+				
+				//START: Run SQL
+					$sql = "
+						INSERT INTO `" . $this->db->table($this->table_image) . "` 
+						SET " . implode(',', $update) . "
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$relation_id = $this->db->getLastId();
+			
+			$this->cache->delete('destination_image');
+			
+			return $relation_id;
+		}
+		
+		public function editDestinationImage($relation_id, $data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_image));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_image) . " 
+							SET " . implode(',', $update) . "
+							WHERE relation_id = '" . (int)$relation_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('destination_image');
+			return true;
+		}
+		
+		public function deleteDestinationImage($relation_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_image) . " 
+						WHERE relation_id = '" . (int)$relation_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('destination_image');
+			return true;
+		}
+		
+		public function deleteDestinationImageByDestinationId($destination_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_image) . " 
+						WHERE destination_id = '" . (int)$destination_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('destination_image');
+			return true;
+		}
+	//END
+	
 	//START: [Tag]
 		public function getDestinationTag($relation_id='',$destination_id='') {
 			//START: Run SQL

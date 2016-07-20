@@ -10,6 +10,7 @@ class ControllerResponsesGuideAjaxPoiRelation extends AController {
 	public function main() {
 		//START: load model
 		$this->loadModel('guide/poi');
+		$this->loadModel('guide/destination');
 		$this->loadModel('resource/tag');
 		$this->loadModel('resource/image');
 		//END

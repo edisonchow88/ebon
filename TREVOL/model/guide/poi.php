@@ -160,6 +160,7 @@ class ModelGuidePoi extends Model{
 					SELECT DISTINCT poi_id, name
 					FROM " . $this->db->table($this->table_alias) . " 
 					WHERE name LIKE '%".$keyword."%' 
+					ORDER BY name asc 
 					LIMIT 5
 				";
 				$query = $this->db->query($sql);
@@ -169,6 +170,8 @@ class ModelGuidePoi extends Model{
 				foreach($query->rows as $result) {
 					$output[$result['poi_id']] = $result;
 					$output[$result['poi_id']]['name'] = ucwords($result['name']);
+					$output[$result['poi_id']]['destination'] = array_values($this->getPoiDestinationByPoiId($result['poi_id']));
+					if(count($output[$result['poi_id']]['destination']) < 1) { $output[$result['poi_id']]['destination'][0]['name'] = ''; }
 				}
 			//END
 			

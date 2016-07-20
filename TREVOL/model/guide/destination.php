@@ -637,9 +637,9 @@ class ModelGuideDestination extends Model{
 	//END
 	
 	//START: [Tag]
-		public function getDestinationTag($tag_id='',$destination_id='') {
+		public function getDestinationTag($relation_id='',$destination_id='') {
 			//START: Run SQL
-				if($tag_id == '') {
+				if($relation_id == '') {
 					$sql = "
 						SELECT *
 						FROM " . $this->db->table($this->table_tag) . " 
@@ -650,7 +650,7 @@ class ModelGuideDestination extends Model{
 						";
 					}
 					$sql .= "
-						ORDER BY tag_id DESC 
+						ORDER BY relation_id DESC 
 					";
 				}
 				else {
@@ -660,12 +660,12 @@ class ModelGuideDestination extends Model{
 					";
 					if($destination_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' AND tag_id = '" . (int)$tag_id . "' 
+							WHERE destination_id = '" . (int)$destination_id . "' AND relation_id = '" . (int)$relation_id . "' 
 						";
 					}
 					else {
 						$sql .= "
-							WHERE tag_id = '" . (int)$tag_id . "' 
+							WHERE relation_id = '" . (int)$relation_id . "' 
 						";
 					}
 				}
@@ -673,16 +673,20 @@ class ModelGuideDestination extends Model{
 			//END
 			
 			//START: Set Output
-				if($tag_id == '') {
+				if($relation_id == '') {
 					foreach($query->rows as $result){
-						$output[$result['tag_id']] = $result;
-						$output[$result['tag_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+						$output[$result['relation_id']] = $result;
+						if(isset($result['tag_id'])) { 
+							$output[$result['relation_id']]['tag'] = $this->model_resource_tag->getTag($result['tag_id']); 
+						}
 					}
 				}
 				else {
 					$result = $query->row;
 					$output = $query->row;
-					$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+					if(isset($result['tag_id'])) { 
+						$output['tag'] = $this->model_resource_tag->getTag($result['tag_id']); 
+					}
 				}
 			//END
 			
@@ -702,7 +706,7 @@ class ModelGuideDestination extends Model{
 					$update = array();
 					foreach($fields as $f){
 						if(isset($data[$f])) {
-							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 						}
 					}
 				
@@ -720,14 +724,14 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$tag_id = $this->db->getLastId();
+			$relation_id = $this->db->getLastId();
 			
 			$this->cache->delete('destination_tag');
 			
-			return $tag_id;
+			return $relation_id;
 		}
 		
-		public function editDestinationTag($tag_id, $data) {
+		public function editDestinationTag($relation_id, $data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -736,7 +740,7 @@ class ModelGuideDestination extends Model{
 					$update = array();
 					foreach($fields as $f){
 						if(isset($data[$f]))
-							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 					}
 					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 					
@@ -744,7 +748,7 @@ class ModelGuideDestination extends Model{
 						$sql = "
 							UPDATE " . $this->db->table($this->table_tag) . " 
 							SET " . implode(',', $update) . "
-							WHERE tag_id = '" . (int)$tag_id . "'
+							WHERE relation_id = '" . (int)$relation_id . "'
 						";
 						$query = $this->db->query($sql);
 					}
@@ -756,13 +760,13 @@ class ModelGuideDestination extends Model{
 			return true;
 		}
 		
-		public function deleteDestinationTag($tag_id) {
+		public function deleteDestinationTag($relation_id) {
 			//START: [Main Table]
 			
 				//START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_tag) . " 
-						WHERE tag_id = '" . (int)$tag_id . "'
+						WHERE relation_id = '" . (int)$relation_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END

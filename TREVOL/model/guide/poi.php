@@ -38,7 +38,7 @@ class ModelGuidePoi extends Model{
 	//END
 	
 	//START: [General]
-		public function getPoi($poi_id='') {
+		public function getPoi($poi_id='',$keyword='') {
 			if($poi_id == '') {
 				$sql = "
 					SELECT *, t1.poi_id
@@ -56,6 +56,13 @@ class ModelGuidePoi extends Model{
 					ON t1.poi_id = t4.poi_id 
 					LEFT JOIN ".$this->db->table($this->table_tag)." t5
 					ON t1.poi_id = t5.poi_id 
+				";
+				if($keyword != '') {
+					$sql .= "
+						WHERE t2.name LIKE '%".$keyword."%' 
+					";
+				}
+				$sql .= "	
 					GROUP BY t1.poi_id 
 					ORDER BY t1.poi_id DESC 
 				";
@@ -143,6 +150,27 @@ class ModelGuidePoi extends Model{
 			}
 			
 			$output['poi_id'] = $poi_id;
+			
+			return $output;
+		}
+		
+		public function getPoiByKeyword($keyword='') {
+			//START: Run SQL
+				$sql = "
+					SELECT DISTINCT poi_id, name
+					FROM " . $this->db->table($this->table_alias) . " 
+					WHERE name LIKE '%".$keyword."%' 
+					LIMIT 5
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				foreach($query->rows as $result) {
+					$output[$result['poi_id']] = $result;
+					$output[$result['poi_id']]['name'] = ucwords($result['name']);
+				}
+			//END
 			
 			return $output;
 		}
@@ -289,7 +317,7 @@ class ModelGuidePoi extends Model{
 					";
 					if($poi_id != '') {
 						$sql .= "
-							WHERE poi_id = '" . (int)$poi_id . "' AND t1.alias_id = '" . (int)$alias_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' AND alias_id = '" . (int)$alias_id . "' 
 						";
 					}
 					else {
@@ -446,7 +474,7 @@ class ModelGuidePoi extends Model{
 					";
 					if($poi_id != '') {
 						$sql .= "
-							WHERE poi_id = '" . (int)$poi_id . "' AND t1.description_id = '" . (int)$description_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' AND description_id = '" . (int)$description_id . "' 
 						";
 					}
 					else {
@@ -601,7 +629,7 @@ class ModelGuidePoi extends Model{
 					";
 					if($poi_id != '') {
 						$sql .= "
-							WHERE poi_id = '" . (int)$poi_id . "' AND t1.relation_id = '" . (int)$relation_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' AND relation_id = '" . (int)$relation_id . "' 
 						";
 					}
 					else {
@@ -730,6 +758,188 @@ class ModelGuidePoi extends Model{
 		}
 	//END
 	
+	//START: [Relation]
+		public function getPoiRelation($relation_id='',$poi_id='') {
+			//START: Run SQL
+				if($relation_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_relation) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' 
+                            OR parent_id = '" . (int)$poi_id . "'
+						";
+					}
+					$sql .= "
+						ORDER BY relation_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_relation) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE relation_id = '" . (int)$relation_id . "' 
+                            AND (poi_id = '" . (int)$poi_id . "' 
+                            OR parent_id = '" . (int)$poi_id . "')
+						";
+					}
+					else {
+						$sql .= "
+							WHERE relation_id = '" . (int)$relation_id . "' 
+						";
+					}
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				if($relation_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['relation_id']] = $result;
+						$output[$result['relation_id']]['target_id'] = $result['parent_id'];
+						$output[$result['relation_id']]['relation'] = 'Parent';
+						if($poi_id != '') {
+							if($result['parent_id'] == $poi_id) {
+								$output[$result['relation_id']]['poi_id'] = $result['parent_id'];
+								$output[$result['relation_id']]['target_id'] = $result['poi_id'];
+								$output[$result['relation_id']]['relation'] = 'Child';
+							}
+						}
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+					$output['target_id'] = $result['parent_id'];
+					$output['relation'] = 'Parent';
+					if($poi_id != '') {
+						if($result['parent_id'] == $poi_id) {
+							$output['poi_id'] = $result['parent_id'];
+							$output['target_id'] = $result['poi_id'];
+							$output['relation'] = 'Child';
+						}
+					}
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getPoiRelationByPoiId($poi_id) {
+			return $this->getPoiRelation('',$poi_id);
+		}
+		
+		public function addPoiRelation($data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_relation));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+				
+					if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				//END
+				
+				//START: Run SQL
+					$sql = "
+						INSERT INTO `" . $this->db->table($this->table_relation) . "` 
+						SET " . implode(',', $update) . "
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$relation_id = $this->db->getLastId();
+			
+			$this->cache->delete('poi_relation');
+			
+			return $relation_id;
+		}
+		
+		public function editPoiRelation($relation_id, $data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_relation));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_relation) . " 
+							SET " . implode(',', $update) . "
+							WHERE relation_id = '" . (int)$relation_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_relation');
+			return true;
+		}
+		
+		public function deletePoiRelation($relation_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_relation) . " 
+						WHERE relation_id = '" . (int)$relation_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_relation');
+			return true;
+		}
+		
+		public function deletePoiRelationByPoiId($poi_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_relation) . " 
+						WHERE x = '" . (int)$poi_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+                
+                //START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_relation) . " 
+						WHERE y = '" . (int)$poi_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_relation');
+			return true;
+		}
+	//END
+	
 	//START: [Google]
 		public function getPoiGoogle($google_id='',$poi_id='') {
 			//START: Run SQL
@@ -754,7 +964,7 @@ class ModelGuidePoi extends Model{
 					";
 					if($poi_id != '') {
 						$sql .= "
-							WHERE poi_id = '" . (int)$poi_id . "' AND t1.google_id = '" . (int)$google_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' AND google_id = '" . (int)$google_id . "' 
 						";
 					}
 					else {
@@ -907,7 +1117,7 @@ class ModelGuidePoi extends Model{
 					";
 					if($poi_id != '') {
 						$sql .= "
-							WHERE poi_id = '" . (int)$poi_id . "' AND t1.wikipedia_id = '" . (int)$wikipedia_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' AND wikipedia_id = '" . (int)$wikipedia_id . "' 
 						";
 					}
 					else {

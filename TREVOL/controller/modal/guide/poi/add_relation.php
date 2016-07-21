@@ -60,7 +60,7 @@ class ControllerModalGuidePoiAddRelation extends AController {
 				$poi = $this->model_guide_poi->getPoi($_GET['poi_id']);
 				$modal_input[$i]['value'] = $poi['poi_id'];
 				$modal_input[$i]['type'] = 'hidden';
-				$modal_input[$i]['text'] = '#'.$poi['poi_id'].' '.$poi['name']; 
+				$modal_input[$i]['text'] = $poi['name'].' (#'.$poi['poi_id'].')'; 
 			}
 			else {
 				$poi = $this->model_guide_poi->getPoi();
@@ -76,7 +76,7 @@ class ControllerModalGuidePoiAddRelation extends AController {
 			$modal_input[$i]['type'] = 'search';
 			
 			$i = 'relation';
-			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+			$modal_input[$i]['label'] = 'Target is Poi\'s';
 			$modal_input[$i]['id'] = str_replace("_","-",$i);
 			$modal_input[$i]['name'] = $i;
 			$modal_input[$i]['required'] = true;

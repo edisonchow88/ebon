@@ -89,16 +89,10 @@
                                 	$search_id = "modal-add-relation-form-input-".$i['id']."-suggestion";
                                     $value_id = "modal-add-relation-form-input-".$i['id']."-value";
                                     $hidden_id = "modal-add-relation-form-input-".$i['id']."-hidden";
-                                    echo '<input ';
-                                    	echo 'id="'.$hidden_id.'"';
-                                    	echo 'type="hidden"';
-                                    echo '/>';
-                                    echo '<input ';
-                                    	echo 'id="'.$value_id.'"';
-                                    	echo 'name="'.$i['name'].'" ';
-                                    	echo 'value="'.$i['value'].'" ';
-                                    	echo 'type="hidden"';
-                                    echo '/>';
+                                    echo '<span class="input-group-addon">';
+                                        echo '<i class="fa fa-fw fa-search">';
+                                        echo '</i>';
+                                    echo '</span>';
                                 	echo '<input ';
                                         echo 'class="form-control" ';
                                         echo 'id="modal-add-relation-form-input-'.$i['id'].'"';
@@ -111,10 +105,19 @@
                                         echo 'onblur="setTimeout(function() { hide_suggestion(\''.$search_id.'\'); }, 100);" ';
                                     echo '/>';
                                     echo '<div style="position:relative; top:34px; width:100%;">';
-                                    echo '<div id="'.$search_id.'" style="position:absolute; z-index:15000; width:100%; display:none;"';
+                                        echo '<div id="'.$search_id.'" style="position:absolute; z-index:15000; width:100%; display:none;">';
+                                        echo '</div>';
                                     echo '</div>';
-                                    echo '</div>';
-                                    echo '</div>';
+                                    echo '<input ';
+                                    	echo 'id="'.$hidden_id.'"';
+                                    	echo 'type="hidden"';
+                                    echo '/>';
+                                    echo '<input ';
+                                    	echo 'id="'.$value_id.'"';
+                                    	echo 'name="'.$i['name'].'" ';
+                                    	echo 'value="'.$i['value'].'" ';
+                                    	echo 'type="hidden"';
+                                    echo '/>';
                                 }
                                 else if($i['type'] == 'select') {
                                     echo '<select ';
@@ -246,6 +249,7 @@
 	function auto_suggest(input_id, e) {
 		var suggestion_id = input_id + "-suggestion";
 		var hidden_id = input_id + "-hidden";
+		var value_id = input_id + "-value";
 		var keyword = document.getElementById(input_id).value;
 		
 		document.getElementById('modal-search-poi-form-input-keyword').value = keyword;
@@ -281,6 +285,12 @@
 			document.getElementById(hidden_id).value = this.suggestion[this.selected_suggestion].name;
 			return;
 		}
+		else if(key_code == 37 || key_code == 39) { //if press left or right arrow
+		}
+		else if(key_code != '' && key_code != 'undefined' && key_code != null) {
+			document.getElementById(value_id).value = '';
+			document.getElementById(suggestion_id).innerHTML = '';
+		}
 		
 		document.getElementById(hidden_id).value = document.getElementById(input_id).value;
 		search_poi(input_id, suggestion_id, keyword);
@@ -313,16 +323,18 @@
 		var output = '';
 		output += "<ul class='list-group'>";
 		for(i = 0; i < result.length; i++) {
-			output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' onclick='select_suggestion(\""+input_id+"\", \""+suggestion_id+"\", \""+result[i].name+"\")'>";
+			output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' onclick='select_suggestion(\""+input_id+"\", \""+result[i].poi_id+"\", \""+result[i].name+"\")'>";
 				output += "<div class='text-left' style='width:100%;'>";
-					output += "<div class='text-left text-primary' style='display:inline-block; width:50px;'><i class='fa fa-camera-retro fa-fw fa-2x'></i></div>";
+					output += "<div class='text-left text-success' style='display:inline-block; width:50px;'><i class='fa fa-map-marker fa-fw fa-2x'></i></div>";
 					output += "<div style='display:inline-block;'>";
 						output += "<span class='text-left' style='display:block;'><b>";
 							output += highlight_keyword_with_any_cases(result[i].name, keyword);
 						output += "</b></span>";
-						output += "<span class='text-left small' style='display:block;'>";
-							output += result[i].destination[0].destination_id;
-						output += "</span>";
+						if(typeof result[i].destination != 'undefined') {
+							output += "<span class='text-left small' style='display:block;'>";
+								output += result[i].destination.name;
+							output += "</span>";
+						}
 					output += "</div>";
 				output += "</div>";
 			output += "</a>";
@@ -332,31 +344,6 @@
 		this.selected_suggestion = -1;
 		document.getElementById(suggestion_id).innerHTML = output;
 	}
-	
-	/*
-	function detect_key(input_id, suggestion_id, name, e) {
-		var key_code;
-	
-		if(window.event) { // IE                    
-			key_code = e.keyCode;
-		} else if(e.which){ // Netscape/Firefox/Opera                   
-			key_code = e.which;
-		}
-		
-		if(key_code == 40) { //if press down arrow
-			select_next_suggestion();
-			return;
-		}
-		else if(key_code == 38) { //if press up arrow
-			select_previous_suggestion();
-			return;
-		}
-		else if(key_code == 13) { //if press enter
-			select_suggestion(input_id, suggestion_id, name);
-			return;
-		}
-	}
-	*/
 	
 	function reset_suggestion() {
 		for(i=0;i<this.suggestion.length;i++) {
@@ -406,16 +393,13 @@
 		}
 	}
 	
-	function select_suggestion(input_id, suggestion_id, name) {
-		/*
-		document.getElementById(input_id).value = name;
-		document.getElementById(input_id).focus();
-		document.getElementById(suggestion_id).style.display = "none";
+	function select_suggestion(input_id, poi_id, name) {
+		var hidden_id = input_id + '-hidden';
+		var value_id = input_id + '-value';
 		
-		var keyword = document.getElementById(input_id).value;
-		document.getElementById('modal-search-poi-form-input-keyword').value = keyword;
-		search_poi(input_id, suggestion_id, keyword);
-		*/
+		document.getElementById(hidden_id).value = name;
+		document.getElementById(input_id).value = name;
+		document.getElementById(value_id).value = poi_id;
 	}
 	
 	function show_suggestion(suggestion_id) {

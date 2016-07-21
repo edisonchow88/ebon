@@ -45,6 +45,14 @@ class ControllerResponsesGuideAjaxPoiRelation extends AController {
 	public function add() {
 		if($this->verify() == 'failed') { return; }
 		
+		if($this->data['relation'] == 'parent') {
+			$this->data['parent_id'] = $this->data['target_id'];
+		}
+		else if($this->data['relation'] == 'child') {
+			$this->data['parent_id'] = $this->data['poi_id'];
+			$this->data['poi_id'] = $this->data['target_id'];
+		}
+		
 		$relation_id = $this->model_guide_poi->addPoiRelation($this->data); 
 		$this->session->data['success'] = 'Success: New <b>Poi Relation #'.$relation_id.'</b> has been added';
 		
@@ -84,8 +92,13 @@ class ControllerResponsesGuideAjaxPoiRelation extends AController {
 	
 	public function search_poi() {
 		$keyword = $this->data['keyword'];
-		$execution = $this->model_guide_poi->getPoiByKeyword($keyword);
-		$response = json_encode(array_values($execution));
+		$poi = $this->model_guide_poi->getPoiByKeyword($keyword);
+		foreach($poi as $p) {
+			if(isset($p['destination'])) {
+				$poi[$p['poi_id']]['destination'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($p['destination'][0]['destination_id']);
+			}
+		}
+		$response = json_encode(array_values($poi));
 		echo $response;
 	}
 	
@@ -95,7 +108,11 @@ class ControllerResponsesGuideAjaxPoiRelation extends AController {
 			$result['warning'][] = 'Please input <b>Poi</b>';
 		}
 		
-		if($this->data['relation_id'] == '') {
+		if($this->data['target_id'] == '') {
+			$result['warning'][] = 'Please input <b>Target</b>';
+		}
+		
+		if($this->data['relation'] == '') {
 			$result['warning'][] = 'Please input <b>Relation</b>';
 		}
 		//END

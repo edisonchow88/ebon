@@ -97,7 +97,7 @@ class ControllerPagesGuidePoiSubsetRelation extends AController {
 			$column[$i]['title'] = 'Target';
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
-			$column[$i]['order'] = 'asc';
+			$column[$i]['order'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';
@@ -106,10 +106,10 @@ class ControllerPagesGuidePoiSubsetRelation extends AController {
 			
 			$i = 'relation';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = 'Relation (Target is Poi\'s)';
+			$column[$i]['title'] = 'Target is Poi\'s';
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
-			$column[$i]['order'] = '';
+			$column[$i]['order'] = 'desc';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';

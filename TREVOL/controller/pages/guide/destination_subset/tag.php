@@ -108,7 +108,7 @@ class ControllerPagesGuideDestinationSubsetTag extends AController {
 			$column[$i]['title'] = 'Sort';
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
-			$column[$i]['order'] = 'desc';
+			$column[$i]['order'] = 'asc';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';

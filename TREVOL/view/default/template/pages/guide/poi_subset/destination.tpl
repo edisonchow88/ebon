@@ -109,7 +109,7 @@
 			"destination": function(column, row)
 			{
 				var destination = JSON.parse(row.destination);
-				return "<a class=\"label label-pill\" style=\"background-color:"+destination.type_color+";margin-right:5px;\">" + destination.name + "</a>";
+				return "<a class=\"label label-pill search-destination\" data-row-name=\"" + destination.name + "\" style=\"background-color:"+destination.type_color+";margin-right:5px;\">" + destination.name + "</a>";
 			},
 			"commands": function(column, row)
 			{
@@ -133,6 +133,10 @@
 			document.getElementById("modal-delete-destination-form-input-relation-id").value = $(this).data("row-id");
 			document.getElementById("modal-delete-destination-form-text-relation-id").innerHTML = $(this).data("row-id");
 			$($(this).attr("data-target")).modal("show");
+		})
+		.end().find(".search-destination").on("click", function(e)
+		{
+			$("#grid").bootgrid("search", $(this).data("row-name"));
 		});
 	});
 	

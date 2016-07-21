@@ -11,7 +11,6 @@ class ControllerResponsesGuideAjaxDestinationImage extends AController {
 		//START: load model
 		$this->loadModel('guide/destination');
 		$this->loadModel('resource/image');
-		$this->loadModel('resource/image');
 		//END
 		
 		foreach($_POST as $key => $value) {
@@ -25,6 +24,8 @@ class ControllerResponsesGuideAjaxDestinationImage extends AController {
 		else if($action == 'add') { $this->add(); }
 		else if($action == 'edit') { $this->edit(); }
 		else if($action == 'delete') { $this->delete(); }
+		else if($action == 'load') { $this->load(); }
+		else if($action == 'select') { $this->select(); }
 		else { 
 		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 			$result['warning'][] = 'No action has been sent via POST'; 
@@ -155,5 +156,37 @@ class ControllerResponsesGuideAjaxDestinationImage extends AController {
 			echo $response;	
 			return 'failed';
 		}
+	}
+	
+	public function load() {
+		
+		//START: set variable
+			$keyword = $this->data['keyword'];
+			$limit = $this->data['limit'];
+			$offset = $this->data['offset'];
+		//END
+		
+		//START: get image
+			$result['image'] = $this->model_resource_image->getImageByKeyword($keyword,'100px',$limit,$offset);
+			$result['count'] = $result['image']['count'];
+			unset($result['image']['count']);
+			$result['image'] = array_values($result['image']);
+		//END
+		
+		$result['success'][] = true;
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function select() {
+		//START: assign image to destination
+			$relation_id = $this->model_guide_destination->addDestinationImage($this->data); 
+			$this->session->data['success'] = 'Success: New <b>Destination Image #'.$relation_id.'</b> has been added';
+		//END
+		
+		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
+		$result['success'][] = true;
+		$response = json_encode($result);
+		echo $response;
 	}
 }

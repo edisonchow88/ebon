@@ -53,6 +53,48 @@ class ModelResourceImage extends Model{
 		return $output;
 	}
 	
+	public function getImageByKeyword($keyword='',$width='',$limit='',$offset='') {
+		if($width=='') { $width = $this->default_width; }
+		//START: Run SQL
+			$sql = "
+				SELECT SQL_CALC_FOUND_ROWS DISTINCT image_id, name, filename
+				FROM " . $this->db->table($this->table) . " 
+				WHERE name LIKE '%".$keyword."%' 
+				ORDER BY name asc 
+			";
+			if($limit != '') {
+				$sql .= "LIMIT ".$limit." ";
+			}
+			if($offset != '') {
+				$sql .= "OFFSET ".$offset." ";
+			}
+			$query = $this->db->query($sql);
+		//END
+		
+		//START: Set Output
+			foreach($query->rows as $result) {
+				$output[$result['image_id']] = $result;
+				$output[$result['image_id']]['name'] = ucwords($result['name']);
+				$output[$result['image_id']]['width'] = $width;
+				$output[$result['image_id']]['path'] = $this->path.$result['filename'];
+				$output[$result['image_id']]['image'] = "<img id='image-".$output[$result['image_id']]['image_id']."' src='".$output[$result['image_id']]['path']."' title='".$output[$result['image_id']]['name']."' width='".$width."'/>";
+			}
+		//END
+		
+		//START: Run SQL
+			$sql = "
+				SELECT FOUND_ROWS() AS `count`;
+			";
+			$query = $this->db->query($sql);
+		//END
+		
+		//START: Set Output
+			$output['count'] = $query->row['count'];
+		//END
+		
+		return $output;
+	}
+	
 	public function addImage($data) {
 		$sql = "
 				INSERT INTO `" . $this->db->table($this->table) . "` 

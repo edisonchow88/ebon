@@ -117,7 +117,7 @@
                                 echo '</section>';
                             }
                             else {
-                                if($i['type'] == 'upload_image') {
+                                if($i['type'] == 'image') {
                                 	echo '<div class="form-group">';
                                         echo '<div class="input-group col-xs-12">';
                                             echo '<div id="modal-add-image-form-input-'.$i['id'].'-demo" class="demo" >';
@@ -157,6 +157,36 @@
                                                 echo '<span id="modal-add-image-form-input-'.$i['id'].'-text-filename"></span>';
                                                 echo '<span id="modal-add-image-form-input-'.$i['id'].'-text-size"></span>';
                                             echo '</div>';
+                                        echo '</div>';
+                                    echo '</div>';
+                                }
+                                else if($i['type'] == 'library') {
+                                	echo '<div class="form-group" style="margin-left:10px !important; margin-right:10px !important;">';
+                                        echo '<div class="input-group col-xs-12">';
+                                        	echo '<input ';
+                                            echo 'type="text" ';
+                                            echo 'class="form-control" ';
+                                            echo 'id="modal-add-image-form-library-input-keyword" ';
+                                            echo 'placeholder="Search Library" ';
+                                            echo '/>';
+                                            echo '<span class="input-group-btn">';
+                                            echo '<a class="btn btn-default" onclick="loadImage();">';
+                                            echo 'Search';
+                                            echo '</a>';
+                                            echo '</span>';
+                                        echo '</div>';
+                                    echo '</div>';
+                                    echo '<div class="form-group">';
+                                        echo '<div class="col-xs-6">';
+                                        	echo '<div id="modal-add-image-form-library-count" class="small"></div>';
+                                        echo '</div>';
+                                        echo '<div class="col-xs-6 text-right">';
+                                        	echo '<div id="modal-add-image-form-library-pagination"></div>';
+                                        echo '</div>';
+                                    echo '</div>';
+                                	echo '<div class="form-group">';
+                                        echo '<div class="input-group col-xs-12">';
+                                        	echo '<div id="modal-add-image-form-library-result"></div>';
                                         echo '</div>';
                                     echo '</div>';
                                 }
@@ -280,6 +310,45 @@
                     ?>
             	</div>
             </form>
+            <form id="modal-load-image-form">
+                <input 
+                    type="hidden" 
+                    name="action"
+                    value="load" 
+                />
+                <input
+                    type="hidden"
+                    id="modal-load-image-form-input-keyword" 
+                    name="keyword" 
+                />
+                <input
+                    type="hidden"
+                    id="modal-load-image-form-input-limit" 
+                    name="limit" 
+                />
+                <input
+                    type="hidden"
+                    id="modal-load-image-form-input-offset" 
+                    name="offset"
+                />
+            </form>
+            <form id="modal-select-image-form">
+                <input 
+                    type="hidden" 
+                    name="action"
+                    value="select" 
+                />
+                <input
+                    type="hidden"
+                    id="modal-select-image-form-input-destination-id" 
+                    name="destination_id" 
+                />
+                <input
+                    type="hidden"
+                    id="modal-select-image-form-input-image-id" 
+                    name="image_id" 
+                />            
+        	</form>
         </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -404,5 +473,209 @@
 	
 	function toTitleCase(str) {
 		return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+	}
+</script>
+
+<script>
+	$("#modal-add-image-form-library-input-keyword").on('keyup keypress', function(e) {
+		var keyCode = e.keyCode || e.which;
+		if (keyCode === 13) { 
+			e.preventDefault();
+			document.getElementById('modal-load-image-form-input-offset').value = 0;
+			loadImage();
+			return;
+		}
+	});
+	
+	function loadImage() {
+		document.getElementById('modal-load-image-form-input-keyword').value = document.getElementById('modal-add-image-form-library-input-keyword').value;
+		var limit = document.getElementById('modal-load-image-form-input-limit').value = 20;
+		var offset = document.getElementById('modal-load-image-form-input-offset').value;
+		
+		var form_element = document.querySelector("#modal-load-image-form");
+		var form_data = new FormData(form_element);
+		var xmlhttp = new XMLHttpRequest();
+		var url = "<?php echo $modal_ajax['guide/ajax_destination_image']; ?>";
+		var data = "";
+		var query = url + data;
+		xmlhttp.onreadystatechange = function() {
+			document.getElementById('modal-add-image-form-alert').innerHTML = "";
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				document.getElementById('modal-add-image-form-library-result').innerHTML = '';
+				document.getElementById('modal-add-image-form-library-count').innerHTML = '';
+				document.getElementById('modal-add-image-form-library-pagination').innerHTML = '';
+				
+				<!-- if connection success -->
+				var json = JSON.parse(xmlhttp.responseText);
+				
+				if(typeof json.warning != 'undefined') {
+					<!-- if error -->
+					var content;
+					content = "<div class='alert alert-danger'>Error:<br/><ul>";
+					for(i=0;i<json.warning.length;i++) {
+						content += "<li>"+json.warning[i]+"</li>";
+					}
+					content += "</ul></div>";
+					document.getElementById('modal-add-image-form-alert').innerHTML = content;
+					$('#modal-add-image').animate({ scrollTop: top }, 0);
+				}
+				else if(typeof json.success != 'undefined') {
+					<!-- if success -->
+					var content;
+					content = "<div>";
+					for(i=0;i<json.image.length;i++) {
+						content += "<div class='col-xs-3 text-center' style='margin-bottom:15px;'>";
+							content += "<a class='btn btn-default btn-block' onclick='selectImage("+json.image[i].image_id+");'>";
+								content += json.image[i].image;
+							content += "</a>";
+						content += "</div>";
+					}
+					content += "</div>";
+					document.getElementById('modal-add-image-form-library-result').innerHTML = content;
+					
+					<!-- Set Count -->
+					if(json.count > 0) {
+						document.getElementById('modal-add-image-form-library-count').innerHTML = "About "+json.count+" results";
+					}
+					else {
+						document.getElementById('modal-add-image-form-library-count').innerHTML = "No matched result";
+					}
+					
+					<!-- Set Page -->
+					var page = Math.ceil(json.count/limit);
+					if(offset=='') { offset = 0; }
+					var current_page = Math.ceil((parseInt(offset)+1)/limit);
+					if(page > 5) {
+						var content;
+						content = '<nav>';
+						content += '<ul class="pagination" style="margin:0 !important;">';
+						content += '<li><a class="btn" onclick="goToPage(1);"><span aria-hidden="true">&laquo;</span></a></li>';
+						content += '<li><a class="btn" onclick="goToPage('+(current_page-1)+');"><span aria-hidden="true">&lsaquo;</span></a></li>';
+						if(current_page > 1 && (current_page < page || page <= 2)) {
+							for(i=current_page-1;i<=Math.min(page,current_page+1);i++) {
+								if(i==current_page) {
+									content += '<li class="active">';
+								}
+								else {
+									content += '<li>';
+								}
+								content += '<a class="btn" onclick="goToPage('+i+');">';
+								content += i;
+								content += '</a>';
+								content += '</li>';
+							}
+						}
+						else if(current_page == 1) {
+							for(i=1;i<=Math.min(page,3);i++) {
+								if(i==current_page) {
+									content += '<li class="active">';
+								}
+								else {
+									content += '<li>';
+								}
+								content += '<a class="btn" onclick="goToPage('+i+');">';
+								content += i;
+								content += '</a>';
+								content += '</li>';
+							}
+						}
+						else if(current_page == page) {
+							for(i=current_page-2;i<=page;i++) {
+								if(i==current_page) {
+									content += '<li class="active">';
+								}
+								else {
+									content += '<li>';
+								}
+								content += '<a class="btn" onclick="goToPage('+i+');">';
+								content += i;
+								content += '</a>';
+								content += '</li>';
+							}
+						}
+						content += '<li><a class="btn" onclick="goToPage('+(current_page+1)+');"><span aria-hidden="true">&rsaquo;</span></a></li>';
+						content += '<li><a class="btn" onclick="goToPage('+page+');"><span aria-hidden="true">&raquo;</span></a></li>';
+						content += '</ul>';
+						content += '</nav>';
+						document.getElementById('modal-add-image-form-library-pagination').innerHTML = content;
+					}
+					else if(page > 1 && page <= 5) {
+						var content;
+						content = '<nav>';
+						content += '<ul class="pagination" style="margin:0 !important;">';
+						for(i=1;i<=Math.min(page,5);i++) {
+							if(i==current_page) {
+								content += '<li class="active">';
+							}
+							else {
+								content += '<li>';
+							}
+							content += '<a class="btn" onclick="goToPage('+i+');">';
+							content += i;
+							content += '</a>';
+							content += '</li>';
+						}
+						content += '</ul>';
+						content += '</nav>';
+						document.getElementById('modal-add-image-form-library-pagination').innerHTML = content;
+					}
+				}
+			} else {
+				<!-- if connection failed -->
+				document.getElementById('modal-add-image-form-alert').innerHTML = xmlhttp.responseText;
+			}
+		};
+		xmlhttp.open("POST", query, true);
+		xmlhttp.send(form_data);
+	}
+	
+	function goToPage(page) {
+		var limit = document.getElementById('modal-load-image-form-input-limit').value;
+		document.getElementById('modal-load-image-form-input-offset').value = (page-1) * limit ;
+		loadImage();
+	}
+	
+	loadImage();
+</script>
+
+<script>
+	function selectImage(image_id) {
+		document.getElementById('modal-select-image-form-input-destination-id').value = document.getElementById('modal-add-image-form-input-destination-id').value;
+		document.getElementById('modal-select-image-form-input-image-id').value = image_id;
+		
+		var form_element = document.querySelector("#modal-select-image-form");
+		var form_data = new FormData(form_element);
+		var xmlhttp = new XMLHttpRequest();
+		var url = "<?php echo $modal_ajax['guide/ajax_destination_image']; ?>";
+		var data = "";
+		var query = url + data;
+		xmlhttp.onreadystatechange = function() {
+			document.getElementById('modal-add-image-form-alert').innerHTML = "";
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				<!-- if connection success -->
+				var json = JSON.parse(xmlhttp.responseText);
+				
+				if(typeof json.warning != 'undefined') {
+					<!-- if error -->
+					var content;
+					content = "<div class='alert alert-danger'>Error:<br/><ul>";
+					for(i=0;i<json.warning.length;i++) {
+						content += "<li>"+json.warning[i]+"</li>";
+					}
+					content += "</ul></div>";
+					document.getElementById('modal-add-image-form-alert').innerHTML = content;
+					$('#modal-add-image').animate({ scrollTop: top }, 0);
+				}
+				else if(typeof json.success != 'undefined') {
+					<!-- if success -->
+					window.location.reload(true);
+				}
+			} else {
+				<!-- if connection failed -->
+				document.getElementById('modal-add-image-form-alert').innerHTML = xmlhttp.responseText;
+			}
+		};
+		xmlhttp.open("POST", query, true);
+		xmlhttp.send(form_data);
 	}
 </script>

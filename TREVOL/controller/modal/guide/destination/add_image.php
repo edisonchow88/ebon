@@ -22,7 +22,18 @@ class ControllerModalGuideDestinationAddImage extends AController {
 			[TEMPLATE FOR SECTION]
 				$i = '';
 				$modal_input[$i]['section'] = '';
-			
+				
+			[TEMPLATE FOR IMAGE]
+				[UPLOAD IMAGE]
+					$i ='image';
+					$modal_input[$i]['id'] = str_replace("_","-",$i);
+					$modal_input[$i]['name'] = $i;
+					$modal_input[$i]['type'] = 'image';
+				
+				[SELECT IMAGE]
+					$i ='library';
+					$modal_input[$i]['type'] = 'library';
+					
 			[TEMPLATE FOR INPUT]
 				$i ='';
 				$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
@@ -60,12 +71,9 @@ class ControllerModalGuideDestinationAddImage extends AController {
 			$modal_input[$i]['section'] = 'Upload Image';
 			
 			$i ='image';
-			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 			$modal_input[$i]['id'] = str_replace("_","-",$i);
 			$modal_input[$i]['name'] = $i;
-			$modal_input[$i]['required'] = false;
-			$modal_input[$i]['value'] = '';
-			$modal_input[$i]['type'] = 'upload_image';
+			$modal_input[$i]['type'] = 'image';
 		
 			$i = 'section_general';
 			$modal_input[$i]['section'] = 'General';
@@ -153,12 +161,8 @@ class ControllerModalGuideDestinationAddImage extends AController {
 			$i = 'section_select_image';
 			$modal_input[$i]['section'] = 'Select Image';
 			
-			$i ='image_id';
-			$modal_input[$i]['label'] = 'Image';
-			$modal_input[$i]['id'] = str_replace("_","-",$i);
-			$modal_input[$i]['name'] = $i;
-			$modal_input[$i]['required'] = false;
-			$modal_input[$i]['type'] = 'search';
+			$i ='library';
+			$modal_input[$i]['type'] = 'library';
 		//END
 		
 		//START: Set Ajax	

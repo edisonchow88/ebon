@@ -51,6 +51,25 @@ class ControllerModalGuideDestinationAddImage extends AController {
 				$modal_input[$i]['text'] = gmdate('Y-m-d H:i:s');
 			*/
 			
+			$i = 'tab_upload_image';
+			$modal_input[$i]['tab']['name'] = 'Upload Image';
+			$modal_input[$i]['tab']['id'] = str_replace("_","-",$i);
+			$modal_input[$i]['tab']['active'] = true;
+		
+			$i = 'section_upload_image';
+			$modal_input[$i]['section'] = 'Upload Image';
+			
+			$i ='image';
+			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+			$modal_input[$i]['id'] = str_replace("_","-",$i);
+			$modal_input[$i]['name'] = $i;
+			$modal_input[$i]['required'] = false;
+			$modal_input[$i]['value'] = '';
+			$modal_input[$i]['type'] = 'upload_image';
+		
+			$i = 'section_general';
+			$modal_input[$i]['section'] = 'General';
+			
 			$i ='destination_id';
 			$modal_input[$i]['label'] = 'Destination';
 			$modal_input[$i]['id'] = str_replace("_","-",$i);
@@ -68,26 +87,83 @@ class ControllerModalGuideDestinationAddImage extends AController {
 				$modal_input[$i]['option'] = $destination;
 			}
 			
-			$i = 'image_id';
-			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
-			$modal_input[$i]['id'] = str_replace("_","-",$i);
-			$modal_input[$i]['name'] = $i;
-			$modal_input[$i]['required'] = true;
-			$modal_input[$i]['value'] = '';
-			$modal_input[$i]['type'] = 'select';
-			$modal_input[$i]['option'] = $this->model_resource_image->getImageByTypeName('Destination'); 
-			
 			$i = 'sort_order';
 			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 			$modal_input[$i]['id'] = str_replace("_","-",$i);
 			$modal_input[$i]['name'] = $i;
 			$modal_input[$i]['required'] = false;
-			$modal_input[$i]['value'] = '0';
 			$modal_input[$i]['type'] = 'text';
+			$modal_input[$i]['value'] = '0';
+			
+			$i = 'section_description';
+			$modal_input[$i]['section'] = 'Description';
+			
+			$i = 'name';
+			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+			$modal_input[$i]['id'] = str_replace("_","-",$i);
+			$modal_input[$i]['name'] = $i;
+			$modal_input[$i]['required'] = true;
+			$modal_input[$i]['value'] = '';
+			$modal_input[$i]['type'] = 'text';
+			
+			$i = 'section_source';
+			$modal_input[$i]['section'] = 'Source';
+			
+			$i = 'photographer';
+			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+			$modal_input[$i]['id'] = str_replace("_","-",$i);
+			$modal_input[$i]['name'] = $i;
+			$modal_input[$i]['required'] = false;
+			$modal_input[$i]['value'] = '';
+			$modal_input[$i]['type'] = 'text';
+			
+			$i = 'link';
+			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+			$modal_input[$i]['id'] = str_replace("_","-",$i);
+			$modal_input[$i]['name'] = $i;
+			$modal_input[$i]['required'] = false;
+			$modal_input[$i]['value'] = '';
+			$modal_input[$i]['type'] = 'text';
+			
+			$i = 'image_source_id';
+			$modal_input[$i]['label'] = 'Source';
+			$modal_input[$i]['id'] = str_replace("_","-",$i);
+			$modal_input[$i]['name'] = $i;
+			$modal_input[$i]['required'] = true;
+			$modal_input[$i]['value'] = '0';
+			$modal_input[$i]['type'] = 'select';
+			$modal_input[$i]['option'] = $this->model_resource_image_source->getImageSource();
+			
+			$i = 'image_license_id';
+			$modal_input[$i]['label'] = 'License';
+			$modal_input[$i]['id'] = str_replace("_","-",$i);
+			$modal_input[$i]['name'] = $i;
+			$modal_input[$i]['required'] = true;
+			$modal_input[$i]['value'] = '0';
+			$modal_input[$i]['type'] = 'select';
+			$modal_input[$i]['option'] = $this->model_resource_image_license->getImageLicense();
+			$modal_input[$i]['help'] = 'Creative Common License';
+			$modal_input[$i]['link'] = 'https://en.wikipedia.org/wiki/Creative_Commons_license#Seven_regularly_used_licenses';
+			
+			$i = 'tab_select_image';
+			$modal_input[$i]['tab']['name'] = 'Select Image';
+			$modal_input[$i]['tab']['id'] = str_replace("_","-",$i);
+			$modal_input[$i]['tab']['active'] = false;
+			
+			$i = 'section_select_image';
+			$modal_input[$i]['section'] = 'Select Image';
+			
+			$i ='image_id';
+			$modal_input[$i]['label'] = 'Image';
+			$modal_input[$i]['id'] = str_replace("_","-",$i);
+			$modal_input[$i]['name'] = $i;
+			$modal_input[$i]['required'] = false;
+			$modal_input[$i]['type'] = 'search';
 		//END
 		
 		//START: Set Ajax	
 			$modal_ajax['guide/ajax_destination_image'] = $this->html->getSecureURL('guide/ajax_destination_image');
+			$modal_ajax['resource/upload_image'] = $this->html->getSecureURL('resource/upload_image');
 		//END
 		
 		//START: Set Variable

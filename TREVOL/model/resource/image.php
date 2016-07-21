@@ -57,7 +57,7 @@ class ModelResourceImage extends Model{
 		$sql = "
 				INSERT INTO `" . $this->db->table($this->table) . "` 
 				SET 
-					name = '" . $this->db->escape($data['name']) . "', 
+					name = '" . $this->db->escape(strtolower($data['name'])) . "', 
 					size = '" . $this->db->escape($data['size']) . "', 
 					photographer = '" . $this->db->escape($data['photographer']) . "', 
 					link = '" . $this->db->escape($data['link']) . "', 

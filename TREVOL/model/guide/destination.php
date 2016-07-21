@@ -52,7 +52,12 @@ class ModelGuideDestination extends Model{
 					LEFT JOIN ".$this->db->table($this->table_description)." t3 
 					ON t1.destination_id = t3.destination_id 
 					LEFT JOIN ".$this->db->table($this->table_image)." t4
-					ON t1.destination_id = t4.destination_id 
+					ON t4.relation_id = ( SELECT tt4.relation_id 
+						FROM ".$this->db->table($this->table_image)." AS tt4 
+						WHERE tt4.destination_id = t1.destination_id
+						ORDER BY tt4.sort_order ASC
+						LIMIT 1
+					)
 					LEFT JOIN ".$this->db->table($this->table_tag)." t5
 					ON t1.destination_id = t5.destination_id 
 					LEFT JOIN ".$this->db->table($this->table_relation)." t6
@@ -82,7 +87,12 @@ class ModelGuideDestination extends Model{
 					LEFT JOIN ".$this->db->table($this->table_description)." t3 
 					ON t1.destination_id = t3.destination_id 
 					LEFT JOIN ".$this->db->table($this->table_image)." t4
-					ON t1.destination_id = t4.destination_id 
+					ON t4.relation_id = ( SELECT tt4.relation_id 
+						FROM ".$this->db->table($this->table_image)." AS tt4 
+						WHERE tt4.destination_id = t1.destination_id
+						ORDER BY tt4.sort_order ASC
+						LIMIT 1
+					)
 					LEFT JOIN ".$this->db->table($this->table_tag)." t5
 					ON t1.destination_id = t5.destination_id 
 					LEFT JOIN ".$this->db->table($this->table_relation)." t6

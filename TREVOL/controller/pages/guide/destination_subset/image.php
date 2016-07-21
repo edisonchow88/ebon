@@ -30,6 +30,8 @@ class ControllerPagesGuideDestinationSubsetImage extends AController {
 			$this->loadModel('guide/destination');
 			$this->loadModel('resource/tag');
 			$this->loadModel('resource/image');
+			$this->loadModel('resource/image_license');
+			$this->loadModel('resource/image_source');
 		//END
 		
 		//START: set id
@@ -49,7 +51,8 @@ class ControllerPagesGuideDestinationSubsetImage extends AController {
 					$result[$relation_id]['relation_id'] = $row['relation_id'];
 					$destination = $this->model_guide_destination->getDestination($row['destination_id']);
 					$result[$relation_id]['destination'] = $destination['name'];
-					$result[$relation_id]['image'] = json_encode($destination['image']);
+					$image = $this->model_guide_destination->getDestinationImage($row['relation_id']);
+					$result[$relation_id]['image'] = json_encode($image['image']);
 					$result[$relation_id]['sort_order'] = $row['sort_order'];
 				}
 			}
@@ -108,7 +111,7 @@ class ControllerPagesGuideDestinationSubsetImage extends AController {
 			$column[$i]['title'] = 'Sort';
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
-			$column[$i]['order'] = 'desc';
+			$column[$i]['order'] = 'asc';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';

@@ -134,6 +134,7 @@
 					}
 					content += "</ul></div>";
 					document.getElementById('modal-edit-image-form-alert').innerHTML = content;
+					$('#modal-edit-image').animate({ scrollTop: top }, 0);
 				}
 				else if(typeof json.success != 'undefined') {
 					<!-- if success -->

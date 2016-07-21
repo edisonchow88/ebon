@@ -74,14 +74,6 @@ class ControllerModalGuideDestinationEditImage extends AController {
 				$modal_input[$i]['option'] = $destination;
 			}
 			
-			$i = 'image_id';
-			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
-			$modal_input[$i]['id'] = str_replace("_","-",$i);
-			$modal_input[$i]['name'] = $i;
-			$modal_input[$i]['required'] = false;
-			$modal_input[$i]['type'] = 'select';
-			$modal_input[$i]['option'] = $this->model_resource_image->getImageByTypeName('Destination'); 
-			
 			$i = 'sort_order';
 			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 			$modal_input[$i]['id'] = str_replace("_","-",$i);

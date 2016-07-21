@@ -43,8 +43,50 @@ class ControllerResponsesGuideAjaxDestinationImage extends AController {
 	public function add() {
 		if($this->verify() == 'failed') { return; }
 		
-		$relation_id = $this->model_guide_destination->addDestinationImage($this->data); 
-		$this->session->data['success'] = 'Success: New <b>Destination Image #'.$relation_id.'</b> has been added';
+		//START: verify file type
+			$file_type = $_FILES['image']['type'];
+			if($file_type == "image/jpeg") {
+				$image_type = ".jpg";
+			}
+			else if($file_type == "image/png") {
+				$image_type = ".png";
+			}
+			else if($file_type == "image/gif") {
+				$image_type = ".gif";
+			}
+			else {
+				$this->session->data['warning'] = "Error: Fail to upload new image due to invalid file type.";
+				return false;
+			}
+			$this->data['image_type'] = $image_type;
+		//END
+		
+		//START: add row to database
+			$image_id = $this->model_resource_image->addImage($this->data);
+			$this->data['image_id'] = $image_id;
+		//END 
+		
+		//START: name the image
+			$ds = DIRECTORY_SEPARATOR;
+			$upload_directory = DIR_RESOURCE . "image" . $ds . "cropped" . $ds;
+			$upload_file = $upload_directory . $image_id . $image_type;
+			
+			$tmp_name = $_FILES['image']['tmp_name'];
+			$this->session->data['success'] = $tmp_name." yes ".$upload_file;
+		//END
+			
+		//START: move the image
+			if (move_uploaded_file($tmp_name, $upload_file)) {
+				$this->session->data['success'] = "Success: New <b>Image #".$image_id."</b> has been added";
+			} else {
+				$this->session->data['warning'] = "Error: Please check the folder permission";
+			}
+		//END
+		
+		//START: assign image to destination
+			$relation_id = $this->model_guide_destination->addDestinationImage($this->data); 
+			$this->session->data['success'] = 'Success: New <b>Destination Image #'.$relation_id.'</b> has been added';
+		//END
 		
 		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 		$result['success'][] = true;
@@ -82,12 +124,29 @@ class ControllerResponsesGuideAjaxDestinationImage extends AController {
 	
 	public function verify() {
 		//START: set requirement
-		if($this->data['destination_id'] == '') {
-			$result['warning'][] = 'Please input <b>Destination</b>';
-		}
-		
-		if($this->data['image_id'] == '') {
-			$result['warning'][] = 'Please input <b>Image</b>';
+		if($_POST['action'] == 'add') {
+			if($_FILES['image']['size'] <= 0) {
+				$result['warning'][] = 'Please input <b>Image</b>';
+			}
+			else if($_FILES['image']['type'] != 'image/png' && $_FILES['image']['type'] != 'image/gif' && $_FILES['image']['type'] != 'image/jpg' && $_FILES['image']['type'] != 'image/jpeg') {
+				$result['warning'][] = '<b>Image</b> is not JPG or PNG or GIF.';
+			}
+			
+			if($this->data['destination_id'] == '') {
+				$result['warning'][] = 'Please input <b>Destination</b>';
+			}
+			
+			if($this->data['name'] == '') {
+				$result['warning'][] = 'Please input <b>Name</b>';
+			}
+			
+			if($this->data['image_source_id'] == '' || $this->data['image_source_id'] == 0) {
+				$result['warning'][] = 'Please input <b>Source</b>';
+			}
+			
+			if($this->data['image_license_id'] == '' || $this->data['image_license_id'] == 0) {
+				$result['warning'][] = 'Please input <b>License</b>';
+			}
 		}
 		//END
 		

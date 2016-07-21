@@ -56,10 +56,11 @@ class ControllerModalGuidePoiAddDestination extends AController {
 			$modal_input[$i]['id'] = str_replace("_","-",$i);
 			$modal_input[$i]['name'] = $i;
 			$modal_input[$i]['required'] = true;
-			if(isset($_GET['poi_id'])) { 
+			if(isset($_GET['poi_id'])) {
 				$modal_input[$i]['value'] = $_GET['poi_id'];
+				$poi = $this->model_guide_poi->getPoi($_GET['poi_id']);
 				$modal_input[$i]['type'] = 'hidden';
-				$modal_input[$i]['text'] = $_GET['poi_id']; 
+				$modal_input[$i]['text'] = $poi['name'].' (#'.$poi['poi_id'].')';
 			}
 			else {
 				$poi = $this->model_guide_poi->getPoi();
@@ -67,14 +68,12 @@ class ControllerModalGuidePoiAddDestination extends AController {
 				$modal_input[$i]['option'] = $poi;
 			}
 			
-			$i = 'destination_id';
-			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+			$i ='destination_id';
+			$modal_input[$i]['label'] = 'Destination';
 			$modal_input[$i]['id'] = str_replace("_","-",$i);
 			$modal_input[$i]['name'] = $i;
 			$modal_input[$i]['required'] = true;
-			$modal_input[$i]['value'] = '';
-			$modal_input[$i]['type'] = 'select';
-			$modal_input[$i]['option'] = $this->model_guide_destination->getDestination(); 
+			$modal_input[$i]['type'] = 'search';
 			
 			$i = 'sort_order';
 			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));

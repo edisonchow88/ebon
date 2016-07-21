@@ -64,8 +64,9 @@ class ControllerModalGuidePoiEditDestination extends AController {
 			$modal_input[$i]['name'] = $i;
 			$modal_input[$i]['required'] = true;
 			if(isset($_GET['poi_id'])) { ;
+				$poi = $this->model_guide_poi->getPoi($_GET['poi_id']);
 				$modal_input[$i]['type'] = 'hidden';
-				$modal_input[$i]['text'] = $_GET['poi_id']; 
+				$modal_input[$i]['text'] = $poi['name'].' (#'.$poi['poi_id'].')';
 			}
 			else {
 				$poi = $this->model_guide_poi->getPoi();
@@ -77,7 +78,7 @@ class ControllerModalGuidePoiEditDestination extends AController {
 			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 			$modal_input[$i]['id'] = str_replace("_","-",$i);
 			$modal_input[$i]['name'] = $i;
-			$modal_input[$i]['required'] = false;
+			$modal_input[$i]['required'] = true;
 			$modal_input[$i]['type'] = 'select';
 			$modal_input[$i]['option'] = $this->model_guide_destination->getDestination(); 
 			

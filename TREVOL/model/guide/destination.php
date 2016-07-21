@@ -182,6 +182,9 @@ class ModelGuideDestination extends Model{
 		public function getDestinationSummary($destination_id) {
 			$result['alias'] = $this->getDestinationAliasByDestinationId($destination_id);
 			$result['description'] = $this->getDestinationDescriptionByDestinationId($destination_id);
+			$result['image'] = $this->getDestinationImageByDestinationId($destination_id);
+			$result['tag'] = $this->getDestinationTagByDestinationId($destination_id);
+			$result['relation'] = $this->getDestinationRelationByDestinationId($destination_id);
 			$result['google'] = $this->getDestinationGoogleByDestinationId($destination_id);
 			$result['wikipedia'] = $this->getDestinationWikipediaByDestinationId($destination_id);
 			
@@ -294,6 +297,9 @@ class ModelGuideDestination extends Model{
 			//START: Run Chain Reaction
 				$this->deleteDestinationAliasByDestinationId($destination_id);
 				$this->deleteDestinationDescriptionByDestinationId($destination_id);
+				$this->deleteDestinationImageByDestinationId($destination_id);
+				$this->deleteDestinationTagByDestinationId($destination_id);
+				$this->deleteDestinationRelationByDestinationId($destination_id);
 				$this->deleteDestinationGoogleByDestinationId($destination_id);
 				$this->deleteDestinationWikipediaByDestinationId($destination_id);
 			//END
@@ -1131,7 +1137,7 @@ class ModelGuideDestination extends Model{
 				//START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_relation) . " 
-						WHERE x = '" . (int)$destination_id . "'
+						WHERE destination_id = '" . (int)$destination_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END
@@ -1139,7 +1145,7 @@ class ModelGuideDestination extends Model{
                 //START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_relation) . " 
-						WHERE y = '" . (int)$destination_id . "'
+						WHERE parent_id = '" . (int)$destination_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END

@@ -81,7 +81,7 @@ class ControllerPagesGuideDestination extends AController {
 			$column[$i]['title'] = 'Id';
 			$column[$i]['type'] = 'numeric';
 			$column[$i]['width'] = '60px';
-			$column[$i]['order'] = 'desc';
+			$column[$i]['order'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';
@@ -117,7 +117,7 @@ class ControllerPagesGuideDestination extends AController {
 			$column[$i]['title'] = 'Tag';
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
-			$column[$i]['order'] = '';
+			$column[$i]['order'] = 'asc';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';

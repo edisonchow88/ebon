@@ -129,6 +129,9 @@
 							echo "document.getElementById('modal-view-destination-summary-form-input-".$i['id']."').value = json.".$i['name'].";";
 							if(isset($i['json'])) {
 								echo "document.getElementById('modal-view-destination-summary-form-text-".$i['id']."').innerHTML = json.".$i['json'].";";
+								echo "if(json.".$i['json']." == 0) {";
+								echo "document.getElementById('modal-view-destination-summary-form-text-".$i['id']."').innerHTML += '<span class=\'text-danger\'>&nbsp;<i class=\'fa fa-fw fa-asterisk\'></i></span>';";
+								echo "}";
 							}
 						}
 					}

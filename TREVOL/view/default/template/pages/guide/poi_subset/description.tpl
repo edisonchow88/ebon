@@ -63,6 +63,7 @@
 		caseSensitive: false,
 		rowCount: -1,
 		columnSelection: false,
+		multiSort: true,
 		formatters: {
 			"description": function(column, row)
 			{

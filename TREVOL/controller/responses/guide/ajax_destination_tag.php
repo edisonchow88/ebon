@@ -86,7 +86,7 @@ class ControllerResponsesGuideAjaxDestinationTag extends AController {
 			$result['warning'][] = 'Please input <b>Destination</b>';
 		}
 		
-		if($this->data['tag_id'] == '') {
+		if($this->data['tag_id'] == '' || $this->data['tag_id'] == 0) {
 			$result['warning'][] = 'Please input <b>Tag</b>';
 		}
 		//END

@@ -75,7 +75,7 @@ class ControllerModalGuideDestinationEditTag extends AController {
 			}
 			
 			$i = 'tag_id';
-			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+			$modal_input[$i]['label'] = 'Tag';
 			$modal_input[$i]['id'] = str_replace("_","-",$i);
 			$modal_input[$i]['name'] = $i;
 			$modal_input[$i]['required'] = false;

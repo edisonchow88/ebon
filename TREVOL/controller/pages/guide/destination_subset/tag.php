@@ -49,7 +49,8 @@ class ControllerPagesGuideDestinationSubsetTag extends AController {
 					$result[$relation_id]['relation_id'] = $row['relation_id'];
 					$destination = $this->model_guide_destination->getDestination($row['destination_id']);
 					$result[$relation_id]['destination'] = $destination['name'];
-					$result[$relation_id]['tag'] = json_encode($destination['tag']);
+					$tag = $this->model_resource_tag->getTag($row['tag_id']);
+					$result[$relation_id]['tag'] = json_encode($tag);
 					$result[$relation_id]['sort_order'] = $row['sort_order'];
 				}
 			}

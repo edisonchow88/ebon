@@ -91,15 +91,26 @@
                                     echo 'id="modal-add-tag-form-input-'.$i['id'].'" ';
                                     echo 'name="'.$i['name'].'" ';
                                     echo '>';
+                                    echo '<option value="0" ';
+                                    echo '>';
+                                    echo '-- Select '.$i['label'].' --';
+                                    echo '</option>';
                                     foreach($i['option'] as $o) {
                                         echo '<option ';
                                         echo 'value="'.$o[$i['name']].'"';
-                                        if($i['value'] == $o[$i['name']]) { echo 'selected=seletected '; }
                                         echo '>';
                                         if(isset($o['name'])) { echo $o['name']; } else { echo $o[$i['name']]; }
                                         echo '</option>';
                                     }
                                     echo '</select>';
+                                    if(isset($i['help'])) {
+                                        echo '<span class="input-group-btn">';
+                                        echo '<a class="btn btn-default" target="_blank" href="'.$i['link'].'" data-toggle="tooltip" data-replacement="top" title="'.$i['help'].'">';
+                                        echo '<i class="fa fa-fw fa-question-circle">';
+                                        echo '</i>';
+                                        echo '</a>';
+                                        echo '</span>';
+                                    }
                                 }
                                 else {
                                     echo '<input ';

@@ -197,10 +197,12 @@ class ModelGuideDestination extends Model{
 		public function getDestinationByKeyword($keyword='') {
 			//START: Run SQL
 				$sql = "
-					SELECT DISTINCT destination_id, name
-					FROM " . $this->db->table($this->table_alias) . " 
-					WHERE name LIKE '%".$keyword."%' 
-					ORDER BY name asc 
+					SELECT DISTINCT t1.destination_id, t1.name, t2.parent_id
+					FROM " . $this->db->table($this->table_alias) . " t1
+					LEFT JOIN ".$this->db->table($this->table_relation)." t2
+					ON t1.destination_id = t2.destination_id 
+					WHERE t1.name LIKE '%".$keyword."%' 
+					ORDER BY t1.name asc 
 					LIMIT 5
 				";
 				$query = $this->db->query($sql);
@@ -210,6 +212,9 @@ class ModelGuideDestination extends Model{
 				foreach($query->rows as $result) {
 					$output[$result['destination_id']] = $result;
 					$output[$result['destination_id']]['name'] = ucwords($result['name']);
+					if(isset($result['parent_id'])) { 
+						$output[$result['destination_id']]['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['parent_id']); 
+					}
 				}
 			//END
 			

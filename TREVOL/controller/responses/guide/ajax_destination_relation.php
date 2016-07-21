@@ -44,6 +44,14 @@ class ControllerResponsesGuideAjaxDestinationRelation extends AController {
 	public function add() {
 		if($this->verify() == 'failed') { return; }
 		
+		if($this->data['relation'] == 'parent') {
+			$this->data['parent_id'] = $this->data['target_id'];
+		}
+		else if($this->data['relation'] == 'child') {
+			$this->data['parent_id'] = $this->data['destination_id'];
+			$this->data['destination_id'] = $this->data['target_id'];
+		}
+		
 		$relation_id = $this->model_guide_destination->addDestinationRelation($this->data); 
 		$this->session->data['success'] = 'Success: New <b>Destination Relation #'.$relation_id.'</b> has been added';
 		
@@ -94,7 +102,11 @@ class ControllerResponsesGuideAjaxDestinationRelation extends AController {
 			$result['warning'][] = 'Please input <b>Destination</b>';
 		}
 		
-		if($this->data['relation_id'] == '') {
+		if($this->data['target_id'] == '') {
+			$result['warning'][] = 'Please input <b>Target</b>';
+		}
+		
+		if($this->data['relation'] == '') {
 			$result['warning'][] = 'Please input <b>Relation</b>';
 		}
 		//END

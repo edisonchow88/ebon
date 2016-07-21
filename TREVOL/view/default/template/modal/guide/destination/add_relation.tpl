@@ -285,8 +285,11 @@
 			document.getElementById(hidden_id).value = this.suggestion[this.selected_suggestion].name;
 			return;
 		}
+		else if(key_code == 37 || key_code == 39) { //if press left or right arrow
+		}
 		else if(key_code != '' && key_code != 'undefined' && key_code != null) {
 			document.getElementById(value_id).value = '';
+			document.getElementById(suggestion_id).innerHTML = '';
 		}
 		
 		document.getElementById(hidden_id).value = document.getElementById(input_id).value;

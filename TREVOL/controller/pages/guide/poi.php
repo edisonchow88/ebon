@@ -242,8 +242,16 @@ class ControllerPagesGuidePoi extends AController {
 		//START: set link
 			$link['guide/poi_subset/alias'] = $this->html->getSecureURL('guide/poi_subset/alias');
 			$link['guide/poi_subset/description'] = $this->html->getSecureURL('guide/poi_subset/description');
+			$link['guide/poi_subset/recognition'] = $this->html->getSecureURL('guide/poi_subset/recognition');
+			$link['guide/poi_subset/image'] = $this->html->getSecureURL('guide/poi_subset/image');
+			$link['guide/poi_subset/tag'] = $this->html->getSecureURL('guide/poi_subset/tag');
 			$link['guide/poi_subset/destination'] = $this->html->getSecureURL('guide/poi_subset/destination');
+			$link['guide/poi_subset/interest'] = $this->html->getSecureURL('guide/poi_subset/interest');
 			$link['guide/poi_subset/relation'] = $this->html->getSecureURL('guide/poi_subset/relation');
+			$link['guide/poi_subset/hour'] = $this->html->getSecureURL('guide/poi_subset/hour');
+			$link['guide/poi_subset/fee'] = $this->html->getSecureURL('guide/poi_subset/fee');
+			$link['guide/poi_subset/contact'] = $this->html->getSecureURL('guide/poi_subset/contact');
+			$link['guide/poi_subset/review'] = $this->html->getSecureURL('guide/poi_subset/review');
 			$link['guide/poi_subset/google'] = $this->html->getSecureURL('guide/poi_subset/google');
 			$link['guide/poi_subset/wikipedia'] = $this->html->getSecureURL('guide/poi_subset/wikipedia');
 		//END

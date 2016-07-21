@@ -923,7 +923,7 @@ class ModelGuidePoi extends Model{
 				//START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_relation) . " 
-						WHERE x = '" . (int)$poi_id . "'
+						WHERE poi_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END
@@ -931,7 +931,7 @@ class ModelGuidePoi extends Model{
                 //START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_relation) . " 
-						WHERE y = '" . (int)$poi_id . "'
+						WHERE parent_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END

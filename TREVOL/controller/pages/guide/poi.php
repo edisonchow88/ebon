@@ -30,6 +30,7 @@ class ControllerPagesGuidePoi extends AController {
 		
 		//START: set model
 			$this->loadModel('guide/poi');
+			$this->loadModel('guide/destination');
 			$this->loadModel('resource/tag');
 			$this->loadModel('resource/image');
 		//END
@@ -47,6 +48,8 @@ class ControllerPagesGuidePoi extends AController {
 				$result[$poi_id]['image'] = json_encode($row['image']);
 				$result[$poi_id]['name'] = $row['name'];
 				$result[$poi_id]['tag'] = json_encode($row['tag']);
+				$destination = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($row['destination_id']);
+				$result[$poi_id]['destination'] = json_encode($destination);
 				$result[$poi_id]['blurb'] = $row['blurb'];
 				$result[$poi_id]['description'] = $row['description'];
 				$result[$poi_id]['lat'] = $row['lat'];
@@ -80,7 +83,7 @@ class ControllerPagesGuidePoi extends AController {
 			$column[$i]['title'] = 'Id';
 			$column[$i]['type'] = 'numeric';
 			$column[$i]['width'] = '';
-			$column[$i]['order'] = 'desc';
+			$column[$i]['order'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';
@@ -119,7 +122,19 @@ class ControllerPagesGuidePoi extends AController {
 			$column[$i]['order'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'false';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'true';
+			
+			$i = 'destination';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = 'Destination';
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = 'asc';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
 			
@@ -210,7 +225,7 @@ class ControllerPagesGuidePoi extends AController {
 			$i = 'commands';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = '';
-			$column[$i]['width'] = '730px';
+			$column[$i]['width'] = '450px';
 			$column[$i]['align'] = 'right';
 			$column[$i]['sortable'] = 'false';
 			$column[$i]['searchable'] = 'false';

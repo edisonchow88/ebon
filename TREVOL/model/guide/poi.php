@@ -56,6 +56,8 @@ class ModelGuidePoi extends Model{
 					ON t1.poi_id = t4.poi_id 
 					LEFT JOIN ".$this->db->table($this->table_tag)." t5
 					ON t1.poi_id = t5.poi_id 
+					LEFT JOIN ".$this->db->table($this->table_destination)." t6
+					ON t1.poi_id = t6.poi_id 
 				";
 				if($keyword != '') {
 					$sql .= "
@@ -64,7 +66,7 @@ class ModelGuidePoi extends Model{
 				}
 				$sql .= "	
 					GROUP BY t1.poi_id 
-					ORDER BY t1.poi_id DESC 
+					ORDER BY t2.name ASC 
 				";
 			}
 			else {
@@ -84,6 +86,8 @@ class ModelGuidePoi extends Model{
 					ON t1.poi_id = t4.poi_id 
 					LEFT JOIN ".$this->db->table($this->table_tag)." t5
 					ON t1.poi_id = t5.poi_id 
+					LEFT JOIN ".$this->db->table($this->table_destination)." t6
+					ON t1.poi_id = t6.poi_id 
 					WHERE t1.poi_id = '" . (int)$poi_id . "' 
 					GROUP BY t1.poi_id 
 				";

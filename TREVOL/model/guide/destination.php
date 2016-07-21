@@ -964,6 +964,188 @@ class ModelGuideDestination extends Model{
 		}
 	//END
 	
+	//START: [Relation]
+		public function getDestinationRelation($relation_id='',$destination_id='') {
+			//START: Run SQL
+				if($relation_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_relation) . " 
+					";
+					if($destination_id != '') {
+						$sql .= "
+							WHERE destination_id = '" . (int)$destination_id . "' 
+                            OR parent_id = '" . (int)$destination_id . "'
+						";
+					}
+					$sql .= "
+						ORDER BY relation_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_relation) . " 
+					";
+					if($destination_id != '') {
+						$sql .= "
+							WHERE relation_id = '" . (int)$relation_id . "' 
+                            AND (destination_id = '" . (int)$destination_id . "' 
+                            OR parent_id = '" . (int)$destination_id . "')
+						";
+					}
+					else {
+						$sql .= "
+							WHERE relation_id = '" . (int)$relation_id . "' 
+						";
+					}
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				if($relation_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['relation_id']] = $result;
+						$output[$result['relation_id']]['target_id'] = $result['parent_id'];
+						$output[$result['relation_id']]['relation'] = 'Parent';
+						if($destination_id != '') {
+							if($result['parent_id'] == $destination_id) {
+								$output[$result['relation_id']]['destination_id'] = $result['parent_id'];
+								$output[$result['relation_id']]['target_id'] = $result['destination_id'];
+								$output[$result['relation_id']]['relation'] = 'Child';
+							}
+						}
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+					$output['target_id'] = $result['parent_id'];
+					$output['relation'] = 'Parent';
+					if($destination_id != '') {
+						if($result['parent_id'] == $destination_id) {
+							$output['destination_id'] = $result['parent_id'];
+							$output['target_id'] = $result['destination_id'];
+							$output['relation'] = 'Child';
+						}
+					}
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getDestinationRelationByDestinationId($destination_id) {
+			return $this->getDestinationRelation('',$destination_id);
+		}
+		
+		public function addDestinationRelation($data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_relation));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+				
+					if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				//END
+				
+				//START: Run SQL
+					$sql = "
+						INSERT INTO `" . $this->db->table($this->table_relation) . "` 
+						SET " . implode(',', $update) . "
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$relation_id = $this->db->getLastId();
+			
+			$this->cache->delete('destination_relation');
+			
+			return $relation_id;
+		}
+		
+		public function editDestinationRelation($relation_id, $data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_relation));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_relation) . " 
+							SET " . implode(',', $update) . "
+							WHERE relation_id = '" . (int)$relation_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('destination_relation');
+			return true;
+		}
+		
+		public function deleteDestinationRelation($relation_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_relation) . " 
+						WHERE relation_id = '" . (int)$relation_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('destination_relation');
+			return true;
+		}
+		
+		public function deleteDestinationRelationByDestinationId($destination_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_relation) . " 
+						WHERE x = '" . (int)$destination_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+                
+                //START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_relation) . " 
+						WHERE y = '" . (int)$destination_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('destination_relation');
+			return true;
+		}
+	//END
+	
 	//START: [Google]
 		public function getDestinationGoogle($google_id='',$destination_id='') {
 			//START: Run SQL

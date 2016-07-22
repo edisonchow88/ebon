@@ -35,8 +35,10 @@ class ControllerPagesResourceDataset extends AController {
 		//START: set data
 			$data = $this->model_resource_data->getDataset();
 		//END
-		
+			
 		//START: set result
+			$link['resource/data'] = $this->html->getSecureURL('resource/data');
+		
 			foreach($data as $row) {
 				$dataset_id = $row['dataset_id'];
 				
@@ -47,6 +49,7 @@ class ControllerPagesResourceDataset extends AController {
 				$result[$dataset_id]['icon_color'] = $row['icon_color'];
 				$result[$dataset_id]['label_color'] = $row['label_color'];
 				$result[$dataset_id]['font_color'] = $row['font_color'];
+				$result[$dataset_id]['link'] = $link['resource/data'].'&dataset_id='.$row['dataset_id'];
 			}
 		//END
 		
@@ -55,7 +58,7 @@ class ControllerPagesResourceDataset extends AController {
 			/* [Template]
 			$i = '';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
@@ -82,7 +85,7 @@ class ControllerPagesResourceDataset extends AController {
 			
 			$i = 'category';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
@@ -94,7 +97,7 @@ class ControllerPagesResourceDataset extends AController {
 			
 			$i = 'name';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
@@ -106,7 +109,7 @@ class ControllerPagesResourceDataset extends AController {
 			
 			$i = 'icon_color';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
@@ -118,7 +121,31 @@ class ControllerPagesResourceDataset extends AController {
 			
 			$i = 'label_color';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'false';
+			$column[$i]['sortable'] = 'false';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'font_color';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'false';
+			$column[$i]['sortable'] = 'false';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'link';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
@@ -137,18 +164,6 @@ class ControllerPagesResourceDataset extends AController {
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';
-			$column[$i]['sortable'] = 'false';
-			$column[$i]['searchable'] = 'false';
-			
-			$i = 'icon_color';
-			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
-			$column[$i]['type'] = '';
-			$column[$i]['width'] = '';
-			$column[$i]['order'] = '';
-			$column[$i]['align'] = '';
-			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'false';
 			$column[$i]['sortable'] = 'false';
 			$column[$i]['searchable'] = 'false';
 			

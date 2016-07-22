@@ -4,9 +4,9 @@
 
 <div id="content" class="panel panel-default">
 	<div class="panel-heading col-xs-12">
-    	<div class="col-xs-2 text-left"></div>
-    	<div class="col-xs-8 text-center"><h5>Dataset</h5></div>
-        <div class="col-xs-2 text-right"><a data-toggle="modal" data-target="#modal-add-dataset" class="btn btn-danger" role="button">Add Dataset</a></div>
+    	<div class="col-xs-3 text-left"></div>
+    	<div class="col-xs-6 text-center"><h5>Dataset</h5></div>
+        <div class="col-xs-3 text-right"><a data-toggle="modal" data-target="#modal-add-dataset" class="btn btn-danger" role="button">Add Dataset</a></div>
 	</div>
 
 	<div class="panel-body panel-body-nopadding tab-content col-xs-12">
@@ -169,21 +169,19 @@
 			{
 				return row.time.substring(0, row.time.length - 3);
 			},
-			"line": function(column, row)
-			{
-				var line = JSON.parse(row.line);
-				return line.line_id;
-			},
-			"day": function(column, row)
-			{
-				var day = JSON.parse(row.day);
-				return day.date;
-			},
 			"commands": function(column, row)
 			{
 				return ""
 				+ "<nav style='display:inline !important; margin-left:10px !important;'>"
 					+ "<ul class='pagination' style='margin: 0px !important;'>"
+						+ "<li>"
+							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='View'>"
+							+ "<a class='btn btn-sm btn-danger command-view' href='"+row.link+"' >"
+								+ "<span class='fa fa-fw fa-eye'>"
+								+ "</span>"
+							+ "</a>"
+							+ "</span>"
+						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Edit'>"
 							+ "<a class='btn btn-sm command-edit' data-toggle='modal' data-target='#modal-edit-dataset' data-row-id='"+row.id+"'>"

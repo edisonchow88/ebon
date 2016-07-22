@@ -170,6 +170,8 @@ class ModelResourceTag extends Model{
 	}
 	
 	public function addTag($data) {
+		$data['name'] = strtolower($data['name']);
+		
 		//add id
 		$sql = "
 				INSERT INTO " . $this->db->table($this->table) . " 
@@ -240,6 +242,8 @@ class ModelResourceTag extends Model{
 	}
 	
 	public function editTag($tag_id, $data) {
+		$data['name'] = strtolower($data['name']);
+		
 		//edit general
 		$sql = "
 				UPDATE " . $this->db->table($this->table) . " 

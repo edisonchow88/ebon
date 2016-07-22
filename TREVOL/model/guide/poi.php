@@ -628,6 +628,178 @@ class ModelGuidePoi extends Model{
 		}
 	//END
 	
+	//START: [Recognition]
+		public function getPoiRecognition($recognition_id='',$poi_id='') {
+			//START: Run SQL
+				if($recognition_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_recognition) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' 
+						";
+					}
+					$sql .= "
+						ORDER BY recognition_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_recognition) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' AND recognition_id = '" . (int)$recognition_id . "' 
+						";
+					}
+					else {
+						$sql .= "
+							WHERE recognition_id = '" . (int)$recognition_id . "' 
+						";
+					}
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				if($recognition_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['recognition_id']] = $result;
+						$output[$result['recognition_id']]['title'] = ucwords($result['title']);
+						$output[$result['recognition_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+						if($result['year_started'] == 0 && $result['year_ended'] == 0) {
+							$output[$result['recognition_id']]['year'] = '';
+						}
+						else if($result['year_started'] > 0 && $result['year_ended'] == 0) {
+							$output[$result['recognition_id']]['year'] = 'Since '.$result['year_started'];
+						}
+						else if($result['year_started'] == 0 && $result['year_ended'] > 0) {
+							$output[$result['recognition_id']]['year'] = 'Till '.$result['year_ended'];
+						}
+						else if($result['year_started'] == $result['year_ended']) {
+							$output[$result['recognition_id']]['year'] = $result['year_started'];
+						}
+						else {
+							$output[$result['recognition_id']]['year'] = $result['year_started'].' 〜 '.$result['year_ended'];
+						}
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+					$output['title'] = ucwords($result['title']);
+					$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getPoiRecognitionByPoiId($poi_id) {
+			return $this->getPoiRecognition('',$poi_id);
+		}
+		
+		public function addPoiRecognition($data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_recognition));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+				
+					if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				//END
+				
+				//START: Run SQL
+					$sql = "
+						INSERT INTO `" . $this->db->table($this->table_recognition) . "` 
+						SET " . implode(',', $update) . "
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$recognition_id = $this->db->getLastId();
+			
+			$this->cache->delete('poi_recognition');
+			
+			return $recognition_id;
+		}
+		
+		public function editPoiRecognition($recognition_id, $data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_recognition));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_recognition) . " 
+							SET " . implode(',', $update) . "
+							WHERE recognition_id = '" . (int)$recognition_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_recognition');
+			return true;
+		}
+		
+		public function deletePoiRecognition($recognition_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_recognition) . " 
+						WHERE recognition_id = '" . (int)$recognition_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_recognition');
+			return true;
+		}
+		
+		public function deletePoiRecognitionByPoiId($poi_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_recognition) . " 
+						WHERE poi_id = '" . (int)$poi_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_recognition');
+			return true;
+		}
+	//END
+	
 	//START: [Image]
 		public function getPoiImage($relation_id='',$poi_id='') {
 			//START: Run SQL

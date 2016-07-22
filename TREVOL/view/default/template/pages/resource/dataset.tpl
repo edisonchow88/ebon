@@ -37,12 +37,14 @@
             </thead>
             <tbody>
             	<?php
-                	foreach($result as $row) {
-                    	echo "<tr>";
-                        	foreach($row as $column) {
-                                echo "<td>" . $column . "</td>";
-                            }
-                        echo "</tr>";
+                    if(count($result) > 0) {
+                        foreach($result as $row) {
+                            echo "<tr>";
+                                foreach($row as $column) {
+                                    echo "<td>" . $column . "</td>";
+                                }
+                            echo "</tr>";
+                        }
                     }
             	?>
             </tbody>

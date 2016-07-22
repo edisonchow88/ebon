@@ -38,18 +38,20 @@ class ControllerPagesResourceDataset extends AController {
 			
 		//START: set result
 			$link['resource/data'] = $this->html->getSecureURL('resource/data');
-		
-			foreach($data as $row) {
-				$dataset_id = $row['dataset_id'];
-				
-				//NOTE: sequence is important
-				$result[$dataset_id]['dataset_id'] = $row['dataset_id'];
-				$result[$dataset_id]['category'] = $row['category'];
-				$result[$dataset_id]['name'] = $row['name'];
-				$result[$dataset_id]['icon_color'] = $row['icon_color'];
-				$result[$dataset_id]['label_color'] = $row['label_color'];
-				$result[$dataset_id]['font_color'] = $row['font_color'];
-				$result[$dataset_id]['link'] = $link['resource/data'].'&dataset_id='.$row['dataset_id'];
+			
+			if(count($data) > 0) {
+				foreach($data as $row) {
+					$dataset_id = $row['dataset_id'];
+					
+					//NOTE: sequence is important
+					$result[$dataset_id]['dataset_id'] = $row['dataset_id'];
+					$result[$dataset_id]['category'] = $row['category'];
+					$result[$dataset_id]['name'] = $row['name'];
+					$result[$dataset_id]['icon_color'] = $row['icon_color'];
+					$result[$dataset_id]['label_color'] = $row['label_color'];
+					$result[$dataset_id]['font_color'] = $row['font_color'];
+					$result[$dataset_id]['link'] = $link['resource/data'].'&dataset_id='.$row['dataset_id'];
+				}
 			}
 		//END
 		
@@ -187,9 +189,9 @@ class ControllerPagesResourceDataset extends AController {
 		//END
 		
 		//START: set variable
-			$this->view->assign('column', $column);
-			$this->view->assign('link', $link);
-			$this->view->assign('result', $result);
+			if(count($column) > 0) { $this->view->assign('column', $column); }
+			if(count($link) > 0) { $this->view->assign('link', $link); }
+			if(count($result) > 0) { $this->view->assign('result', $result); }
 		//END
 		
 		//START: set template

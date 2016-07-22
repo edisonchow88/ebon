@@ -1453,6 +1453,178 @@ class ModelGuidePoi extends Model{
 		}
 	//END
 	
+	//START: [Contact]
+		public function getPoiContact($contact_id='',$poi_id='') {
+			//START: Run SQL
+				if($contact_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_contact) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' 
+						";
+					}
+					$sql .= "
+						ORDER BY contact_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_contact) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' AND contact_id = '" . (int)$contact_id . "' 
+						";
+					}
+					else {
+						$sql .= "
+							WHERE contact_id = '" . (int)$contact_id . "' 
+						";
+					}
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				if($contact_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['contact_id']] = $result;
+						$output[$result['contact_id']]['title'] = ucwords($result['title']);
+						$output[$result['contact_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+						if($result['year_started'] == 0 && $result['year_ended'] == 0) {
+							$output[$result['contact_id']]['year'] = '';
+						}
+						else if($result['year_started'] > 0 && $result['year_ended'] == 0) {
+							$output[$result['contact_id']]['year'] = 'Since '.$result['year_started'];
+						}
+						else if($result['year_started'] == 0 && $result['year_ended'] > 0) {
+							$output[$result['contact_id']]['year'] = 'Till '.$result['year_ended'];
+						}
+						else if($result['year_started'] == $result['year_ended']) {
+							$output[$result['contact_id']]['year'] = $result['year_started'];
+						}
+						else {
+							$output[$result['contact_id']]['year'] = $result['year_started'].' 〜 '.$result['year_ended'];
+						}
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+					$output['title'] = ucwords($result['title']);
+					$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getPoiContactByPoiId($poi_id) {
+			return $this->getPoiContact('',$poi_id);
+		}
+		
+		public function addPoiContact($data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_contact));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+				
+					if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				//END
+				
+				//START: Run SQL
+					$sql = "
+						INSERT INTO `" . $this->db->table($this->table_contact) . "` 
+						SET " . implode(',', $update) . "
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$contact_id = $this->db->getLastId();
+			
+			$this->cache->delete('poi_contact');
+			
+			return $contact_id;
+		}
+		
+		public function editPoiContact($contact_id, $data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_contact));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_contact) . " 
+							SET " . implode(',', $update) . "
+							WHERE contact_id = '" . (int)$contact_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_contact');
+			return true;
+		}
+		
+		public function deletePoiContact($contact_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_contact) . " 
+						WHERE contact_id = '" . (int)$contact_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_contact');
+			return true;
+		}
+		
+		public function deletePoiContactByPoiId($poi_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_contact) . " 
+						WHERE poi_id = '" . (int)$poi_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_contact');
+			return true;
+		}
+	//END
+	
 	//START: [Google]
 		public function getPoiGoogle($google_id='',$poi_id='') {
 			//START: Run SQL

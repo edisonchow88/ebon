@@ -127,7 +127,7 @@ class ControllerPagesGuidePoiSubsetRelation extends AController {
 		
 		//START: set modal
 			$this->addChild('modal/guide/poi/add_relation', 'modal_add_relation', 'modal/guide/poi/add_relation.tpl');
-			$this->addChild('modal/guide/poi/edit_relation', 'modal_edit_relation', 'modal/guide/poi/edit_relation.tpl');
+			//$this->addChild('modal/guide/poi/edit_relation', 'modal_edit_relation', 'modal/guide/poi/edit_relation.tpl');
 			$this->addChild('modal/guide/poi/delete_relation', 'modal_delete_relation', 'modal/guide/poi/delete_relation.tpl');
 		//END
 		

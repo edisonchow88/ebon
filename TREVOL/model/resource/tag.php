@@ -28,12 +28,87 @@ class ModelResourceTag extends Model{
 		return $output;
 	}
 	
-	public function getTag($tag_id='',$tag_type_id='') {
-		if($tag_id == '0') { return; } //avoid return an array
+	//START: General
+		public function getTag($tag_id='',$tag_type_id='') {
+			if($tag_id == '0') { return; } //avoid return an array
+			
+			$tag = array();
+			
+			if($tag_id == '') {
+				$sql = "
+					SELECT * 
+					FROM " . $this->db->table($this->table) . " t1 
+					LEFT JOIN ".$this->db->table($this->table_description)." t2 
+					ON t1.tag_id = t2.tag_id 
+					LEFT JOIN ".$this->db->table($this->table_type)." t3 
+					ON t1.tag_type_id = t3.tag_type_id 
+				";
+				if($tag_type_id != '') $sql .= "WHERE t1.tag_type_id = '" . (int)$this->db->escape($tag_type_id) . "' ";
+				$sql .= "ORDER BY t3.type_name ASC, t1.tag_id ASC";
+			}
+			else {
+				$sql = "
+					SELECT * 
+					FROM " . $this->db->table($this->table) . " t1 
+					LEFT JOIN ".$this->db->table($this->table_description)." t2 
+					ON t1.tag_id = t2.tag_id 
+					LEFT JOIN ".$this->db->table($this->table_type)." t3 
+					ON t1.tag_type_id = t3.tag_type_id 
+					WHERE t1.tag_id = '" . (int)$tag_id . "' 
+				";
+				if($tag_type_id != '') $sql .= "AND t1.tag_type_id = '" . $this->db->escape($tag_type_id) . "'";
+			}
+			$query = $this->db->query($sql);
+			
+			if($tag_id == '') {
+				foreach($query->rows as $result){
+					$output[$result['tag_id']] = $result;
+					$output[$result['tag_id']]['name'] = ucwords($result['name']);
+					$output[$result['tag_id']]['type_name'] = ucwords($result['type_name']);
+				}
+			}
+			else {
+				$output = $query->row;
+				$output['name'] = ucwords($output['name']);
+				$output['type_name'] = ucwords($output['type_name']);
+			}
+			
+			return $output;
+		}
 		
-		$tag = array();
+		public function getTagByTypeName($type_name) {
+			$sql = "
+				SELECT * 
+				FROM " . $this->db->table($this->table_type) . " 
+				WHERE type_name = '" . $type_name . "' 
+			";
+			$query = $this->db->query($sql);
+			$result = $query->row;
+			$tag_type_id = $result['tag_type_id'];
+			return $this->getTag('',$tag_type_id);
+		}
 		
-		if($tag_id == '') {
+		public function getTagRelation($x,$y) {
+			$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE x = '" . (int)$x . "' AND y = '" . (int)$y . "'";
+			$query = $this->db->query($sql);
+			
+			foreach($query->rows as $result){
+				if($result['relation'] == 'parent') { $result['relation'] = 'child'; }
+				$output = $result['relation'];
+			}
+			
+			$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE x = '" . (int)$y . "' AND y = '" . (int)$x . "'";
+			$query = $this->db->query($sql);
+			
+			foreach($query->rows as $result){
+				$output = $result['relation'];
+			}
+			return $output;
+		}
+		
+		public function getTagAllRelation($tag_id) {
+			$tag = array();
+			
 			$sql = "
 				SELECT * 
 				FROM " . $this->db->table($this->table) . " t1 
@@ -41,307 +116,251 @@ class ModelResourceTag extends Model{
 				ON t1.tag_id = t2.tag_id 
 				LEFT JOIN ".$this->db->table($this->table_type)." t3 
 				ON t1.tag_type_id = t3.tag_type_id 
+				WHERE t1.tag_id <> '" . (int)$tag_id . "' 
 			";
-			if($tag_type_id != '') $sql .= "WHERE t1.tag_type_id = '" . (int)$this->db->escape($tag_type_id) . "' ";
-			$sql .= "ORDER BY t3.type_name ASC, t1.tag_id ASC";
-		}
-		else {
-			$sql = "
-				SELECT * 
-				FROM " . $this->db->table($this->table) . " t1 
-				LEFT JOIN ".$this->db->table($this->table_description)." t2 
-				ON t1.tag_id = t2.tag_id 
-				LEFT JOIN ".$this->db->table($this->table_type)." t3 
-				ON t1.tag_type_id = t3.tag_type_id 
-				WHERE t1.tag_id = '" . (int)$tag_id . "' 
-			";
-			if($tag_type_id != '') $sql .= "AND t1.tag_type_id = '" . $this->db->escape($tag_type_id) . "'";
-		}
-		$query = $this->db->query($sql);
-		
-		if($tag_id == '') {
+			$query = $this->db->query($sql);
+			
 			foreach($query->rows as $result){
 				$output[$result['tag_id']] = $result;
 				$output[$result['tag_id']]['name'] = ucwords($result['name']);
 				$output[$result['tag_id']]['type_name'] = ucwords($result['type_name']);
+				$output[$result['tag_id']]['relation'] = $this->getTagRelation($tag_id,$result['tag_id']);
 			}
-		}
-		else {
-			$output = $query->row;
-			$output['name'] = ucwords($output['name']);
-			$output['type_name'] = ucwords($output['type_name']);
+			
+			return $output;
 		}
 		
-		return $output;
-	}
+		public function getTagParent($tag_id) {
+			$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE y = '" . (int)$tag_id . "' AND relation = 'parent' ";
+			$query = $this->db->query($sql);
+			
+			foreach($query->rows as $result){
+				$output[$result['x']] = $this->getTag($result['x']);
+			}
+			
+			return $output;
+		}
+		
+		public function getTagChild($tag_id) {
+			$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE x = '" . (int)$tag_id . "' AND relation = 'parent' ";
+			$query = $this->db->query($sql);
+			
+			foreach($query->rows as $result){
+				$output[$result['y']] = $this->getTag($result['y']);
+			}
+			
+			return $output;
+		}
+		
+		public function getTagSimilar($tag_id) {
+			$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE y = '" . (int)$tag_id . "' AND relation = 'similar' ";
+			$query = $this->db->query($sql);
+			
+			foreach($query->rows as $result){
+				$output[$result['x']] = $this->getTag($result['x']);
+			}
+			
+			$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE x = '" . (int)$tag_id . "' AND relation = 'similar' ";
+			$query = $this->db->query($sql);
+			
+			foreach($query->rows as $result){
+				$output[$result['y']] = $this->getTag($result['y']);
+			}
+			
+			return $output;
+		}
+		
+		public function addTag($data) {
+			$data['name'] = strtolower($data['name']);
+			
+			//add id
+			$sql = "
+					INSERT INTO " . $this->db->table($this->table) . " 
+					SET 
+						tag_type_id = '" . $this->db->escape($data['tag_type_id']) . "', 
+						icon = '" . $this->db->escape($data['icon']) . "'
+				";
+			$query = $this->db->query($sql);
+			
+			$tag_id = $this->db->getLastId();
+			
+			//add description
+			$sql = "
+					INSERT INTO " . $this->db->table($this->table_description) . " 
+					SET 
+						tag_id = '" . $tag_id . "', 
+						language_id = '" . $this->db->escape($data['language_id']) . "', 
+						name = '" . $this->db->escape($data['name']) . "',
+						description = '" . $this->db->escape($data['description']) . "'
+				";
+			$query = $this->db->query($sql);
+			
+			//add parent
+			if($data['parent'] != '') {
+				foreach($data['parent'] as $parent) {
+					$sql = "
+							INSERT INTO " . $this->db->table($this->table_relation) . " 
+							SET 
+								y = '" . $tag_id . "', 
+								x = '" . $parent['tag_id'] . "', 
+								relation = 'parent'
+						";
+					$query = $this->db->query($sql);
+				}
+			}
+			
+			//add child
+			if($data['child'] != '') {
+				foreach($data['child'] as $child) {
+					$sql = "
+							INSERT INTO " . $this->db->table($this->table_relation) . " 
+							SET 
+								x = '" . $tag_id . "', 
+								y = '" . $child['tag_id'] . "', 
+								relation = 'parent'
+						";
+					$query = $this->db->query($sql);
+				}
+			}
+			
+			//add similar
+			if($data['similar'] != '') {
+				foreach($data['similar'] as $similar) {
+					$sql = "
+							INSERT INTO " . $this->db->table($this->table_relation) . " 
+							SET 
+								x = '" . $tag_id . "', 
+								y = '" . $similar['tag_id'] . "', 
+								relation = 'similar'
+						";
+					$query = $this->db->query($sql);
+				}
+			}
+			
+			$this->cache->delete('tag');
+			
+			return $tag_id;
+		}
+		
+		public function editTag($tag_id, $data) {
+			$data['name'] = strtolower($data['name']);
+			
+			//edit general
+			$sql = "
+					UPDATE " . $this->db->table($this->table) . " 
+					SET 
+						tag_type_id = '" . $data['tag_type_id'] . "', 
+						icon = '" . $data['icon'] . "', 
+						date_modified = NOW() 
+					WHERE tag_id = '" . (int)$data['tag_id'] . "'
+				";
+			$query = $this->db->query($sql);
+			
+			//edit description
+			$sql = "
+					UPDATE " . $this->db->table($this->table_description) . " 
+					SET 
+						language_id = '" . $data['language_id'] . "', 
+						name = '" . $data['name'] . "', 
+						description = '" . $data['description'] . "' 
+					WHERE tag_id = '" . (int)$data['tag_id'] . "'
+				";
+			$query = $this->db->query($sql);
+			
+			//delete all tag relation
+			$sql = "
+					DELETE FROM " . $this->db->table($this->table_relation) . " 
+					WHERE ( x = '" . (int)$tag_id . "' OR y = '" . (int)$tag_id . "' )
+				";
+			$query = $this->db->query($sql);
+			
+			//add parent
+			if($data['parent'] != '') {
+				foreach($data['parent'] as $parent) {
+					$sql = "
+							INSERT INTO " . $this->db->table($this->table_relation) . " 
+							SET 
+								y = '" . (int)$data['tag_id'] . "', 
+								x = '" . $parent['tag_id'] . "', 
+								relation = 'parent'
+						";
+					$query = $this->db->query($sql);
+				}
+			}
+			
+			//add child
+			if($data['child'] != '') {
+				foreach($data['child'] as $child) {
+					$sql = "
+							INSERT INTO " . $this->db->table($this->table_relation) . " 
+							SET 
+								x = '" . (int)$data['tag_id'] . "', 
+								y = '" . $child['tag_id'] . "', 
+								relation = 'parent'
+						";
+					$query = $this->db->query($sql);
+				}
+			}
+			
+			//add similar
+			if($data['similar'] != '') {
+				foreach($data['similar'] as $similar) {
+					$sql = "
+							INSERT INTO " . $this->db->table($this->table_relation) . " 
+							SET 
+								x = '" . (int)$data['tag_id'] . "', 
+								y = '" . $similar['tag_id'] . "', 
+								relation = 'similar'
+						";
+					$query = $this->db->query($sql);
+				}
+			}
+			
+			$this->cache->delete('tag');
+		}
+		
+		public function deleteTag($tag_id) {
+			//delete id
+			$sql = "
+					DELETE FROM " . $this->db->table($this->table) . " 
+					WHERE tag_id = '" . (int)$tag_id . "'
+				";
+			$query = $this->db->query($sql);
+			
+			//delete description
+			$sql = "
+					DELETE FROM " . $this->db->table($this->table_description) . " 
+					WHERE tag_id = '" . (int)$tag_id . "'
+				";
+			$query = $this->db->query($sql);
+			
+			//delete relation
+			$sql = "
+					DELETE FROM " . $this->db->table($this->table_relation) . " 
+					WHERE ( x = '" . (int)$tag_id . "' OR y = '" . (int)$tag_id . "' )
+				";
+			$query = $this->db->query($sql);
+			
+			$this->cache->delete('tag');
+		}
 	
-	public function getTagByTypeName($type_name) {
-		$sql = "
-			SELECT * 
-			FROM " . $this->db->table($this->table_type) . " 
-			WHERE type_name = '" . $type_name . "' 
-		";
-		$query = $this->db->query($sql);
-		$result = $query->row;
-		$tag_type_id = $result['tag_type_id'];
-		return $this->getTag('',$tag_type_id);
-	}
-	
-	public function getTagRelation($x,$y) {
-		$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE x = '" . (int)$x . "' AND y = '" . (int)$y . "'";
-		$query = $this->db->query($sql);
-		
-		foreach($query->rows as $result){
-			if($result['relation'] == 'parent') { $result['relation'] = 'child'; }
-			$output = $result['relation'];
-		}
-		
-		$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE x = '" . (int)$y . "' AND y = '" . (int)$x . "'";
-		$query = $this->db->query($sql);
-		
-		foreach($query->rows as $result){
-			$output = $result['relation'];
-		}
-		return $output;
-	}
-	
-	public function getTagAllRelation($tag_id) {
-		$tag = array();
-		
-		$sql = "
-			SELECT * 
-			FROM " . $this->db->table($this->table) . " t1 
-			LEFT JOIN ".$this->db->table($this->table_description)." t2 
-			ON t1.tag_id = t2.tag_id 
-			LEFT JOIN ".$this->db->table($this->table_type)." t3 
-			ON t1.tag_type_id = t3.tag_type_id 
-			WHERE t1.tag_id <> '" . (int)$tag_id . "' 
-		";
-		$query = $this->db->query($sql);
-		
-		foreach($query->rows as $result){
-			$output[$result['tag_id']] = $result;
-			$output[$result['tag_id']]['name'] = ucwords($result['name']);
-			$output[$result['tag_id']]['type_name'] = ucwords($result['type_name']);
-			$output[$result['tag_id']]['relation'] = $this->getTagRelation($tag_id,$result['tag_id']);
-		}
-		
-		return $output;
-	}
-	
-	public function getTagParent($tag_id) {
-		$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE y = '" . (int)$tag_id . "' AND relation = 'parent' ";
-		$query = $this->db->query($sql);
-		
-		foreach($query->rows as $result){
-			$output[$result['x']] = $this->getTag($result['x']);
-		}
-		
-		return $output;
-	}
-	
-	public function getTagChild($tag_id) {
-		$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE x = '" . (int)$tag_id . "' AND relation = 'parent' ";
-		$query = $this->db->query($sql);
-		
-		foreach($query->rows as $result){
-			$output[$result['y']] = $this->getTag($result['y']);
-		}
-		
-		return $output;
-	}
-	
-	public function getTagSimilar($tag_id) {
-		$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE y = '" . (int)$tag_id . "' AND relation = 'similar' ";
-		$query = $this->db->query($sql);
-		
-		foreach($query->rows as $result){
-			$output[$result['x']] = $this->getTag($result['x']);
-		}
-		
-		$sql = "SELECT * FROM " . $this->db->table($this->table_relation) . " WHERE x = '" . (int)$tag_id . "' AND relation = 'similar' ";
-		$query = $this->db->query($sql);
-		
-		foreach($query->rows as $result){
-			$output[$result['y']] = $this->getTag($result['y']);
-		}
-		
-		return $output;
-	}
-	
-	public function addTag($data) {
-		$data['name'] = strtolower($data['name']);
-		
-		//add id
-		$sql = "
-				INSERT INTO " . $this->db->table($this->table) . " 
-				SET 
-					tag_type_id = '" . $this->db->escape($data['tag_type_id']) . "', 
-					icon = '" . $this->db->escape($data['icon']) . "'
-			";
-		$query = $this->db->query($sql);
-		
-		$tag_id = $this->db->getLastId();
-		
-		//add description
-		$sql = "
-				INSERT INTO " . $this->db->table($this->table_description) . " 
-				SET 
-					tag_id = '" . $tag_id . "', 
-					language_id = '" . $this->db->escape($data['language_id']) . "', 
-					name = '" . $this->db->escape($data['name']) . "',
-					description = '" . $this->db->escape($data['description']) . "'
-			";
-		$query = $this->db->query($sql);
-		
-		//add parent
-		if($data['parent'] != '') {
-			foreach($data['parent'] as $parent) {
+		public function deleteTagByTagTypeId($tag_type_id) {
+			//START: Run SQL
 				$sql = "
-						INSERT INTO " . $this->db->table($this->table_relation) . " 
-						SET 
-							y = '" . $tag_id . "', 
-							x = '" . $parent['tag_id'] . "', 
-							relation = 'parent'
-					";
+					SELECT tag_id
+					FROM " . $this->db->table($this->table) . " 
+					WHERE tag_type_id = '" . (int)$tag_type_id . "'
+				";
 				$query = $this->db->query($sql);
-			}
+			//END
+			
+			//START: Run Chain Reaction
+				foreach($query->rows as $result){
+					$this->deleteTag($result['tag_id']);
+				}
+			//END
 		}
-		
-		//add child
-		if($data['child'] != '') {
-			foreach($data['child'] as $child) {
-				$sql = "
-						INSERT INTO " . $this->db->table($this->table_relation) . " 
-						SET 
-							x = '" . $tag_id . "', 
-							y = '" . $child['tag_id'] . "', 
-							relation = 'parent'
-					";
-				$query = $this->db->query($sql);
-			}
-		}
-		
-		//add similar
-		if($data['similar'] != '') {
-			foreach($data['similar'] as $similar) {
-				$sql = "
-						INSERT INTO " . $this->db->table($this->table_relation) . " 
-						SET 
-							x = '" . $tag_id . "', 
-							y = '" . $similar['tag_id'] . "', 
-							relation = 'similar'
-					";
-				$query = $this->db->query($sql);
-			}
-		}
-		
-		$this->cache->delete('tag');
-		
-		return $tag_id;
-	}
-	
-	public function editTag($tag_id, $data) {
-		$data['name'] = strtolower($data['name']);
-		
-		//edit general
-		$sql = "
-				UPDATE " . $this->db->table($this->table) . " 
-				SET 
-					tag_type_id = '" . $data['tag_type_id'] . "', 
-					icon = '" . $data['icon'] . "', 
-					date_modified = NOW() 
-				WHERE tag_id = '" . (int)$data['tag_id'] . "'
-			";
-		$query = $this->db->query($sql);
-		
-		//edit description
-		$sql = "
-				UPDATE " . $this->db->table($this->table_description) . " 
-				SET 
-					language_id = '" . $data['language_id'] . "', 
-					name = '" . $data['name'] . "', 
-					description = '" . $data['description'] . "' 
-				WHERE tag_id = '" . (int)$data['tag_id'] . "'
-			";
-		$query = $this->db->query($sql);
-		
-		//delete all tag relation
-		$sql = "
-				DELETE FROM " . $this->db->table($this->table_relation) . " 
-				WHERE ( x = '" . (int)$tag_id . "' OR y = '" . (int)$tag_id . "' )
-			";
-		$query = $this->db->query($sql);
-		
-		//add parent
-		if($data['parent'] != '') {
-			foreach($data['parent'] as $parent) {
-				$sql = "
-						INSERT INTO " . $this->db->table($this->table_relation) . " 
-						SET 
-							y = '" . (int)$data['tag_id'] . "', 
-							x = '" . $parent['tag_id'] . "', 
-							relation = 'parent'
-					";
-				$query = $this->db->query($sql);
-			}
-		}
-		
-		//add child
-		if($data['child'] != '') {
-			foreach($data['child'] as $child) {
-				$sql = "
-						INSERT INTO " . $this->db->table($this->table_relation) . " 
-						SET 
-							x = '" . (int)$data['tag_id'] . "', 
-							y = '" . $child['tag_id'] . "', 
-							relation = 'parent'
-					";
-				$query = $this->db->query($sql);
-			}
-		}
-		
-		//add similar
-		if($data['similar'] != '') {
-			foreach($data['similar'] as $similar) {
-				$sql = "
-						INSERT INTO " . $this->db->table($this->table_relation) . " 
-						SET 
-							x = '" . (int)$data['tag_id'] . "', 
-							y = '" . $similar['tag_id'] . "', 
-							relation = 'similar'
-					";
-				$query = $this->db->query($sql);
-			}
-		}
-		
-		$this->cache->delete('tag');
-	}
-	
-	public function deleteTag($tag_id) {
-		//delete id
-		$sql = "
-				DELETE FROM " . $this->db->table($this->table) . " 
-				WHERE tag_id = '" . (int)$tag_id . "'
-			";
-		$query = $this->db->query($sql);
-		
-		//delete description
-		$sql = "
-				DELETE FROM " . $this->db->table($this->table_description) . " 
-				WHERE tag_id = '" . (int)$tag_id . "'
-			";
-		$query = $this->db->query($sql);
-		
-		//delete relation
-		$sql = "
-				DELETE FROM " . $this->db->table($this->table_relation) . " 
-				WHERE ( x = '" . (int)$tag_id . "' OR y = '" . (int)$tag_id . "' )
-			";
-		$query = $this->db->query($sql);
-		
-		$this->cache->delete('tag');
-	}
+	//END
 	
 	//START: Tag Type
 	public function getTagType($tag_type_id='') {
@@ -416,6 +435,10 @@ class ModelResourceTag extends Model{
 			";
 		$query = $this->db->query($sql);
 		$this->cache->delete('tag_type');
+		
+		//START: Run Chain Reaction
+			$this->deleteTagByTagTypeId($tag_type_id);
+		//END
 	}
 	
 	//image

@@ -51,6 +51,8 @@ class ControllerPagesResourceDataset extends AController {
 					$result[$dataset_id]['label_color'] = $row['label_color'];
 					$result[$dataset_id]['font_color'] = $row['font_color'];
 					$result[$dataset_id]['link'] = $link['resource/data'].'&dataset_id='.$row['dataset_id'];
+					$d = $this->model_resource_data->getData('',$row['dataset_id']);
+					$result[$dataset_id]['count'] = count($d);
 				}
 			}
 		//END
@@ -154,6 +156,18 @@ class ControllerPagesResourceDataset extends AController {
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'false';
+			$column[$i]['sortable'] = 'false';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'count';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = 'Count';
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
 			$column[$i]['sortable'] = 'false';
 			$column[$i]['searchable'] = 'false';
 			

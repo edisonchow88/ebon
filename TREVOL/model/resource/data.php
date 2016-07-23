@@ -212,7 +212,7 @@ class ModelResourceData extends Model{
 						";
 					}
 					$sql .= "
-						ORDER BY alias_id DESC 
+						ORDER BY ranking DESC
 					";
 				}
 				else {

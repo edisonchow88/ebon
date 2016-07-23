@@ -33,7 +33,7 @@ class ModelResourceData extends Model{
 	//END
 	
 	//START: [General]
-		public function getData($data_id='') {
+		public function getData($data_id='',$dataset_id='') {
 			if($data_id == '') {
 				$sql = "
 					SELECT *, t1.data_id
@@ -47,8 +47,15 @@ class ModelResourceData extends Model{
 					)
 					LEFT JOIN ".$this->db->table($this->table_description)." t3 
 					ON t1.data_id = t3.data_id 
+				";
+				if($dataset_id != '') {
+					$sql .= "
+						WHERE t1.dataset_id = '" . (int)$dataset_id . "'
+					";
+				}
+				$sql .= "
 					GROUP BY t1.data_id 
-					ORDER BY t1.data_id DESC 
+					ORDER BY t1.sort_order ASC 
 				";
 			}
 			else {
@@ -64,7 +71,18 @@ class ModelResourceData extends Model{
 					)
 					LEFT JOIN ".$this->db->table($this->table_description)." t3 
 					ON t1.data_id = t3.data_id 
-					WHERE t1.data_id = '" . (int)$data_id . "' 
+				";
+				if($dataset_id != '') {
+					$sql .= "
+						WHERE t1.dataset_id = '" . (int)$dataset_id . "' AND t1.data_id = '" . (int)$data_id . "' 
+					";
+				}
+				else {
+					$sql .= "
+						WHERE t1.data_id = '" . (int)$data_id . "' 
+					";
+				}
+				$sql .= "
 					GROUP BY t1.data_id 
 				";
 	
@@ -77,6 +95,7 @@ class ModelResourceData extends Model{
 					$output[$result['data_id']] = $result;
 					$output[$result['data_id']]['name'] = ucwords($result['name']);
 					$output[$result['data_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+					$output[$result['data_id']]['label'] = $this->getDataset($result['dataset_id']);
 				}
 			}
 			else {
@@ -84,10 +103,15 @@ class ModelResourceData extends Model{
 				$output = $query->row;
 				$output['name'] = ucwords($result['name']);
 				$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+				$output['label'] = $this->getDataset($result['dataset_id']);
 			}
 			//END
 			
 			return $output;
+		}
+		
+		public function getDataByDatasetId($dataset_id) {
+			return $this->getData('',$dataset_id);
 		}
 		
 		public function addData($data) {
@@ -143,6 +167,12 @@ class ModelResourceData extends Model{
 					";
 					$query = $this->db->query($sql);
 				}
+			//END
+			
+			//START: Run Chain Reaction
+				$language_id = $data['language_id'];
+				$this->editDataAliasByDataIdAndLanguageId($data_id, $language_id, $data);
+				$this->editDataDescriptionByDataIdAndLanguageId($data_id, $language_id, $data);
 			//END
 			
 			$this->cache->delete('data');
@@ -279,6 +309,37 @@ class ModelResourceData extends Model{
 							UPDATE " . $this->db->table($this->table_alias) . " 
 							SET " . implode(',', $update) . "
 							WHERE alias_id = '" . (int)$alias_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('data_alias');
+			return true;
+		}
+		
+		public function editDataAliasByDataIdAndLanguageId($data_id, $language_id, $data) {
+			if($data_id == '' || $language_id == '') { return false; }
+			
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_alias));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_alias) . " 
+							SET " . implode(',', $update) . "
+							WHERE data_id = '" . (int)$data_id . "' AND language_id = '" . (int)$language_id . "'
 						";
 						$query = $this->db->query($sql);
 					}
@@ -434,6 +495,37 @@ class ModelResourceData extends Model{
 							UPDATE " . $this->db->table($this->table_description) . " 
 							SET " . implode(',', $update) . "
 							WHERE description_id = '" . (int)$description_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('data_description');
+			return true;
+		}
+		
+		public function editDataDescriptionByDataIdAndLanguageId($data_id, $language_id, $data) {
+			if($data_id == '' || $language_id == '') { return false; }
+			
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_description));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_description) . " 
+							SET " . implode(',', $update) . "
+							WHERE data_id = '" . (int)$data_id . "' AND language_id = '" . (int)$language_id . "'
 						";
 						$query = $this->db->query($sql);
 					}

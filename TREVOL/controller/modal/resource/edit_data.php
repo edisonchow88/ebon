@@ -106,6 +106,8 @@ class ControllerModalResourceEditData extends AController {
 			$modal_input[$i]['id'] = str_replace("_","-",$i);
 			$modal_input[$i]['name'] = $i;
 			$modal_input[$i]['required'] = false;
+			$modal_input[$i]['help'] = 'Font Awesome Icons';
+			$modal_input[$i]['link'] = 'http://fontawesome.io/icons/';
 		//END
 		
 		//START: Set Ajax	

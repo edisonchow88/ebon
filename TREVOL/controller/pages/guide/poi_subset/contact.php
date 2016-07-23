@@ -61,7 +61,7 @@ class ControllerPagesGuidePoiSubsetContact extends AController {
 			/* [Template]
 			$i = '';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
@@ -83,7 +83,7 @@ class ControllerPagesGuidePoiSubsetContact extends AController {
             
             $i = 'poi';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = 'asc';
@@ -95,7 +95,7 @@ class ControllerPagesGuidePoiSubsetContact extends AController {
 			
 			$i = 'contact';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';

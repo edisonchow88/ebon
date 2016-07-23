@@ -86,7 +86,11 @@ class ControllerResponsesGuideAjaxPoiRecognition extends AController {
 			$result['warning'][] = 'Please input <b>Poi</b>';
 		}
 		
-		if($this->data['language_id'] == '') {
+		if($this->data['recognition'] == '' || $this->data['recognition'] == '0') {
+			$result['warning'][] = 'Please input <b>Recognition</b>';
+		}
+		
+		if($this->data['language_id'] == '' || $this->data['language_id'] == 0) {
 			$result['warning'][] = 'Please input <b>Language</b>';
 		}
 		

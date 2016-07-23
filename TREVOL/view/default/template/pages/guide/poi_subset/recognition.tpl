@@ -79,6 +79,13 @@
 			{
 				return "<i class='fa fa-fw " + row.icon + "' data-toggle='tooltip' title='" + row.icon + "'></i>";
 			},
+			"recognition": function(column, row)
+			{
+				var recognition = JSON.parse(row.recognition);
+				if(recognition !== '' && recognition !== 'undefined' && recognition !== null) {
+					return "<a class=\"label label-pill\" style=\"color:"+recognition.label.font_color+"; background-color:"+recognition.label.label_color+";\">" + recognition.name + "</a>";
+				}
+			},
 			"tag": function(column, row)
 			{
 				var tag = JSON.parse(row.tag);

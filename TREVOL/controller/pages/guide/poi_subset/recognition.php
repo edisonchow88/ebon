@@ -28,6 +28,7 @@ class ControllerPagesGuidePoiSubsetRecognition extends AController {
 		
 		//START: set model
 			$this->loadModel('guide/poi');
+			$this->loadModel('resource/data');
 			$this->loadModel('resource/tag');
 			$this->loadModel('resource/image');
 		//END
@@ -49,8 +50,8 @@ class ControllerPagesGuidePoiSubsetRecognition extends AController {
 					$result[$recognition_id]['recognition_id'] = $row['recognition_id'];
 					$poi = $this->model_guide_poi->getPoi($row['poi_id']);
                     $result[$recognition_id]['poi_id'] = $poi['name'];
-					$tag = $this->model_resource_tag->getTag($row['tag_id']);
-					$result[$recognition_id]['tag_id'] = json_encode($tag);
+					$recognition = $this->model_resource_data->getDataByDatasetName('recognition',$row['recognition']);
+					$result[$recognition_id]['recognition'] = json_encode($recognition);
                     $language = $this->language->getLanguageDetailsByID($row['language_id']);
                     $result[$recognition_id]['language'] = $language['name'];
                     $result[$recognition_id]['title'] = $row['title'];
@@ -66,7 +67,7 @@ class ControllerPagesGuidePoiSubsetRecognition extends AController {
 			/* [Template]
 			$i = '';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
@@ -88,7 +89,7 @@ class ControllerPagesGuidePoiSubsetRecognition extends AController {
             
             $i = 'poi';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = 'asc';
@@ -98,17 +99,17 @@ class ControllerPagesGuidePoiSubsetRecognition extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'false';
 			
-			$i = 'tag';
+			$i = 'recognition';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';
-			$column[$i]['sortable'] = 'true';
-			$column[$i]['searchable'] = 'true';
+			$column[$i]['sortable'] = 'false';
+			$column[$i]['searchable'] = 'false';
             
             $i = 'language';
             $column[$i]['name'] = $i;

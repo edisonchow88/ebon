@@ -5,7 +5,7 @@
 	}
 //END
 
-class ControllerPagesResourceData extends AController {
+class ControllerPagesResourceDataSubsetAlias extends AController {
 
   	public function main() {
         //START: init controller data
@@ -25,39 +25,35 @@ class ControllerPagesResourceData extends AController {
 		
 		//START: set id
 			$dataset_id = $_GET['dataset_id'];
+			$data_id = $_GET['data_id'];
 		//END
 		
 		//START: set model
 			$this->loadModel('resource/data');
 		//END
 		
-		//START: set dataset
+		//START: set data
+			$data = $this->model_resource_data->getDataAlias('',$data_id);
 			$dataset = $this->model_resource_data->getDataset($dataset_id);
 		//END
-
-    	//START: set title
-			$title = $dataset['name'];
-			$this->document->setTitle($title);
-		//END
 		
-		//START: set data
-			$data = $this->model_resource_data->getDataByDatasetId($dataset_id);
+    	//START: set title
+			$title = $dataset['name']." Alias";
+			$this->document->setTitle($title);
 		//END
 			
 		//START: set result
 			if(count($data) > 0) {
 				foreach($data as $row) {
-					$data_id = $row['data_id'];
+					$alias_id = $row['alias_id'];
 					
 					//NOTE: sequence is important
-					$result[$data_id]['data_id'] = $row['data_id'];
-					$result[$data_id]['dataset_id'] = $row['dataset_id'];
-					$result[$data_id]['icon'] = $row['icon'];
-					$result[$data_id]['label'] = json_encode($row['label']);
-					$result[$data_id]['value'] = $row['value'];
-					$result[$data_id]['name'] = $row['name'];
-					$result[$data_id]['description'] = $row['description'];
-					$result[$data_id]['sort_order'] = $row['sort_order'];
+					$result[$alias_id]['alias_id'] = $row['alias_id'];
+					$result[$alias_id]['data_id'] = $row['data_id'];
+					$language = $this->language->getLanguageDetailsByID($row['language_id']);
+                    $result[$alias_id]['language'] = $language['name'];
+					$result[$alias_id]['name'] = $row['name'];
+					$result[$alias_id]['ranking'] = $row['ranking'];
 				}
 			}
 		//END
@@ -80,7 +76,7 @@ class ControllerPagesResourceData extends AController {
 			
 			//NOTE: sequence is important
 			
-			$i = 'data_id';
+			$i = 'alias_id';
 			$column[$i]['name'] = 'id';
 			$column[$i]['title'] = 'Id';
 			$column[$i]['type'] = 'numeric';
@@ -92,31 +88,7 @@ class ControllerPagesResourceData extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
 			
-			$i = 'dataset_id';
-			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['type'] = '';
-			$column[$i]['width'] = '';
-			$column[$i]['order'] = '';
-			$column[$i]['align'] = '';
-			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'false';
-			$column[$i]['sortable'] = 'false';
-			$column[$i]['searchable'] = 'false';
-			
-			$i = 'icon';
-			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['type'] = '';
-			$column[$i]['width'] = '';
-			$column[$i]['order'] = '';
-			$column[$i]['align'] = '';
-			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'true';
-			$column[$i]['sortable'] = 'false';
-			$column[$i]['searchable'] = 'false';
-			
-			$i = 'label';
+			$i = 'data_id';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
@@ -128,9 +100,9 @@ class ControllerPagesResourceData extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
 			
-			$i = 'value';
+			$i = 'language_id';
 			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['title'] = 'Language';
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
@@ -148,23 +120,11 @@ class ControllerPagesResourceData extends AController {
 			$column[$i]['order'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'false';
+			$column[$i]['visible'] = 'true';
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
 			
-			$i = 'description';
-			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['type'] = '';
-			$column[$i]['width'] = '';
-			$column[$i]['order'] = '';
-			$column[$i]['align'] = '';
-			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'false';
-			$column[$i]['sortable'] = 'false';
-			$column[$i]['searchable'] = 'true';
-			
-			$i = 'sort_order';
+			$i = 'ranking';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
@@ -186,15 +146,13 @@ class ControllerPagesResourceData extends AController {
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/resource/add_data', 'modal_add_data', 'modal/resource/add_data.tpl');
-			$this->addChild('modal/resource/edit_data', 'modal_edit_data', 'modal/resource/edit_data.tpl');
-			$this->addChild('modal/resource/delete_data', 'modal_delete_data', 'modal/resource/delete_data.tpl');
+			$this->addChild('modal/resource/data/add_alias', 'modal_add_alias', 'modal/resource/data/add_alias.tpl');
+			$this->addChild('modal/resource/data/edit_alias', 'modal_edit_alias', 'modal/resource/data/edit_alias.tpl');
+			$this->addChild('modal/resource/data/delete_alias', 'modal_delete_alias', 'modal/resource/data/delete_alias.tpl');
 		//END
 		
 		//START: set link
-			$link['resource/dataset'] = $this->html->getSecureURL('resource/dataset');
-			$link['resource/data_subset/alias'] = $this->html->getSecureURL('resource/data_subset/alias');
-			$link['resource/data_subset/description'] = $this->html->getSecureURL('resource/data_subset/description');
+			$link['resource/data'] = $this->html->getSecureURL('resource/data','&dataset_id='.$dataset_id);
 		//END
 		
 		//START: set variable
@@ -205,7 +163,7 @@ class ControllerPagesResourceData extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('pages/resource/data.tpl' );
+			$this->processTemplate('pages/resource/data_subset/alias.tpl' );
 		//END
 
         //START: update controller data

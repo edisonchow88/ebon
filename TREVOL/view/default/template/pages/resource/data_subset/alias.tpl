@@ -4,9 +4,9 @@
 
 <div id="content" class="panel panel-default">
 	<div class="panel-heading col-xs-12">
-    	<div class="col-xs-3 text-left"><a class="btn btn-default" href="<?php echo $link['resource/dataset']; ?>">Back</a></div>
+    	<div class="col-xs-3 text-left"><a href="<?php echo $link['resource/data']; ?>" class="btn btn-default" role="button">Back</a></div>
     	<div class="col-xs-6 text-center"><h5><?php echo $title; ?></h5></div>
-        <div class="col-xs-3 text-right"><a data-toggle="modal" data-target="#modal-add-data" class="btn btn-danger" role="button">Add Data</a></div>
+        <div class="col-xs-3 text-right"><a data-toggle="modal" data-target="#modal-add-alias" class="btn btn-danger" role="button">Add Alias</a></div>
 	</div>
 
 	<div class="panel-body panel-body-nopadding tab-content col-xs-12">
@@ -53,9 +53,9 @@
 </div>
 
 <!-- START: Modal -->
-	<?php echo $modal_add_data; ?>
-    <?php echo $modal_edit_data; ?>
-	<?php echo $modal_delete_data; ?>
+	<?php echo $modal_add_alias; ?>
+    <?php echo $modal_edit_alias; ?>
+	<?php echo $modal_delete_alias; ?>
 <!-- END: Modal -->
 
 <script>
@@ -90,7 +90,7 @@
 			},
 			"row_status": function(column, row)
 			{
-				str = "<span id='data-status-"+row.id+"' class='btn command-toggle-data-status' data-row-id='"+row.id+"'>";
+				str = "<span id='alias-status-"+row.id+"' class='btn command-toggle-alias-status' data-row-id='"+row.id+"'>";
 				if(row.row_status == 1) {
 					str += "<i class='fa fa-fw fa-toggle-on'></i> <span class='small'>ON</span>";
 				}
@@ -117,10 +117,25 @@
 			{
 				return "<i class='fa fa-fw fa-circle' style='color:" + row.color + ";' data-toggle='tooltip' data-placement='right' title='" + row.color + "'></i>";
 			},
+			"icon_color": function(column, row)
+			{
+				return "<i class='fa fa-fw fa-square' style='color:" + row.icon_color + ";' data-toggle='tooltip' data-placement='right' title='" + row.icon_color + "'></i>";
+			},
+			"label_color": function(column, row)
+			{
+				return "<i class='fa fa-fw fa-square' style='color:" + row.label_color + ";' data-toggle='tooltip' data-placement='right' title='" + row.label_color + "'></i>";
+			},
+			"font_color": function(column, row)
+			{
+				return "<i class='fa fa-fw fa-square' style='color:" + row.font_color + ";' data-toggle='tooltip' data-placement='right' title='" + row.font_color + "'></i>";
+			},
+			"sample": function(column, row)
+			{
+				return "<i class='fa fa-fw fa-info-circle' style='color:" + row.icon_color + ";'></i><a class=\"label label-pill\" style=\"margin-left:5px;background-color:"+row.label_color+";color:"+row.font_color+";\">Sample</a>";
+			},
 			"icon": function(column, row)
 			{
-				var label = JSON.parse(row.label);
-				return "<i class='fa fa-fw " + row.icon + "' data-toggle='tooltip' title='" + row.icon + "' style=\"color:"+label.icon_color+";\"></i>";
+				return "<i class='fa fa-fw " + row.icon + "' data-toggle='tooltip' title='" + row.icon + "'></i>";
 			},
 			"tag": function(column, row)
 			{
@@ -128,11 +143,6 @@
 				if(tag !== '' && tag !== 'undefined' && tag !== null) {
 					return "<a class=\"label label-pill search-tag\" data-row-name=\"" + tag.name + "\" style=\"background-color:"+tag.type_color+";\">" + tag.name + "</a>";
 				}
-			},
-			"label": function(column, row)
-			{
-				var label = JSON.parse(row.label);
-				return "<a class=\"label label-pill\" data-toggle='tooltip' data-placement='right' title='" + row.description + "' style=\"margin-left:5px; background-color:"+label.label_color+"; color:"+label.font_color+";\">"+row.name+"</a>";
 			},
 			"parent": function(column, row)
 			{
@@ -164,39 +174,11 @@
 			"commands": function(column, row)
 			{
 				return ""
-				+ "<nav style='display:inline !important;'>"
-					+ "<ul class='pagination' style='margin: 0px !important;'>"
-						+ "<li>"
-							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Alias'>"
-							+ "<a class='btn btn-sm btn-info command-view-data-alias'data-row-id='"+row.id+"' data-row-dataset-id='"+row.dataset_id+"'>"
-								+ "<span class='fa fa-fw fa-at'>"
-								+ "</span>"
-							+ "</a>"
-							+ "</span>"
-						+ "</li>"
-						+ "<li>"
-							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Description'>"
-							+ "<a class='btn btn-sm btn-info command-view-data-description' data-row-id='"+row.id+"' data-row-dataset-id='"+row.dataset_id+"'>"
-								+ "<span class='fa fa-fw fa-ellipsis-h'>"
-								+ "</span>"
-							+ "</a>"
-							+ "</span>"
-						+ "</li>"
-					+ "</ul>"
-				+ "</nav>"
 				+ "<nav style='display:inline !important; margin-left:10px !important;'>"
 					+ "<ul class='pagination' style='margin: 0px !important;'>"
 						+ "<li>"
-							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='View'>"
-							+ "<a class='btn btn-sm btn-danger command-view' href='"+row.link+"' >"
-								+ "<span class='fa fa-fw fa-eye'>"
-								+ "</span>"
-							+ "</a>"
-							+ "</span>"
-						+ "</li>"
-						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Edit'>"
-							+ "<a class='btn btn-sm command-edit' data-toggle='modal' data-target='#modal-edit-data' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm command-edit' data-toggle='modal' data-target='#modal-edit-alias' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-pencil'>"
 								+ "</span>"
 							+ "</a>"
@@ -204,7 +186,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Delete'>"
-							+ "<a class='btn btn-sm command-delete' data-toggle='modal' data-target='#modal-delete-data' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm command-delete' data-toggle='modal' data-target='#modal-delete-alias' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-trash-o'>"
 								+ "</span>"
 							+ "</a>"
@@ -221,23 +203,15 @@
 		$('[data-toggle="tooltip"]').tooltip();
 		grid.find(".command-edit").on("click", function(e)
 		{
-			document.getElementById("modal-get-data-form-input-data-id").value = $(this).data("row-id");
-			getData(); <!-- the code is written in modal tpl -->
+			document.getElementById("modal-get-alias-form-input-alias-id").value = $(this).data("row-id");
+			getAlias(); <!-- the code is written in modal tpl -->
 			$($(this).attr("data-target")).modal("show");
 		})
 		.end().find(".command-delete").on("click", function(e)
 		{
-			document.getElementById("modal-delete-data-form-input-data-id").value = $(this).data("row-id");
-			document.getElementById("modal-delete-data-form-text-data-id").innerHTML = $(this).data("row-id");
+			document.getElementById("modal-delete-alias-form-input-alias-id").value = $(this).data("row-id");
+			document.getElementById("modal-delete-alias-form-text-alias-id").innerHTML = $(this).data("row-id");
 			$($(this).attr("data-target")).modal("show");
-		})
-		.end().find(".command-view-data-alias").on("click", function(e)
-		{
-			window.location.href = "<?php echo $link['resource/data_subset/alias']; ?>\&data_id=" + $(this).data("row-id") + "\&dataset_id=" + $(this).data("row-dataset-id");
-		})
-		.end().find(".command-view-data-description").on("click", function(e)
-		{
-			window.location.href = "<?php echo $link['resource/data_subset/description']; ?>\&data_id=" + $(this).data("row-id") + "\&dataset_id=" + $(this).data("row-dataset-id");
 		});
 	});
 	

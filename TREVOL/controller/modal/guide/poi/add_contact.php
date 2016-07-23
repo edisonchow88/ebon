@@ -68,14 +68,14 @@ class ControllerModalGuidePoiAddContact extends AController {
 				$modal_input[$i]['option'] = $poi;
 			}
 			
-			$i = 'tag_id';
-			$modal_input[$i]['label'] = 'Tag';
+			$i = 'contact';
+			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 			$modal_input[$i]['id'] = str_replace("_","-",$i);
 			$modal_input[$i]['name'] = $i;
 			$modal_input[$i]['required'] = true;
 			$modal_input[$i]['value'] = '0';
 			$modal_input[$i]['type'] = 'select';
-			$modal_input[$i]['option'] = $this->model_resource_tag->getTagByTypeName('Contact'); 
+			$modal_input[$i]['option'] = $this->model_resource_data->getDataByDatasetName('contact'); 
 		
 			$i = 'info';
 			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));

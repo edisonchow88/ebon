@@ -86,8 +86,8 @@ class ControllerResponsesGuideAjaxPoiContact extends AController {
 				$result['warning'][] = 'Please input <b>Poi</b>';
 			}
 			
-			if($this->data['tag_id'] == '') {
-				$result['warning'][] = 'Please input <b>Tag</b>';
+			if($this->data['contact'] == '' || $this->data['contact'] == 0) {
+				$result['warning'][] = 'Please input <b>Contact</b>';
 			}
 			
 			if($this->data['info'] == '') {

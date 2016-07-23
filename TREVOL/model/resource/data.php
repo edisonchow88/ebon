@@ -34,7 +34,7 @@ class ModelResourceData extends Model{
 	
 	//START: [General]
 		public function getData($data_id='',$dataset_id='', $value='') {
-			if($data_id == '') {
+			if($data_id == '' && $value == '') {
 				$sql = "
 					SELECT *, t1.data_id
 					FROM " . $this->db->table($this->table) . " t1 
@@ -48,12 +48,7 @@ class ModelResourceData extends Model{
 					LEFT JOIN ".$this->db->table($this->table_description)." t3 
 					ON t1.data_id = t3.data_id 
 				";
-				if($dataset_id != '' && $value != '') {
-					$sql .= "
-						WHERE t1.dataset_id = '" . (int)$dataset_id . "' AND t1.value = '".$value."'
-					";
-				}
-				else if($dataset_id != '' && $value == '') {
+				if($dataset_id != '') {
 					$sql .= "
 						WHERE t1.dataset_id = '" . (int)$dataset_id . "'
 					";
@@ -63,7 +58,7 @@ class ModelResourceData extends Model{
 					ORDER BY t1.sort_order ASC 
 				";
 			}
-			else {
+			else if($data_id != '') { //get specific data via id
 				$sql = "
 					SELECT *, t1.data_id 
 					FROM " . $this->db->table($this->table) . " t1 
@@ -77,12 +72,7 @@ class ModelResourceData extends Model{
 					LEFT JOIN ".$this->db->table($this->table_description)." t3 
 					ON t1.data_id = t3.data_id 
 				";
-				if($dataset_id != '' && $value != '') {
-					$sql .= "
-						WHERE t1.dataset_id = '" . (int)$dataset_id . "' AND t1.data_id = '" . (int)$data_id . "'  AND t1.value = '".$value."'
-					";
-				}
-				else if($dataset_id != ''  && $value == '') {
+				if($dataset_id != '') {
 					$sql .= "
 						WHERE t1.dataset_id = '" . (int)$dataset_id . "' AND t1.data_id = '" . (int)$data_id . "' 
 					";
@@ -95,12 +85,28 @@ class ModelResourceData extends Model{
 				$sql .= "
 					GROUP BY t1.data_id 
 				";
-	
+			}
+			else if($dataset_id != '' && $value != '') { //get specific data from specific set via value
+				$sql = "
+					SELECT *, t1.data_id 
+					FROM " . $this->db->table($this->table) . " t1 
+					LEFT JOIN ".$this->db->table($this->table_alias)." t2 
+					ON t2.alias_id = ( SELECT tt2.alias_id 
+						FROM ".$this->db->table($this->table_alias)." AS tt2 
+						WHERE tt2.data_id = t1.data_id
+						ORDER BY tt2.ranking DESC
+						LIMIT 1
+					)
+					LEFT JOIN ".$this->db->table($this->table_description)." t3 
+					ON t1.data_id = t3.data_id 
+					WHERE t1.dataset_id = '" . (int)$dataset_id . "' AND t1.value = '" . strtolower($value) . "' 
+					GROUP BY t1.data_id 
+				";
 			}
 			$query = $this->db->query($sql);
 			
 			//START: Set Output
-			if($data_id == '') {
+			if($data_id == '' && $value == '') {
 				foreach($query->rows as $result){
 					$output[$result['data_id']] = $result;
 					$output[$result['data_id']]['name'] = ucwords($result['name']);

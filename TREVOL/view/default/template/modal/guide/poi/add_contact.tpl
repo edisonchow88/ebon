@@ -97,7 +97,8 @@
                                     echo '</option>';
                                     foreach($i['option'] as $o) {
                                         echo '<option ';
-                                        echo 'value="'.$o[$i['name']].'"';
+                                        if(isset($o['value'])) { $value = $o['value']; } else { $value = $o[$i['name']]; }
+                                        echo 'value="'.$value.'"';
                                         echo '>';
                                         if(isset($o['name'])) { echo $o['name']; } else { echo $o[$i['name']]; }
                                         echo '</option>';

@@ -82,6 +82,13 @@
 					return "<i class=\"fa fa-fw "+icon.icon+"\" data-toggle='tooltip' data-placement='top' title='" + icon.name + "'></i>";
 				}
 			},
+			"contact": function(column, row)
+			{
+				var contact = JSON.parse(row.contact);
+				if(contact !== '' && contact !== 'undefined' && contact !== null) {
+					return "<i class=\"fa fa-fw "+contact.icon+"\" data-toggle='tooltip' data-placement='top' style=\"color:"+contact.label.icon_color+";\" title='" + contact.name + "'></i>";
+				}
+			},
 			"tag": function(column, row)
 			{
 				var tag = JSON.parse(row.tag);

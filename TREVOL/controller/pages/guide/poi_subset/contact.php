@@ -28,6 +28,7 @@ class ControllerPagesGuidePoiSubsetContact extends AController {
 		
 		//START: set model
 			$this->loadModel('guide/poi');
+			$this->loadModel('resource/data');
 			$this->loadModel('resource/tag');
 			$this->loadModel('resource/image');
 		//END
@@ -49,8 +50,8 @@ class ControllerPagesGuidePoiSubsetContact extends AController {
 					$result[$contact_id]['contact_id'] = $row['contact_id'];
 					$poi = $this->model_guide_poi->getPoi($row['poi_id']);
                     $result[$contact_id]['poi_id'] = $poi['name'];
-					$tag = $this->model_resource_tag->getTag($row['tag_id']);
-					$result[$contact_id]['tag_id'] = json_encode($tag);
+					$contact = $this->model_resource_data->getDataByDatasetName('contact',$row['contact']);
+					$result[$contact_id]['contact'] = json_encode($contact);
                     $result[$contact_id]['info'] = $row['info'];
 				}
 			}
@@ -92,7 +93,7 @@ class ControllerPagesGuidePoiSubsetContact extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'false';
 			
-			$i = 'icon';
+			$i = 'contact';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",str_replace("g_","",$i)));
 			$column[$i]['type'] = '';

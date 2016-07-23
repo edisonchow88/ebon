@@ -127,7 +127,7 @@ class ControllerPagesGuideDestinationSubsetRelation extends AController {
 		
 		//START: set modal
 			$this->addChild('modal/guide/destination/add_relation', 'modal_add_relation', 'modal/guide/destination/add_relation.tpl');
-			$this->addChild('modal/guide/destination/edit_relation', 'modal_edit_relation', 'modal/guide/destination/edit_relation.tpl');
+			//$this->addChild('modal/guide/destination/edit_relation', 'modal_edit_relation', 'modal/guide/destination/edit_relation.tpl');
 			$this->addChild('modal/guide/destination/delete_relation', 'modal_delete_relation', 'modal/guide/destination/delete_relation.tpl');
 		//END
 		

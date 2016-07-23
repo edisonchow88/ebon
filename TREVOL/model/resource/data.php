@@ -55,7 +55,7 @@ class ModelResourceData extends Model{
 				}
 				$sql .= "
 					GROUP BY t1.data_id 
-					ORDER BY t1.sort_order ASC 
+					ORDER BY t1.sort_order ASC, t1.value ASC 
 				";
 			}
 			else if($data_id != '') { //get specific data via id
@@ -216,6 +216,23 @@ class ModelResourceData extends Model{
 			
 			$this->cache->delete('data');
 			return true;
+		}
+		
+		public function deleteDataByDatasetId($dataset_id) {
+			//START: Run SQL
+				$sql = "
+					SELECT data_id
+					FROM " . $this->db->table($this->table) . " 
+					WHERE dataset_id = '" . (int)$dataset_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Run Chain Reaction
+				foreach($query->rows as $result){
+					$this->deleteData($result['data_id']);
+				}
+			//END
 		}
 	//END
 	
@@ -662,14 +679,13 @@ class ModelResourceData extends Model{
 				$update = array();
 				foreach($fields as $f){
 					if(isset($dataset[$f])) {
+						$dataset[$f] = str_replace(' ', '_', $dataset[$f]);
 						$update[$f] = $f . " = '" . $this->db->escape(strtolower($dataset[$f])) . "'";
 					}
 				}
 				
 				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
 				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-				if(isset($update['category'])) { $update['category'] = str_replace(' ', '_', $update['category']); }
-				if(isset($update['name'])) { $update['name'] = str_replace(' ', '_', $update['name']); }
 				
 				$sql = "
 					INSERT INTO `" . $this->db->table($this->table_dataset) . "` 
@@ -691,12 +707,12 @@ class ModelResourceData extends Model{
 				
 				$update = array();
 				foreach($fields as $f){
-					if(isset($dataset[$f]))
+					if(isset($dataset[$f])) {
+						$dataset[$f] = str_replace(' ', '_', $dataset[$f]);
 						$update[$f] = $f . " = '" . $this->db->escape(strtolower($dataset[$f])) . "'";
+					}
 				}
 				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-				if(isset($update['category'])) { $update['category'] = str_replace(' ', '_', $update['category']); }
-				if(isset($update['name'])) { $update['name'] = str_replace(' ', '_', $update['name']); }
 				
 				if(!empty($update)){
 					$sql = "
@@ -722,6 +738,7 @@ class ModelResourceData extends Model{
 			//END
 			
             //START: Run Chain Reaction
+				$this->deleteDataByDatasetId($dataset_id);
             //END
             
 			$this->cache->delete('dataset');

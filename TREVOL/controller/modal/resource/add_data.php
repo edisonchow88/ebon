@@ -106,6 +106,13 @@ class ControllerModalResourceAddData extends AController {
 			$modal_input[$i]['value'] = '';
 			$modal_input[$i]['help'] = 'Font Awesome Icons';
 			$modal_input[$i]['link'] = 'http://fontawesome.io/icons/';
+			
+			$i ='sort_order';
+			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+			$modal_input[$i]['id'] = str_replace("_","-",$i);
+			$modal_input[$i]['name'] = $i;
+			$modal_input[$i]['required'] = false;
+			$modal_input[$i]['value'] = '';
 		//END
 		
 		//START: set ajax

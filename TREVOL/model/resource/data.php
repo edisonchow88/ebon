@@ -33,7 +33,7 @@ class ModelResourceData extends Model{
 	//END
 	
 	//START: [General]
-		public function getData($data_id='',$dataset_id='') {
+		public function getData($data_id='',$dataset_id='', $value='') {
 			if($data_id == '') {
 				$sql = "
 					SELECT *, t1.data_id
@@ -48,7 +48,12 @@ class ModelResourceData extends Model{
 					LEFT JOIN ".$this->db->table($this->table_description)." t3 
 					ON t1.data_id = t3.data_id 
 				";
-				if($dataset_id != '') {
+				if($dataset_id != '' && $value != '') {
+					$sql .= "
+						WHERE t1.dataset_id = '" . (int)$dataset_id . "' AND t1.value = '".$value."'
+					";
+				}
+				else if($dataset_id != '' && $value == '') {
 					$sql .= "
 						WHERE t1.dataset_id = '" . (int)$dataset_id . "'
 					";
@@ -72,7 +77,12 @@ class ModelResourceData extends Model{
 					LEFT JOIN ".$this->db->table($this->table_description)." t3 
 					ON t1.data_id = t3.data_id 
 				";
-				if($dataset_id != '') {
+				if($dataset_id != '' && $value != '') {
+					$sql .= "
+						WHERE t1.dataset_id = '" . (int)$dataset_id . "' AND t1.data_id = '" . (int)$data_id . "'  AND t1.value = '".$value."'
+					";
+				}
+				else if($dataset_id != ''  && $value == '') {
 					$sql .= "
 						WHERE t1.dataset_id = '" . (int)$dataset_id . "' AND t1.data_id = '" . (int)$data_id . "' 
 					";
@@ -110,8 +120,13 @@ class ModelResourceData extends Model{
 			return $output;
 		}
 		
-		public function getDataByDatasetId($dataset_id) {
-			return $this->getData('',$dataset_id);
+		public function getDataByDatasetId($dataset_id, $value='') {
+			return $this->getData('',$dataset_id, $value);
+		}
+		
+		public function getDataByDatasetName($name, $value='') {
+			$dataset_id = $this->getDatasetIdByName($name);
+			return $this->getData('',$dataset_id, $value);
 		}
 		
 		public function addData($data) {
@@ -574,37 +589,61 @@ class ModelResourceData extends Model{
 	
 	//START: [Datasetset]
 		public function getDataset($dataset_id='') {
-			if($dataset_id == '') {
-				$sql = "
-					SELECT *
-					FROM " . $this->db->table($this->table_dataset) . "
-					ORDER BY category ASC, name ASC 
-				";
-			}
-			else {
-				$sql = "
-					SELECT *
-					FROM " . $this->db->table($this->table_dataset) . "
-					WHERE dataset_id = '" . (int)$dataset_id . "' 
-				";
-	
-			}
-			$query = $this->db->query($sql);
+			//START: run SQL
+				if($dataset_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_dataset) . "
+						ORDER BY category ASC, name ASC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_dataset) . "
+						WHERE dataset_id = '" . (int)$dataset_id . "' 
+					";
+		
+				}
+				$query = $this->db->query($sql);
+			//END
 			
 			//START: Set Output
                 if($dataset_id == '') {
                     foreach($query->rows as $result){
                         $output[$result['dataset_id']] = $result;
+						$result['name'] = str_replace('_', ' ', $result['name']);
                         $output[$result['dataset_id']]['name'] = ucwords($result['name']);
+						$result['category'] = str_replace('_', ' ', $result['category']);
 						$output[$result['dataset_id']]['category'] = ucwords($result['category']);
                     }
                 }
                 else {
                     $result = $query->row;
                     $output = $query->row;
+					$result['name'] = str_replace('_', ' ', $result['name']);
                     $output['name'] = ucwords($result['name']);
+					$result['category'] = str_replace('_', ' ', $result['category']);
 					$output['category'] = ucwords($result['category']);
                 }
+			//END
+			
+			return $output;
+		}
+		
+		public function getDatasetIdByName($name) {
+			//START: run SQL
+				$sql = "
+					SELECT dataset_id
+					FROM " . $this->db->table($this->table_dataset) . "
+					WHERE name = '" . $name . "' 
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+                    $result = $query->row;
+                    $output = $result['dataset_id'];
 			//END
 			
 			return $output;
@@ -623,6 +662,8 @@ class ModelResourceData extends Model{
 				
 				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
 				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(isset($update['category'])) { $update['category'] = str_replace(' ', '_', $update['category']); }
+				if(isset($update['name'])) { $update['name'] = str_replace(' ', '_', $update['name']); }
 				
 				$sql = "
 					INSERT INTO `" . $this->db->table($this->table_dataset) . "` 
@@ -648,6 +689,8 @@ class ModelResourceData extends Model{
 						$update[$f] = $f . " = '" . $this->db->escape(strtolower($dataset[$f])) . "'";
 				}
 				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(isset($update['category'])) { $update['category'] = str_replace(' ', '_', $update['category']); }
+				if(isset($update['name'])) { $update['name'] = str_replace(' ', '_', $update['name']); }
 				
 				if(!empty($update)){
 					$sql = "

@@ -54,7 +54,7 @@
 <?php } ?>
 
 <!-- footer blocks placeholder -->
-<div id="footer">
+<div id="wrapper-footer">
 	<?php echo ${$footer}; ?>
 </div>
 

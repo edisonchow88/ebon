@@ -684,7 +684,7 @@ ul.categorymenu > li > div {
 	padding: 10px;
 	position: absolute;
 	top: 97%;
-	left: 7px;
+	left: 0px;
 	z-index: 99999;
 	display: none;
 	float: left;
@@ -693,7 +693,6 @@ ul.categorymenu > li > div {
 	list-style: none;
 	background-color: #fff;
 	border: 1px solid #ddd;
-	border-bottom: 4px solid #00A1CB;
 	border-radius: 0;
 	-moz-border-radius: 0;
 	-webkit-border-radius: 0;
@@ -2598,7 +2597,7 @@ form .help-block {
     text-align: center;
 }
 
-.form-control, .alert {
+.form-control {
     border-radius: 0;
 }
 
@@ -2626,7 +2625,7 @@ form .help-block {
 	color: #96979d
 }
 
-.dropdown-menu:before {
+.dropdown .dropdown-menu:before {
 	position: absolute;
 	top: -7px;
 	left: 9px;
@@ -2637,7 +2636,7 @@ form .help-block {
 	content: '';
 }
 
-.dropdown-menu:after {
+.dropdown .dropdown-menu:after {
 	position: absolute;
 	top: -6px;
 	left: 10px;

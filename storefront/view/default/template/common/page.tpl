@@ -44,14 +44,19 @@
 </div>
 
 <?php if ( !empty( ${$footer_top} ) ) { ?>
+<!-- footer top blocks placeholder -->
 	<div class="container-fluid">
 		<div class="col-md-12">
 	    <?php echo ${$footer_top}; ?>
 	  	</div>
 	</div>
+<!-- footer top blocks placeholder -->
 <?php } ?>
 
-<?php echo ${$footer}; ?>
+<!-- footer blocks placeholder -->
+<div id="footer">
+	<?php echo ${$footer}; ?>
+</div>
 
 </body>
 </html>

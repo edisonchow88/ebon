@@ -5,7 +5,20 @@ body {
 	position:relative;
 	min-width:800px;
 	font-size:14px;
-	background-color:#CCC;
+	background-color:#EEE;
+	overflow-y:hidden;
+}
+
+.nomargin {
+	margin:0 !important;
+}
+
+.nopadding {
+	padding:0 !important;
+}
+
+.padding-xs {
+	padding:5px 15px !important;
 }
 
 .txt {
@@ -50,67 +63,124 @@ body {
 .padding-right { padding-right:13px; }
 
 #wrapper-header {
-	position:fixed;
-	top:0;
 	width:100%;
-	height:40px;
-	background-color:#333;
-	color:#FFF;
+	height:44px;
+	padding:5px 0;
+	background-color:#FFF;
 }
 
 #wrapper-logo {
 	display:inline-block;
 	float:left;
-	padding:10px;
+	border-right:thin solid #EEE;
+}
+
+#wrapper-title {
+	display:inline-block;
+	float:left;
+	margin-left:30px;
+}
+
+#wrapper-title a {
+	color:black;
+}
+
+#wrapper-alert {
+	display:inline-block;
+	float:right;
+	padding-right:30px;
+}
+
+#wrapper-alert .alert {
+	margin: 0;
+	padding: 5px 35px 5px 15px;
+}
+
+#wrapper-button {
+	display:inline-block;
+	float:right;
+	padding-right:10px;
+}
+
+#wrapper-button a {
+	width:80px;
+	margin-left:5px;
 }
 
 #wrapper-menu {
-	display:inline-block;
-	margin-left:calc(50vw - 170px);
+	padding:0 10px;
+	width:100%;
+	height:32px;
+	background-color:#CCC;
+	border:solid thin #DDD;
 }
 
-#wrapper-menu .dot {
-	height:40px;
-	padding-top:5px;
-	vertical-align:middle;
-	font-size:24px;
-	color:#FC6;
+#wrapper-menu ul {
+	margin: 0;
+	padding: 0;
 }
 
-#wrapper-menu .button:hover {
-	background-color:#222;
+#wrapper-menu ul li:hover {
+	background-color:#BBB;
 }
 
-#wrapper-menu li {
+#wrapper-menu ul li {
 	display:inline-block;
 	float:left;
 	text-align:center;
 }
 
-#wrapper-menu li a {
-	color:#FC6;
-	height:40px;
-	padding: 10px;
+#wrapper-menu ul li a {
+	color:#FFF;
+	padding: 5px 20px;
 	display:inline-block;
 }
 
-#wrapper-menu li a:hover {
-	color:#F90;
+#wrapper-menu ul .active {
+	background-color:#666;
+}
+
+#wrapper-menu ul li a:hover {
 	text-decoration:none;
 	cursor:pointer;
 }
 
 #wrapper-main {
 	width:100%;
+	min-width:800px;
 	text-align:center;
-	
 }
 
 #wrapper-center {
+	float:left;
 	padding:15px 0;
-	margin:60px auto 20px auto;
-	width:760px;
-	min-width:760px;
-	height:calc(100vh - 90px);
+	width:calc(100vw - 330px);
+	min-width:calc(800px - 330px);
+	height:calc(100vh - 76px - 40px);
+	background-color:#EEE;
+	overflow-y:scroll;
+	overflow-x:scroll;
+}
+
+#itinerary-table {
+	margin:5px auto;
+	width:calc(100vw - 360px);
+	min-height:30px;
 	background-color:#FFF;
+    border-collapse: collapse;
+}
+
+#itinerary-table th, td {
+    text-align: left;
+    padding: 8px;
+	border-bottom: 1px solid #ddd;
+}
+
+#wrapper-right {
+	float:right;
+	padding:15px 0;
+	width:330px;
+	height:calc(100vh - 76px - 40px);
+	background-color:#FFF;
+	overflow-y:scroll;
 }

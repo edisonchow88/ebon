@@ -73,8 +73,8 @@
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/jquery.touchSwipe.min.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/jquery.ba-throttle-debounce.min.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/jquery.onebyone.min.js'); ?>"></script>
-<script type="text/javascript" defer src="<?php echo $this->templateResource('/javascript/custom.js'); ?>"></script>
-<script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
+<!--<script type="text/javascript" defer src="<?php echo $this->templateResource('/javascript/custom.js'); ?>"></script>
+<script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>-->
 
 <!-- DISABLED by TREVOL, 2016/02/27
 <?php if ($google_analytics) {
@@ -114,7 +114,7 @@
 
 <?php } ?>
 
+-->
 <?php foreach ($scripts_bottom as $script) { ?>
 	<script type="text/javascript" src="<?php echo $script; ?>"></script>
 <?php } ?>
--->

@@ -30,21 +30,12 @@ class ControllerPagesIndexHome extends AController {
 			
 			$tag = $this->model_resource_tag->getTagByDestinationId($destination_id);
 				if(count($tag) > 0) { $json_tag = json_encode(array_values($tag)); }
-				
-			$parent = $this->model_guide_destination->getDestinationParent($destination_id);
-				if(count($parent) > 0) { $json_parent = json_encode(array_values($parent)); }
-				
-			$child = $this->model_guide_destination->getDestinationChild($destination_id);
 			
 			//following sequence is important
 			$result[$destination_id]['image'] = $image[0]['image'];
 			$result[$destination_id]['destination_id'] = $destination_id;
 			$result[$destination_id]['name'] = $name;
 			$result[$destination_id]['tag'] = $json_tag;
-			$result[$destination_id]['parent'] = $json_parent;
-			$result[$destination_id]['child'] = count($child);
-			$result[$destination_id]['descendant'] = count($descendant);
-			$result[$destination_id]['similar'] = $json_similar;
 			$result[$destination_id]['status'] = $status;
 		}
 		

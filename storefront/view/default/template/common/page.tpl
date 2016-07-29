@@ -21,7 +21,6 @@
     </div>
     
     <div><?php echo ${$header_bottom}; ?></div>
-    
     <div id="wrapper-main">
         <div id="wrapper-left">
             <?php echo ${$column_left}; ?>

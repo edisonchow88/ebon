@@ -5,7 +5,7 @@
 	}
 //END
 
-class ControllerBlocksTrevolItineraryProperty extends AController {
+class ControllerBlocksTrevolTripHeader extends AController {
 	//START: declare common variable
 		public $data = array();
 	//END

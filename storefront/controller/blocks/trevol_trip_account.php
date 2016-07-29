@@ -5,7 +5,7 @@
 	}
 //END
 
-class ControllerBlocksTrevolItineraryFooter extends AController {
+class ControllerBlocksTrevolTripAccount extends AController {
 	//START: declare common variable
 		public $data = array();
 	//END

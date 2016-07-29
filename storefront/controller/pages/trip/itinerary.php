@@ -38,7 +38,6 @@ class ControllerPagesTripItinerary extends AController {
 		//END
 		
 		//START: set template 
-			//$this->view->setTemplate('pages/trip/activity_list.tpl');
 			$this->processTemplate('pages/trip/itinerary.tpl');
 		//END
 		

@@ -6,7 +6,21 @@
             <li id="section-view-xs-list-map"><a onclick="open_section_content('map');">Map</a></li>
         </ul>
     </div>
-	<div id="section-view" class="box-shadow hidden-xs hidden-sm">
+    <div id="section-view-md" class="box-shadow hidden-xs hidden-sm hidden-lg">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-fw fa-eye"></i></span>
+            <select id='section-view-md-select' class="form-control" onchange="change_section_content(this.value);">
+                <option value="guide">Guide</option>
+                <option value="itinerary">Itinerary</option>
+                <option value="map">Map</option>
+                <option disabled>──────────</option>
+                <option value="guide+itinerary">Guide + Itinerary</option>
+                <option value="guide+map">Guide + Map</option>
+                <option value="itinerary+map">Itinerary + Map</option>
+            </select>
+        </div>
+    </div>
+	<div id="section-view" class="box-shadow hidden-xs hidden-sm hidden-md">
     	<ul>
         	<li><i class="fa fa-fw fa-eye"></i></li>
         	<li id="section-view-list-guide" class="active">
@@ -96,6 +110,40 @@
 		update_section_content();
 	}
 	
+	function change_section_content(view) {
+		if(view == 'guide') {
+			section_content_window_guide = true;
+			section_content_window_itinerary = false;
+			section_content_window_map = false;
+		}
+		else if(view == 'itinerary') {
+			section_content_window_guide = false;
+			section_content_window_itinerary = true;
+			section_content_window_map = false;
+		}
+		else if(view == 'map') {
+			section_content_window_guide = false;
+			section_content_window_itinerary = false;
+			section_content_window_map = true;
+		}
+		else if(view == 'guide+itinerary') {
+			section_content_window_guide = true;
+			section_content_window_itinerary = true;
+			section_content_window_map = false;
+		}
+		else if(view == 'guide+map') {
+			section_content_window_guide = true;
+			section_content_window_itinerary = false;
+			section_content_window_map = true;
+		}
+		else if(view == 'itinerary+map') {
+			section_content_window_guide = false;
+			section_content_window_itinerary = true;
+			section_content_window_map = true;
+		}
+		update_section_content();
+	}
+	
 	function toggle_section_content(view) {
 		if(view == 'guide') {
 			if(section_content_window_guide == true) {
@@ -133,7 +181,8 @@
 	function update_section_content() {
 		update_max_section_content_window();
 		update_section_content_window();
-		verify_limit_section_content_window();
+		verify_max_section_content_window();
+		verify_min_section_content_window();
 		resize_section_content();
 		
 		if(section_content_window_guide == true) { 
@@ -156,6 +205,7 @@
 		else {
 			hide_section_content('right','map'); 
 		}
+		update_section_view_md_select();
 	}
 	
 	function update_max_section_content_window() {
@@ -197,7 +247,7 @@
 		if(section_content_window_map == true) { section_content_window += 1; }
 	}
 	
-	function verify_limit_section_content_window() {
+	function verify_max_section_content_window() {
 		if(section_content_window > max_section_content_window) {
 			if(section_content_window_map == true) { 
 				section_content_window_map = false;
@@ -211,6 +261,12 @@
 				section_content_window_itinerary = false;
 				section_content_window -= 1; 
 			}
+		}
+	}
+	
+	function verify_min_section_content_window() {
+		if(max_section_content_window < 3 && section_content_window == 0) {
+			section_content_window_guide = true;
 		}
 	}
 	
@@ -280,6 +336,27 @@
 			$('#'+tooltip_id).hide();
 		}
 		$('#'+button.id).attr('data-original-title',text);
+	}
+	
+	function update_section_view_md_select() {
+		if(section_content_window_guide == true && section_content_window_itinerary == true) {
+			document.getElementById('section-view-md-select').value = 'guide+itinerary';
+		}
+		else if(section_content_window_guide == true && section_content_window_map == true) {
+			document.getElementById('section-view-md-select').value = 'guide+map';
+		}
+		else if(section_content_window_itinerary == true && section_content_window_map == true) {
+			document.getElementById('section-view-md-select').value = 'itinerary+map';
+		}
+		else if(section_content_window_guide == true) {
+			document.getElementById('section-view-md-select').value = 'guide';
+		}
+		else if(section_content_window_itinerary == true) {
+			document.getElementById('section-view-md-select').value = 'itinerary';
+		}
+		else if(section_content_window_map == true) {
+			document.getElementById('section-view-md-select').value = 'map';
+		}
 	}
 	
 	update_section_content();

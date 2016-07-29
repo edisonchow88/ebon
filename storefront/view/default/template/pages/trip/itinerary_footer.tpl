@@ -29,3 +29,6 @@
         </a>
     </li>
 </ul>
+<div id='section-powerby' class="noselect">
+	<span>Power by </span><span id='section-powerby-brand'>TREVOL</span>
+</div>

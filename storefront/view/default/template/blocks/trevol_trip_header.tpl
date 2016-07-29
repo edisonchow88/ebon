@@ -18,7 +18,7 @@
             <a class="btn btn-default">Share</a>
             <a class="btn btn-primary">Save</a>
         </div>
-        <div id="wrapper-alert" class="hidden-xs hidden-sm hidden-md">
+        <div id="wrapper-alert">
             <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <span><strong>Irrashaimase!</strong> welcome (＾▽＾)</span>

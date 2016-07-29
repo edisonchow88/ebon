@@ -36,7 +36,7 @@
 	}
 	
 	#map {
-        height:calc(100vh - 48px - 2px - 30px - 59px);
+        height:100%;
 	}
 </style>
 

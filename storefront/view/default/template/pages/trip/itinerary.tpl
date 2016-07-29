@@ -229,11 +229,14 @@
 			
 			var body_height = 'calc(100vh - 48px - 2px)';
 			var height = 'calc(100vh - 48px - 2px - 30px)';
+			var content_height = 'calc(100vh - 48px - 2px - 40px - 49px)';
 			document.getElementById('section-body').style.height = body_height;
 			document.getElementById('section-content').style.height = height;
 			document.getElementById('section-left').style.height = height;
 			document.getElementById('section-center').style.height = height;
 			document.getElementById('section-right').style.height = height;
+			document.getElementById('section-itinerary-guide-content').style.height = content_height;
+			document.getElementById('section-itinerary-map-content').style.height = content_height;
 		}
 		else if(w < 960) {
 			max_section_content_window = 2;
@@ -241,15 +244,29 @@
 			
 			var body_height = 'calc(100vh - 48px - 2px - 40px)';
 			var height = 'calc(100vh - 48px - 2px - 30px - 40px)';
+			var content_height = 'calc(100vh - 48px - 2px - 30px - 70px - 40px)';
 			document.getElementById('section-body').style.height = body_height;
 			document.getElementById('section-content').style.height = height;
 			document.getElementById('section-left').style.height = height;
 			document.getElementById('section-center').style.height = height;
 			document.getElementById('section-right').style.height = height;
+			document.getElementById('section-itinerary-guide-content').style.height = content_height;
+			document.getElementById('section-itinerary-map-content').style.height = content_height;
 		}
 		else {
 			max_section_content_window = 3;
 			document.getElementById('section-content').style.width = '960px';
+			
+			var body_height = 'calc(100vh - 48px - 2px - 40px)';
+			var height = 'calc(100vh - 48px - 2px - 30px - 40px)';
+			var content_height = 'calc(100vh - 48px - 2px - 30px - 70px - 40px)';
+			document.getElementById('section-body').style.height = body_height;
+			document.getElementById('section-content').style.height = height;
+			document.getElementById('section-left').style.height = height;
+			document.getElementById('section-center').style.height = height;
+			document.getElementById('section-right').style.height = height;
+			document.getElementById('section-itinerary-guide-content').style.height = content_height;
+			document.getElementById('section-itinerary-map-content').style.height = content_height;
 		}
 	}
 	

@@ -29,8 +29,13 @@ class ControllerPagesTripItineraryMap extends AController {
 		//START: set link
 		//END
 		
+		//START: set api key
+			$key = 'AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0';
+		//END
+		
 		//START: set variable
 			$this->view->batchAssign($this->data);
+			$this->view->assign('key', $key);
 		//END
 		
 		//START: set template 

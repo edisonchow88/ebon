@@ -110,6 +110,19 @@
 		update_section_content();
 	}
 	
+	function close_section_content(view) {
+		if(view == 'guide') {
+			section_content_window_guide = false;
+		}
+		else if(view == 'itinerary') {
+			section_content_window_itinerary = false;
+		}
+		else if(view == 'map') {
+			section_content_window_map = false;
+		}
+		update_section_content();
+	}
+	
 	function change_section_content(view) {
 		if(view == 'guide') {
 			section_content_window_guide = true;

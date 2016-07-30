@@ -39,8 +39,10 @@
 	
 	#section-itinerary-guide-button-add {
 		position:absolute;
-		top:133px;
-		right:15px;
+		top:118px;
+		right:0;
+		padding:15px;
+		z-index:10;
 		text-align:center;
 		font-size:36px;
 	}
@@ -113,6 +115,47 @@
 		padding:7px 7px 0 7px;
 		text-align:center;
 	}
+	
+	#section-itinerary-guide-result-summary {
+		padding:7px;
+	}
+	
+	.result {
+		padding:7px;
+		border-bottom:solid thin #EEE;
+	}
+	
+	.result-image {
+		display:block;
+		float:left;
+		width:80px;
+	}
+	
+	.result-image img {
+		border-radius:40px;
+	}
+	
+	.result-description {
+		display:block;
+		float:left;
+		padding-left:7px;
+	}
+	
+	.result-name {
+		color:#333;
+	}
+	
+	.result-blurb {
+		padding: 3px 0;
+	}
+	
+	.result-tag {
+		padding: 3px 0;
+	}
+	
+	.result-button {
+		padding:0 7px;
+	}
 </style>
 
 <div id="section-itinerary-guide">
@@ -159,6 +202,18 @@
         <div id="section-itinerary-guide-description"><?php echo $result['current']['description']; ?></div>
         <div id="section-itinerary-guide-button-read"><a class="btn btn-default btn-block" onclick="toggle_guide_description();"><span id="section-itinerary-guide-button-read-text">Read More</span></a></div>
         <hr />
+        <div id="section-itinerary-guide-result-summary">Total <?php echo $result['count']; ?> results</div>
+        <?php foreach($result['child'] as $i) { ?>
+        <div class="result row">
+            <div class="result-image"><?php echo $i['image']; ?></div>
+            <div class="result-description">
+            	<div class="result-name"><?php echo $i['name']; ?></div>
+                <div class="result-blurb"><small><?php echo $i['blurb']; ?></small></div>
+                <div class="result-tag"><a class="label label-pill" data-row-name="<?php echo $i['tag']['name']; ?>" style="background-color:<?php echo $i['tag']['type_color']; ?>;"><?php echo $i['tag']['name']; ?></a></div>
+            </div>
+            <div class="result-button"><a>&#43;</a></div>
+        </div>
+        <?php } ?>
         <div class="spacer-bar hidden-xs hidden-sm col-md-12 col-lg-12"></div>
     </div>
 </div>

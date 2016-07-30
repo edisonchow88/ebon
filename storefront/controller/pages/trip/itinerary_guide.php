@@ -49,7 +49,32 @@ class ControllerPagesTripItineraryGuide extends AController {
 			}
 		//END
 		
+		//START: set data
+			$data = $this->model_guide_destination->getDestinationChild($destination_id);
+		//END
+		
 		//START: set result
+			if(count($data) > 0) {
+				
+				$result['count'] = $data['count'];
+				unset($data['count']);
+				
+				foreach($data as $row) {
+					$destination_id = $row['destination_id'];
+					$result['child'][$destination_id]['destination_id'] = $row['destination_id'];
+					$result['child'][$destination_id]['image'] = $row['image']['image'];
+					$result['child'][$destination_id]['name'] = $row['name'];
+					$result['child'][$destination_id]['tag'] = $row['tag'];
+					$result['child'][$destination_id]['parent'] = json_encode($row['parent']);
+					$result['child'][$destination_id]['blurb'] = $row['blurb'];
+					$result['child'][$destination_id]['description'] = $row['description'];
+					$result['child'][$destination_id]['lat'] = $row['lat'];
+					$result['child'][$destination_id]['lng'] = $row['lng'];
+					$result['child'][$destination_id]['status'] = $row['status'];
+					$result['child'][$destination_id]['date_added'] = $row['date_added'];
+					$result['child'][$destination_id]['date_modified'] = $row['date_modified'];		
+				}
+			}
 		//END
 		
 		//START: set modal

@@ -1488,6 +1488,86 @@ class ModelGuideDestination extends Model{
 			return $output;
 		}
 	//END
+	
+	//START:
+		public function getDestinationChild($destination_id,$limit='',$offset='') {
+			//START: Run SQL
+				$sql = "
+					SELECT *, t1.destination_id
+					FROM " . $this->db->table($this->table_relation) . " t1
+					LEFT JOIN ".$this->db->table($this->table_alias)." t2 
+					ON t2.alias_id = ( SELECT tt2.alias_id 
+						FROM ".$this->db->table($this->table_alias)." AS tt2 
+						WHERE tt2.destination_id = t1.destination_id
+						ORDER BY tt2.ranking DESC
+						LIMIT 1
+					)
+					LEFT JOIN ".$this->db->table($this->table_description)." t3 
+					ON t1.destination_id = t3.destination_id 
+					LEFT JOIN ".$this->db->table($this->table_image)." t4
+					ON t4.relation_id = ( SELECT tt4.relation_id 
+						FROM ".$this->db->table($this->table_image)." AS tt4 
+						WHERE tt4.destination_id = t1.destination_id
+						ORDER BY tt4.sort_order ASC
+						LIMIT 1
+					)
+					LEFT JOIN ".$this->db->table($this->table_tag)." t5
+					ON t1.destination_id = t5.destination_id 
+					LEFT JOIN ".$this->db->table($this->table)." t6
+					ON t1.destination_id = t6.destination_id 
+					WHERE t1.parent_id = '" . (int)$destination_id . "' 
+					ORDER BY t2.name asc 
+				";
+				if($limit != '') {
+					$sql .= "LIMIT ".$limit." ";
+				}
+				if($offset != '') {
+					$sql .= "OFFSET ".$offset." ";
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				foreach($query->rows as $result){
+					$output[$result['destination_id']] = $result;
+					$output[$result['destination_id']]['name'] = ucwords($result['name']);
+					$output[$result['destination_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+					//START: set data for json
+						//IMPORTANT: remember to load model at controller
+						if(isset($result['tag_id'])) { $output[$result['destination_id']]['tag'] = $this->model_resource_tag->getTag($result['tag_id']); }
+						if(isset($result['image_id'])) { 
+							$output[$result['destination_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],'100%');
+						}
+						else { 
+							$google_image = $this->getDestinationGoogleImageByDestinationId($result['destination_id']);
+							$image['path'] = $google_image[0]['url'];
+							$image['name'] = ucwords($result['name']);
+							$image['width'] = '100%';
+							$output[$result['destination_id']]['image'] = $image;
+						}
+						if(isset($result['parent_id'])) { 
+							$output[$result['destination_id']]['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['parent_id']); 
+						}
+					//END
+				}
+			//END
+			
+			//START: Run SQL
+				$sql = "
+					SELECT COUNT(DISTINCT destination_id) AS count
+					FROM " . $this->db->table($this->table_relation) . "
+					WHERE parent_id = '" . (int)$destination_id . "' 
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				$output['count'] = $query->row['count'];
+			//END
+			
+			return $output;
+		}
+	//END
 }
 
 ?>

@@ -50,7 +50,7 @@ class ControllerPagesGuidePoiSubsetDestination extends AController {
 					$result[$relation_id]['relation_id'] = $row['relation_id'];
 					$poi = $this->model_guide_poi->getPoi($row['poi_id']);
 					$result[$relation_id]['poi'] = $poi['name'];
-					$destination = $this->model_guide_destination->getDestination($row['destination_id']);
+					$destination = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($row['destination_id']);
 					$result[$relation_id]['destination'] = json_encode($destination);
 					$result[$relation_id]['sort_order'] = $row['sort_order'];
 				}

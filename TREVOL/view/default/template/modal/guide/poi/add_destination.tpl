@@ -84,6 +84,39 @@
                                     echo '>';
                                     echo $i['value'];
                                     echo '</textarea>';
+                                }else if($i['type'] == 'search') {
+                                	$search_id = "modal-add-destination-form-input-".$i['id']."-suggestion";
+                                    $value_id = "modal-add-destination-form-input-".$i['id']."-value";
+                                    $hidden_id = "modal-add-destination-form-input-".$i['id']."-hidden";
+                                    echo '<span class="input-group-addon">';
+                                        echo '<i class="fa fa-fw fa-search">';
+                                        echo '</i>';
+                                    echo '</span>';
+                                	echo '<input ';
+                                        echo 'class="form-control" ';
+                                        echo 'id="modal-add-destination-form-input-'.$i['id'].'"';
+                                        echo 'type="text" ';
+                                        echo 'autocomplete="on" ';
+                                        echo 'placeholder="'.$i['placeholder'].'" ';
+                                        echo 'onkeyup="auto_suggest(this.id, event)" ';
+                                        echo 'onfocus="show_suggestion(\''.$search_id.'\')" ';
+                                        echo 'onclick="auto_suggest(this.id, event)" ';
+                                        echo 'onblur="setTimeout(function() { hide_suggestion(\''.$search_id.'\'); }, 100);" ';
+                                    echo '/>';
+                                    echo '<div style="position:relative; top:34px; width:100%;">';
+                                        echo '<div id="'.$search_id.'" style="position:absolute; z-index:15000; width:100%; display:none;">';
+                                        echo '</div>';
+                                    echo '</div>';
+                                    echo '<input ';
+                                    	echo 'id="'.$hidden_id.'"';
+                                    	echo 'type="hidden"';
+                                    echo '/>';
+                                    echo '<input ';
+                                    	echo 'id="'.$value_id.'"';
+                                    	echo 'name="'.$i['name'].'" ';
+                                    	echo 'value="'.$i['value'].'" ';
+                                    	echo 'type="hidden"';
+                                    echo '/>';
                                 }
                                 else if($i['type'] == 'select') {
                                     echo '<select ';
@@ -136,6 +169,18 @@
                         if($tab == 1) { echo '</div>'; }
                     ?>
             	</div>
+            </form>
+            <form id="modal-search-destination-form">
+                <input 
+                    type="hidden" 
+                    name="action"
+                    value="search_destination" 
+                />
+                <input
+                    type="hidden"
+                    id="modal-search-destination-form-input-keyword" 
+                    name="keyword" 
+                />
             </form>
         </div>
             <div class="modal-footer">
@@ -196,4 +241,216 @@
 	
 	updateAddDestinationDemo();
 	*/
+</script>
+
+<script>
+	function auto_suggest(input_id, e) {
+		var suggestion_id = input_id + "-suggestion";
+		var hidden_id = input_id + "-hidden";
+		var value_id = input_id + "-value";
+		var keyword = document.getElementById(input_id).value;
+		
+		document.getElementById('modal-search-destination-form-input-keyword').value = keyword;
+		
+		show_suggestion(suggestion_id);
+		
+		var key_code;
+	
+		if(window.event) { // IE                    
+			key_code = e.keyCode;
+		} else if(e.which){ // Netscape/Firefox/Opera                   
+			key_code = e.which;
+		}
+		
+		if(key_code == 40) { //if press down arrow
+			if(document.getElementById(suggestion_id).innerHTML == '') { 
+				search_destination(input_id, suggestion_id, keyword);
+				show_suggestion(suggestion_id); 
+			}
+			select_next_suggestion(input_id);
+			return;
+		}
+		else if(key_code == 38) { //if press up arrow
+			if(document.getElementById(suggestion_id).innerHTML == '') { 
+				search_destination(input_id, suggestion_id, keyword);
+				show_suggestion(suggestion_id); 
+			}
+			select_previous_suggestion(input_id);
+			return;
+		}
+		else if(key_code == 13) { //if press enter
+			hide_suggestion(suggestion_id);
+			document.getElementById(hidden_id).value = this.suggestion[this.selected_suggestion].name;
+			return;
+		}
+		else if(key_code == 37 || key_code == 39) { //if press left or right arrow
+		}
+		else if(key_code != '' && key_code != 'undefined' && key_code != null) {
+			document.getElementById(value_id).value = '';
+			document.getElementById(suggestion_id).innerHTML = '';
+		}
+		
+		document.getElementById(hidden_id).value = document.getElementById(input_id).value;
+		search_destination(input_id, suggestion_id, keyword);
+	}
+	
+	
+	function search_destination(input_id, suggestion_id, keyword) {
+		var form_element = document.querySelector("#modal-search-destination-form");
+		var form_data = new FormData(form_element);
+		var xmlhttp = new XMLHttpRequest();
+		var url = "<?php echo $modal_ajax['guide/ajax_poi_destination']; ?>";
+		var data = "";
+		var query = url + data;
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+				<!-- if connection success -->
+				var json = JSON.parse(xmlhttp.responseText);
+				auto_list(input_id, suggestion_id, keyword, xmlhttp.responseText);
+			} else {
+				<!-- if connection failed -->
+				/* alert(xmlhttp.responseText); */
+			}
+		};
+		xmlhttp.open("POST", query, true);
+		xmlhttp.send(form_data);
+	}
+	
+	function auto_list(input_id, suggestion_id, keyword, response) {
+		var result = JSON.parse(response);
+		var output = '';
+		output += "<ul class='list-group'>";
+		for(i = 0; i < result.length; i++) {
+			output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' onclick='select_suggestion(\""+input_id+"\", \""+result[i].destination_id+"\", \""+result[i].name+"\")'>";
+				output += "<div class='text-left' style='width:100%;'>";
+					output += "<div class='text-left text-success' style='display:inline-block; width:50px;'><i class='fa fa-map-marker fa-fw fa-2x'></i></div>";
+					output += "<div style='display:inline-block;'>";
+						output += "<span class='text-left' style='display:block;'><b>";
+							output += highlight_keyword_with_any_cases(result[i].name, keyword);
+						output += "</b></span>";
+						if(typeof result[i].parent != 'undefined') {
+							output += "<span class='text-left small' style='display:block;'>";
+								output += result[i].parent.name;
+							output += "</span>";
+						}
+					output += "</div>";
+				output += "</div>";
+			output += "</a>";
+		}
+		output += "</ul>";
+		this.suggestion = result;
+		this.selected_suggestion = -1;
+		document.getElementById(suggestion_id).innerHTML = output;
+	}
+	
+	/*
+	function detect_key(input_id, suggestion_id, name, e) {
+		var key_code;
+	
+		if(window.event) { // IE                    
+			key_code = e.keyCode;
+		} else if(e.which){ // Netscape/Firefox/Opera                   
+			key_code = e.which;
+		}
+		
+		if(key_code == 40) { //if press down arrow
+			select_next_suggestion();
+			return;
+		}
+		else if(key_code == 38) { //if press up arrow
+			select_previous_suggestion();
+			return;
+		}
+		else if(key_code == 13) { //if press enter
+			select_suggestion(input_id, suggestion_id, name);
+			return;
+		}
+	}
+	*/
+	
+	function reset_suggestion() {
+		for(i=0;i<this.suggestion.length;i++) {
+			document.getElementById('suggestion-'+i).style.backgroundColor = '';
+		}
+	}
+	
+	function select_next_suggestion(input_id) {
+		reset_suggestion();
+		
+		if(this.selected_suggestion < this.suggestion.length) {
+			this.selected_suggestion += 1;
+		}
+		else {
+			this.selected_suggestion = 0;
+		}
+		
+		highlight_suggestion(input_id);
+	}
+	
+	function select_previous_suggestion(input_id) {
+		reset_suggestion();
+		
+		if(this.selected_suggestion > 0) {
+			this.selected_suggestion -= 1;
+		}
+		else {
+			this.selected_suggestion = this.suggestion.length;
+		}
+		
+		highlight_suggestion(input_id);
+	}
+	
+	function highlight_suggestion(input_id) {
+		var hidden_id = input_id + '-hidden';
+		var value_id = input_id + '-value';
+		
+		if(this.selected_suggestion != this.suggestion.length) {
+			var suggestion_id = 'suggestion-'+this.selected_suggestion;
+			document.getElementById(suggestion_id).style.backgroundColor = '#EEEEEE';
+			document.getElementById(input_id).value = this.suggestion[this.selected_suggestion].name;
+			document.getElementById(value_id).value = this.suggestion[this.selected_suggestion].destination_id;
+		}
+		else {
+			document.getElementById(input_id).value = document.getElementById(hidden_id).value;
+			document.getElementById(value_id).value = '';
+		}
+	}
+	
+	function select_suggestion(input_id, destination_id, name) {
+		var hidden_id = input_id + '-hidden';
+		var value_id = input_id + '-value';
+		
+		document.getElementById(hidden_id).value = name;
+		document.getElementById(input_id).value = name;
+		document.getElementById(value_id).value = destination_id;
+	}
+	
+	function show_suggestion(suggestion_id) {
+		document.getElementById(suggestion_id).style.display = "block";
+	}
+	
+	function hide_suggestion(suggestion_id) {
+		document.getElementById(suggestion_id).style.display = "none";
+		document.getElementById(suggestion_id).innerHTML = '';
+	}
+	
+	RegExp.escape = function(str) 
+	{
+	  var specials = /[.*+?|()\[\]{}\\$^]/g; // .*+?|()[]{}\$^
+	  return str.replace(specials, "\\$&");
+	}
+	
+	function highlight_keyword_with_any_cases(text, keyword)
+	{
+	  var regex = new RegExp("(" + RegExp.escape(keyword) + ")", "gi");
+	  return text.replace(regex, "<span style='background-color:yellow;'>$1</span>");
+	}
+	
+	$('#modal-add-destination-form').on('keyup keypress', function(e) {
+		var keyCode = e.keyCode || e.which;
+		if (keyCode === 13) { 
+			e.preventDefault();
+			return false;
+		}
+	});
 </script>

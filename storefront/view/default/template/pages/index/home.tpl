@@ -1,13 +1,5 @@
-<h1><div>Explore <b>Malaysia</b></div></h1>
+<?php echo $modal_home_splash; ?>
 
-<div style='padding:10px;'>
-<?php foreach($result as $destination) {
-	echo "<div class='col-xs-4'>";
-        echo "<div style='padding:10px;'>";
-            echo $destination['image'];
-            echo $destination['name'];
-        echo "</div>";
-    echo "</div>";
-}
-?>
-</div>
+<script>
+	setTimeout(function(){window.location.href='<?php echo $redirect; ?>'},1000);
+</script>

@@ -125,7 +125,7 @@
 			{
 				var tag = JSON.parse(row.tag);
 				if(tag !== '' && tag !== 'undefined' && tag !== null) {
-					return "<a class=\"label label-pill\" style=\"background-color:"+tag.type_color+";\">" + tag.name + "</a>";
+					return "<a class=\"label label-pill search-tag\" data-row-name=\"" + tag.name + "\" style=\"background-color:"+tag.type_color+";\">" + tag.name + "</a>";
 				}
 			},
 			"image": function(column, row)
@@ -134,6 +134,11 @@
 				if(image !== '' && image !== 'undefined' && image !== null) {
 					return "<img src=\"" + image.path + "\" title=\"" + image.name + "\" width=\"" + image.width + "\" height=\"" + image.width + "\" />";
 				}
+			},
+			"destination": function(column, row)
+			{
+				var destination = JSON.parse(row.destination);
+				return "<a class=\"label label-pill search-destination\" data-row-name=\"" + destination.name + "\" style=\"background-color:"+destination.type_color+";margin-right:5px;\">" + destination.name + "</a>";
 			},
 			"duration": function(column, row)
 			{
@@ -165,7 +170,7 @@
 					+ "<ul class='pagination' style='margin: 0px !important;'>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Summary'>"
-							+ "<a class='btn btn-sm btn-default command-view-poi-summary' data-toggle='modal' data-target='#modal-view-poi-summary' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-default command-view-poi-summary' data-toggle='modal' data-target='#modal-view-poi-summary' data-row-id='"+row.id+"'>"
 								+ "<span>View All"
 								+ "</span>"
 							+ "</a>"
@@ -173,7 +178,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Alias'>"
-							+ "<a class='btn btn-sm btn-info command-view-poi-alias'data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-info command-view-poi-alias'data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-at'>"
 								+ "</span>"
 							+ "</a>"
@@ -181,7 +186,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Description'>"
-							+ "<a class='btn btn-sm btn-info command-view-poi-description' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-info command-view-poi-description' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-ellipsis-h'>"
 								+ "</span>"
 							+ "</a>"
@@ -189,7 +194,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Recognition'>"
-							+ "<a class='btn btn-sm btn-info command-view-poi-recognition' data-toggle='modal' data-target='#modal-view-poi-recognition' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-info command-view-poi-recognition' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-trophy'>"
 								+ "</span>"
 							+ "</a>"
@@ -197,7 +202,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Image'>"
-							+ "<a class='btn btn-sm btn-success command-view-poi-image' data-toggle='modal' data-target='#modal-view-poi-image' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-success command-view-poi-image' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-picture-o'>"
 								+ "</span>"
 							+ "</a>"
@@ -205,7 +210,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Tag'>"
-							+ "<a class='btn btn-sm btn-success command-view-poi-tag' data-toggle='modal' data-target='#modal-view-poi-tag' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-success command-view-poi-tag' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-tag'>"
 								+ "</span>"
 							+ "</a>"
@@ -213,7 +218,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Destination'>"
-							+ "<a class='btn btn-sm btn-warning command-view-poi-destination' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-warning command-view-poi-destination' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-map-marker'>"
 								+ "</span>"
 							+ "</a>"
@@ -221,7 +226,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Interest'>"
-							+ "<a class='btn btn-sm btn-warning command-view-poi-interest' data-toggle='modal' data-target='#modal-view-poi-interest' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-warning command-view-poi-interest' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-gratipay'>"
 								+ "</span>"
 							+ "</a>"
@@ -229,7 +234,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Relation'>"
-							+ "<a class='btn btn-sm btn-warning command-view-poi-relation' data-toggle='modal' data-target='#modal-view-poi-relation' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-warning command-view-poi-relation' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-sitemap'>"
 								+ "</span>"
 							+ "</a>"
@@ -237,7 +242,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Hour'>"
-							+ "<a class='btn btn-sm btn-danger command-view-poi-hour' data-toggle='modal' data-target='#modal-view-poi-hour' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-danger command-view-poi-hour' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-clock-o'>"
 								+ "</span>"
 							+ "</a>"
@@ -245,7 +250,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Fee'>"
-							+ "<a class='btn btn-sm btn-danger command-view-poi-fee' data-toggle='modal' data-target='#modal-view-poi-fee' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-danger command-view-poi-fee' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-dollar'>"
 								+ "</span>"
 							+ "</a>"
@@ -253,7 +258,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Contact'>"
-							+ "<a class='btn btn-sm btn-danger command-view-poi-contact' data-toggle='modal' data-target='#modal-view-poi-contact' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-danger command-view-poi-contact' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-phone'>"
 								+ "</span>"
 							+ "</a>"
@@ -261,7 +266,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Review'>"
-							+ "<a class='btn btn-sm btn-danger command-view-poi-review' data-toggle='modal' data-target='#modal-view-poi-review' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-danger command-view-poi-review' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-commenting'>"
 								+ "</span>"
 							+ "</a>"
@@ -269,7 +274,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Google'>"
-							+ "<a class='btn btn-sm btn-primary command-view-poi-google' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-primary command-view-poi-google' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-google'>"
 								+ "</span>"
 							+ "</a>"
@@ -277,7 +282,7 @@
 						+ "</li>"
 						+ "<li>"
 							+ "<span class='nopadding' data-toggle='tooltip' data-placement='top' title='Wikipedia'>"
-							+ "<a class='btn btn-sm btn-primary command-view-poi-wikipedia' data-row-id='"+row.id+"'>"
+							+ "<a class='btn btn-sm nopadding btn-primary command-view-poi-wikipedia' data-row-id='"+row.id+"'>"
 								+ "<span class='fa fa-fw fa-wikipedia-w'>"
 								+ "</span>"
 							+ "</a>"
@@ -343,9 +348,45 @@
 		{
 			window.location.href = "<?php echo $link['guide/poi_subset/description']; ?>\&poi_id=" + $(this).data("row-id");
 		})
+		.end().find(".command-view-poi-recognition").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/recognition']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-poi-image").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/image']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-poi-tag").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/tag']; ?>\&poi_id=" + $(this).data("row-id");
+		})
 		.end().find(".command-view-poi-destination").on("click", function(e)
 		{
 			window.location.href = "<?php echo $link['guide/poi_subset/destination']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-poi-interest").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/interest']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-poi-relation").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/relation']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-poi-hour").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/hour']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-poi-fee").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/fee']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-poi-contact").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/contact']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".command-view-poi-review").on("click", function(e)
+		{
+			window.location.href = "<?php echo $link['guide/poi_subset/review']; ?>\&poi_id=" + $(this).data("row-id");
 		})
 		.end().find(".command-view-poi-google").on("click", function(e)
 		{
@@ -354,6 +395,14 @@
 		.end().find(".command-view-poi-wikipedia").on("click", function(e)
 		{
 			window.location.href = "<?php echo $link['guide/poi_subset/wikipedia']; ?>\&poi_id=" + $(this).data("row-id");
+		})
+		.end().find(".search-tag").on("click", function(e)
+		{
+			$("#grid").bootgrid("search", $(this).data("row-name"));
+		})
+		.end().find(".search-destination").on("click", function(e)
+		{
+			$("#grid").bootgrid("search", $(this).data("row-name"));
 		});
 	});
 	

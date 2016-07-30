@@ -26,6 +26,7 @@ class ControllerResponsesGuideAjaxPoiDestination extends AController {
 		else if($action == 'add') { $this->add(); }
 		else if($action == 'edit') { $this->edit(); }
 		else if($action == 'delete') { $this->delete(); }
+		else if($action == 'search_destination') { $this->search_destination(); }
 		else { 
 		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 			$result['warning'][] = 'No action has been sent via POST'; 
@@ -97,5 +98,12 @@ class ControllerResponsesGuideAjaxPoiDestination extends AController {
 			echo $response;	
 			return 'failed';
 		}
+	}
+	
+	public function search_destination() {
+		$keyword = $this->data['keyword'];
+		$execution = $this->model_guide_destination->getDestinationByKeyword($keyword);
+		$response = json_encode(array_values($execution));
+		echo $response;
 	}
 }

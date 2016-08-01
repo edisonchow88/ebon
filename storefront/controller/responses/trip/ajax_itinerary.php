@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesTripItineraryTable extends AController {
+class ControllerResponsesTripAjaxItinerary extends AController {
 	//START: set common variable
 		public $data = array();
 	//END
@@ -29,17 +29,12 @@ class ControllerPagesTripItineraryTable extends AController {
 		//START: set link
 		//END
 		
-		//START: set ajax
-			$ajax_itinerary = $this->html->getSEOURL('trip/ajax_itinerary');
-		//END
-		
 		//START: set variable
 			$this->view->batchAssign($this->data);
-			$this->view->assign('ajax_itinerary',$ajax_itinerary);
 		//END
 		
 		//START: set template 
-			$this->processTemplate('pages/trip/itinerary_table.tpl');
+			$this->processTemplate('responses/trip/ajax_itinerary.tpl');
 		//END
 		
 		//START: init controller data

@@ -462,6 +462,7 @@ ul {
 				right:calc(50vw - 100px);
 				border-radius:5px;
 				width:200px;
+				z-index:3;
 			}
 			
 			#section-view-md .input-group {
@@ -494,6 +495,7 @@ ul {
 				background-color:#FFF;
 				border:solid thin #999;
 				border-radius:10px;
+				z-index:3;
 			}
 			
 			#section-view li:first-child {

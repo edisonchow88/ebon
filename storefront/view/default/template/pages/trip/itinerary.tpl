@@ -230,12 +230,14 @@
 			var body_height = 'calc(100vh - 48px - 2px)';
 			var height = 'calc(100vh - 48px - 2px - 30px)';
 			var content_height = 'calc(100vh - 48px - 2px - 40px - 49px)';
+			var itinerary_height = 'calc(100vh - 48px - 2px - 40px - 49px + 70px)';
 			document.getElementById('section-body').style.height = body_height;
 			document.getElementById('section-content').style.height = height;
 			document.getElementById('section-left').style.height = height;
 			document.getElementById('section-center').style.height = height;
 			document.getElementById('section-right').style.height = height;
 			document.getElementById('section-content-guide-content').style.height = content_height;
+			document.getElementById('section-content-itinerary-content').style.height = itinerary_height;
 			document.getElementById('section-content-map-content').style.height = content_height;
 		}
 		else if(w < 960) {
@@ -245,12 +247,14 @@
 			var body_height = 'calc(100vh - 48px - 2px - 40px)';
 			var height = 'calc(100vh - 48px - 2px - 30px - 40px)';
 			var content_height = 'calc(100vh - 48px - 2px - 30px - 70px - 40px)';
+			var itinerary_height = 'calc(100vh - 48px - 2px - 30px - 70px - 40px + 70px)';
 			document.getElementById('section-body').style.height = body_height;
 			document.getElementById('section-content').style.height = height;
 			document.getElementById('section-left').style.height = height;
 			document.getElementById('section-center').style.height = height;
 			document.getElementById('section-right').style.height = height;
 			document.getElementById('section-content-guide-content').style.height = content_height;
+			document.getElementById('section-content-itinerary-content').style.height = itinerary_height;
 			document.getElementById('section-content-map-content').style.height = content_height;
 		}
 		else {
@@ -260,12 +264,14 @@
 			var body_height = 'calc(100vh - 48px - 2px - 40px)';
 			var height = 'calc(100vh - 48px - 2px - 30px - 40px)';
 			var content_height = 'calc(100vh - 48px - 2px - 30px - 70px - 40px)';
+			var itinerary_height = 'calc(100vh - 48px - 2px - 30px - 70px - 40px + 70px)';
 			document.getElementById('section-body').style.height = body_height;
 			document.getElementById('section-content').style.height = height;
 			document.getElementById('section-left').style.height = height;
 			document.getElementById('section-center').style.height = height;
 			document.getElementById('section-right').style.height = height;
 			document.getElementById('section-content-guide-content').style.height = content_height;
+			document.getElementById('section-content-itinerary-content').style.height = itinerary_height;
 			document.getElementById('section-content-map-content').style.height = content_height;
 		}
 	}

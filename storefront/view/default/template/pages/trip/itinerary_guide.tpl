@@ -159,6 +159,8 @@
 	
 	.result-name {
 		color:#333;
+		height:20px;
+		overflow:hidden;
 	}
 	
 	.result-blurb {
@@ -167,11 +169,17 @@
 		overflow:hidden;
 	}
 	
-	.line-clamp {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;  
-}
+	.line-clamp-1 {
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;  
+	}
+	
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;  
+	}
 	
 	.result-tag {
 		padding: 3px 0;
@@ -226,6 +234,12 @@
             />
             <input 
                 type="hidden" 
+                id="section-content-guide-form-input-poi-id" 
+                name="poi_id" 
+                value="<?php echo $result['current']['poi_id']; ?>"
+            />
+            <input 
+                type="hidden" 
                 name="action"
                 value="view" 
             />
@@ -251,7 +265,7 @@
                 <div class="result-image"><?php echo $i['image']; ?></div>
                 <div class="result-description">
                     <div class="result-name"><?php echo $i['name']; ?></div>
-                    <small><span class="result-blurb line-clamp"><?php echo $i['blurb']; ?></span></small>
+                    <small><span class="result-blurb line-clamp-2"><?php echo $i['blurb']; ?></span></small>
                     <div class="result-tag"><a class="label label-pill" data-row-name="<?php echo $i['tag']['name']; ?>" style="background-color:<?php echo $i['tag']['type_color']; ?>;"><?php echo $i['tag']['name']; ?></a></div>
                 </div>
                 <div class="result-button">&gt;</div>
@@ -311,60 +325,120 @@
 							}
 						<!-- END -->
 						
-					document.getElementById('section-content-guide-name').innerHTML = json.current.name;
-					document.getElementById('section-content-guide-blurb').innerHTML = json.current.blurb;
-					document.getElementById('section-content-guide-description').innerHTML = json.current.description;
+						if(typeof json.current.name != 'undefined') {
+							document.getElementById('section-content-guide-name').innerHTML = json.current.name;
+						}
+						
+						if(typeof json.current.blurb != 'undefined') {
+							document.getElementById('section-content-guide-blurb').innerHTML = json.current.blurb;
+						}
+						
+						if(typeof json.current.description != 'undefined') {
+							document.getElementById('section-content-guide-description').innerHTML = json.current.description;
+						}
 					
 						<!-- START: set image -->
 							document.getElementById('section-content-guide-image').innerHTML = '';
-							for(i=0;i<json.current.image.length;i++) {
-								var image = json.current.image[i].image;
-								content = image;
-								document.getElementById('section-content-guide-image').innerHTML += content; 
+							if(typeof json.current.image != 'undefined') {
+								for(i=0;i<json.current.image.length;i++) {
+									var image = json.current.image[i].image;
+									content = image;
+									document.getElementById('section-content-guide-image').innerHTML += content; 
+								}
 							}
 						<!-- END -->
 						
 						<!-- START: set tag -->
 							document.getElementById('section-content-guide-tag').innerHTML = '';
-							for(i=0;i<json.current.tag.length;i++) {
-								var name = json.current.tag[i].name;
-								var color = json.current.tag[i].type_color;
-								content = '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
-								document.getElementById('section-content-guide-tag').innerHTML += content; 
+							if(typeof json.current.tag != 'undefined') {
+								for(i=0;i<json.current.tag.length;i++) {
+									var name = json.current.tag[i].name;
+									var color = json.current.tag[i].type_color;
+									content = '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
+									document.getElementById('section-content-guide-tag').innerHTML += content; 
+								}
+							}
+						<!-- END -->
+						
+						<!-- START: reset result -->
+							var count = 0;
+							document.getElementById('section-content-guide-result-count').innerHTML = count;
+							document.getElementById('section-content-guide-result-list').innerHTML = '';
+						<!-- END -->
+						
+						<!-- START: set result -->
+							if(typeof json.count.destination != 'undefined') {
+								count = parseFloat(count) + parseFloat(json.count.destination);
+								document.getElementById('section-content-guide-result-count').innerHTML = count;
+								for(i=0;i<json.count.destination;i++) {
+									content = '';
+									content += '<div class="result row" ';
+									content += 'onclick="navigate_guide_by_destination_id('+json.child[i].destination_id+')"';
+									content += '>';
+										content += '<div class="result-image">';
+											content += json.child[i].image;
+										content += '</div>';
+										content += '<div class="result-description">';
+											content += '<div class="result-name line-clamp-1">';
+												content += json.child[i].name;
+											content += '</div>';
+											content += '<small><div class="result-blurb line-clamp-2">';
+												content += json.child[i].blurb;
+											content += '</div></small>';
+											content += '<div class="tag">';
+												if(typeof json.child[i].tag != 'undefined') {
+													for(t=0;t<Math.min(json.child[i].tag.length,3);t++) {
+														var name = json.child[i].tag[t].name;
+														var color = json.child[i].tag[t].type_color;
+														content += '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
+													}
+												}
+											content += '</div>';
+										content += '</div>';
+										content += '<div class="result-button">';
+											content += '&gt;';
+										content += '</div>';
+									content += '</div>';
+									document.getElementById('section-content-guide-result-list').innerHTML += content; 
+								}
 							}
 						<!-- END -->
 						
 						<!-- START: set result -->
-							document.getElementById('section-content-guide-result-count').innerHTML = json.count;
-							document.getElementById('section-content-guide-result-list').innerHTML = '';
-							for(i=0;i<json.count;i++) {
-								content = '';
-								content += '<div class="result row" ';
-								content += 'onclick="navigate_guide_by_destination_id('+json.child[i].destination_id+')"';
-								content += '>';
-									content += '<div class="result-image">';
-										content += json.child[i].image;
-									content += '</div>';
-									content += '<div class="result-description">';
-										content += '<div class="result-name">';
-											content += json.child[i].name;
+							if(typeof json.count.poi != 'undefined') {
+								count = parseFloat(count) + parseFloat(json.count.poi);
+								document.getElementById('section-content-guide-result-count').innerHTML = count;
+								for(i=0;i<json.count.poi;i++) {
+									content = '';
+									content += '<div class="result row" ';
+									content += 'onclick="navigate_guide_by_poi_id('+json.poi[i].poi_id+')"';
+									content += '>';
+										content += '<div class="result-image">';
+											content += json.poi[i].image;
 										content += '</div>';
-										content += '<small><div class="result-blurb line-clamp">';
-											content += json.child[i].blurb;
-										content += '</div></small>';
-										content += '<div class="tag">';
-											for(t=0;t<Math.min(json.child[i].tag.length,3);t++) {
-												var name = json.child[i].tag[t].name;
-												var color = json.child[i].tag[t].type_color;
-												content += '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
-											}
+										content += '<div class="result-description">';
+											content += '<div class="result-name line-clamp-1">';
+												content += json.poi[i].name;
+											content += '</div>';
+											content += '<small><div class="result-blurb line-clamp-2">';
+												content += json.poi[i].blurb;
+											content += '</div></small>';
+											content += '<div class="tag">';
+												if(typeof json.poi[i].tag != 'undefined') {
+													for(t=0;t<Math.min(json.poi[i].tag.length,3);t++) {
+														var name = json.poi[i].tag[t].name;
+														var color = json.poi[i].tag[t].type_color;
+														content += '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
+													}
+												}
+											content += '</div>';
+										content += '</div>';
+										content += '<div class="result-button">';
+											content += '&gt;';
 										content += '</div>';
 									content += '</div>';
-									content += '<div class="result-button">';
-										content += '&gt;';
-									content += '</div>';
-								content += '</div>';
-								document.getElementById('section-content-guide-result-list').innerHTML += content; 
+									document.getElementById('section-content-guide-result-list').innerHTML += content; 
+								}
 							}
 						<!-- END -->
 					<!-- END -->
@@ -382,7 +456,14 @@
 	
 	function navigate_guide_by_destination_id(destination_id) {
 		document.getElementById('section-content-guide-form-input-destination-id').value = destination_id;
+		document.getElementById('section-content-guide-form-input-poi-id').value = '';
 		window.location.hash = '#destination_id-'+destination_id;
+	}
+	
+	function navigate_guide_by_poi_id(poi_id) {
+		document.getElementById('section-content-guide-form-input-destination-id').value = '';
+		document.getElementById('section-content-guide-form-input-poi-id').value = poi_id;
+		window.location.hash = '#poi_id-'+poi_id;
 	}
 	
 	function reset_guide() {
@@ -391,12 +472,13 @@
 			hash = hash.replace('#destination_id-','');
 			document.getElementById('section-content-guide-form-input-destination-id').value = hash;
 		}
+		else if(hash.indexOf('poi_id') > 0) {
+			hash = hash.replace('#poi_id-','');
+			document.getElementById('section-content-guide-form-input-poi-id').value = hash;
+		}
 		else {
 			window.location.hash = '#destination_id-1';
 		}
-	}
-	
-	function init_guide() {
 	}
 	
 	window.onhashchange = function() {

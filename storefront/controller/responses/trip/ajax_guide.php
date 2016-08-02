@@ -11,6 +11,7 @@ class ControllerResponsesTripAjaxGuide extends AController {
 		
 		//START: load model
 			$this->loadModel('guide/destination');
+			$this->loadModel('guide/poi');
 			$this->loadModel('resource/tag');
 			$this->loadModel('resource/image');
 		//END
@@ -33,8 +34,9 @@ class ControllerResponsesTripAjaxGuide extends AController {
 	
 	public function view() {
 		if(isset($this->data['destination_id']) && $this->data['destination_id'] != '') { 
-			$destination_id = $this->data['destination_id'];
+			
 			//START: set data
+				$destination_id = $this->data['destination_id'];
 				$data = $this->model_guide_destination->getDestination($destination_id);
 			//END
 			
@@ -51,7 +53,7 @@ class ControllerResponsesTripAjaxGuide extends AController {
 			//START: set result
 				if(count($data) > 0) {
 					
-					$result['count'] = $data['count'];
+					$result['count']['destination'] = $data['count'];
 					unset($data['count']);
 					
 					foreach($data as $row) {
@@ -63,12 +65,41 @@ class ControllerResponsesTripAjaxGuide extends AController {
 					$result['child'] = array_values($result['child']);
 				}
 			//END
+			
+			//START: set data
+				$destination_id = $this->data['destination_id'];
+				$data = $this->model_guide_poi->getPoiByDestinationId($destination_id);
+			//END
+			
+			//START: set result
+				if(count($data) > 0) {
+					
+					$result['count']['poi'] = $data['count'];
+					unset($data['count']);
+					
+					foreach($data as $row) {
+						$poi_id = $row['poi_id'];
+						foreach($row as $key => $value) { $result['poi'][$poi_id][$key] = $row[$key]; }	
+						$result['poi'][$poi_id]['image'] = $row['image']['image'];	
+					}
+					
+					$result['poi'] = array_values($result['poi']);
+				}
+			//END
+			
 		}
-		else if(isset($this->data['poi_id'])) { 
-			$poi_id = $this->data['poi_id']; 
+		else if(isset($this->data['poi_id']) && $this->data['poi_id'] != '') { 
+			$poi_id = $this->data['poi_id'];
+			//START: set data
+				$data = $this->model_guide_poi->getPoi($poi_id);
+			//END
+			
+			//START: set result
+				if(count($data) > 0) {
+					foreach($data as $key => $value) { $result['current'][$key] = $data[$key]; }
+				}
+			//END
 		}
-		
-		
 		
 		$result['success'][] = 'Page is loaded'; 
 		 

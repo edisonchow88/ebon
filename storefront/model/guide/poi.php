@@ -3,17 +3,30 @@ if(!defined('DIR_CORE')){
 	header('Location: static_pages/');
 }
 
-class ModelGuideDestination extends Model{
+class ModelGuidePoi extends Model{
 	
 	//START: Set Table
-		private $table = "destination";
-		private $table_alias = "destination_alias";
-		private $table_description = "destination_description";
-		private $table_image = "destination_image";
-		private $table_tag = "destination_tag";
-		private $table_relation = "destination_relation";
-		private $table_google = "destination_google";
-		private $table_wikipedia = "destination_wikipedia";
+		private $table = "poi";
+		private $table_alias = "poi_alias";
+		private $table_description = "poi_description";
+		private $table_recognition = "poi_recognition";
+		private $table_image = "poi_image";
+		private $table_tag = "poi_tag";
+		private $table_destination = "poi_destination";
+		private $table_interest = "poi_interest";
+		private $table_relation = "poi_relation";
+		private $table_hour = "poi_hour";
+		private $table_fee = "poi_fee";
+		private $table_contact = "poi_contact";
+		private $table_review = "poi_review";
+		private $table_google = "poi_google";
+		private $table_wikipedia = "poi_wikipedia";
+	//END
+	
+	//START: set image size
+		private $image_parent_width = '320px';
+		private $image_child_width = '100px';
+		private $image_row_width = '30px';
 	//END
 	
 	//START: Set Common Function
@@ -37,30 +50,30 @@ class ModelGuideDestination extends Model{
 	//END
 	
 	//START: [General]
-		public function getDestination($destination_id='',$keyword='') {
-			if($destination_id == '') {
+		public function getPoi($poi_id='',$keyword='') {
+			if($poi_id == '') {
 				$sql = "
-					SELECT *, t1.destination_id, GROUP_CONCAT(DISTINCT t4.image_id) as images, GROUP_CONCAT(DISTINCT t5.tag_id) as tags
+					SELECT *, t1.poi_id, GROUP_CONCAT(DISTINCT t4.image_id) as images, GROUP_CONCAT(DISTINCT t5.tag_id) as tags
 					FROM " . $this->db->table($this->table) . " t1 
 					LEFT JOIN ".$this->db->table($this->table_alias)." t2 
 					ON t2.alias_id = ( SELECT tt2.alias_id 
 						FROM ".$this->db->table($this->table_alias)." AS tt2 
-						WHERE tt2.destination_id = t1.destination_id
+						WHERE tt2.poi_id = t1.poi_id
 						ORDER BY tt2.ranking DESC
 						LIMIT 1
 					)
 					LEFT JOIN ".$this->db->table($this->table_description)." t3 
-					ON t1.destination_id = t3.destination_id 
+					ON t1.poi_id = t3.poi_id 
 					LEFT JOIN ".$this->db->table($this->table_image)." t4
 					ON t4.relation_id = ( SELECT tt4.relation_id 
 						FROM ".$this->db->table($this->table_image)." AS tt4 
-						WHERE tt4.destination_id = t1.destination_id
+						WHERE tt4.poi_id = t1.poi_id
 						ORDER BY tt4.sort_order ASC
 					)
 					LEFT JOIN ".$this->db->table($this->table_tag)." t5
-					ON t1.destination_id = t5.destination_id 
-					LEFT JOIN ".$this->db->table($this->table_relation)." t6
-					ON t1.destination_id = t6.destination_id 
+					ON t1.poi_id = t5.poi_id 
+					LEFT JOIN ".$this->db->table($this->table_destination)." t6
+					ON t1.poi_id = t6.poi_id 
 				";
 				if($keyword != '') {
 					$sql .= "
@@ -68,75 +81,77 @@ class ModelGuideDestination extends Model{
 					";
 				}
 				$sql .= "	
-					GROUP BY t1.destination_id 
-					ORDER BY t1.destination_id DESC 
+					GROUP BY t1.poi_id 
+					ORDER BY t2.name ASC 
 				";
 			}
 			else {
 				$sql = "
-					SELECT *, t1.destination_id, GROUP_CONCAT(DISTINCT t4.image_id) as images, GROUP_CONCAT(DISTINCT t5.tag_id) as tags
+					SELECT *, t1.poi_id, GROUP_CONCAT(DISTINCT t4.image_id) as images, GROUP_CONCAT(DISTINCT t5.tag_id) as tags 
 					FROM " . $this->db->table($this->table) . " t1 
 					LEFT JOIN ".$this->db->table($this->table_alias)." t2 
 					ON t2.alias_id = ( SELECT tt2.alias_id 
 						FROM ".$this->db->table($this->table_alias)." AS tt2 
-						WHERE tt2.destination_id = t1.destination_id
+						WHERE tt2.poi_id = t1.poi_id
 						ORDER BY tt2.ranking DESC
 						LIMIT 1
 					)
 					LEFT JOIN ".$this->db->table($this->table_description)." t3 
-					ON t1.destination_id = t3.destination_id 
+					ON t1.poi_id = t3.poi_id 
 					LEFT JOIN ".$this->db->table($this->table_image)." t4
 					ON t4.relation_id = ( SELECT tt4.relation_id 
 						FROM ".$this->db->table($this->table_image)." AS tt4 
-						WHERE tt4.destination_id = t1.destination_id
+						WHERE tt4.poi_id = t1.poi_id
 						ORDER BY tt4.sort_order ASC
 					)
 					LEFT JOIN ".$this->db->table($this->table_tag)." t5
-					ON t1.destination_id = t5.destination_id 
-					LEFT JOIN ".$this->db->table($this->table_relation)." t6
-					ON t1.destination_id = t6.destination_id 
-					WHERE t1.destination_id = '" . (int)$destination_id . "' 
-					GROUP BY t1.destination_id 
+					ON t1.poi_id = t5.poi_id 
+					LEFT JOIN ".$this->db->table($this->table_destination)." t6
+					ON t1.poi_id = t6.poi_id 
+					WHERE t1.poi_id = '" . (int)$poi_id . "' 
+					GROUP BY t1.poi_id 
 				";
 	
 			}
 			$query = $this->db->query($sql);
 			
 			//START: Set Output
-			if($destination_id == '') {
+			if($poi_id == '') {
 				foreach($query->rows as $result){
-					$output[$result['destination_id']] = $result;
-					$output[$result['destination_id']]['name'] = ucwords($result['name']);
-					$output[$result['destination_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+					$output[$result['poi_id']] = $result;
+					$output[$result['poi_id']]['name'] = ucwords($result['name']);
+					$output[$result['poi_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 					//START: set data for json
 						//IMPORTANT: remember to load model at controller
 						if(isset($result['tag_id'])) { 
 							$tags = explode(',',$result['tags']);
 							if(count($tags) > 0) { 
-								$output[$result['destination_id']]['tag'] = array();
+								$output[$result['poi_id']]['tag'] = array();
 								foreach($tags as $tag) {
-									$output[$result['destination_id']]['tag'][] = $this->model_resource_tag->getTag($tag);
+									$output[$result['poi_id']]['tag'][] = $this->model_resource_tag->getTag($tag);
 								}
 							}
 						}
 						if(isset($result['image_id'])) { 
 							$images = explode(',',$result['images']);
 							if(count($images) > 0) { 
-								$output[$result['destination_id']]['image'] = array();
+								$output[$result['poi_id']]['image'] = array();
 								foreach($images as $image) {
-									$output[$result['destination_id']]['image'][] = $this->model_resource_image->getImage($image,'100%');
+									$output[$result['poi_id']]['image'][] = $this->model_resource_image->getImage($image,$this->image_parent_width);
 								}
 							}
 						}
 						else { 
-							$google_image = $this->getDestinationGoogleImageByDestinationId($result['destination_id']);
+							$output[$result['poi_id']]['image'] = array();
+							$google_image = $this->getPoiGoogleImageByPoiId($result['poi_id']);
 							$image['path'] = $google_image[0]['url'];
 							$image['name'] = ucwords($result['name']);
-							$image['width'] = '100%';
-							$output[$result['destination_id']]['image'] = $image;
+							$image['width'] = $this->image_parent_width;
+							$image['image'] = '<img src="'.$image['path'].'" title="'.$image['name'].'" width="'.$image['width'].'" height="'.$image['width'].'"/>';
+							$output[$result['poi_id']]['image'][] = $image;
 						}
-						if(isset($result['parent_id'])) { 
-							$output[$result['destination_id']]['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['parent_id']); 
+						if(isset($result['destination_id'])) { 
+							$output[$result['poi_id']]['destination'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['destination_id']); 
 						}
 					//END
 				}
@@ -149,33 +164,36 @@ class ModelGuideDestination extends Model{
 				//START: set data for json
 				//IMPORTANT: remember to load model at controller
 					if(isset($result['tag_id'])) { 
-						$tags = explode(',',$result['tags']);
-						if(count($tags) > 0) { 
-							$output['tag'] = array();
-							foreach($tags as $tag) {
-								$output['tag'][] = $this->model_resource_tag->getTag($tag);
+							$tags = explode(',',$result['tags']);
+							if(count($tags) > 0) { 
+								$output[$result['poi_id']]['tag'] = array();
+								foreach($tags as $tag) {
+									$output['tag'][] = $this->model_resource_tag->getTag($tag);
+								}
 							}
 						}
-					}
-					if(isset($result['image_id'])) { 
-						$images = explode(',',$result['images']);
-						if(count($images) > 0) { 
-							$output['image'] = array();
-							foreach($images as $image) {
-								$output['image'][] = $this->model_resource_image->getImage($image,'100%');
+						if(isset($result['image_id'])) { 
+							$images = explode(',',$result['images']);
+							if(count($images) > 0) { 
+								$output[$result['poi_id']]['image'] = array();
+								foreach($images as $image) {
+									$output['image'][] = $this->model_resource_image->getImage($image,$this->image_parent_width);
+								}
 							}
 						}
-					}
-					else { 
-						$google_image = $this->getDestinationGoogleImageByDestinationId($result['destination_id']);
-						$image['path'] = $google_image[0]['url'];
-						$image['name'] = ucwords($result['name']);
-						$image['width'] = '100%';
-						$output['image'] = $image;
-					}
-					if(isset($result['parent_id'])) { 
-						$output['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['parent_id']); 
-					}
+						else { 
+							$output[$result['poi_id']]['image'] = array();
+							$google_image = $this->getPoiGoogleImageByPoiId($result['poi_id']);
+							$image['path'] = $google_image[0]['url'];
+							$image['name'] = ucwords($result['name']);
+							$image['width'] = $this->image_parent_width;
+							$image['image'] = '<img src="'.$image['path'].'" title="'.$image['name'].'" width="'.$image['width'].'" height="'.$image['width'].'"/>';
+							$output['image'][] = $image;
+						}
+						if(isset($result['destination_id'])) { 
+							$output['destination'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['destination_id']); 
+						}
+						
 				//END
 			}
 			//END
@@ -183,55 +201,29 @@ class ModelGuideDestination extends Model{
 			return $output;
 		}
 		
-		public function getDestinationSpecialTagByDestinationId($destination_id) {
-			//START: Run SQL
-				$sql = "
-					SELECT DISTINCT destination_id, name
-					FROM " . $this->db->table($this->table_alias) . " 
-					WHERE destination_id = '" . (int)$destination_id . "' 
-					ORDER BY ranking desc 
-					LIMIT 1
-				";
-				$query = $this->db->query($sql);
-			//END
-			
-			//START: Set Output
-				$result = $query->row;
-				$output = $query->row;
-				$output['name'] = ucwords($result['name']);
-				$output['type_color'] = '#5cb85c';
-			//END
-			
-			return $output;
-		}
-		
-		public function getDestinationSummary($destination_id) {
-			$result['alias'] = $this->getDestinationAliasByDestinationId($destination_id);
-			$result['description'] = $this->getDestinationDescriptionByDestinationId($destination_id);
-			$result['image'] = $this->getDestinationImageByDestinationId($destination_id);
-			$result['tag'] = $this->getDestinationTagByDestinationId($destination_id);
-			$result['relation'] = $this->getDestinationRelationByDestinationId($destination_id);
-			$result['google'] = $this->getDestinationGoogleByDestinationId($destination_id);
-			$result['wikipedia'] = $this->getDestinationWikipediaByDestinationId($destination_id);
+		public function getPoiSummary($poi_id) {
+			$result['alias'] = $this->getPoiAliasByPoiId($poi_id);
+			$result['description'] = $this->getPoiDescriptionByPoiId($poi_id);
+			$result['destination'] = $this->getPoiDestinationByPoiId($poi_id);
+			$result['google'] = $this->getPoiGoogleByPoiId($poi_id);
+			$result['wikipedia'] = $this->getPoiWikipediaByPoiId($poi_id);
 			
 			foreach($result as $key => $value) {
 				$output[$key] = count($value); 
 			}
 			
-			$output['destination_id'] = $destination_id;
+			$output['poi_id'] = $poi_id;
 			
 			return $output;
 		}
 		
-		public function getDestinationByKeyword($keyword='') {
+		public function getPoiByKeyword($keyword='') {
 			//START: Run SQL
 				$sql = "
-					SELECT DISTINCT t1.destination_id, t1.name, t2.parent_id
-					FROM " . $this->db->table($this->table_alias) . " t1
-					LEFT JOIN ".$this->db->table($this->table_relation)." t2
-					ON t1.destination_id = t2.destination_id 
-					WHERE t1.name LIKE '%".$keyword."%' 
-					ORDER BY t1.name asc 
+					SELECT DISTINCT poi_id, name
+					FROM " . $this->db->table($this->table_alias) . " 
+					WHERE name LIKE '%".$keyword."%' 
+					ORDER BY name asc
 					LIMIT 5
 				";
 				$query = $this->db->query($sql);
@@ -239,18 +231,17 @@ class ModelGuideDestination extends Model{
 			
 			//START: Set Output
 				foreach($query->rows as $result) {
-					$output[$result['destination_id']] = $result;
-					$output[$result['destination_id']]['name'] = ucwords($result['name']);
-					if(isset($result['parent_id'])) { 
-						$output[$result['destination_id']]['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['parent_id']); 
-					}
+					$output[$result['poi_id']] = $result;
+					$output[$result['poi_id']]['name'] = ucwords($result['name']);
+					$output[$result['poi_id']]['destination'] = array_values($this->getPoiDestinationByPoiId($result['poi_id']));
+					if(count($output[$result['poi_id']]['destination']) < 1) { unset($output[$result['poi_id']]['destination']); }
 				}
 			//END
 			
 			return $output;
 		}
 		
-		public function addDestination($data) {
+		public function addPoi($data) {
 			//START: Run SQL
 				$fields = $this->getFields($this->db->table($this->table));
 				
@@ -271,22 +262,22 @@ class ModelGuideDestination extends Model{
 				$query = $this->db->query($sql);
 			//END
 			
-			$destination_id = $this->db->getLastId();
+			$poi_id = $this->db->getLastId();
 			
 			//START: Run Chain Reaction
-				$data['destination_id'] = $destination_id;
-				$this->addDestinationAlias($data);
-				$this->addDestinationDescription($data);
-				if($data['g_place_id'] != '') { $this->addDestinationGoogle($data); }
-				if($data['w_title'] != '') { $this->addDestinationWikipedia($data); }
+				$data['poi_id'] = $poi_id;
+				$this->addPoiAlias($data);
+				$this->addPoiDescription($data);
+				if($data['g_place_id'] != '') { $this->addPoiGoogle($data); }
+				if($data['w_title'] != '') { $this->addPoiWikipedia($data); }
 			//END
 			
-			$this->cache->delete('destination');
+			$this->cache->delete('poi');
 			
-			return $destination_id;
+			return $poi_id;
 		}
 		
-		public function editDestination($destination_id, $data) {
+		public function editPoi($poi_id, $data) {
 			//START: Run SQL
 				$fields = $this->getFields($this->db->table($this->table));
 				
@@ -301,45 +292,42 @@ class ModelGuideDestination extends Model{
 					$sql = "
 						UPDATE " . $this->db->table($this->table) . " 
 						SET " . implode(',', $update) . "
-						WHERE destination_id = '" . (int)$destination_id . "'
+						WHERE poi_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				}
 			//END
 			
-			$this->cache->delete('destination');
+			$this->cache->delete('poi');
 			return true;
 		}
 		
-		public function deleteDestination($destination_id) {
+		public function deletePoi($poi_id) {
 			//START: Run SQL
 				$sql = "
 					DELETE FROM " . $this->db->table($this->table) . " 
-					WHERE destination_id = '" . (int)$destination_id . "'
+					WHERE poi_id = '" . (int)$poi_id . "'
 				";
 				$query = $this->db->query($sql);
 			//END
 			
 			//START: Run Chain Reaction
-				$this->deleteDestinationAliasByDestinationId($destination_id);
-				$this->deleteDestinationDescriptionByDestinationId($destination_id);
-				$this->deleteDestinationImageByDestinationId($destination_id);
-				$this->deleteDestinationTagByDestinationId($destination_id);
-				$this->deleteDestinationRelationByDestinationId($destination_id);
-				$this->deleteDestinationGoogleByDestinationId($destination_id);
-				$this->deleteDestinationWikipediaByDestinationId($destination_id);
+				$this->deletePoiAliasByPoiId($poi_id);
+				$this->deletePoiDescriptionByPoiId($poi_id);
+				$this->deletePoiGoogleByPoiId($poi_id);
+				$this->deletePoiWikipediaByPoiId($poi_id);
 			//END
 			
-			$this->cache->delete('destination');
+			$this->cache->delete('poi');
 			return true;
 		}
 		
-		public function toggleDestinationStatus($destination_id) {
+		public function togglePoiStatus($poi_id) {
 			//START: Run SQL
 				$sql = "
 					SELECT `status` 
 					FROM " . $this->db->table($this->table) . " 
-					WHERE  destination_id = '" . (int)$destination_id . "'
+					WHERE  poi_id = '" . (int)$poi_id . "'
 				";
 				$query = $this->db->query($sql);
 			//END
@@ -361,27 +349,27 @@ class ModelGuideDestination extends Model{
 			$sql = "
 				UPDATE " . $this->db->table($this->table) . " 
 				SET status = '" . $new_status . "'
-				WHERE destination_id = '" . (int)$destination_id . "'
+				WHERE poi_id = '" . (int)$poi_id . "'
 			";
 			$query = $this->db->query($sql);
 			//END
 			
-			$this->cache->delete('destination');
+			$this->cache->delete('poi');
 			return $new_status;
 		}
 	//END
 	
 	//START: [Alias]
-		public function getDestinationAlias($alias_id='',$destination_id='') {
+		public function getPoiAlias($alias_id='',$poi_id='') {
 			//START: Run SQL
 				if($alias_id == '') {
 					$sql = "
 						SELECT *
 						FROM " . $this->db->table($this->table_alias) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' 
 						";
 					}
 					$sql .= "
@@ -393,9 +381,9 @@ class ModelGuideDestination extends Model{
 						SELECT *
 						FROM " . $this->db->table($this->table_alias) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' AND alias_id = '" . (int)$alias_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' AND alias_id = '" . (int)$alias_id . "' 
 						";
 					}
 					else {
@@ -426,11 +414,11 @@ class ModelGuideDestination extends Model{
 			return $output;
 		}
 		
-		public function getDestinationAliasByDestinationId($destination_id) {
-			return $this->getDestinationAlias('',$destination_id);
+		public function getPoiAliasByPoiId($poi_id) {
+			return $this->getPoiAlias('',$poi_id);
 		}
 		
-		public function addDestinationAlias($data) {
+		public function addPoiAlias($data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -459,12 +447,12 @@ class ModelGuideDestination extends Model{
 			
 			$alias_id = $this->db->getLastId();
 			
-			$this->cache->delete('destination_alias');
+			$this->cache->delete('poi_alias');
 			
 			return $alias_id;
 		}
 		
-		public function editDestinationAlias($alias_id, $data) {
+		public function editPoiAlias($alias_id, $data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -489,11 +477,11 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_alias');
+			$this->cache->delete('poi_alias');
 			return true;
 		}
 		
-		public function deleteDestinationAlias($alias_id) {
+		public function deletePoiAlias($alias_id) {
 			//START: [Main Table]
 			
 				//START: table
@@ -506,39 +494,39 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_alias');
+			$this->cache->delete('poi_alias');
 			return true;
 		}
 		
-		public function deleteDestinationAliasByDestinationId($destination_id) {
+		public function deletePoiAliasByPoiId($poi_id) {
 			//START: [Main Table]
 			
 				//START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_alias) . " 
-						WHERE destination_id = '" . (int)$destination_id . "'
+						WHERE poi_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END
 				
 			//END
 			
-			$this->cache->delete('destination_alias');
+			$this->cache->delete('poi_alias');
 			return true;
 		}
 	//END
 	
 	//START: [Description]
-		public function getDestinationDescription($description_id='',$destination_id='') {
+		public function getPoiDescription($description_id='',$poi_id='') {
 			//START: Run SQL
 				if($description_id == '') {
 					$sql = "
 						SELECT *
 						FROM " . $this->db->table($this->table_description) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' 
 						";
 					}
 					$sql .= "
@@ -550,9 +538,9 @@ class ModelGuideDestination extends Model{
 						SELECT *
 						FROM " . $this->db->table($this->table_description) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' AND description_id = '" . (int)$description_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' AND description_id = '" . (int)$description_id . "' 
 						";
 					}
 					else {
@@ -581,11 +569,11 @@ class ModelGuideDestination extends Model{
 			return $output;
 		}
 		
-		public function getDestinationDescriptionByDestinationId($destination_id) {
-			return $this->getDestinationDescription('',$destination_id);
+		public function getPoiDescriptionByPoiId($poi_id) {
+			return $this->getPoiDescription('',$poi_id);
 		}
 		
-		public function addDestinationDescription($data) {
+		public function addPoiDescription($data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -614,12 +602,12 @@ class ModelGuideDestination extends Model{
 			
 			$description_id = $this->db->getLastId();
 			
-			$this->cache->delete('destination_description');
+			$this->cache->delete('poi_description');
 			
 			return $description_id;
 		}
 		
-		public function editDestinationDescription($description_id, $data) {
+		public function editPoiDescription($description_id, $data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -644,11 +632,11 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_description');
+			$this->cache->delete('poi_description');
 			return true;
 		}
 		
-		public function deleteDestinationDescription($description_id) {
+		public function deletePoiDescription($description_id) {
 			//START: [Main Table]
 			
 				//START: table
@@ -661,39 +649,211 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_description');
+			$this->cache->delete('poi_description');
 			return true;
 		}
 		
-		public function deleteDestinationDescriptionByDestinationId($destination_id) {
+		public function deletePoiDescriptionByPoiId($poi_id) {
 			//START: [Main Table]
 			
 				//START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_description) . " 
-						WHERE destination_id = '" . (int)$destination_id . "'
+						WHERE poi_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END
 				
 			//END
 			
-			$this->cache->delete('destination_description');
+			$this->cache->delete('poi_description');
+			return true;
+		}
+	//END
+	
+	//START: [Recognition]
+		public function getPoiRecognition($recognition_id='',$poi_id='') {
+			//START: Run SQL
+				if($recognition_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_recognition) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' 
+						";
+					}
+					$sql .= "
+						ORDER BY recognition_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_recognition) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' AND recognition_id = '" . (int)$recognition_id . "' 
+						";
+					}
+					else {
+						$sql .= "
+							WHERE recognition_id = '" . (int)$recognition_id . "' 
+						";
+					}
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				if($recognition_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['recognition_id']] = $result;
+						$output[$result['recognition_id']]['title'] = ucwords($result['title']);
+						$output[$result['recognition_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+						if($result['year_started'] == 0 && $result['year_ended'] == 0) {
+							$output[$result['recognition_id']]['year'] = '';
+						}
+						else if($result['year_started'] > 0 && $result['year_ended'] == 0) {
+							$output[$result['recognition_id']]['year'] = 'Since '.$result['year_started'];
+						}
+						else if($result['year_started'] == 0 && $result['year_ended'] > 0) {
+							$output[$result['recognition_id']]['year'] = 'Till '.$result['year_ended'];
+						}
+						else if($result['year_started'] == $result['year_ended']) {
+							$output[$result['recognition_id']]['year'] = $result['year_started'];
+						}
+						else {
+							$output[$result['recognition_id']]['year'] = $result['year_started'].' 〜 '.$result['year_ended'];
+						}
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+					$output['title'] = ucwords($result['title']);
+					$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getPoiRecognitionByPoiId($poi_id) {
+			return $this->getPoiRecognition('',$poi_id);
+		}
+		
+		public function addPoiRecognition($data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_recognition));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+				
+					if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				//END
+				
+				//START: Run SQL
+					$sql = "
+						INSERT INTO `" . $this->db->table($this->table_recognition) . "` 
+						SET " . implode(',', $update) . "
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$recognition_id = $this->db->getLastId();
+			
+			$this->cache->delete('poi_recognition');
+			
+			return $recognition_id;
+		}
+		
+		public function editPoiRecognition($recognition_id, $data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_recognition));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_recognition) . " 
+							SET " . implode(',', $update) . "
+							WHERE recognition_id = '" . (int)$recognition_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_recognition');
+			return true;
+		}
+		
+		public function deletePoiRecognition($recognition_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_recognition) . " 
+						WHERE recognition_id = '" . (int)$recognition_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_recognition');
+			return true;
+		}
+		
+		public function deletePoiRecognitionByPoiId($poi_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_recognition) . " 
+						WHERE poi_id = '" . (int)$poi_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_recognition');
 			return true;
 		}
 	//END
 	
 	//START: [Image]
-		public function getDestinationImage($relation_id='',$destination_id='') {
+		public function getPoiImage($relation_id='',$poi_id='') {
 			//START: Run SQL
 				if($relation_id == '') {
 					$sql = "
 						SELECT *
 						FROM " . $this->db->table($this->table_image) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' 
 						";
 					}
 					$sql .= "
@@ -705,9 +865,9 @@ class ModelGuideDestination extends Model{
 						SELECT *
 						FROM " . $this->db->table($this->table_image) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' AND relation_id = '" . (int)$relation_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' AND relation_id = '" . (int)$relation_id . "' 
 						";
 					}
 					else {
@@ -724,7 +884,7 @@ class ModelGuideDestination extends Model{
 					foreach($query->rows as $result){
 						$output[$result['relation_id']] = $result;
 						if(isset($result['image_id'])) { 
-							$output[$result['relation_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],'100%');
+							$output[$result['relation_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],$this->image_row_width);
 						}
 					}
 				}
@@ -732,7 +892,7 @@ class ModelGuideDestination extends Model{
 					$result = $query->row;
 					$output = $query->row;
 					if(isset($result['image_id'])) { 
-						$output['image'] = $this->model_resource_image->getImage($result['image_id'],'100%');
+						$output['image'] = $this->model_resource_image->getImage($result['image_id'],$this->image_row_width);
 					}
 				}
 			//END
@@ -740,11 +900,11 @@ class ModelGuideDestination extends Model{
 			return $output;
 		}
 		
-		public function getDestinationImageByDestinationId($destination_id) {
-			return $this->getDestinationImage('',$destination_id);
+		public function getPoiImageByPoiId($poi_id) {
+			return $this->getPoiImage('',$poi_id);
 		}
 		
-		public function addDestinationImage($data) {
+		public function addPoiImage($data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -773,12 +933,12 @@ class ModelGuideDestination extends Model{
 			
 			$relation_id = $this->db->getLastId();
 			
-			$this->cache->delete('destination_image');
+			$this->cache->delete('poi_image');
 			
 			return $relation_id;
 		}
 		
-		public function editDestinationImage($relation_id, $data) {
+		public function editPoiImage($relation_id, $data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -803,11 +963,11 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_image');
+			$this->cache->delete('poi_image');
 			return true;
 		}
 		
-		public function deleteDestinationImage($relation_id) {
+		public function deletePoiImage($relation_id) {
 			//START: [Main Table]
 			
 				//START: table
@@ -820,39 +980,39 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_image');
+			$this->cache->delete('poi_image');
 			return true;
 		}
 		
-		public function deleteDestinationImageByDestinationId($destination_id) {
+		public function deletePoiImageByPoiId($poi_id) {
 			//START: [Main Table]
 			
 				//START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_image) . " 
-						WHERE destination_id = '" . (int)$destination_id . "'
+						WHERE poi_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END
 				
 			//END
 			
-			$this->cache->delete('destination_image');
+			$this->cache->delete('poi_image');
 			return true;
 		}
 	//END
 	
 	//START: [Tag]
-		public function getDestinationTag($relation_id='',$destination_id='') {
+		public function getPoiTag($relation_id='',$poi_id='') {
 			//START: Run SQL
 				if($relation_id == '') {
 					$sql = "
 						SELECT *
 						FROM " . $this->db->table($this->table_tag) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' 
 						";
 					}
 					$sql .= "
@@ -864,9 +1024,9 @@ class ModelGuideDestination extends Model{
 						SELECT *
 						FROM " . $this->db->table($this->table_tag) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' AND relation_id = '" . (int)$relation_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' AND relation_id = '" . (int)$relation_id . "' 
 						";
 					}
 					else {
@@ -899,11 +1059,11 @@ class ModelGuideDestination extends Model{
 			return $output;
 		}
 		
-		public function getDestinationTagByDestinationId($destination_id) {
-			return $this->getDestinationTag('',$destination_id);
+		public function getPoiTagByPoiId($poi_id) {
+			return $this->getPoiTag('',$poi_id);
 		}
 		
-		public function addDestinationTag($data) {
+		public function addPoiTag($data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -932,12 +1092,12 @@ class ModelGuideDestination extends Model{
 			
 			$relation_id = $this->db->getLastId();
 			
-			$this->cache->delete('destination_tag');
+			$this->cache->delete('poi_tag');
 			
 			return $relation_id;
 		}
 		
-		public function editDestinationTag($relation_id, $data) {
+		public function editPoiTag($relation_id, $data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -962,11 +1122,11 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_tag');
+			$this->cache->delete('poi_tag');
 			return true;
 		}
 		
-		public function deleteDestinationTag($relation_id) {
+		public function deletePoiTag($relation_id) {
 			//START: [Main Table]
 			
 				//START: table
@@ -979,40 +1139,193 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_tag');
+			$this->cache->delete('poi_tag');
 			return true;
 		}
 		
-		public function deleteDestinationTagByDestinationId($destination_id) {
+		public function deletePoiTagByPoiId($poi_id) {
 			//START: [Main Table]
 			
 				//START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_tag) . " 
-						WHERE destination_id = '" . (int)$destination_id . "'
+						WHERE poi_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END
 				
 			//END
 			
-			$this->cache->delete('destination_tag');
+			$this->cache->delete('poi_tag');
+			return true;
+		}
+	//END
+	
+	//START: [Destination]
+		public function getPoiDestination($relation_id='',$poi_id='') {
+			//START: Run SQL
+				if($relation_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_destination) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' 
+						";
+					}
+					$sql .= "
+						ORDER BY relation_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_destination) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' AND relation_id = '" . (int)$relation_id . "' 
+						";
+					}
+					else {
+						$sql .= "
+							WHERE relation_id = '" . (int)$relation_id . "' 
+						";
+					}
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				if($relation_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['relation_id']] = $result;
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getPoiDestinationByPoiId($poi_id) {
+			return $this->getPoiDestination('',$poi_id);
+		}
+		
+		public function addPoiDestination($data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_destination));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+				
+					if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				//END
+				
+				//START: Run SQL
+					$sql = "
+						INSERT INTO `" . $this->db->table($this->table_destination) . "` 
+						SET " . implode(',', $update) . "
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$relation_id = $this->db->getLastId();
+			
+			$this->cache->delete('poi_destination');
+			
+			return $relation_id;
+		}
+		
+		public function editPoiDestination($relation_id, $data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_destination));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_destination) . " 
+							SET " . implode(',', $update) . "
+							WHERE relation_id = '" . (int)$relation_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_destination');
+			return true;
+		}
+		
+		public function deletePoiDestination($relation_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_destination) . " 
+						WHERE relation_id = '" . (int)$relation_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_destination');
+			return true;
+		}
+		
+		public function deletePoiDestinationByPoiId($poi_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_destination) . " 
+						WHERE poi_id = '" . (int)$poi_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_destination');
 			return true;
 		}
 	//END
 	
 	//START: [Relation]
-		public function getDestinationRelation($relation_id='',$destination_id='') {
+		public function getPoiRelation($relation_id='',$poi_id='') {
 			//START: Run SQL
 				if($relation_id == '') {
 					$sql = "
 						SELECT *
 						FROM " . $this->db->table($this->table_relation) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' 
-                            OR parent_id = '" . (int)$destination_id . "'
+							WHERE poi_id = '" . (int)$poi_id . "' 
+                            OR parent_id = '" . (int)$poi_id . "'
 						";
 					}
 					$sql .= "
@@ -1024,11 +1337,11 @@ class ModelGuideDestination extends Model{
 						SELECT *
 						FROM " . $this->db->table($this->table_relation) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
 							WHERE relation_id = '" . (int)$relation_id . "' 
-                            AND (destination_id = '" . (int)$destination_id . "' 
-                            OR parent_id = '" . (int)$destination_id . "')
+                            AND (poi_id = '" . (int)$poi_id . "' 
+                            OR parent_id = '" . (int)$poi_id . "')
 						";
 					}
 					else {
@@ -1046,10 +1359,10 @@ class ModelGuideDestination extends Model{
 						$output[$result['relation_id']] = $result;
 						$output[$result['relation_id']]['target_id'] = $result['parent_id'];
 						$output[$result['relation_id']]['relation'] = 'Parent';
-						if($destination_id != '') {
-							if($result['parent_id'] == $destination_id) {
-								$output[$result['relation_id']]['destination_id'] = $result['parent_id'];
-								$output[$result['relation_id']]['target_id'] = $result['destination_id'];
+						if($poi_id != '') {
+							if($result['parent_id'] == $poi_id) {
+								$output[$result['relation_id']]['poi_id'] = $result['parent_id'];
+								$output[$result['relation_id']]['target_id'] = $result['poi_id'];
 								$output[$result['relation_id']]['relation'] = 'Child';
 							}
 						}
@@ -1060,10 +1373,10 @@ class ModelGuideDestination extends Model{
 					$output = $query->row;
 					$output['target_id'] = $result['parent_id'];
 					$output['relation'] = 'Parent';
-					if($destination_id != '') {
-						if($result['parent_id'] == $destination_id) {
-							$output['destination_id'] = $result['parent_id'];
-							$output['target_id'] = $result['destination_id'];
+					if($poi_id != '') {
+						if($result['parent_id'] == $poi_id) {
+							$output['poi_id'] = $result['parent_id'];
+							$output['target_id'] = $result['poi_id'];
 							$output['relation'] = 'Child';
 						}
 					}
@@ -1073,11 +1386,11 @@ class ModelGuideDestination extends Model{
 			return $output;
 		}
 		
-		public function getDestinationRelationByDestinationId($destination_id) {
-			return $this->getDestinationRelation('',$destination_id);
+		public function getPoiRelationByPoiId($poi_id) {
+			return $this->getPoiRelation('',$poi_id);
 		}
 		
-		public function addDestinationRelation($data) {
+		public function addPoiRelation($data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -1106,12 +1419,12 @@ class ModelGuideDestination extends Model{
 			
 			$relation_id = $this->db->getLastId();
 			
-			$this->cache->delete('destination_relation');
+			$this->cache->delete('poi_relation');
 			
 			return $relation_id;
 		}
 		
-		public function editDestinationRelation($relation_id, $data) {
+		public function editPoiRelation($relation_id, $data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -1136,11 +1449,11 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_relation');
+			$this->cache->delete('poi_relation');
 			return true;
 		}
 		
-		public function deleteDestinationRelation($relation_id) {
+		public function deletePoiRelation($relation_id) {
 			//START: [Main Table]
 			
 				//START: table
@@ -1153,17 +1466,17 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_relation');
+			$this->cache->delete('poi_relation');
 			return true;
 		}
 		
-		public function deleteDestinationRelationByDestinationId($destination_id) {
+		public function deletePoiRelationByPoiId($poi_id) {
 			//START: [Main Table]
 			
 				//START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_relation) . " 
-						WHERE destination_id = '" . (int)$destination_id . "'
+						WHERE poi_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END
@@ -1171,29 +1484,201 @@ class ModelGuideDestination extends Model{
                 //START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_relation) . " 
-						WHERE parent_id = '" . (int)$destination_id . "'
+						WHERE parent_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END
 				
 			//END
 			
-			$this->cache->delete('destination_relation');
+			$this->cache->delete('poi_relation');
+			return true;
+		}
+	//END
+	
+	//START: [Contact]
+		public function getPoiContact($contact_id='',$poi_id='') {
+			//START: Run SQL
+				if($contact_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_contact) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' 
+						";
+					}
+					$sql .= "
+						ORDER BY contact_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_contact) . " 
+					";
+					if($poi_id != '') {
+						$sql .= "
+							WHERE poi_id = '" . (int)$poi_id . "' AND contact_id = '" . (int)$contact_id . "' 
+						";
+					}
+					else {
+						$sql .= "
+							WHERE contact_id = '" . (int)$contact_id . "' 
+						";
+					}
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				if($contact_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['contact_id']] = $result;
+						$output[$result['contact_id']]['title'] = ucwords($result['title']);
+						$output[$result['contact_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+						if($result['year_started'] == 0 && $result['year_ended'] == 0) {
+							$output[$result['contact_id']]['year'] = '';
+						}
+						else if($result['year_started'] > 0 && $result['year_ended'] == 0) {
+							$output[$result['contact_id']]['year'] = 'Since '.$result['year_started'];
+						}
+						else if($result['year_started'] == 0 && $result['year_ended'] > 0) {
+							$output[$result['contact_id']]['year'] = 'Till '.$result['year_ended'];
+						}
+						else if($result['year_started'] == $result['year_ended']) {
+							$output[$result['contact_id']]['year'] = $result['year_started'];
+						}
+						else {
+							$output[$result['contact_id']]['year'] = $result['year_started'].' 〜 '.$result['year_ended'];
+						}
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+					$output['title'] = ucwords($result['title']);
+					$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getPoiContactByPoiId($poi_id) {
+			return $this->getPoiContact('',$poi_id);
+		}
+		
+		public function addPoiContact($data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_contact));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+				
+					if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				//END
+				
+				//START: Run SQL
+					$sql = "
+						INSERT INTO `" . $this->db->table($this->table_contact) . "` 
+						SET " . implode(',', $update) . "
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$contact_id = $this->db->getLastId();
+			
+			$this->cache->delete('poi_contact');
+			
+			return $contact_id;
+		}
+		
+		public function editPoiContact($contact_id, $data) {
+			//START: [Main Table]
+			
+				//START: Set Data
+					$fields = $this->getFields($this->db->table($this->table_contact));
+					
+					$update = array();
+					foreach($fields as $f){
+						if(isset($data[$f]))
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					if(!empty($update)){
+						$sql = "
+							UPDATE " . $this->db->table($this->table_contact) . " 
+							SET " . implode(',', $update) . "
+							WHERE contact_id = '" . (int)$contact_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_contact');
+			return true;
+		}
+		
+		public function deletePoiContact($contact_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_contact) . " 
+						WHERE contact_id = '" . (int)$contact_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_contact');
+			return true;
+		}
+		
+		public function deletePoiContactByPoiId($poi_id) {
+			//START: [Main Table]
+			
+				//START: table
+					$sql = "
+						DELETE FROM " . $this->db->table($this->table_contact) . " 
+						WHERE poi_id = '" . (int)$poi_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+			//END
+			
+			$this->cache->delete('poi_contact');
 			return true;
 		}
 	//END
 	
 	//START: [Google]
-		public function getDestinationGoogle($google_id='',$destination_id='') {
+		public function getPoiGoogle($google_id='',$poi_id='') {
 			//START: Run SQL
 				if($google_id == '') {
 					$sql = "
 						SELECT *
 						FROM " . $this->db->table($this->table_google) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' 
 						";
 					}
 					$sql .= "
@@ -1205,9 +1690,9 @@ class ModelGuideDestination extends Model{
 						SELECT *
 						FROM " . $this->db->table($this->table_google) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' AND google_id = '" . (int)$google_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' AND google_id = '" . (int)$google_id . "' 
 						";
 					}
 					else {
@@ -1234,11 +1719,11 @@ class ModelGuideDestination extends Model{
 			return $output;
 		}
 		
-		public function getDestinationGoogleByDestinationId($destination_id) {
-			return $this->getDestinationGoogle('',$destination_id);
+		public function getPoiGoogleByPoiId($poi_id) {
+			return $this->getPoiGoogle('',$poi_id);
 		}
 		
-		public function addDestinationGoogle($data) {
+		public function addPoiGoogle($data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -1267,12 +1752,12 @@ class ModelGuideDestination extends Model{
 			
 			$google_id = $this->db->getLastId();
 			
-			$this->cache->delete('destination_google');
+			$this->cache->delete('poi_google');
 			
 			return $google_id;
 		}
 		
-		public function editDestinationGoogle($google_id, $data) {
+		public function editPoiGoogle($google_id, $data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -1297,11 +1782,11 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_google');
+			$this->cache->delete('poi_google');
 			return true;
 		}
 		
-		public function deleteDestinationGoogle($google_id) {
+		public function deletePoiGoogle($google_id) {
 			//START: [Main Table]
 			
 				//START: table
@@ -1314,39 +1799,39 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_google');
+			$this->cache->delete('poi_google');
 			return true;
 		}
 		
-		public function deleteDestinationGoogleByDestinationId($destination_id) {
+		public function deletePoiGoogleByPoiId($poi_id) {
 			//START: [Main Table]
 			
 				//START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_google) . " 
-						WHERE destination_id = '" . (int)$destination_id . "'
+						WHERE poi_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END
 				
 			//END
 			
-			$this->cache->delete('destination_google');
+			$this->cache->delete('poi_google');
 			return true;
 		}
 	//END
 	
 	//START: [Wikipedia]
-		public function getDestinationWikipedia($wikipedia_id='',$destination_id='') {
+		public function getPoiWikipedia($wikipedia_id='',$poi_id='') {
 			//START: Run SQL
 				if($wikipedia_id == '') {
 					$sql = "
 						SELECT *
 						FROM " . $this->db->table($this->table_wikipedia) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' 
 						";
 					}
 					$sql .= "
@@ -1358,9 +1843,9 @@ class ModelGuideDestination extends Model{
 						SELECT *
 						FROM " . $this->db->table($this->table_wikipedia) . " 
 					";
-					if($destination_id != '') {
+					if($poi_id != '') {
 						$sql .= "
-							WHERE destination_id = '" . (int)$destination_id . "' AND wikipedia_id = '" . (int)$wikipedia_id . "' 
+							WHERE poi_id = '" . (int)$poi_id . "' AND wikipedia_id = '" . (int)$wikipedia_id . "' 
 						";
 					}
 					else {
@@ -1387,11 +1872,11 @@ class ModelGuideDestination extends Model{
 			return $output;
 		}
 		
-		public function getDestinationWikipediaByDestinationId($destination_id) {
-			return $this->getDestinationWikipedia('',$destination_id);
+		public function getPoiWikipediaByPoiId($poi_id) {
+			return $this->getPoiWikipedia('',$poi_id);
 		}
 		
-		public function addDestinationWikipedia($data) {
+		public function addPoiWikipedia($data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -1420,12 +1905,12 @@ class ModelGuideDestination extends Model{
 			
 			$wikipedia_id = $this->db->getLastId();
 			
-			$this->cache->delete('destination_wikipedia');
+			$this->cache->delete('poi_wikipedia');
 			
 			return $wikipedia_id;
 		}
 		
-		public function editDestinationWikipedia($wikipedia_id, $data) {
+		public function editPoiWikipedia($wikipedia_id, $data) {
 			//START: [Main Table]
 			
 				//START: Set Data
@@ -1450,11 +1935,11 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_wikipedia');
+			$this->cache->delete('poi_wikipedia');
 			return true;
 		}
 		
-		public function deleteDestinationWikipedia($wikipedia_id) {
+		public function deletePoiWikipedia($wikipedia_id) {
 			//START: [Main Table]
 			
 				//START: table
@@ -1467,35 +1952,35 @@ class ModelGuideDestination extends Model{
 				
 			//END
 			
-			$this->cache->delete('destination_wikipedia');
+			$this->cache->delete('poi_wikipedia');
 			return true;
 		}
 		
-		public function deleteDestinationWikipediaByDestinationId($destination_id) {
+		public function deletePoiWikipediaByPoiId($poi_id) {
 			//START: [Main Table]
 			
 				//START: table
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_wikipedia) . " 
-						WHERE destination_id = '" . (int)$destination_id . "'
+						WHERE poi_id = '" . (int)$poi_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END
 				
 			//END
 			
-			$this->cache->delete('destination_wikipedia');
+			$this->cache->delete('poi_wikipedia');
 			return true;
 		}
 	//END
 	
 	//START: Extra
-		public function getDestinationGoogleImageByDestinationId($destination_id) {
+		public function getPoiGoogleImageByPoiId($poi_id) {
 			//START: Run SQL
 				$sql = "
 					SELECT `g_photo`
 					FROM " . $this->db->table($this->table_google) . " 
-					WHERE destination_id = '" . (int)$destination_id . "'
+					WHERE poi_id = '" . (int)$poi_id . "'
 				";
 				$query = $this->db->query($sql);
 			//END
@@ -1515,35 +2000,36 @@ class ModelGuideDestination extends Model{
 		}
 	//END
 	
-	//START:
-		public function getDestinationChild($destination_id,$limit='',$offset='') {
+	//START: Child
+		public function getPoiByDestinationId($destination_id,$limit='',$offset='') {
+			
 			//START: Run SQL
 				$sql = "
-					SELECT *, t1.destination_id, GROUP_CONCAT(DISTINCT t5.tag_id) as tags
-					FROM " . $this->db->table($this->table_relation) . " t1
+					SELECT *, t1.poi_id, GROUP_CONCAT(DISTINCT t5.tag_id) as tags
+					FROM " . $this->db->table($this->table_destination) . " t1
 					LEFT JOIN ".$this->db->table($this->table_alias)." t2 
 					ON t2.alias_id = ( SELECT tt2.alias_id 
 						FROM ".$this->db->table($this->table_alias)." AS tt2 
-						WHERE tt2.destination_id = t1.destination_id
+						WHERE tt2.poi_id = t1.poi_id
 						ORDER BY tt2.ranking DESC
 						LIMIT 1
 					)
 					LEFT JOIN ".$this->db->table($this->table_description)." t3 
-					ON t1.destination_id = t3.destination_id 
+					ON t1.poi_id = t3.poi_id 
 					LEFT JOIN ".$this->db->table($this->table_image)." t4
 					ON t4.relation_id = ( SELECT tt4.relation_id 
 						FROM ".$this->db->table($this->table_image)." AS tt4 
-						WHERE tt4.destination_id = t1.destination_id
+						WHERE tt4.poi_id = t1.poi_id
 						ORDER BY tt4.sort_order ASC
 						LIMIT 1
 					)
 					LEFT JOIN ".$this->db->table($this->table_tag)." t5
-					ON t1.destination_id = t5.destination_id 
+					ON t1.poi_id = t5.poi_id 
 					LEFT JOIN ".$this->db->table($this->table)." t6
-					ON t1.destination_id = t6.destination_id 
-					WHERE t1.parent_id = '" . (int)$destination_id . "' 
+					ON t1.poi_id = t6.poi_id 
+					WHERE t1.destination_id = '" . (int)$destination_id . "' 
 					AND t6.status = '1'
-					GROUP BY t1.destination_id 
+					GROUP BY t1.poi_id 
 					ORDER BY t2.name asc 
 				";
 				if($limit != '') {
@@ -1557,32 +2043,30 @@ class ModelGuideDestination extends Model{
 			
 			//START: Set Output
 				foreach($query->rows as $result){
-					$output[$result['destination_id']] = $result;
-					$output[$result['destination_id']]['name'] = ucwords($result['name']);
-					$output[$result['destination_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+					$output[$result['poi_id']] = $result;
+					$output[$result['poi_id']]['name'] = ucwords($result['name']);
+					$output[$result['poi_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 					//START: set data for json
 						//IMPORTANT: remember to load model at controller
 						if(isset($result['tag_id'])) { 
 							$tags = explode(',',$result['tags']);
 							if(count($tags) > 0) { 
-								$output[$result['destination_id']]['tag'] = array();
+								$output[$result['poi_id']]['tag'] = array();
 								foreach($tags as $tag) {
-									$output[$result['destination_id']]['tag'][] = $this->model_resource_tag->getTag($tag);
+									$output[$result['poi_id']]['tag'][] = $this->model_resource_tag->getTag($tag);
 								}
 							}
 						}
 						if(isset($result['image_id'])) { 
-							$output[$result['destination_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],'100%');
+							$output[$result['poi_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],$this->image_child_width);
 						}
 						else { 
-							$google_image = $this->getDestinationGoogleImageByDestinationId($result['destination_id']);
+							$google_image = $this->getPoiGoogleImageByPoiId($result['poi_id']);
 							$image['path'] = $google_image[0]['url'];
 							$image['name'] = ucwords($result['name']);
-							$image['width'] = '100%';
-							$output[$result['destination_id']]['image'] = $image;
-						}
-						if(isset($result['parent_id'])) { 
-							$output[$result['destination_id']]['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['parent_id']); 
+							$image['width'] = $this->image_child_width;
+							$image['image'] = '<img src="'.$image['path'].'" title="'.$image['name'].'" width="'.$image['width'].'" height="'.$image['width'].'"/>';
+							$output[$result['poi_id']]['image'] = $image;
 						}
 					//END
 				}
@@ -1590,11 +2074,11 @@ class ModelGuideDestination extends Model{
 			
 			//START: Run SQL
 				$sql = "
-					SELECT COUNT(DISTINCT t1.destination_id) AS count
-					FROM " . $this->db->table($this->table_relation) . " t1
+					SELECT COUNT(DISTINCT t1.poi_id) AS count
+					FROM " . $this->db->table($this->table_destination) . " t1
 					LEFT JOIN ".$this->db->table($this->table)." t2
-					ON t1.destination_id = t2.destination_id 
-					WHERE t1.parent_id = '" . (int)$destination_id . "' 
+					ON t1.poi_id = t2.poi_id 
+					WHERE t1.destination_id = '" . (int)$destination_id . "' 
 					AND t2.status = '1' 
 				";
 				$query = $this->db->query($sql);
@@ -1605,8 +2089,10 @@ class ModelGuideDestination extends Model{
 			//END
 			
 			return $output;
+			
 		}
 	//END
+
 }
 
 ?>

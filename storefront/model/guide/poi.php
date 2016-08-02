@@ -150,6 +150,9 @@ class ModelGuidePoi extends Model{
 							$image['image'] = '<img src="'.$image['path'].'" title="'.$image['name'].'" width="'.$image['width'].'" height="'.$image['width'].'"/>';
 							$output[$result['poi_id']]['image'][] = $image;
 						}
+						if(isset($result['destination_id'])) { 
+							$output[$result['poi_id']]['destination'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['destination_id']); 
+						}
 					//END
 				}
 			}
@@ -187,6 +190,10 @@ class ModelGuidePoi extends Model{
 							$image['image'] = '<img src="'.$image['path'].'" title="'.$image['name'].'" width="'.$image['width'].'" height="'.$image['width'].'"/>';
 							$output['image'][] = $image;
 						}
+						if(isset($result['destination_id'])) { 
+							$output['destination'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['destination_id']); 
+						}
+						
 				//END
 			}
 			//END

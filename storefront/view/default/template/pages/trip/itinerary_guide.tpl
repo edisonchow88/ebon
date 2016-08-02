@@ -41,6 +41,11 @@
 		height:calc(100vh - 48px - 2px - 30px - 70px - 40px);
 	}
 	
+	#section-content-guide-image {
+		overflow:hidden;
+		max-height:160px;
+	}
+	
 	#section-content-guide-button-add {
 		position:absolute;
 		top:118px;
@@ -80,26 +85,23 @@
 		text-decoration:none;
 	}
 	
-	#section-content-guide-parent {
-		padding:7px 7px 0 7px;
+	#section-content-guide-title {
 		background-color:#e93578;
 		color:#FFF;
+	}
+	
+	#section-content-guide-parent {
+		padding:7px 7px 0 7px;
 	}
 	
 	#section-content-guide-parent a {
 		color:#FFF;
 	}
 	
-	#section-content-guide-image {
-		overflow:hidden;
-		max-height:160px;
-	}
-	
 	#section-content-guide-name {
+		width:calc(100% - 82px);
 		padding:7px;
 		font-size:18px;
-		background-color:#e93578;
-		color:#FFF;
 	}
 	
 	#section-content-guide-tag {
@@ -249,8 +251,10 @@
     	<div id="section-content-guide-button-add"><a>&#43;</a></div>
         <div id="section-content-guide-button-add-text"><small><a>Add to Trip</a></small></div>
         <div id="section-content-guide-image"></div>
-        <div id="section-content-guide-parent"><a><small><span id="section-content-guide-parent-text"></span></small></a></div>
-        <div id="section-content-guide-name"></div>
+        <div id="section-content-guide-title">
+            <div id="section-content-guide-parent"><a><small><span id="section-content-guide-parent-text"></span></small></a></div>
+            <div id="section-content-guide-name"></div>
+        </div>
         <div id="section-content-guide-tag"></div>
         <div id="section-content-guide-blurb"></div>
         <div id="section-content-guide-description" class="hidden"></div>
@@ -325,6 +329,14 @@
 							}
 						<!-- END -->
 						
+						<!-- START: set destination -->
+							if(typeof json.current.destination != 'undefined') {
+								document.getElementById('section-content-guide-parent-text').innerHTML = json.current.destination.name+' >';
+								$('#section-content-guide-parent').off("click"); //remove all existing click event
+								$('#section-content-guide-parent').click(function() { navigate_guide_by_destination_id(json.current.destination.destination_id); });
+							}
+						<!-- END -->
+						
 						if(typeof json.current.name != 'undefined') {
 							document.getElementById('section-content-guide-name').innerHTML = json.current.name;
 						}
@@ -367,7 +379,7 @@
 						<!-- END -->
 						
 						<!-- START: set result -->
-							if(typeof json.count.destination != 'undefined') {
+							if(typeof json.child != 'undefined') {
 								count = parseFloat(count) + parseFloat(json.count.destination);
 								document.getElementById('section-content-guide-result-count').innerHTML = count;
 								for(i=0;i<json.count.destination;i++) {
@@ -405,7 +417,7 @@
 						<!-- END -->
 						
 						<!-- START: set result -->
-							if(typeof json.count.poi != 'undefined') {
+							if(typeof json.poi != 'undefined') {
 								count = parseFloat(count) + parseFloat(json.count.poi);
 								document.getElementById('section-content-guide-result-count').innerHTML = count;
 								for(i=0;i<json.count.poi;i++) {
@@ -471,9 +483,11 @@
 		if(hash.indexOf('destination_id') > 0) {
 			hash = hash.replace('#destination_id-','');
 			document.getElementById('section-content-guide-form-input-destination-id').value = hash;
+			document.getElementById('section-content-guide-form-input-poi-id').value = '';
 		}
 		else if(hash.indexOf('poi_id') > 0) {
 			hash = hash.replace('#poi_id-','');
+			document.getElementById('section-content-guide-form-input-destination-id').value = '';
 			document.getElementById('section-content-guide-form-input-poi-id').value = hash;
 		}
 		else {

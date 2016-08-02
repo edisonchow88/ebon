@@ -235,8 +235,8 @@
 			document.getElementById('section-left').style.height = height;
 			document.getElementById('section-center').style.height = height;
 			document.getElementById('section-right').style.height = height;
-			document.getElementById('section-itinerary-guide-content').style.height = content_height;
-			document.getElementById('section-itinerary-map-content').style.height = content_height;
+			document.getElementById('section-content-guide-content').style.height = content_height;
+			document.getElementById('section-content-map-content').style.height = content_height;
 		}
 		else if(w < 960) {
 			max_section_content_window = 2;
@@ -250,8 +250,8 @@
 			document.getElementById('section-left').style.height = height;
 			document.getElementById('section-center').style.height = height;
 			document.getElementById('section-right').style.height = height;
-			document.getElementById('section-itinerary-guide-content').style.height = content_height;
-			document.getElementById('section-itinerary-map-content').style.height = content_height;
+			document.getElementById('section-content-guide-content').style.height = content_height;
+			document.getElementById('section-content-map-content').style.height = content_height;
 		}
 		else {
 			max_section_content_window = 3;
@@ -265,8 +265,8 @@
 			document.getElementById('section-left').style.height = height;
 			document.getElementById('section-center').style.height = height;
 			document.getElementById('section-right').style.height = height;
-			document.getElementById('section-itinerary-guide-content').style.height = content_height;
-			document.getElementById('section-itinerary-map-content').style.height = content_height;
+			document.getElementById('section-content-guide-content').style.height = content_height;
+			document.getElementById('section-content-map-content').style.height = content_height;
 		}
 	}
 	

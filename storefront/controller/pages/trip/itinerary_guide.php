@@ -83,10 +83,15 @@ class ControllerPagesTripItineraryGuide extends AController {
 		//START: set link
 		//END
 		
+		//START: set ajax
+			$ajax['trip/ajax_guide'] = $this->html->getSecureURL('trip/ajax_guide');
+		//END
+		
 		//START: set variable
 			$this->view->batchAssign($this->data);
-			if(count($link) > 0) { $this->view->assign('link', $link); }
 			if(count($result) > 0) { $this->view->assign('result', $result); }
+			if(count($link) > 0) { $this->view->assign('link', $link); }
+			if(count($ajax) > 0) { $this->view->assign('ajax', $ajax); }
 		//END
 		
 		//START: set template 

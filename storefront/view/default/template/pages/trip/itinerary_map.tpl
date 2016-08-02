@@ -3,34 +3,34 @@
 		min-height:20px;
 	}
 	
-	#section-itinerary-map {
+	#section-content-map {
 		text-align:left;
 	}
 	
-	#section-itinerary-map-header {
+	#section-content-map-header {
 		padding:7px;
 		border-bottom:solid thin #EEE;
 	}
 	
-	#section-itinerary-map-header .input-group {
+	#section-content-map-header .input-group {
 		border-radius:10px;
 	}
 	
-	#section-itinerary-map-header .form-control {
+	#section-content-map-header .form-control {
 		border-radius:10px;
 	}
 	
-	#section-itinerary-map-header .btn-simple {
+	#section-content-map-header .btn-simple {
 		padding-right:0;
 		padding-left:0;
 	}
 	
-	#section-itinerary-map-header-close {
+	#section-content-map-header-close {
 		font-size:24px;
 		line-height:14px;
 	}
 	
-	#section-itinerary-map-content {
+	#section-content-map-content {
 		overflow-y:hidden;
 		overflow-x:hidden;
 	}
@@ -40,8 +40,8 @@
 	}
 </style>
 
-<div id="section-itinerary-map">
-    <div id="section-itinerary-map-header">
+<div id="section-content-map">
+    <div id="section-content-map-header">
         <div class="row">
             <div class="spacer-bar hidden-xs hidden-sm col-md-12 col-lg-12"></div>
         </div>
@@ -57,7 +57,7 @@
                     data-placement='bottom' 
                     title='Close Map' 
                 >
-                	<i class="fa fa-fw" id="section-itinerary-map-header-close">&times;</i>
+                	<i class="fa fa-fw" id="section-content-map-header-close">&times;</i>
                 </a>
                 <a 
                 	class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
@@ -71,7 +71,7 @@
             </div>
         </div>
     </div>
-    <div id="section-itinerary-map-content">
+    <div id="section-content-map-content">
     	<div id="map"></div>
     </div>
 </div>

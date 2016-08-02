@@ -40,7 +40,7 @@ class ModelGuideDestination extends Model{
 		public function getDestination($destination_id='',$keyword='') {
 			if($destination_id == '') {
 				$sql = "
-					SELECT *, t1.destination_id
+					SELECT *, t1.destination_id, GROUP_CONCAT(DISTINCT t4.image_id) as images, GROUP_CONCAT(DISTINCT t5.tag_id) as tags
 					FROM " . $this->db->table($this->table) . " t1 
 					LEFT JOIN ".$this->db->table($this->table_alias)." t2 
 					ON t2.alias_id = ( SELECT tt2.alias_id 
@@ -56,7 +56,6 @@ class ModelGuideDestination extends Model{
 						FROM ".$this->db->table($this->table_image)." AS tt4 
 						WHERE tt4.destination_id = t1.destination_id
 						ORDER BY tt4.sort_order ASC
-						LIMIT 1
 					)
 					LEFT JOIN ".$this->db->table($this->table_tag)." t5
 					ON t1.destination_id = t5.destination_id 
@@ -75,7 +74,7 @@ class ModelGuideDestination extends Model{
 			}
 			else {
 				$sql = "
-					SELECT *, t1.destination_id 
+					SELECT *, t1.destination_id, GROUP_CONCAT(DISTINCT t4.image_id) as images, GROUP_CONCAT(DISTINCT t5.tag_id) as tags
 					FROM " . $this->db->table($this->table) . " t1 
 					LEFT JOIN ".$this->db->table($this->table_alias)." t2 
 					ON t2.alias_id = ( SELECT tt2.alias_id 
@@ -91,7 +90,6 @@ class ModelGuideDestination extends Model{
 						FROM ".$this->db->table($this->table_image)." AS tt4 
 						WHERE tt4.destination_id = t1.destination_id
 						ORDER BY tt4.sort_order ASC
-						LIMIT 1
 					)
 					LEFT JOIN ".$this->db->table($this->table_tag)." t5
 					ON t1.destination_id = t5.destination_id 
@@ -112,9 +110,23 @@ class ModelGuideDestination extends Model{
 					$output[$result['destination_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 					//START: set data for json
 						//IMPORTANT: remember to load model at controller
-						if(isset($result['tag_id'])) { $output[$result['destination_id']]['tag'] = $this->model_resource_tag->getTag($result['tag_id']); }
+						if(isset($result['tag_id'])) { 
+							$tags = explode(',',$result['tags']);
+							if(count($tags) > 0) { 
+								$output[$result['destination_id']]['tag'] = array();
+								foreach($tags as $tag) {
+									$output[$result['destination_id']]['tag'][] = $this->model_resource_tag->getTag($tag);
+								}
+							}
+						}
 						if(isset($result['image_id'])) { 
-							$output[$result['destination_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],'100%');
+							$images = explode(',',$result['images']);
+							if(count($images) > 0) { 
+								$output[$result['destination_id']]['image'] = array();
+								foreach($images as $image) {
+									$output[$result['destination_id']]['image'][] = $this->model_resource_image->getImage($image,'100%');
+								}
+							}
 						}
 						else { 
 							$google_image = $this->getDestinationGoogleImageByDestinationId($result['destination_id']);
@@ -136,9 +148,23 @@ class ModelGuideDestination extends Model{
 				$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 				//START: set data for json
 				//IMPORTANT: remember to load model at controller
-					if(isset($result['tag_id'])) { $output['tag'] = $this->model_resource_tag->getTag($result['tag_id']); }
+					if(isset($result['tag_id'])) { 
+						$tags = explode(',',$result['tags']);
+						if(count($tags) > 0) { 
+							$output['tag'] = array();
+							foreach($tags as $tag) {
+								$output['tag'][] = $this->model_resource_tag->getTag($tag);
+							}
+						}
+					}
 					if(isset($result['image_id'])) { 
-						$output['image'] = $this->model_resource_image->getImage($result['image_id'],'100%');
+						$images = explode(',',$result['images']);
+						if(count($images) > 0) { 
+							$output['image'] = array();
+							foreach($images as $image) {
+								$output['image'][] = $this->model_resource_image->getImage($image,'100%');
+							}
+						}
 					}
 					else { 
 						$google_image = $this->getDestinationGoogleImageByDestinationId($result['destination_id']);
@@ -1493,7 +1519,7 @@ class ModelGuideDestination extends Model{
 		public function getDestinationChild($destination_id,$limit='',$offset='') {
 			//START: Run SQL
 				$sql = "
-					SELECT *, t1.destination_id
+					SELECT *, t1.destination_id, GROUP_CONCAT(DISTINCT t5.tag_id) as tags
 					FROM " . $this->db->table($this->table_relation) . " t1
 					LEFT JOIN ".$this->db->table($this->table_alias)." t2 
 					ON t2.alias_id = ( SELECT tt2.alias_id 
@@ -1516,6 +1542,8 @@ class ModelGuideDestination extends Model{
 					LEFT JOIN ".$this->db->table($this->table)." t6
 					ON t1.destination_id = t6.destination_id 
 					WHERE t1.parent_id = '" . (int)$destination_id . "' 
+					AND t6.status = '1'
+					GROUP BY t1.destination_id 
 					ORDER BY t2.name asc 
 				";
 				if($limit != '') {
@@ -1534,7 +1562,15 @@ class ModelGuideDestination extends Model{
 					$output[$result['destination_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 					//START: set data for json
 						//IMPORTANT: remember to load model at controller
-						if(isset($result['tag_id'])) { $output[$result['destination_id']]['tag'] = $this->model_resource_tag->getTag($result['tag_id']); }
+						if(isset($result['tag_id'])) { 
+							$tags = explode(',',$result['tags']);
+							if(count($tags) > 0) { 
+								$output[$result['destination_id']]['tag'] = array();
+								foreach($tags as $tag) {
+									$output[$result['destination_id']]['tag'][] = $this->model_resource_tag->getTag($tag);
+								}
+							}
+						}
 						if(isset($result['image_id'])) { 
 							$output[$result['destination_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],'100%');
 						}
@@ -1554,9 +1590,12 @@ class ModelGuideDestination extends Model{
 			
 			//START: Run SQL
 				$sql = "
-					SELECT COUNT(DISTINCT destination_id) AS count
-					FROM " . $this->db->table($this->table_relation) . "
-					WHERE parent_id = '" . (int)$destination_id . "' 
+					SELECT COUNT(DISTINCT t1.destination_id) AS count
+					FROM " . $this->db->table($this->table_relation) . " t1
+					LEFT JOIN ".$this->db->table($this->table)." t2
+					ON t1.destination_id = t2.destination_id 
+					WHERE t1.parent_id = '" . (int)$destination_id . "' 
+					AND t2.status = '1' 
 				";
 				$query = $this->db->query($sql);
 			//END

@@ -12,7 +12,7 @@
                     </a>
                 </li>
                 <li>
-                	<a>
+                	<a data-toggle='modal' data-target='#modal-account-login' onclick="hide_wrapper_account();">
                         Log In
                     </a>
                 </li>
@@ -20,6 +20,8 @@
         </div>
     </div>
 </div>
+
+<?php echo $modal_account_login; ?>
 
 <script>
 	function toggle_wrapper_account() {

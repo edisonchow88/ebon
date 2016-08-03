@@ -1,27 +1,24 @@
-<!--
-<h1 class="heading1">
-  <span class="maintext"><?php echo $heading_title; ?></span>
-  <span class="subtext"></span>
-</h1>
--->
-
-<h1>Log In</h1>
-
-<?php if ($success) { ?>
-<div class="alert alert-success">
-<button type="button" class="close" data-dismiss="alert">&times;</button>
-<?php echo $success; ?>
-</div>
-<?php } ?>
-
-<?php if ($error) { ?>
-<div class="alert alert-error alert-danger">
-<button type="button" class="close" data-dismiss="alert">&times;</button>
-<?php echo $error; ?>
-</div>
-<?php } ?>
-
-<div class="contentpanel">
+<!-- START: Modal -->
+    <div class="modal fade" id="modal-account-login" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Log In</h4>
+                </div>
+            <div class="modal-body">
+                <form id="modal-account-login-form">
+                    <div id="modal-account-login-form-alert"></div>
+                </form>
+            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="login();">Log In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- END: Modal -->
 
 <!--
 <div class="col-sm-6 newcustomer">
@@ -49,12 +46,11 @@
 		</form>
 	</div>
 </div> 
--->
 
 <div class="col-sm-6 returncustomer">
-	<!-- <h2 class="heading2"><?php echo $text_returning_customer; ?></h2> -->
+	<h2 class="heading2"><?php echo $text_returning_customer; ?></h2>
 	<div class="loginbox form-horizontal">
-		<!-- <h4 class="heading4"><?php echo $text_i_am_returning_customer; ?></h4> -->
+		<h4 class="heading4"><?php echo $text_i_am_returning_customer; ?></h4>
 		<?php echo $form2['form_open']; ?>
 			<fieldset>
 				<div class="form-group">
@@ -78,20 +74,18 @@
 				  </div>
 				</div>
 				<a href="<?php echo $forgotten_pass; ?>"><?php echo $text_forgotten_password; ?></a>
-                <!--
 				<?php if($noemaillogin) { ?>
 				&nbsp;&nbsp;<a href="<?php echo $forgotten_login; ?>"><?php echo $text_forgotten_login; ?></a>
 				<?php } ?>
-                -->
 				<br>
 				<br>
 				<button type="submit" class="btn btn-orange pull-right"  title="<?php echo $form2['login_submit']->name ?>">
+					<i class="<?php echo $form2['login_submit']->{'icon'}; ?>"></i>
 					<?php echo $form2['login_submit']->name ?>
 				</button>
 			</fieldset>
 		</form>
 	</div>
 	<?php echo $this->getHookVar('login_extension'); ?>
-</div> 
-
 </div>
+-->

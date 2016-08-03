@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesAccountUserGroup extends AController {
+class ControllerPagesAccountUser extends AController {
 
   	public function main() {
         //START: init controller data
@@ -11,7 +11,7 @@ class ControllerPagesAccountUserGroup extends AController {
 		//END
 		
 		//START: set title
-			$title = "User Group";
+			$title = "User";
 			$this->document->setTitle($title);
 		//END
 		
@@ -31,20 +31,23 @@ class ControllerPagesAccountUserGroup extends AController {
 		//END
 		
 		//START: set data
-			$data = $this->model_account_user->getUserGroup();
+			$data = $this->model_account_user->getUser();
 		//END
 		
 		//START: process data and set result
 			if(count($data) > 0 ) {
 				foreach($data as $row) {
-					$user_group_id = $row['user_group_id'];
+					$user_id = $row['user_id'];
 					
 					//NOTE: sequence is important
-					$result[$user_group_id]['user_group_id'] = $row['user_group_id'];
-					$result[$user_group_id]['name'] = $row['name'];
-					$result[$user_group_id]['description'] = $row['description'];
-					$count = $this->model_account_user->countUserByUserGroupId($row['user_group_id']);
-					$result[$user_group_id]['count'] = $count;
+					$result[$user_id]['user_id'] = $row['user_id'];
+					$user_group = $this->model_account_user->getUserGroup($row['user_group_id']);
+					$result[$user_id]['user_group'] = $user_group['name'];
+					$result[$user_id]['email'] = $row['email'];
+					$result[$user_id]['fullname'] = $row['fullname'];
+					$result[$user_id]['last_login'] = $row['last_login'];
+					$result[$user_id]['date_added'] = $row['date_added'];
+					$result[$user_id]['date_modified'] = $row['date_modified'];
 				}
 			}
 		//END
@@ -64,7 +67,7 @@ class ControllerPagesAccountUserGroup extends AController {
 			$column[$i]['searchable'] = 'true';
 			*/
 			
-			$i = 'user_group_id';
+			$i = 'user_id';
 			$column[$i]['name'] = 'id';
 			$column[$i]['title'] = 'Id';
 			$column[$i]['type'] = 'numeric';
@@ -73,7 +76,7 @@ class ControllerPagesAccountUserGroup extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
 			
-			$i = 'name';
+			$i = 'user_group';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
@@ -85,7 +88,7 @@ class ControllerPagesAccountUserGroup extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
 			
-			$i = 'description';
+			$i = 'email';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
@@ -94,20 +97,57 @@ class ControllerPagesAccountUserGroup extends AController {
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';
-			$column[$i]['sortable'] = 'false';
-			$column[$i]['searchable'] = 'false';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'true';
 			
-			$i = 'count';
+			$i = 'fullname';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
-			$column[$i]['width'] = '100px';
+			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';
-			$column[$i]['sortable'] = 'false';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'true';
+			
+			$i = 'last_login';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'false';
+			
+			$i = 'date_added';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'date_modified';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'false';
+			
 			
 			$i = 'commands';
 			$column[$i]['name'] = $i;
@@ -119,13 +159,13 @@ class ControllerPagesAccountUserGroup extends AController {
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/account/add_user_group', 'modal_add_user_group', 'modal/account/add_user_group.tpl');
-			$this->addChild('modal/account/edit_user_group', 'modal_edit_user_group', 'modal/account/edit_user_group.tpl');
-			$this->addChild('modal/account/delete_user_group', 'modal_delete_user_group', 'modal/account/delete_user_group.tpl');
+			$this->addChild('modal/account/add_user', 'modal_add_user', 'modal/account/add_user.tpl');
+			$this->addChild('modal/account/edit_user', 'modal_edit_user', 'modal/account/edit_user.tpl');
+			$this->addChild('modal/account/delete_user', 'modal_delete_user', 'modal/account/delete_user.tpl');
 		//END
 		
 		//START: set link
-			$link['account/user'] = $this->html->getSecureURL('account/user');
+			$link['account/user_group'] = $this->html->getSecureURL('account/user_group');
 		//END
 		
 		//START: set variable
@@ -135,7 +175,7 @@ class ControllerPagesAccountUserGroup extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('pages/account/user_group.tpl' );
+			$this->processTemplate('pages/account/user.tpl' );
 		//END
 		
         //START: update controller data

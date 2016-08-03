@@ -64,7 +64,22 @@ class ControllerResponsesAccountAjaxUserGroup extends AController {
 	}
 	
 	public function delete() {
-		$user_group_id = $this->data['user_group_id']; 
+		$user_group_id = $this->data['user_group_id'];
+		
+		//START: verify
+			$count = $this->model_account_user->countUserByUserGroupId($user_group_id);
+			
+			if($count > 0) {
+				$result['warning'][] = 'Found <b>'.$count.'</b> Users. Please remove it before delete User Group';
+			}
+			
+			if(count($result['warning']) > 0) { 
+				$response = json_encode($result);
+				echo $response;	
+				return 'failed';
+			}
+		//END
+		
 		$execution = $this->model_account_user->deleteUserGroup($user_group_id); 
 		if($execution == true) { 
 			$this->session->data['success'] = "Success: <b>User Group #".$user_group_id."</b> has been deleted";

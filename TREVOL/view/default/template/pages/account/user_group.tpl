@@ -65,6 +65,10 @@
 		columnSelection: false,
 		multiSort: true,
 		formatters: {
+			"count": function(column, row)
+			{
+				return "<a class='btn btn-default btn-block'>" + row.count + "</a>";
+			},			
 			"color": function(column, row)
 			{
 				return "<i class='fa fa-fw fa-circle' style='color:" + row.color + ";' data-toggle='tooltip' data-placement='right' title='" + row.color + "'></i>";

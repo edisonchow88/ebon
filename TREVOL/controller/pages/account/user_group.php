@@ -43,6 +43,8 @@ class ControllerPagesAccountUserGroup extends AController {
 					$result[$user_group_id]['user_group_id'] = $row['user_group_id'];
 					$result[$user_group_id]['name'] = $row['name'];
 					$result[$user_group_id]['description'] = $row['description'];
+					$count = $this->model_account_user->countUserByUserGroupId($row['user_group_id']);
+					$result[$user_group_id]['count'] = $count;
 				}
 			}
 		//END
@@ -84,6 +86,18 @@ class ControllerPagesAccountUserGroup extends AController {
 			$column[$i]['searchable'] = 'true';
 			
 			$i = 'description';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'false';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'count';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';

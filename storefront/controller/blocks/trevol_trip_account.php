@@ -16,6 +16,10 @@ class ControllerBlocksTrevolTripAccount extends AController {
         	$this->extensions->hk_InitData($this,__FUNCTION__);
 		//END
 		
+		//START: set modal
+			$this->addChild('modal/account/login', 'modal_account_login', 'modal/account/login.tpl');
+		//END
+		
 		//START: set variable
 			$this->view->batchAssign($this->data);
 		//END

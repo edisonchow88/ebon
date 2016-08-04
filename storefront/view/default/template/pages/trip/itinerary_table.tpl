@@ -1,4 +1,5 @@
 <!-- Latest compiled and minified CSS (Jquery UI)-->
+<!--
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 
@@ -9,12 +10,14 @@
 </script>
 
 <!-- Latest compiled and minified JavaScript (Bootstrap)-->
+<!--
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 <!-- Bootstrap Toggle button-->
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.js"></script>
 
 <style>
     #section-content-itinerary {
@@ -72,6 +75,8 @@
         .itinerary-table {
 			font-size:12px;
 			text-align:left;
+			table-layout:auto !important;
+			width: 100%;
 		}
 		
 		.itinerary-table > thead > tr { 
@@ -164,15 +169,15 @@
 		
 	/* START: itinerary table draggable effect */
 		.ui-draggable-placeholder-day {
-			background-color: #CCC;
-			height: 150px !important;
-			opacity: 0.3;
+			background-color: rgba(220,220,220,0.3);
+			height: 80px !important;
+			text-align: center;
 		}
 		
 		.ui-draggable-placeholder {
-			background-color: #CCC;
+			background-color: rgba(220,220,220,0.3);
 			height: 30px;
-			opacity: 0.3;
+			text-align: center;
 		}
 		
 		.ui-draggable-helper {
@@ -184,86 +189,7 @@
 			border: medium dotted #666;
 		}
 	/* END */
-    
-    /* [DISABLED; CSS NOT APPLIED IN TABLE] [Please delete it if useless] 
-        <!-- Override Bootstrap Nav -->
-		.menu1 ul.nav {
-			border-bottom-color:#F90;
-		}
-		
-		.menu1 ul.nav-tabs {
-			border-bottom-color:#F90;
-		}
-		
-		.custom-nav li a  {
-			text-align: center;
-			color:#333;
-			border-color: #F90;
-		}
-		
-		.custom-nav li a.active {
-			border-color: #F90;
-			background-color:#F90;
-			color:#FFF;
-		}
-		
-		.menu1 .menu2 {
-            position:absolute;
-            border: 0;
-            margin: 0;
-            padding:0;
-        }
-        
-        .menu1 li {
-            width:150px;
-        }
-        
-        .menu2 li {
-            width:80px;
-            height:80px;
-        
-        }
-        
-        .menu1 ul {
-            background-color: #FFF;
-        }
-        
-        .menu2 ul {
-            background-color: #FFF;
-            
-        }
-        
-        .add-pointer {
-            color:#FFF;
-            width: 100px;
-        }
-        
-        .button-name {
-            font-size:0.6em;
-        }
-        
-    
-        #tabs ul li.drophover {
-            color:green;
-        }
-    */
-    
-    /* [DISABLED] [These CSS has been replaced, delete it if you agreed to latest style]
-        .poi tr td {
-            border: 0;
-        }
-        
-        .poi tbody td:first-child, .poi tbody td:last-child {
-            border-radius:0;
-        
-        }
-        
-        .poi tr td{
-            background-color:#CCC;
-            padding:5px;
-        }
-    */
-</style>
+  </style>
 
 <script>
 <!-- START: load table -->
@@ -285,9 +211,27 @@
 							+ "</div>"
 						+ "</td>"
 						+ "<td class='hidden'></td>"
-						+ "<td class='action-button'></td>"
+						+ "<td class='action-button' id='action-button-id" + i +"'></td>"
 					+ "</tr>"
 				);
+			
+			
+			<!-- START: add button group for day -->
+				$("#action-button-id" + i ).append(""
+					+ "<div>"
+						+ "<a type='button' class='btn btn-simple pull-right remove-icon' data-toggle='confirmation-delete' data-on-confirm='day-group"+ i +"'>"
+							+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
+						+ "</a>"
+						+ "<a type='button' class='btn btn-simple pull-right handle-icon'>"
+							+ "<i class='fa fa-fw fa-arrows' aria-hidden='true'></i>"
+						+ "</a>"
+						+ "<a type='button' class='btn btn-simple pull-right toggle-icon'>"
+							+ "<i class='fa fa-fw fa-chevron-circle-down' aria-hidden='true'></i>"
+						+ "</a>"
+					+ "</div>"
+				);
+			<!-- END -->
+			
 			
 				<!-- START: 2nd loop for row (poi) -->		
 					$.each(this.poi, function(x, poi) {
@@ -321,26 +265,12 @@
 				<!-- END -->
 			});
 		
-			<!-- START: add button group for day -->
-				$(".action-button").append(""
-					+ "<div>"
-						+ "<a type='button' class='btn btn-simple pull-right remove-icon' data-toggle='confirmation-delete'>"
-							+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
-						+ "</a>"
-						+ "<a type='button' class='btn btn-simple pull-right handle-icon'>"
-							+ "<i class='fa fa-fw fa-arrows' aria-hidden='true'></i>"
-						+ "</a>"
-						+ "<a type='button' class='btn btn-simple pull-right toggle-icon'>"
-							+ "<i class='fa fa-fw fa-chevron-circle-down' aria-hidden='true'></i>"
-						+ "</a>"
-					+ "</div>"
-				);
-			<!-- END -->
+			
 			
 			<!-- START: add button group for poi -->
 				$(".poi-action-button").append(""
 					+ "<div>"
-						+ "<a type='button' class='btn btn-simple pull-right remove-poi-icon' data-toggle='confirmation-delete'>"
+						+ "<a type='button' class='btn btn-simple pull-right remove-icon' data-toggle='confirmation-delete' data-on-confirm=''>"
 							+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
 						+ "</a>"
 						+ "<a type='button' class='btn btn-simple pull-right handle-icon'>"
@@ -352,9 +282,6 @@
 					+ "</div>"
 				);
 			<!-- END -->
-		
-		//<input type="checkbox" checked data-toggle="toggle" data-on="Ready" data-off="Not Ready" data-onstyle="success" data-offstyle="danger">
-		//<button type='button' class='btn btn-default btn-sm backup-icon'><i class='fa fa-lightbulb-o' aria-hidden='true' ></i><br/>
 		
 		<!-- START: add pocket at end of table -->
 		$("#planner-table").append(""
@@ -374,7 +301,7 @@
 		);
 		<!-- END -->
 		
-		//Initialize: All bootstrap toggle
+		//Initialize: All bootstrap toggle for Backup
 		$('.backup-toggle').bootstrapToggle();
 		//Initialize: Set All POI Hidden
 		$(".day-group tr:not(:first-child)").hide();
@@ -382,66 +309,52 @@
 		setDaySort();
 		//Initialize: Setting up Sorting for POI (tr) 
 		setPoiSort();
-		//Initialize: Enable Bootstrape Popover Confirmation - POI & DAY DELETE
-		/*$('[data-toggle="-confirmation-delete"]').confirmation( { title: "Delete DAY 1?", btnOkClass: "btn-xs btn-danger ",singleton: true, popout: true, 
-		onConfirm: function() {
-		//delete row function
-		var this_id = $(this).attr("id");
-		document.getElementById('debug3').innerHTML = this_id;
 		
-		;}
-		
-		});
-		*/
 		//OnClick Event: Toggle Button Fade Hide Event 
 		$('.toggle-icon').on('click', clickToggle);
 		//OnClick Event: Toggle ready/backup for POI 
 		$('.backup-toggle').change(function() {
 		$(this).closest('.poi-list').toggleClass('backup');
-		/// !!!!!need to add function to remove total time calculation in a day.
-		})
-		
-		$('.index').each(function(){
-		var index= $(this).parent('tr').index();
-		$(this).html(index+1);
-		})
-		
+		// !!!!!need to add function to remove total time calculation in a day.
+		})		
 		// OnClick Event: Run modal - Delete POI, Delete Day
-		$('.remove-poi-icon').on('click' , runModal);
+		$('.remove-icon').on('click' ,{action:"remove"}, runModal);
 		//OnClick Event: Remove Row
-		$('#modal-confirm').on('click' , removeRow);
+		$('#modal-confirm').on('click' , removeRow );
 		
 		}); //////////// END of getJason Fuction, function must load before this for sequence
 	});
 <!-- END -->
 
 // START Activate Modal Dialog
-function runModal() {
-$("#myModal").modal();
-
- var this_id = $(this).closest(".poi-list").attr("id");
-$(".modal-body").html("Remove current POI "+ this_id +"?");
-$("#modal-confirm").data( "test", {target_id: this_id, target_action: "remove"} );
-
+function runModal(event) {
+	
+	if ( event.data.action == "remove") {
+		var this_id;
+		if ($(this).parents("tr").hasClass("day-list")) 	this_id = $(this).closest("tbody").attr("id");
+		else this_id = $(this).closest(".poi-list").attr("id");
+		$(".modal-body").html("Remove current POI "+ this_id +"?");
+		$("#modal-confirm").data( "data", {target_id: this_id} );
+	}
+	$("#myModal").modal();
 }// END Activate Modal Dialog
 
-// START Remove Row
+// START Remove Row Function (DAY or POI)
 function removeRow() {
-var remove_id = $(this).data("test").target_id;
-$( "#" + remove_id ).remove( );
-document.getElementById('debug3').innerHTML = remove_id;
- 
+var remove_id = $(this).data("data").target_id;
+$( "#" + remove_id ).fadeOut( "slow", function() {
+    $( "#" + remove_id ).remove( );
+  });
 }// END Remove Row
-
 
 // START Toggle hide/show POI in Day function
 function clickToggle() {
 	 var this_class = $(this).closest("tbody").attr("id");
-	        // toggle the stuff right after it
-	  $("#" + this_class +" tr:not(:first-child)").fadeToggle();
-	  		
-			
-			document.getElementById('debug').innerHTML = this_day;
+	$("#" + this_class +" tr:not(:first-child)").fadeToggle();
+	$("#" + this_class +" .fa-chevron-circle-down").fadeOut(200, function() {
+		var opacity_value = (!$(this).hasClass("fa-flip-vertical"))? '0.5' :'1';
+		$(this).toggleClass("fa-flip-vertical").fadeTo(200, opacity_value);
+	});	  
 }// END Toggle hide/show POI in Day function
 
 // START Set Day Sorting Function
@@ -450,24 +363,43 @@ function setDaySort () {
 	revert: true,
 	start: function(e, ui){
         $(ui.helper).addClass("ui-draggable-helper");
+		$(ui.placeholder).addClass("ui-draggable-placeholder-day");
 			},
     items: ">.day-group:not(:last-child)", 
 	cancel: ">.poi-list" ,
     appendTo: "parent",
 	handle: "tr .handle-icon",
-	placeholder: "ui-draggable-placeholder-day",
     helper: function(event, ui) {
     return $('<div style="white-space:nowrap; height:80px;"/>').text($(jQuery(this).find(".day")).html());},
-	//cursorAt: {left: ($(".day-group").width()/2)},
+	placeholder: {
+        element: function(currentItem) {
+			// Customize Placeholder with number of child not hidden
+			var count = $("tr").children("td:not(.hidden)").length;
+            return $("<tr><td colspan ='"+ count +"'></td></tr>");
+        },
+        update: function(container, p) {
+            return;
+        }
+    },
+	sort: function(event, ui) {
+		var this_day = $(ui.placeholder).prev("tbody").attr("id");
+		this_day = $("#" + this_day +" .day").html();
+		if (!this_day) this_day ="D1"; 
+		$(ui.placeholder).children("td").html("Reschedule to "+this_day);
+	},	
+	cursorAt: {top: 15},
 	stop: function( event, ui ) {
-		
-	//$('.index').each(function(){
-   //  var index= $(this).parent('tr').index();
-     //$(this).html(index+1);
-	 // })		
-		 }
+		$('.day-list').each(function(){
+     	var index= $(this).parent('.day-group').index();
+		$(this).find(".day").fadeOut(300, function() {
+        $(this).html("D" +index).fadeIn(300);
+    	});
+	})		
+}
 }).disableSelection();
 }// End Day Sorting Function
+
+
 
 // START Set POI Sorting Function
 function setPoiSort () {
@@ -475,13 +407,28 @@ function setPoiSort () {
 	delay: 100,
 	start: function(e, ui){
         $(ui.helper).addClass("ui-draggable-helper");
-		$(ui.placeholder).children().append("<span>Move here</span>");
+		$(ui.placeholder).addClass("ui-draggable-placeholder");
 			},
     items: ">.poi-list",
-	//cancel:".poi-list:nth-child(2)",
     appendTo: "parent",
 	connectWith: ".day-group",
-	placeholder: "ui-draggable-placeholder",
+	placeholder: {
+        element: function(currentItem) {
+			// Customize Placeholder with number of child not hidden
+			var count = $("tr").children("td:not(.hidden)").length;
+			
+			
+            return $("<tr><td colspan ='"+ count +"'></td></tr>");
+        },
+        update: function(container, p) {
+            return;
+        }
+	},
+	sort: function(event, ui) {
+		var this_day = $(ui.placeholder).closest("tbody").attr("id");
+		this_day = $("#" + this_day +" .day").html();
+		$(ui.placeholder).children("td").html("Move to "+this_day);
+	},	
 	cursorAt: { top: 15  },
     helper: function(event, ui) {
     return $('<div style="white-space:nowrap; height:30px;"/>').text($(jQuery(this).find(".poi-info")).html());},
@@ -540,29 +487,15 @@ function setPoiSort () {
                 <th></th>
             </thead>
         </table>
-    </div>
+    </div>    
+
     <div id="section-content-itinerary-footer">
     	<a class="btn btn-primary">Add Day</a>
         <a class="btn btn-default">Add Note</a>
     </div>
 </div>
 
-
-<div id="section-content-itinerary-debug" class="hidden col-sm-3">
-    <p>This is for the trip data</p>
-    <p id="trip">Trip Name</p>
-    <p>No.of Day: <?php echo $maxday; ?> </p>
-    <p id="debug">Debug: </p>
-    <p id="debug2">Debug: </p>
-    <p id="debug3">Debug: </p>
-    <a tabindex="0" class="btn btn-lg btn-danger" role="button" data-toggle="confirmation" data-trigger="focus" title="Dismissible popover" data-content="		
-    	<button>123 </button>">Dismissible popover
-    </a>
-    <button class="btn btn-default" data-toggle="confirmation">Confirmation</button>
-	<!-- Trigger the modal with a button -->
-	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
-
-    <!-- Modal -->
+ <!-- Modal -->
     <div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <!-- Modal content-->
@@ -579,5 +512,24 @@ function setPoiSort () {
             </div>
         </div>
     </div>
+
+
+
+
+<div id="section-content-itinerary-debug" class="hidden col-sm-3">
+    <p>This is for the trip data</p>
+    <p id="trip">Trip Name</p>
+    <p>No.of Day: <?php echo $maxday; ?> </p>
+    <p id="debug">Debug: </p>
+    <p id="debug2">Debug: </p>
+    <p id="debug3">Debug: </p>
+    <a tabindex="0" class="btn btn-lg btn-danger" role="button" data-toggle="confirmation" data-trigger="focus" title="Dismissible popover" data-content="		
+    	<button>123 </button>">Dismissible popover
+    </a>
+    <button class="btn btn-default" data-toggle="confirmation">Confirmation</button>
+	<!-- Trigger the modal with a button -->
+	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+
+   
 </div>
 </div>

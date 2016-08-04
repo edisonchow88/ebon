@@ -44,7 +44,6 @@ class ControllerPagesAccountUser extends AController {
 					$user_group = $this->model_account_user->getUserGroup($row['user_group_id']);
 					$result[$user_id]['user_group'] = $user_group['name'];
 					$result[$user_id]['email'] = $row['email'];
-					$result[$user_id]['fullname'] = $row['fullname'];
 					$result[$user_id]['last_login'] = $row['last_login'];
 					$result[$user_id]['date_added'] = $row['date_added'];
 					$result[$user_id]['date_modified'] = $row['date_modified'];
@@ -89,18 +88,6 @@ class ControllerPagesAccountUser extends AController {
 			$column[$i]['searchable'] = 'true';
 			
 			$i = 'email';
-			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['type'] = '';
-			$column[$i]['width'] = '';
-			$column[$i]['order'] = '';
-			$column[$i]['align'] = '';
-			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'true';
-			$column[$i]['sortable'] = 'true';
-			$column[$i]['searchable'] = 'true';
-			
-			$i = 'fullname';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';

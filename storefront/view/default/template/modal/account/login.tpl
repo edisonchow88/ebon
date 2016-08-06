@@ -9,6 +9,7 @@
             <div class="modal-body">
                 <form id="modal-account-login-form">
                     <div id="modal-account-login-form-alert"></div>
+                    <?php echo $modal_component['modal-login-form']; ?>
                 </form>
             </div>
                 <div class="modal-footer">

@@ -1,5 +1,5 @@
 <?php
-	class ModelComponentForm extends Model{
+	class componentForm extends component{
 		public function getForm($id,$action='',$input) {
 			$content = '';
 			

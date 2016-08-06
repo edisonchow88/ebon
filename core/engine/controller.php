@@ -200,6 +200,14 @@ abstract class AController {
 		$rt = preg_replace('/^(pages|responses)\//', '', $rt);
 		return $this->load->model($rt, $mode);
 	}
+	
+	//ADDED by TREVOL
+	public function loadComponent($rt, $mode = '') {
+		if (empty ($rt) || !method_exists($this->load, 'component')) return null;
+		// strip off pages or responce
+		$rt = preg_replace('/^(pages|responses)\//', '', $rt);
+		return $this->load->component($rt, $mode);
+	}
 
 
 	// Dispatch new controller to be ran

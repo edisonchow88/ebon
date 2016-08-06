@@ -230,6 +230,7 @@ try {
 	require_once(DIR_CORE . 'engine/view.php');
 	require_once(DIR_CORE . 'engine/loader.php');
 	require_once(DIR_CORE . 'engine/model.php');
+	require_once(DIR_CORE . 'engine/component.php'); //added by TREVOL
 	require_once(DIR_CORE . 'engine/registry.php');
 	require_once(DIR_CORE . 'engine/resources.php');
 	require_once(DIR_CORE . 'engine/html.php');

@@ -119,11 +119,7 @@ final class ALoader {
 			$force = 'all';
 		}
 		
-		//mode to force load storefront component
-		$section = DIR_APP_SECTION;
-		if ($mode == 'storefront') {
-			$section = DIR_ROOT . '/storefront/';
-		}
+		$section = DIR_ROOT . '/common/';
 		
         $file  = $section . 'component/' . $component . '.php';
         if ( $this->registry->has('extensions') && $result = $this->extensions->isExtensionResource('M', $component, $force, $mode) ) {

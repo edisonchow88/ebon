@@ -91,11 +91,11 @@ class ControllerModalAccountAddUser extends AController {
 		//END
 		
 		//START: Set Component	
-			$this->loadModel('component/form');
+			$this->loadComponent('form');
 			$id = 'modal-add-user-form';
 			$action = 'add';
 			$input = $modal_input;
-			$modal_component[$id] = $this->model_component_form->getForm($id,$action,$input);
+			$modal_component[$id] = $this->component_form->getForm($id,$action,$input);
 		//END
 		
 		//START: Set Variable

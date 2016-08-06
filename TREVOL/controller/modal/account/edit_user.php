@@ -96,12 +96,12 @@ class ControllerModalAccountEditUser extends AController {
 		//END
 		
 		//START: Set Component	
-			$this->loadModel('component/form');
+			$this->loadComponent('form');
 			
 			$id = 'modal-edit-user-form';
 			$action = 'edit';
 			$input = $modal_input;
-			$modal_component[$id] = $this->model_component_form->getForm($id,$action,$input);
+			$modal_component[$id] = $this->component_form->getForm($id,$action,$input);
 			
 			//START: set get form
 				$form = array();
@@ -114,7 +114,7 @@ class ControllerModalAccountEditUser extends AController {
 				$form['input'][$i]['name'] = $i;
 				$form['input'][$i]['type'] = 'hidden';
 				
-				$modal_component[$form['id']] = $this->model_component_form->getForm($form['id'],$form['action'],$form['input']);
+				$modal_component[$form['id']] = $this->component_form->getForm($form['id'],$form['action'],$form['input']);
 			//END
 		//END
 		

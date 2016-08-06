@@ -56,7 +56,7 @@
 									$content .= '<label class="control-label col-sm-4 col-xs-10">';
 									$content .= $i['label'];
 									$content .= '</label>';
-									$content .= '<div class="control-label col-sm-1 col-xs-2 text-right">';
+									$content .= '<div class="control-label col-sm-1 col-xs-2 text-center">';
 									if($i['required'] == true) {
 										$content .= '<i class="fa fa-asterisk fa-fw text-warning" data-toggle="tooltip" data-placement="bottom" title="Required"></i>';
 									}

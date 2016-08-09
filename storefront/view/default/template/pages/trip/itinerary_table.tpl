@@ -319,8 +319,10 @@
 		})		
 		// OnClick Event: Run modal - Delete POI, Delete Day
 		$('.remove-icon').on('click' ,{action:"remove"}, runModal);
-		//OnClick Event: Remove Row
-		$('#modal-confirm').on('click' , removeRow );
+		// OnClick Event: Run modal - Delete POI, Delete Day
+		$('.add-day-icon').on('click' ,{action:"add-day"}, runModal);
+		//OnClick Event: Response with Modal ok Button
+		$('#modal-confirm').on('click' , responseModal );
 		
 		}); //////////// END of getJason Fuction, function must load before this for sequence
 	});
@@ -334,18 +336,45 @@ function runModal(event) {
 		if ($(this).parents("tr").hasClass("day-list")) 	this_id = $(this).closest("tbody").attr("id");
 		else this_id = $(this).closest(".poi-list").attr("id");
 		$(".modal-body").html("Remove current POI "+ this_id +"?");
-		$("#modal-confirm").data( "data", {target_id: this_id} );
+		$("#modal-confirm").data( "data", {target_id: this_id, action: event.data.action} );	
+	}
+	
+	else if ( event.data.action == "add-day") {
+		$(".modal-body").html("Remove current POI "+ this_id +"?");
+		$("#modal-confirm").data( "data", {target_id: this_id, action: event.data.action} );	
 	}
 	$("#myModal").modal();
 }// END Activate Modal Dialog
 
-// START Remove Row Function (DAY or POI)
-function removeRow() {
-var remove_id = $(this).data("data").target_id;
-$( "#" + remove_id ).fadeOut( "slow", function() {
-    $( "#" + remove_id ).remove( );
-  });
-}// END Remove Row
+// START responseModal ->Remove Row Function (DAY or POI) ->Add day
+function responseModal() {
+	if ($(this).data("data").action == "remove") {
+		var remove_id = $(this).data("data").target_id;
+		$( "#" + remove_id ).fadeOut( "slow", function() {
+		$( "#" + remove_id ).remove( );});
+	}
+	else if ($(this).data("data").action == "add-day") {
+	var count = $("#planner-tabl").children("tbody").length;
+	var i = count + 1;
+	$("#planner-table #pocket").before(""
+					+ "<tbody class='day-group' id='day-group"+ i +"'>"
+					+ "<tr class='day-list poi-fixed'>"
+						+ "<td class='index hidden' id='day" + i +"'> Line" + this.line_id + "</td>"
+						+ "<td class='day'>D"+ this.sort_order + "</td>"
+						+ "<td class='hidden'>8h</td>"
+						+ "<td class='hidden'></td>"
+						+ "<td>"
+							+ "<div class='progress'>"
+								+ "<div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='"+this.percentage+"' aria-valuemin='0' aria-valuemax='100' style='width:"+this.percentage+"%'>"
+								+ "</div>"
+							+ "</div>"
+						+ "</td>"
+						+ "<td class='hidden'></td>"
+						+ "<td class='action-button' id='action-button-id" + i +"'></td>"
+					+ "</tr>"
+				);
+	} 
+}// END responceModal
 
 // START Toggle hide/show POI in Day function
 function clickToggle() {
@@ -364,13 +393,16 @@ function setDaySort () {
 	start: function(e, ui){
         $(ui.helper).addClass("ui-draggable-helper");
 		$(ui.placeholder).addClass("ui-draggable-placeholder-day");
+		$(ui.helper).html($(ui.item).find(".day").html());
+		
 			},
     items: ">.day-group:not(:last-child)", 
 	cancel: ">.poi-list" ,
     appendTo: "parent",
 	handle: "tr .handle-icon",
     helper: function(event, ui) {
-    return $('<div style="white-space:nowrap; height:80px;"/>').text($(jQuery(this).find(".day")).html());},
+		var drag_day = $(this).attr("id");
+    	return $('<div style="white-space:nowrap; height:80px;"/>');},
 	placeholder: {
         element: function(currentItem) {
 			// Customize Placeholder with number of child not hidden
@@ -382,9 +414,9 @@ function setDaySort () {
         }
     },
 	sort: function(event, ui) {
-		var this_day = $(ui.placeholder).prev("tbody").attr("id");
+		if ($(ui.item).index() > $(ui.placeholder).index()) var this_day = $(ui.placeholder).next("tbody").attr("id");
+		else this_day = $(ui.placeholder).prev("tbody").attr("id");
 		this_day = $("#" + this_day +" .day").html();
-		if (!this_day) this_day ="D1"; 
 		$(ui.placeholder).children("td").html("Reschedule to "+this_day);
 	},	
 	cursorAt: {top: 15},
@@ -407,6 +439,7 @@ function setPoiSort () {
 	delay: 100,
 	start: function(e, ui){
         $(ui.helper).addClass("ui-draggable-helper");
+		$(ui.helper).html($(ui.item).find(".poi-info").html());
 		$(ui.placeholder).addClass("ui-draggable-placeholder");
 			},
     items: ">.poi-list",
@@ -431,18 +464,12 @@ function setPoiSort () {
 	},	
 	cursorAt: { top: 15  },
     helper: function(event, ui) {
-    return $('<div style="white-space:nowrap; height:30px;"/>').text($(jQuery(this).find(".poi-info")).html());},
+    return $('<div style="white-space:nowrap; height:30px;"/>');},
 	update: function( event, ui ) {
 	
-	var this_day = $(this).closest("tbody").attr("id");
-	if (( $("#" + this_day).children(".poi-list:hidden").length >0 ))  $("#" + this_day +" tr:not(:first-child):visible").fadeToggle();
-	
-	
-	// update to move add-poi button to the end of row  
-		var n = $("#" + this_day +" .add-poi:first").clone();
-		$("#" + this_day +" .add-poi").remove();
-		n.appendTo("#" + this_day );
-			
+		var this_day = $(this).closest("tbody").attr("id");
+		if (( $("#" + this_day).children(".poi-list:hidden").length >0 ))  $("#" + this_day +" tr:not(:first-child):visible").fadeToggle();
+
 	//$('.index').each(function(){
     // var index= $(this).parent('tr').index();
     // $(this).html(index+1);

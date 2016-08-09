@@ -49,6 +49,13 @@
 				</li>
                 <li>
 					<div class="btn-group">
+						<a href="<?php echo $link['user']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="User">
+							<i class="fa fa-user fa-lg"></i><span class="hidden-sm hidden-xs"></span>
+						</a>
+					</div>
+				</li>
+                <li>
+					<div class="btn-group">
 						<a href="<?php echo $link['dataset']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Dataset">
 							<i class="fa fa-book fa-lg"></i><span class="hidden-sm hidden-xs"></span>
 						</a>

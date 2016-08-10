@@ -1,21 +1,6 @@
 <?php
 /*------------------------------------------------------------------------------
-  $Id$
-
-  AbanteCart, Ideal OpenSource Ecommerce Solution
-  http://www.AbanteCart.com
-
-  Copyright © 2011-2015 Belavier Commerce LLC
-
-  This source file is subject to Open Software License (OSL 3.0)
-  License details is bundled with this package in the file LICENSE.txt.
-  It is also available at this URL:
-  <http://www.opensource.org/licenses/OSL-3.0>
-  
- UPGRADE NOTE: 
-   Do not edit or add to this file if you wish to upgrade AbanteCart to newer
-   versions in the future. If you wish to customize AbanteCart for your
-   needs please refer to http://www.AbanteCart.com for more information.  
+TREVOL
 ------------------------------------------------------------------------------*/
 if (!defined('DIR_CORE')) {
 	header('Location: static_pages/');
@@ -38,7 +23,7 @@ function run_system_check($registry, $mode = 'log'){
 	$mlog = array_merge($mlog, check_file_permissions($registry));	
 	$mlog = array_merge($mlog, check_php_configuraion($registry));	
 	$mlog = array_merge($mlog, check_server_configuration($registry));	
-	$mlog = array_merge($mlog, check_order_statuses($registry));
+	//[DISABLED BY TREVOL]$mlog = array_merge($mlog, check_order_statuses($registry));
 	$mlog = array_merge($mlog, check_web_access());
 
 	$counts['error_count'] = $counts['warning_count'] = $counts['notice_count'] = 0;
@@ -72,7 +57,7 @@ function check_install_directory($registry){
 	if (file_exists(DIR_ROOT . '/install')) {
 	    return array(
 	    	'title' => 'Security warning',
-	    	'body' => 'You still have install directory present in your AbanteCart main directory. It is highly recommended to delete install directory.',
+	    	'body' => 'You still have install directory present in your Trevol main directory. It is highly recommended to delete install directory.',
 	    	'type' => 'W'
 	    );
 	}
@@ -113,7 +98,7 @@ function check_file_permissions($registry){
 		if($cache_message){
 		    $ret_array[] = array(
 		    	'title' => 'Incorrect cache files permissions',
-		    	'body' => "Following files do not have write permissions. AbanteCart will not function properly. <br/>" . $cache_message,
+		    	'body' => "Following files do not have write permissions. Trevol will not function properly. <br/>" . $cache_message,
 		    	'type' => 'E'	    
 		    );	
 		}
@@ -140,7 +125,7 @@ function check_file_permissions($registry){
 	if($image_message){
 	    $ret_array[] = array(
 	    	'title' => 'Incorrect image files permissions',
-	    	'body' => "Following files do not have write permissions. AbanteCart thumbnail images will not function properly. <br/>" . $image_message,
+	    	'body' => "Following files do not have write permissions. Trevol thumbnail images will not function properly. <br/>" . $image_message,
 	    	'type' => 'W'	    
 	    );	
 	}
@@ -148,7 +133,7 @@ function check_file_permissions($registry){
 	if (!is_writable(DIR_ROOT . '/admin/system')) {
 	    $ret_array[] = array(
 	    	'title' => 'Incorrect directory permission',
-	    	'body' => DIR_ROOT . '/admin/system' . ' directory needs to be set to full permissions(777)! AbanteCart backups and upgrade will not work.',
+	    	'body' => DIR_ROOT . '/admin/system' . ' directory needs to be set to full permissions(777)! Trevol backups and upgrade will not work.',
 	    	'type' => 'W'	    
 	    );
 	}
@@ -156,7 +141,7 @@ function check_file_permissions($registry){
 	if (is_dir(DIR_ROOT . '/admin/system/backup') && !is_writable(DIR_ROOT . '/admin/system/backup')) {
 	    $ret_array[] = array(
 	    	'title' => 'Incorrect backup directory permission',
-	    	'body' => DIR_ROOT . '/admin/system/backup' . ' directory needs to be set to full permissions(777)! AbanteCart backups and upgrade will not work.',
+	    	'body' => DIR_ROOT . '/admin/system/backup' . ' directory needs to be set to full permissions(777)! Trevol backups and upgrade will not work.',
 	    	'type' => 'W'
 	    );
 	}
@@ -172,7 +157,7 @@ function check_file_permissions($registry){
 	if (is_dir(DIR_ROOT . '/admin/system/uploads') && !is_writable(DIR_ROOT . '/admin/system/uploads')) {
 	    $ret_array[] = array(
 	    	'title' => 'Incorrect "uploads" directory permission',
-	    	'body' => DIR_ROOT . '/admin/system/uploads' . ' directory needs to be set to full permissions(777)! Probably AbanteCart file uploads will not work.',
+	    	'body' => DIR_ROOT . '/admin/system/uploads' . ' directory needs to be set to full permissions(777)! Probably Trevol file uploads will not work.',
 	    	'type' => 'W'
 	    );
 	}
@@ -187,7 +172,7 @@ function check_php_configuraion($registry){
 	if (!extension_loaded('mysql') && !extension_loaded('mysqli')) {
 	    $ret_array[] = array(
 	    	'title' => 'MySQL extension is missging',
-	    	'body' => 'MySQL extension needs to be enabled on PHP for AbanteCart to work!',
+	    	'body' => 'MySQL extension needs to be enabled on PHP for Trevol to work!',
 	    	'type' => 'E'	    
 	    );
 	}	
@@ -201,14 +186,14 @@ function check_php_configuraion($registry){
 	if (ini_get('session.auto_start')) {
 	    $ret_array[] = array(
 	    	'title' => 'Issue with session.auto_start',
-	    	'body' => 'AbanteCart will not work with session.auto_start enabled!',
+	    	'body' => 'Trevol will not work with session.auto_start enabled!',
 	    	'type' => 'E'	    
 	    );
 	}
 	if (!extension_loaded('gd')) {
 	    $ret_array[] = array(
 	    	'title' => 'GD extension is missing',
-	    	'body' => 'GD extension needs to be enabled in PHP for AbanteCart to work! Images will not display properly',
+	    	'body' => 'GD extension needs to be enabled in PHP for Trevol to work! Images will not display properly',
 	    	'type' => 'E'	    
 	    );
 	}
@@ -216,7 +201,7 @@ function check_php_configuraion($registry){
 	if (!extension_loaded('mbstring') || !function_exists('mb_internal_encoding')) {
 	    $ret_array[] = array(
 	    	'title' => 'mbstring extension is missing',
-	    	'body' => 'MultiByte String extension needs to be loaded in PHP for AbanteCart to work!',
+	    	'body' => 'MultiByte String extension needs to be loaded in PHP for Trevol to work!',
 	    	'type' => 'E'	    
 	    );
 	}
@@ -247,7 +232,7 @@ function check_php_configuraion($registry){
 	if ($memory_limit < (64 * 1024 * 1024)) {
 		$ret_array[] = array(
 		        'title' => 'Memory limitation',
-		        'body' => 'Low PHP memory setting. Some Abantecart features will not work with memory limit less than 64Mb! Check <a href="http://php.net/manual/en/ini.core.php#ini.memory-limit" target="_help_doc">PHP memory-limit setting</a>',
+		        'body' => 'Low PHP memory setting. Some Trevol features will not work with memory limit less than 64Mb! Check <a href="http://php.net/manual/en/ini.core.php#ini.memory-limit" target="_help_doc">PHP memory-limit setting</a>',
 		        'type' => 'W'
 		);
 	}
@@ -265,7 +250,7 @@ function check_server_configuration($registry){
 	if (isset($size['bytes']) && $size['bytes'] < 1024*10000) {
 	    $ret_array[] = array(
 	    	'title' => 'Critically low disk space',
-	    	'body' => 'AbanteCart is running on critically low disk space of '.$size['human'].'! Increase disk size to prevent failure.',
+	    	'body' => 'Trevol is running on critically low disk space of '.$size['human'].'! Increase disk size to prevent failure.',
 	    	'type' => 'E'	    
 	    );
 	}
@@ -276,7 +261,7 @@ function check_server_configuration($registry){
 		if(!file_exists($htaccess)) {
 		    $ret_array[] = array(
 		    	'title' => 'SEO URLs does not work',
-		    	'body' => $htaccess.' file is missing. SEO URL functionality will not work. Check the <a href="http://docs.abantecart.com/pages/tips/enable_seo.html" target="_help_doc">manual for SEO URL setting</a> ',
+		    	'body' => $htaccess.' file is missing. SEO URL functionality will not work.',
 		    	'type' => 'W'	    
 		    );		
 		}
@@ -322,6 +307,7 @@ function disk_size($path){
  * @param Registry $registry
  * @return array
  */
+/*[DISABLED BY TREVOL]
 function check_order_statuses($registry){
 
 	$db = $registry->get('db');
@@ -354,6 +340,7 @@ function check_order_statuses($registry){
 
  return $ret_array;
 }
+*/
 
 /**
  * function checks restricted areas
@@ -445,7 +432,7 @@ function check_session_save_path(){
 	if(!is_writable($savepath)){
 		return array(
 			        'title' => 'Session save path is not writable! ',
-			        'body' => 'Your server is unable to create a session necessary for AbanteCart functionality. Check logs for exact error details and contact your hosting support administrator to resolve this error.'
+			        'body' => 'Your server is unable to create a session necessary for Trevol functionality. Check logs for exact error details and contact your hosting support administrator to resolve this error.'
 		);
 	}
 	return array();

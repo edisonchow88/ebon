@@ -55,7 +55,7 @@ class ControllerCommonANT extends AController {
 		$url .= "&store_version=" . VERSION;
 		$url .= "&language_code=" . $this->request->cookie ['language'];
 		//check if user login first time 
-		if (!$this->user->getLastLogin()) {
+		if (!$this->admin->getLastLogin()) {
 			$url .= "&new_cart=1";
 		}
 

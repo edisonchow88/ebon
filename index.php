@@ -60,8 +60,9 @@ if (!defined('IS_ADMIN') || !IS_ADMIN ) { // storefront load
 	// Relative paths and directories
 	define('RDIR_TEMPLATE',  'admin/view/default/');
 	
-	// User
-	$registry->set('user', new AUser($registry));
+	// Admin
+	$registry->set('admin', new AAdmin($registry));
+	//$registry->set('user', new AUser($registry));
 					
 }// end admin load
 

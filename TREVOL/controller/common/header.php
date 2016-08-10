@@ -64,18 +64,18 @@ class ControllerCommonHeader extends AController {
 			$this->view->assign('redirect', HTTPS_SERVER.'?'.$_SERVER['QUERY_STRING']);
 		}
 
-		if (!$this->user->isLogged() || !isset($this->request->get['token']) || !isset($this->session->data['token']) || ($this->request->get['token'] != $this->session->data['token'])) {
+		if (!$this->admin->isLogged() || !isset($this->request->get['token']) || !isset($this->session->data['token']) || ($this->request->get['token'] != $this->session->data['token'])) {
 			$this->view->assign('logged', '');
 			$this->view->assign('home', $this->html->getSecureURL('index/login', '', true));
 		} else {
 			$this->view->assign('home', $this->html->getSecureURL('index/home', '', true));
-			$this->view->assign('logged', sprintf($this->language->get('text_logged'), $this->user->getUserName()));
-			$this->view->assign('avatar', $this->user->getAvatar());
-			$this->view->assign('username', $this->user->getUserName());
-			if($this->user->getLastLogin()) {
-				$this->view->assign('last_login', sprintf($this->language->get('text_last_login'), $this->user->getLastLogin()));	
+			$this->view->assign('logged', sprintf($this->language->get('text_logged'), $this->admin->getUserName()));
+			//[DISABLED BY TREVOL]$this->view->assign('avatar', $this->admin->getAvatar());
+			$this->view->assign('username', $this->admin->getUserName());
+			if($this->admin->getLastLogin()) {
+				$this->view->assign('last_login', sprintf($this->language->get('text_last_login'), $this->admin->getLastLogin()));	
 			} else {
-				$this->view->assign('last_login', sprintf($this->language->get('text_welcome'), $this->user->getUserName()));
+				$this->view->assign('last_login', sprintf($this->language->get('text_welcome'), $this->admin->getUserName()));
 			}
 			$this->view->assign('account_edit', $this->html->getSecureURL('index/edit_details', '', true));
 					
@@ -120,7 +120,7 @@ class ControllerCommonHeader extends AController {
 			unset($current_menu['item_icon_rl_id']);
 			$this->view->assign('current_menu', $current_menu);
 		}
-		if ($this->user->isLogged()) {
+		if ($this->admin->isLogged()) {
 			$ant_message = $this->messages->getANTMessage();
 			$this->view->assign('ant', $ant_message['html']);
 			$this->view->assign('mark_read_url', $this->html->getSecureURL('common/common/antMessageRead', '&message_id='.$ant_message['id']));

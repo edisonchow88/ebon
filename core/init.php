@@ -260,6 +260,7 @@ try {
 	//[DISABLED BY TREVOL]require_once(DIR_CORE . 'lib/weight.php');
 	//[DISABLED BY TREVOL]require_once(DIR_CORE . 'lib/length.php');
 	//[DISABLED BY TREVOL]require_once(DIR_CORE . 'lib/cart.php');
+	require_once(DIR_CORE . 'lib/admin.php');
 	require_once(DIR_CORE . 'lib/user.php');
 	require_once(DIR_CORE . 'lib/dataset.php');
 	require_once(DIR_CORE . 'lib/encryption.php');

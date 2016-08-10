@@ -54,7 +54,7 @@ class ControllerPagesIndexEditDetails extends AController {
 		}
 
 		if ($this->request->is_POST() && $this->_validate()) {
-			$this->model_user_user->editUser($this->user->getId(), $this->request->post);
+			$this->model_user_user->editUser($this->admin->getId(), $this->request->post);
 			$this->session->data['success'] = $this->language->get('text_success_details');
 			$this->redirect( $this->html->getSecureURL('index/edit_details') );
 		}

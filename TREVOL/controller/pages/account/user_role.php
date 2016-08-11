@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesAccountUserGroup extends AController {
+class ControllerPagesAccountUserRole extends AController {
 
   	public function main() {
         //START: init controller data
@@ -11,7 +11,7 @@ class ControllerPagesAccountUserGroup extends AController {
 		//END
 		
 		//START: set title
-			$title = "User Group";
+			$title = "Role";
 			$this->document->setTitle($title);
 		//END
 		
@@ -31,20 +31,20 @@ class ControllerPagesAccountUserGroup extends AController {
 		//END
 		
 		//START: set data
-			$data = $this->model_account_user->getUserGroup();
+			$data = $this->model_account_user->getRole();
 		//END
 		
 		//START: process data and set result
 			if(count($data) > 0 ) {
 				foreach($data as $row) {
-					$user_group_id = $row['user_group_id'];
+					$role_id = $row['role_id'];
 					
 					//NOTE: sequence is important
-					$result[$user_group_id]['user_group_id'] = $row['user_group_id'];
-					$result[$user_group_id]['name'] = $row['name'];
-					$result[$user_group_id]['description'] = $row['description'];
-					$count = $this->model_account_user->countUserByUserGroupId($row['user_group_id']);
-					$result[$user_group_id]['count'] = $count;
+					$result[$role_id]['role_id'] = $row['role_id'];
+					$result[$role_id]['name'] = $row['name'];
+					$result[$role_id]['description'] = $row['description'];
+					$count = $this->model_account_user->countUserByRoleId($row['role_id']);
+					$result[$role_id]['count'] = $count;
 				}
 			}
 		//END
@@ -64,7 +64,7 @@ class ControllerPagesAccountUserGroup extends AController {
 			$column[$i]['searchable'] = 'true';
 			*/
 			
-			$i = 'user_group_id';
+			$i = 'role_id';
 			$column[$i]['name'] = 'id';
 			$column[$i]['title'] = 'Id';
 			$column[$i]['type'] = 'numeric';
@@ -119,9 +119,9 @@ class ControllerPagesAccountUserGroup extends AController {
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/account/add_user_group', 'modal_add_user_group', 'modal/account/add_user_group.tpl');
-			$this->addChild('modal/account/edit_user_group', 'modal_edit_user_group', 'modal/account/edit_user_group.tpl');
-			$this->addChild('modal/account/delete_user_group', 'modal_delete_user_group', 'modal/account/delete_user_group.tpl');
+			$this->addChild('modal/account/user/role/add_role', 'modal_add_role', 'modal/account/user/role/add_role.tpl');
+			$this->addChild('modal/account/user/role/edit_role', 'modal_edit_role', 'modal/account/user/role/edit_role.tpl');
+			$this->addChild('modal/account/user/role/delete_role', 'modal_delete_role', 'modal/account/user/role/delete_role.tpl');
 		//END
 		
 		//START: set link
@@ -135,7 +135,7 @@ class ControllerPagesAccountUserGroup extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('pages/account/user_group.tpl' );
+			$this->processTemplate('pages/account/user_role.tpl' );
 		//END
 		
         //START: update controller data

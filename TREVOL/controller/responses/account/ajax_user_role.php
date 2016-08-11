@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerResponsesAccountAjaxUserGroup extends AController {
+class ControllerResponsesAccountAjaxUserRole extends AController {
 	
 	public $data = array();
 
@@ -30,8 +30,8 @@ class ControllerResponsesAccountAjaxUserGroup extends AController {
 	}
 	
 	public function get() {
-		$user_group_id = $this->data['user_group_id']; 
-		$result = $this->model_account_user->getUserGroup($user_group_id);
+		$role_id = $this->data['role_id']; 
+		$result = $this->model_account_user->getRole($role_id);
 		$response = json_encode($result);
 		echo $response;
 	}
@@ -39,8 +39,8 @@ class ControllerResponsesAccountAjaxUserGroup extends AController {
 	public function add() {
 		if($this->verify() == 'failed') { return; }
 		
-		$user_group_id = $this->model_account_user->addUserGroup($this->data); 
-		$this->session->data['success'] = 'Success: New <b>User Group #'.$user_group_id.'</b> has been added';
+		$role_id = $this->model_account_user->addRole($this->data); 
+		$this->session->data['success'] = 'Success: New <b>User Group #'.$role_id.'</b> has been added';
 		
 		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 		$result['success'][] = true;
@@ -51,10 +51,10 @@ class ControllerResponsesAccountAjaxUserGroup extends AController {
 	public function edit() {
 		if($this->verify() == 'failed') { return; }
 		
-		$user_group_id = $this->data['user_group_id']; 
-		$execution = $this->model_account_user->editUserGroup($user_group_id, $this->data); 
+		$role_id = $this->data['role_id']; 
+		$execution = $this->model_account_user->editRole($role_id, $this->data); 
 		if($execution == true) { 
-			$this->session->data['success'] = "Success: <b>User Group #".$user_group_id."</b> has been modified";
+			$this->session->data['success'] = "Success: <b>User Group #".$role_id."</b> has been modified";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 			$result['success'][] = true;
@@ -64,10 +64,10 @@ class ControllerResponsesAccountAjaxUserGroup extends AController {
 	}
 	
 	public function delete() {
-		$user_group_id = $this->data['user_group_id'];
+		$role_id = $this->data['role_id'];
 		
 		//START: verify
-			$count = $this->model_account_user->countUserByUserGroupId($user_group_id);
+			$count = $this->model_account_user->countUserByRoleId($role_id);
 			
 			if($count > 0) {
 				$result['warning'][] = 'Found <b>'.$count.'</b> Users. Please remove it before delete User Group';
@@ -80,9 +80,9 @@ class ControllerResponsesAccountAjaxUserGroup extends AController {
 			}
 		//END
 		
-		$execution = $this->model_account_user->deleteUserGroup($user_group_id); 
+		$execution = $this->model_account_user->deleteRole($role_id); 
 		if($execution == true) { 
-			$this->session->data['success'] = "Success: <b>User Group #".$user_group_id."</b> has been deleted";
+			$this->session->data['success'] = "Success: <b>User Group #".$role_id."</b> has been deleted";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 			$result['success'][] = true;

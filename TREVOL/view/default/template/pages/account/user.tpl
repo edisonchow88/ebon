@@ -4,7 +4,7 @@
 
 <div id="content" class="panel panel-default">
 	<div class="panel-heading col-xs-12">
-    	<div class="col-xs-2 text-left"><a href="<?php echo $link['account/user_group']; ?>" class="btn btn-default" role="button"><i class="fa fa-fw fa-desktop"></i> User Group</a></div>
+    	<div class="col-xs-2 text-left"><a href="<?php echo $link['account/user_role']; ?>" class="btn btn-default" role="button"><i class="fa fa-fw fa-desktop"></i> Role</a></div>
     	<div class="col-xs-8 text-center"><h5>User</h5></div>
         <div class="col-xs-2 text-right"><a data-toggle="modal" data-target="#modal-add-user" class="btn btn-danger" role="button">Add User</a></div>
 	</div>

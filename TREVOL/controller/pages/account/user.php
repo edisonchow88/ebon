@@ -41,8 +41,8 @@ class ControllerPagesAccountUser extends AController {
 					
 					//NOTE: sequence is important
 					$result[$user_id]['user_id'] = $row['user_id'];
-					$user_group = $this->model_account_user->getUserGroup($row['user_group_id']);
-					$result[$user_id]['user_group'] = $user_group['name'];
+					$role = $this->model_account_user->getRole($row['role_id']);
+					$result[$user_id]['role'] = $role['name'];
 					$result[$user_id]['email'] = $row['email'];
 					$result[$user_id]['last_login'] = $row['last_login'];
 					$result[$user_id]['date_added'] = $row['date_added'];
@@ -75,7 +75,7 @@ class ControllerPagesAccountUser extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
 			
-			$i = 'user_group';
+			$i = 'role';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
@@ -146,13 +146,13 @@ class ControllerPagesAccountUser extends AController {
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/account/add_user', 'modal_add_user', 'modal/account/add_user.tpl');
-			$this->addChild('modal/account/edit_user', 'modal_edit_user', 'modal/account/edit_user.tpl');
-			$this->addChild('modal/account/delete_user', 'modal_delete_user', 'modal/account/delete_user.tpl');
+			$this->addChild('modal/account/user/add_user', 'modal_add_user', 'modal/account/user/add_user.tpl');
+			$this->addChild('modal/account/user/edit_user', 'modal_edit_user', 'modal/account/user/edit_user.tpl');
+			$this->addChild('modal/account/user/delete_user', 'modal_delete_user', 'modal/account/user/delete_user.tpl');
 		//END
 		
 		//START: set link
-			$link['account/user_group'] = $this->html->getSecureURL('account/user_group');
+			$link['account/user_role'] = $this->html->getSecureURL('account/user_role');
 		//END
 		
 		//START: set variable

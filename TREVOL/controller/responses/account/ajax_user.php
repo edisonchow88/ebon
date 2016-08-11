@@ -78,7 +78,7 @@ class ControllerResponsesAccountAjaxUser extends AController {
 	
 	public function verify_add() {
 		
-		if($this->data['user_group_id'] == '') {
+		if($this->data['role_id'] == '') {
 			$result['warning'][] = '<b>User Group</b> is missing';
 		}
 		
@@ -126,8 +126,8 @@ class ControllerResponsesAccountAjaxUser extends AController {
 	}
 	
 	public function verify_edit() {
-		if($this->data['user_group_id'] == '') {
-			$result['warning'][] = '<b>User Group</b> is missing';
+		if($this->data['role_id'] == '') {
+			$result['warning'][] = '<b>Role</b> is missing';
 		}
 		
 		if(count($result['warning']) > 0) { 

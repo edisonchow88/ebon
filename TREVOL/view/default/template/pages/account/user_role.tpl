@@ -5,8 +5,8 @@
 <div id="content" class="panel panel-default">
 	<div class="panel-heading col-xs-12">
     	<div class="col-xs-2 text-left"><a href="<?php echo $link['account/user']; ?>" class="btn btn-default" role="button"><i class="fa fa-fw fa-desktop"></i> User</a></div>
-    	<div class="col-xs-8 text-center"><h5>User Group</h5></div>
-        <div class="col-xs-2 text-right"><a data-toggle="modal" data-target="#modal-add-user-group" class="btn btn-danger" role="button">Add User Group</a></div>
+    	<div class="col-xs-8 text-center"><h5>Role</h5></div>
+        <div class="col-xs-2 text-right"><a data-toggle="modal" data-target="#modal-add-role" class="btn btn-danger" role="button">Add Role</a></div>
 	</div>
 
 	<div class="panel-body panel-body-nopadding tab-content col-xs-12">
@@ -53,9 +53,9 @@
 </div>
 
 <!-- START: Modal -->
-	<?php echo $modal_add_user_group; ?>
-    <?php echo $modal_edit_user_group; ?>
-	<?php echo $modal_delete_user_group; ?>
+	<?php echo $modal_add_role; ?>
+    <?php echo $modal_edit_role; ?>
+	<?php echo $modal_delete_role; ?>
 <!-- END: Modal -->
 
 <script>
@@ -106,8 +106,8 @@
 			},
 			"commands": function(column, row)
 			{
-				return "<button type=\"button\" class=\"btn btn-default command-edit\" data-toggle=\"modal\" data-target=\"#modal-edit-user-group\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-pencil\"></span></button> " + 
-					"<button type=\"button\" class=\"btn btn-default command-delete\" data-toggle=\"modal\" data-target=\"#modal-delete-user-group\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-trash-o\"></span></button>";
+				return "<button type=\"button\" class=\"btn btn-default command-edit\" data-toggle=\"modal\" data-target=\"#modal-edit-role\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-pencil\"></span></button> " + 
+					"<button type=\"button\" class=\"btn btn-default command-delete\" data-toggle=\"modal\" data-target=\"#modal-delete-role\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-trash-o\"></span></button>";
 				
 			}
 		}
@@ -117,14 +117,14 @@
 		$('[data-toggle="tooltip"]').tooltip();
 		grid.find(".command-edit").on("click", function(e)
 		{
-			document.getElementById("modal-get-user-group-form-input-user-group-id").value = $(this).data("row-id");
-			getUserGroup(); <!-- the code is written in modal tpl -->
+			document.getElementById("modal-get-role-form-input-role-id").value = $(this).data("row-id");
+			getRole(); <!-- the code is written in modal tpl -->
 			$($(this).attr("data-target")).modal("show");
 		})
 		.end().find(".command-delete").on("click", function(e)
 		{
-			document.getElementById("modal-delete-user-group-form-input-user-group-id").value = $(this).data("row-id");
-			document.getElementById("modal-delete-user-group-form-text-user-group-id").innerHTML = $(this).data("row-id");
+			document.getElementById("modal-delete-role-form-input-role-id").value = $(this).data("row-id");
+			document.getElementById("modal-delete-role-form-text-role-id").innerHTML = $(this).data("row-id");
 			$($(this).attr("data-target")).modal("show");
 		});
 	});

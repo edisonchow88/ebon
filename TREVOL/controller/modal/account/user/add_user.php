@@ -13,7 +13,7 @@ class ControllerModalAccountUserAddUser extends AController {
 		//END
 		
 		//START: set component
-			$this->loadComponent('modal_form');
+			$this->loadComponent('database/modal');
 			
 			//START: set modal
 				$modal['object'] = 'user';
@@ -65,7 +65,7 @@ class ControllerModalAccountUserAddUser extends AController {
 				$modal['form'] = $form;
 			//END
 			
-			$modal_component['modal_form'] = $this->component_modal_form->add($modal['object'],$modal['ajax'],$modal['form']);
+			$modal_component['modal_form'] = $this->component_database_modal->add($modal['object'],$modal['ajax'],$modal['form']);
 		//END
 		
 		//START: set variable

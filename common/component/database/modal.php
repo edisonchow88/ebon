@@ -1,5 +1,5 @@
 <?php
-	class componentModalForm extends component{
+	class componentDatabaseModal extends component{
 		public function add($object,$ajax,$form) {
 			//START: set modal
 				$modal['action'] = 'add';

@@ -1,20 +1,20 @@
 <!-- START: Modal -->
-    <div class="modal fade" id="modal-account-login" role="dialog">
+    <div class="modal fade" id="modal-account-logout" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Log In</h4>
+                <h4 class="modal-title">Log Out</h4>
                 </div>
             <div class="modal-body">
-                <form id="modal-account-login-form">
-                    <div id="modal-account-login-form-alert"></div>
-                    <?php echo $modal_component['modal-login-form']; ?>
+                <form id="modal-account-logout-form">
+                    <div id="modal-account-logout-form-alert"></div>
+                    <?php echo $modal_component['modal-logout-form']; ?>
                 </form>
             </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="login();">Log In</button>
+                    <button type="button" class="btn btn-primary" onclick="logout();">Log Out</button>
                 </div>
             </div>
         </div>
@@ -23,8 +23,8 @@
 
 <!-- START: Script -->
 <script>
-	function login() {
-		var form_element = document.querySelector("#modal-account-login-form");
+	function logout() {
+		var form_element = document.querySelector("#modal-account-logout-form");
 		var form_data = new FormData(form_element);
 		var xmlhttp = new XMLHttpRequest();
 		var url = "<?php echo $modal_ajax; ?>";
@@ -50,7 +50,7 @@
 					<!-- if success -->
 					window.location.reload(true);
 				}
-				document.getElementById('modal-account-login-form-alert').innerHTML = alert_text;
+				document.getElementById('modal-account-logout-form-alert').innerHTML = alert_text;
 			} else {
 				<!-- if connection failed -->
 			}

@@ -89,13 +89,14 @@ class ControllerCommonHeader extends AController {
 				);
 			}
 			
-			$link['destination'] = $this->html->getSecureURL('guide/destination');
-			$link['interest'] = $this->html->getSecureURL('guide/interest_list');
-			$link['poi'] = $this->html->getSecureURL('guide/poi');
-			$link['tag'] = $this->html->getSecureURL('resource/tag_list');
-			$link['image'] = $this->html->getSecureURL('resource/image_list');
-			$link['user'] = $this->html->getSecureURL('account/user');
-			$link['dataset'] = $this->html->getSecureURL('resource/dataset');
+			$link['guide/destination'] = $this->html->getSecureURL('guide/destination');
+			$link['guide/interest'] = $this->html->getSecureURL('guide/interest_list');
+			$link['guide/poi'] = $this->html->getSecureURL('guide/poi');
+			$link['resource/tag'] = $this->html->getSecureURL('resource/tag_list');
+			$link['resource/image'] = $this->html->getSecureURL('resource/image_list');
+			$link['resource/dataset'] = $this->html->getSecureURL('resource/dataset');
+			$link['account/user'] = $this->html->getSecureURL('account/user');
+			$link['account/admin'] = $this->html->getSecureURL('account/admin');
 			$link['database'] = $this->html->getSecureURL('database/database_list');
 			$link['log'] = $this->html->getSecureURL('tool/error_log');
 			$link['language'] = $this->html->getSecureURL('localisation/language_definitions');

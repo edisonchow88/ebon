@@ -2,7 +2,6 @@
 	<div>
 
 	<div class="navbar navbar-fixed-top headerbar">
-    
     	<div class="header-left">
 			<ul class="headermenu">
                 <li class="hidden-xs">
@@ -11,60 +10,86 @@
 						</a>
 					</div>
 				</li>
-                <li>
-                <li>
+                <li class="dropdown">
 					<div class="btn-group">
-						<a href="<?php echo $link['destination']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Destination">
-							<i class="fa fa-map-marker fa-lg"></i><span class="hidden-sm hidden-xs"></span>
+						<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            Guide
+                            <span class="caret"></span>
 						</a>
+						<div class="dropdown-menu dropdown-menu-head pull-left">
+							<ul class="dropdown-list gen-list">
+                            	<li>
+                                	<a href="<?php echo $link['guide/destination']; ?>">
+                                        <i class="fa fa-fw fa-map-marker"></i> Destination
+                                    </a>
+                                </li>
+								<li>
+                                	<a href="<?php echo $link['guide/interest']; ?>">
+                                        <i class="fa fa-fw fa-gratipay"></i> Interest
+                                    </a>
+                                </li>
+                                <li>
+                                	<a href="<?php echo $link['guide/poi']; ?>">
+                                        <i class="fa fa-fw fa-camera-retro"></i> Poi
+                                    </a>
+                                </li>
+							</ul>
+						</div>
+					</div>
+				</li>
+                <li class="dropdown">
+					<div class="btn-group">
+						<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            Resource
+                            <span class="caret"></span>
+						</a>
+						<div class="dropdown-menu dropdown-menu-head pull-left">
+							<ul class="dropdown-list gen-list">
+                            	<li>
+                                	<a href="<?php echo $link['resource/tag']; ?>">
+                                        <i class="fa fa-fw fa-tag"></i> Tag
+                                    </a>
+                                </li>
+								<li>
+                                	<a href="<?php echo $link['resource/image']; ?>">
+                                        <i class="fa fa-fw fa-picture-o"></i> Image
+                                    </a>
+                                </li>
+                                <li>
+                                	<a href="<?php echo $link['resource/dataset']; ?>">
+                                        <i class="fa fa-fw fa-book"></i> Dataset
+                                    </a>
+                                </li>
+							</ul>
+						</div>
+					</div>
+				</li>
+                <li class="dropdown">
+					<div class="btn-group">
+						<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        	Account
+                            <span class="caret"></span>
+						</a>
+						<div class="dropdown-menu dropdown-menu-head pull-left">
+							<ul class="dropdown-list gen-list">
+								<li>
+                                	<a href="<?php echo $link['account/user']; ?>">
+                                        <i class="fa fa-fw fa-user"></i> User
+                                    </a>
+                                </li>
+                                <li>
+                                	<a href="<?php echo $link['account/admin']; ?>">
+                                        <i class="fa fa-fw fa-user-secret"></i> Admin
+                                    </a>
+                                </li>
+							</ul>
+						</div>
 					</div>
 				</li>
                 <li>
 					<div class="btn-group">
-						<a href="<?php echo $link['interest']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Interest">
-							<i class="fa fa-gratipay fa-lg"></i><span class="hidden-sm hidden-xs"></span>
-						</a>
-					</div>
-				</li>
-                <li>
-					<div class="btn-group">
-						<a href="<?php echo $link['poi']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Poi">
-							<i class="fa fa-camera-retro fa-lg"></i><span class="hidden-sm hidden-xs"></span>
-						</a>
-					</div>
-				</li>
-                <li>
-					<div class="btn-group">
-						<a href="<?php echo $link['tag']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Tag">
-							<i class="fa fa-tag fa-lg"></i><span class="hidden-sm hidden-xs"></span>
-						</a>
-					</div>
-				</li>
-                 <li>
-					<div class="btn-group">
-						<a href="<?php echo $link['image']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Image">
-							<i class="fa fa-picture-o fa-lg"></i><span class="hidden-sm hidden-xs"></span>
-						</a>
-					</div>
-				</li>
-                <li>
-					<div class="btn-group">
-						<a href="<?php echo $link['user']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="User">
-							<i class="fa fa-user fa-lg"></i><span class="hidden-sm hidden-xs"></span>
-						</a>
-					</div>
-				</li>
-                <li>
-					<div class="btn-group">
-						<a href="<?php echo $link['dataset']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Dataset">
-							<i class="fa fa-book fa-lg"></i><span class="hidden-sm hidden-xs"></span>
-						</a>
-					</div>
-				</li>
-                <li>
-					<div class="btn-group">
-						<a href="<?php echo $link['database']; ?>" class="btn btn-default tp-icon" data-toggle="tooltip" data-placement="bottom" title="Database">
-							<i class="fa fa-database fa-lg"></i><span class="hidden-sm hidden-xs"></span>
+						<a href="<?php echo $link['database']; ?>" class="btn btn-default tp-icon">
+							Trip
 						</a>
 					</div>
 				</li>
@@ -80,7 +105,7 @@
 
 		<div class="header-right">
 			<ul class="headermenu">
-                <li>
+                <li class="dropdown">
 					<div class="btn-group">
 						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 							<i class="fa fa-user fa-lg"></i>

@@ -133,7 +133,7 @@
 			return $content;
 		}
 		
-		public function writeForm($id,$action='',$input) {
+		public function writeForm($id,$action='',$input, $setting=array()) {
 			$content = '';
 			
 			//START: [tab]
@@ -159,7 +159,9 @@
 			//END
 			
 			//START: [form]
-				$content .= '<form id="'.$id.'">';
+				$content .= '<form id="'.$id.'" ';
+				if($setting['autocomplete'] == true) { $content .= 'autocomplete="true" '; }
+				$content .= '>';
 					$content .= '<input type="hidden" name="action" value="'.$action.'"/>';
 					$content .= '<div class="tab-content">';
 						$tab = 0;

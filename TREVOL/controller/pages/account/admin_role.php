@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesAccountUserRole extends AController {
+class ControllerPagesAccountAdminRole extends AController {
 
   	public function main() {
         //START: init controller data
@@ -27,11 +27,11 @@ class ControllerPagesAccountUserRole extends AController {
 		//END
 		
 		//START: set model
-			$this->loadModel('account/user');
+			$this->loadModel('account/admin');
 		//END
 		
 		//START: set data
-			$data = $this->model_account_user->getRole();
+			$data = $this->model_account_admin->getRole();
 		//END
 		
 		//START: process data and set result
@@ -43,7 +43,7 @@ class ControllerPagesAccountUserRole extends AController {
 					$result[$role_id]['role_id'] = $row['role_id'];
 					$result[$role_id]['name'] = $row['name'];
 					$result[$role_id]['description'] = $row['description'];
-					$count = $this->model_account_user->countUserByRoleId($row['role_id']);
+					$count = $this->model_account_admin->countAdminByRoleId($row['role_id']);
 					$result[$role_id]['count'] = $count;
 				}
 			}
@@ -126,8 +126,8 @@ class ControllerPagesAccountUserRole extends AController {
 			$action['edit'] = true;
 			$action['delete'] = true;
 			$related = array();
-			$related[0]['title'] = 'user';
-			$related[0]['url'] = $this->html->getSecureURL('account/user');
+			$related[0]['title'] = 'admin';
+			$related[0]['url'] = $this->html->getSecureURL('account/admin');
 			$grid['setting']['caseSensitive'] = 'false';
 			$grid['setting']['rowCount'] = -1;
 			$grid['setting']['columnSelection'] = 'false';
@@ -136,9 +136,9 @@ class ControllerPagesAccountUserRole extends AController {
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/account/user/role/add_role', 'modal_add_role', 'modal/account/user/role/add_role.tpl');
-			$this->addChild('modal/account/user/role/edit_role', 'modal_edit_role', 'modal/account/user/role/edit_role.tpl');
-			$this->addChild('modal/account/user/role/delete_role', 'modal_delete_role', 'modal/account/user/role/delete_role.tpl');
+			$this->addChild('modal/account/admin/role/add_role', 'modal_add_role', 'modal/account/admin/role/add_role.tpl');
+			$this->addChild('modal/account/admin/role/edit_role', 'modal_edit_role', 'modal/account/admin/role/edit_role.tpl');
+			$this->addChild('modal/account/admin/role/delete_role', 'modal_delete_role', 'modal/account/admin/role/delete_role.tpl');
 		//END
 		
 		//START: set variable
@@ -146,7 +146,7 @@ class ControllerPagesAccountUserRole extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('pages/account/user_role.tpl' );
+			$this->processTemplate('pages/account/admin_role.tpl' );
 		//END
 		
         //START: update controller data

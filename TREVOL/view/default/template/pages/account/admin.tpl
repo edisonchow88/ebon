@@ -7,7 +7,7 @@
 <!-- END -->
 
 <!-- START: Modal -->
-	<?php echo $modal_add_role; ?>
-    <?php echo $modal_edit_role; ?>
-	<?php echo $modal_delete_role; ?>
+	<?php echo $modal_add_admin; ?>
+    <?php echo $modal_edit_admin; ?>
+	<?php echo $modal_delete_admin; ?>
 <!-- END -->

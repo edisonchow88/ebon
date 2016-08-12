@@ -152,7 +152,7 @@ class ControllerPagesAccountUser extends AController {
 			$table['row'] = $result;
 			$action['add'] = true;
 			$action['edit'] = true;
-			$aciton['delete'] = true;
+			$action['delete'] = true;
 			$related = array();
 			$related[0]['title'] = 'role';
 			$related[0]['url'] = $this->html->getSecureURL('account/user_role');

@@ -95,13 +95,13 @@
 						</div>
 					</div>			
 				';
-				$content .= $this->writeScriptForTable($object,$grid['setting'],$grid['formatter'],$grid['function']);
+				$content .= $this->writeScriptForTable($object,$grid['setting'],$grid['formatter'],$action,$grid['function']);
 				$content .= $this->writeScriptForClearSearch();
 				return $content;
 			//END
 		}
 		
-		private function writeScriptForTable($object,$setting,$formatter,$function) {
+		private function writeScriptForTable($object,$setting,$formatter,$action,$function) {
 			$object_id= str_replace("_","-",$object);
 			$object_name = ucwords(str_replace("_"," ",$object));
 			$object_name_no_space = str_replace(" ","",$object_name);
@@ -155,13 +155,15 @@
 				$format['date_modified'] = '
 					return "<span data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'" + row.date_modified + "\'>" + row.date_modified.substring(0, 10) + "</span>";
 				';
+				if($action['edit'] != true) { $off_edit = 'hidden'; }
+				if($action['delete'] != true) { $off_delete = 'hidden'; }
 				$format['commands'] = '
 					return ""
 					+ "<nav style=\'display:inline !important; margin-left:10px !important;\'>"
 							+ "<ul class=\'pagination\' style=\'margin: 0px !important;\'>"
 								+ "<li>"
 									+ "<span class=\'nopadding\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'Edit\'>"
-									+ "<a class=\'btn btn-sm command-edit\' data-toggle=\'modal\' data-target=\'#modal-edit-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
+									+ "<a class=\'btn btn-sm command-edit '.$off_edit.'\' data-toggle=\'modal\' data-target=\'#modal-edit-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
 										+ "<span class=\'fa fa-fw fa-pencil\'>"
 										+ "</span>"
 									+ "</a>"
@@ -169,7 +171,7 @@
 								+ "</li>"
 								+ "<li>"
 									+ "<span class=\'nopadding\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'Delete\'>"
-									+ "<a class=\'btn btn-sm command-delete\' data-toggle=\'modal\' data-target=\'#modal-delete-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
+									+ "<a class=\'btn btn-sm command-delete '.$off_delete.'\' data-toggle=\'modal\' data-target=\'#modal-delete-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
 										+ "<span class=\'fa fa-fw fa-trash-o\'>"
 										+ "</span>"
 									+ "</a>"

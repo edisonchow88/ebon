@@ -27,7 +27,7 @@ class ControllerModalAccountUserAddUser extends AController {
 						$input = array();
 						
 						$i ='role_id';
-						$input[$i]['label'] = 'User Group';
+						$input[$i]['label'] = 'Role';
 						$input[$i]['id'] = str_replace("_","-",$i);
 						$input[$i]['name'] = $i;
 						$input[$i]['required'] = true;

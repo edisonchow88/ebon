@@ -117,6 +117,23 @@ class ControllerPagesAccountUserRole extends AController {
 			$column[$i]['sortable'] = 'false';
 			$column[$i]['searchable'] = 'false';
 		//END
+		//START: set component
+			$this->loadComponent('database/table');
+			$object = 'role';
+			$table['column'] = $column;
+			$table['row'] = $result;
+			$action['add'] = true;
+			$action['edit'] = true;
+			$aciton['delete'] = true;
+			$related = array();
+			$related[0]['title'] = 'user';
+			$related[0]['url'] = $this->html->getSecureURL('account/user');
+			$grid['setting']['caseSensitive'] = 'false';
+			$grid['setting']['rowCount'] = -1;
+			$grid['setting']['columnSelection'] = 'false';
+			$grid['setting']['multiSort'] = 'false';
+			$component['table'] = $this->component_database_table->writeTable($object,$table,$action,$related,$grid);
+		//END
 		
 		//START: set modal
 			$this->addChild('modal/account/user/role/add_role', 'modal_add_role', 'modal/account/user/role/add_role.tpl');
@@ -124,14 +141,8 @@ class ControllerPagesAccountUserRole extends AController {
 			$this->addChild('modal/account/user/role/delete_role', 'modal_delete_role', 'modal/account/user/role/delete_role.tpl');
 		//END
 		
-		//START: set link
-			$link['account/user'] = $this->html->getSecureURL('account/user');
-		//END
-		
 		//START: set variable
-			if(count($column) > 0) { $this->view->assign('column', $column); }
-			if(count($link) > 0) { $this->view->assign('link', $link); }
-			if(count($result) > 0) { $this->view->assign('result', $result); }
+			$this->view->assign('component', $component);
 		//END
 		
 		//START: set template

@@ -114,6 +114,9 @@
 			//END
 			
 			//START: [default formatter]
+				$format['count'] = '
+					return "<a class=\'btn btn-default btn-block\'>" + row.count + "</a>";
+				';
 				$format['color'] = '
 					return "<i class=\'fa fa-fw fa-circle\' style=\'color:" + row.color + ";\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'" + row.color + "\'></i>";
 				';
@@ -153,8 +156,28 @@
 					return "<span data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'" + row.date_modified + "\'>" + row.date_modified.substring(0, 10) + "</span>";
 				';
 				$format['commands'] = '
-					return "<button type=\"button\" class=\"btn btn-default command-edit\" data-toggle=\"modal\" data-target=\"#modal-edit-'.$object_id.'\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-pencil\"></span></button> " + 
-					"<button type=\"button\" class=\"btn btn-default command-delete\" data-toggle=\"modal\" data-target=\"#modal-delete-'.$object_id.'\" data-row-id=\"" + row.id + "\"><span class=\"fa fa-fw fa-trash-o\"></span></button>";
+					return ""
+					+ "<nav style=\'display:inline !important; margin-left:10px !important;\'>"
+							+ "<ul class=\'pagination\' style=\'margin: 0px !important;\'>"
+								+ "<li>"
+									+ "<span class=\'nopadding\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'Edit\'>"
+									+ "<a class=\'btn btn-sm command-edit\' data-toggle=\'modal\' data-target=\'#modal-edit-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
+										+ "<span class=\'fa fa-fw fa-pencil\'>"
+										+ "</span>"
+									+ "</a>"
+									+ "</span>"
+								+ "</li>"
+								+ "<li>"
+									+ "<span class=\'nopadding\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'Delete\'>"
+									+ "<a class=\'btn btn-sm command-delete\' data-toggle=\'modal\' data-target=\'#modal-delete-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
+										+ "<span class=\'fa fa-fw fa-trash-o\'>"
+										+ "</span>"
+									+ "</a>"
+									+ "</span>"
+								+ "</li>"
+							+ "</ul>"
+						+ "</nav>"
+					;
 				';
 			//END
 			

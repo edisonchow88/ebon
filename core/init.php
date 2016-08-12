@@ -270,8 +270,6 @@ try {
 	require_once(DIR_CORE . 'lib/filter.php');
 	require_once(DIR_CORE . 'lib/listing.php');
 	require_once(DIR_CORE . 'lib/task_manager.php');
-	require_once(DIR_CORE . 'lib/trip.php');
-	require_once(DIR_CORE . 'lib/draft.php');
 
 //Admin manager classes
 	if (IS_ADMIN) {

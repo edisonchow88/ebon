@@ -7,7 +7,7 @@
 		
 		//START: Set Table
 			private $table = "user";
-			private $table_group = "role";
+			private $table_group = "user_role";
 		//END
 		
 		//START: Set Common Function

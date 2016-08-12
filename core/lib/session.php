@@ -40,7 +40,7 @@ final class ASession {
 		$registry = Registry::getInstance();
 		if ($registry->get('config')) {
 			$session_ttl = $registry->get('config')->get('config_session_ttl');
-			if ((isset($_SESSION[ 'user_id' ]) || isset($_SESSION[ 'customer_id' ]))
+			if ((isset($_SESSION[ 'user_id' ]) || isset($_SESSION[ 'admin_id' ]))
 					&& isset($_SESSION[ 'LAST_ACTIVITY' ]) && ((time() - $_SESSION[ 'LAST_ACTIVITY' ]) / 60 > $session_ttl)
 			) {
 				// last request was more than 30 minutes ago

@@ -39,21 +39,9 @@ if (!defined('IS_ADMIN') || !IS_ADMIN ) { // storefront load
 
 	// Relative paths and directories
 	define('RDIR_TEMPLATE',  'storefront/view/' . $config->get('config_storefront_template') . '/');
-
-	// Customer
-	//[DISABLED BY TREVOL]$registry->set('customer', new ACustomer($registry));
 	
-	// Tax
-	//[DISABLED BY TREVOL]$registry->set('tax', new ATax($registry));
-
-	// Weight
-	//[DISABLED BY TREVOL]$registry->set('weight', new AWeight($registry));
-
-	// Length
-	//[DISABLED BY TREVOL]$registry->set('length', new ALength($registry));
-
-	// Cart
-	//[DISABLED BY TREVOL]$registry->set('cart', new ACart($registry));
+	//User
+	$registry->set('user', new AUser($registry));
 
 } else {// Admin load
 
@@ -62,7 +50,6 @@ if (!defined('IS_ADMIN') || !IS_ADMIN ) { // storefront load
 	
 	// Admin
 	$registry->set('admin', new AAdmin($registry));
-	//$registry->set('user', new AUser($registry));
 					
 }// end admin load
 

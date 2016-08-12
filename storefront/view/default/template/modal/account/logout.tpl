@@ -7,10 +7,8 @@
                 <h4 class="modal-title">Log Out</h4>
                 </div>
             <div class="modal-body">
-                <form id="modal-account-logout-form">
-                    <div id="modal-account-logout-form-alert"></div>
-                    <?php echo $modal_component['modal-logout-form']; ?>
-                </form>
+                <div id="modal-account-logout-form-alert"></div>
+                <?php echo $modal_component['form']; ?>
             </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

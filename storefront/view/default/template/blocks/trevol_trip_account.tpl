@@ -8,12 +8,16 @@
         	<?php if($logged == true) { ?>
             	<!-- START: if logged -->
                     <ul>
+                    	<li>
+                            <a data-toggle='modal' data-target='#modal-account-detail' onclick="hide_wrapper_account();">
+                                My Account
+                            </a>
+                        </li>
                         <li>
                             <a onclick="logout();">
                                 Log Out
                             </a>
                         </li>
-                        <li>
                     </ul>
                 <!-- END -->
             <?php } else { ?>
@@ -39,6 +43,7 @@
 <!-- START: [modal] -->
     <?php echo $modal_account_login; ?>
     <?php echo $modal_account_logout; ?>
+    <?php echo $modal_account_detail; ?>
 <!-- END -->
 
 <!-- START: [script] -->

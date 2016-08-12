@@ -16,6 +16,10 @@ class ControllerBlocksTrevolTripHeader extends AController {
         	$this->extensions->hk_InitData($this,__FUNCTION__);
 		//END
 		
+		//START: verify log in account
+			$this->data['logged'] = $this->user->isLogged();
+		//END
+		
 		//START: set variable
 			$this->view->batchAssign($this->data);
 		//END

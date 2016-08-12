@@ -15,10 +15,10 @@ class ControllerModalAccountLogout extends AController {
 		//END
 		
 		//START: set form
-			$id = 'modal-logout-form';
+			$id = 'modal-account-logout-form';
 			$action = 'logout';
 			$input = array();
-			$modal_component[$id] = $this->component_database_modal->writeForm($id,$action,$input);
+			$modal_component['form'] = $this->component_database_modal->writeForm($id,$action,$input);
 		//END
 		
 		//START: set ajax

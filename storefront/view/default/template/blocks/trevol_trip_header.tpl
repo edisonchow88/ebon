@@ -8,10 +8,17 @@
     <!-- START: float right -->
         <div id="wrapper-account-icon" class="dropdown" data-toggle='tooltip' data-placement='bottom' title='Open Account Menu'>
         	<a onclick="toggle_wrapper_account(); hide_wrapper_menu();">
-            	<span class="fa-stack fa-lg">
-                <i class="fa fa-circle fa-stack-2x"></i>
-                <i class="fa fa-user fa-stack-1x fa-inverse"></i>
-                </span>
+            	<?php if($logged == true) { ?>
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-circle-thin fa-stack-2x"></i>
+                        <i class="fa fa-smile-o fa-stack-1x"></i>
+                    </span>
+                <?php } else { ?>
+                	<span class="fa-stack fa-lg">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+                	</span>
+                <?php } ?>
             </a>
         </div>
         <div id="wrapper-button" class="hidden-xs hidden-sm">

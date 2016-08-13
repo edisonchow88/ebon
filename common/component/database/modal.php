@@ -186,7 +186,7 @@
 								$content .= '</section>';
 							}
 							else {
-								$content .= '<div class="form-group">';
+								$content .= '<div class="form-group row">';
 								if($i['label'] != '') {
 									$content .= '<label class="control-label col-sm-4 col-xs-10">';
 									$content .= $i['label'];
@@ -231,6 +231,8 @@
 								}
 								else {
 									//START: [input]
+										$disabled = ''; //reset for new input
+										if($i['type'] == 'disabled') { $disabled = 'disabled'; } 
 										$content .= '
 											<input 
 												type="'.$i['type'].'" 
@@ -239,6 +241,7 @@
 												name="'.$i['name'].'"
 												value="'.$i['value'].'"
 												placeholder="'.$i['placeholder'].'"
+												'.$disabled.'
 											/>
 										';
 									//END

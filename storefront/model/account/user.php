@@ -88,5 +88,44 @@
 				//END
 			}
 		//END
+		
+		//START: [User Group]
+			public function getRole($role_id='') {
+				if($role_id == '') {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_group) . " 
+						ORDER BY role_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_group) . " 
+						WHERE role_id = '" . (int)$role_id . "' 
+					";
+		
+				}
+				$query = $this->db->query($sql);
+				
+				//START: Set Output
+				if($role_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['role_id']] = $result;
+						$output[$result['role_id']]['name'] = ucwords($result['name']);
+						$output[$result['role_id']]['description'] = ucfirst($result['description']);
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+					$output['name'] = ucwords($result['name']);
+                    $output['description'] = ucfirst($result['description']);
+				}
+				//END
+				
+				return $output;
+			}
+		//END
 	}
 ?>

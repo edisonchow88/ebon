@@ -162,7 +162,7 @@
 				$content .= '<form id="'.$id.'" ';
 				if($setting['autocomplete'] == true) { $content .= 'autocomplete="true" '; }
 				$content .= '>';
-					$content .= '<input type="hidden" name="action" value="'.$action.'"/>';
+					if($action != '') { $content .= '<input type="hidden" name="action" value="'.$action.'"/>'; }
 					$content .= '<div class="tab-content">';
 						$tab = 0;
 						foreach($input as $i) {

@@ -32,7 +32,7 @@ class ControllerBlocksTrevolTripDebug extends AController {
 		//END
 		
 		//START: set form
-			$id = 'wrapper-debug-modal-form';
+			$id = 'hidden-itinerary-form';
 			$action = 'view';
 			$input = array();
 			//START: set input [ORDER IS IMPORTANT]
@@ -68,6 +68,14 @@ class ControllerBlocksTrevolTripDebug extends AController {
 				$input[$i]['value'] = $this->data['trip_id'];
 				$input[$i]['type'] = 'disabled';
 				
+				$i ='plan_id';
+				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = $this->data['trip_id'];
+				$input[$i]['type'] = 'disabled';
+				
 				$i ='day_id';
 				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 				$input[$i]['id'] = str_replace("_","-",$i);
@@ -75,11 +83,29 @@ class ControllerBlocksTrevolTripDebug extends AController {
 				$input[$i]['required'] = false;
 				$input[$i]['value'] = $this->data['day_id'];
 				$input[$i]['type'] = 'disabled';
+				
+				$i ='send';
+				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				
+				$i ='return';
+				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['type'] = 'disabled';
 			//END
 			$modal_component['form'] = $this->component_database_modal->writeForm($id,$action,$input);
 		//END
 		
+		//START: set ajax
+			$modal_ajax = $this->html->getSecureURL('trip/ajax_itinerary');
+		//END
+		
 		//START: set variable
+			$this->view->assign('modal_ajax', $modal_ajax);
 			$this->view->assign('modal_component', $modal_component);
 			$this->view->batchAssign($this->data);
 		//END

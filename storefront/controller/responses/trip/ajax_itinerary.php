@@ -22,12 +22,14 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$json = json_decode($text,true);
 			
 			$this->loadModel('travel/trip');
-			$this->loadModel('travel/status');
-			$this->loadModel('account/user');
+			$this->loadModel('resource/tag');
+			$this->loadModel('resource/image');
 			
-			$trip = $this->model_travel_trip->getTrip($json['trip_id']);
+			$result['plan'] = $this->model_travel_trip->getAllLineByPlanId($json['plan_id']);
+			$result['success'][] = '';
 			
-			var_dump($trip);
+			$response = json_encode($result);
+			echo $response;
 			return;
 			
 			if($action == 'get_trip') { $this->get_trip(); return; }

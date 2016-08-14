@@ -3,10 +3,10 @@ if(!defined('DIR_CORE') || !IS_ADMIN){
 	header('Location: static_pages/');
 }
 
-class ModelTravelTrip extends Model{
+class ModelTravelDay extends Model{
 	
-	private $table = "trip";
-	private $table_description = "trip_description";
+	private $table = "trip_day";
+	private $table_description = "trip_day_description";
 	
 	public function getFields($table) {
 		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
@@ -26,16 +26,19 @@ class ModelTravelTrip extends Model{
 		return $output;
 	}
 	
-	public function getTrip($trip_id='') {
-		$trip = array();
+	public function getDay($day_id='',$line_id='') {
+		$day = array();
 		
-		if($trip_id == '') {
+		if($day_id == '') {
 			$sql = "
 				SELECT * 
 				FROM " . $this->db->table($this->table) . " t1 
 				LEFT JOIN ".$this->db->table($this->table_description)." t2 
-				ON t1.trip_id = t2.trip_id 
-				ORDER BY t1.travel_date DESC 
+				ON t1.day_id = t2.day_id 
+			";
+			if($line_id != '') { $sql .= " WHERE t1.line_id = '" . (int)$this->db->escape($line_id) . "' "; }
+			$sql .= "
+				ORDER BY t1.day_id DESC 
 			";
 		}
 		else {
@@ -43,20 +46,19 @@ class ModelTravelTrip extends Model{
 				SELECT * 
 				FROM " . $this->db->table($this->table) . " t1 
 				LEFT JOIN ".$this->db->table($this->table_description)." t2 
-				ON t1.trip_id = t2.trip_id 
-				WHERE t1.trip_id = '" . (int)$trip_id . "' 
+				ON t1.day_id = t2.day_id 
+				WHERE t1.day_id = '" . (int)$day_id . "' 
 			";
 
 		}
 		$query = $this->db->query($sql);
 		
-		if($trip_id == '') {
+		//START: output
+		if($day_id == '') {
 			foreach($query->rows as $result){
-				$output[$result['trip_id']] = $result;
-				$output[$result['trip_id']]['name'] = ucwords($result['name']);
-				$output[$result['trip_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
-				$output[$result['trip_id']]['user'] = $this->model_account_user->getUser($result['user_id']); //IMPORTANT: need to call model at controller
-				$output[$result['trip_id']]['status'] = $this->model_travel_status->getStatus($result['status_id']); //IMPORTANT: need to call model at controller
+				$output[$result['day_id']] = $result;
+				$output[$result['day_id']]['name'] = ucwords($result['name']);
+				$output[$result['day_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 			}
 		}
 		else {
@@ -64,14 +66,17 @@ class ModelTravelTrip extends Model{
 			$output = $query->row;
 			$output['name'] = ucwords($result['name']);
 			$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
-			$output['user'] = $this->model_account_user->getUser($result['user_id']); //IMPORTANT: need to call model at controller
-			$output['status'] = $this->model_travel_status->getStatus($result['status_id']); //IMPORTANT: need to call model at controller
 		}
+		//END
 		
 		return $output;
 	}
 	
-	public function addTrip($data) {
+	public function getDayByLineId($line_id) {
+		return $this->getDay('',$line_id);
+	}
+	
+	public function addDay($data) {
 		//START: table
 		$fields = $this->getFields($this->db->table($this->table));
 		
@@ -90,13 +95,13 @@ class ModelTravelTrip extends Model{
 		$query = $this->db->query($sql);
 		//END
 		
-		$trip_id = $this->db->getLastId();
+		$day_id = $this->db->getLastId();
 		
 		//START:table_description
 		$fields = $this->getFields($this->db->table($this->table_description));
 		
 		$update = array();
-		$update[] = "trip_id = '" . $trip_id. "'";
+		$update[] = "day_id = '" . $day_id. "'";
 		
 		foreach($fields as $f){
 			if(isset($data[$f]))
@@ -110,13 +115,13 @@ class ModelTravelTrip extends Model{
 		$query = $this->db->query($sql);
 		//END
 		
-		$this->cache->delete('trip');
+		$this->cache->delete('day');
 		
-		return $trip_id;
+		return $day_id;
 	}
 	
-	public function editTrip($trip_id, $data) {
-		//table
+	public function editDay($day_id, $data) {
+		//START: table
 		$fields = $this->getFields($this->db->table($this->table));
 		
 		$update = array();
@@ -130,12 +135,13 @@ class ModelTravelTrip extends Model{
 			$sql = "
 				UPDATE " . $this->db->table($this->table) . " 
 				SET " . implode(',', $update) . "
-				WHERE trip_id = '" . (int)$trip_id . "'
+				WHERE day_id = '" . (int)$day_id . "'
 			";
 			$query = $this->db->query($sql);
 		}
+		//END
 		
-		//table_description
+		//START: table_description
 		$fields = $this->getFields($this->db->table($this->table_description));
 		
 		$update = array();
@@ -148,31 +154,34 @@ class ModelTravelTrip extends Model{
 			$sql = "
 				UPDATE " . $this->db->table($this->table_description) . " 
 				SET " . implode(',', $update) . "
-				WHERE trip_id = '" . (int)$trip_id . "'
+				WHERE day_id = '" . (int)$day_id . "'
 			";
 			$query = $this->db->query($sql);
 		}
+		//END
 		
-		$this->cache->delete('trip');
+		$this->cache->delete('day');
 		return true;
 	}
 	
-	public function deleteTrip($trip_id) {
-		//table
+	public function deleteDay($day_id) {
+		//START: table
 		$sql = "
 			DELETE FROM " . $this->db->table($this->table) . " 
-			WHERE trip_id = '" . (int)$trip_id . "'
+			WHERE day_id = '" . (int)$day_id . "'
 		";
 		$query = $this->db->query($sql);
+		//END
 		
-		//table_description
+		//START: table_description
 		$sql = "
 			DELETE FROM " . $this->db->table($this->table_description) . " 
-			WHERE trip_id = '" . (int)$trip_id . "'
+			WHERE day_id = '" . (int)$day_id . "'
 		";
 		$query = $this->db->query($sql);
+		//END
 		
-		$this->cache->delete('trip');
+		$this->cache->delete('day');
 		return true;
 	}
 }

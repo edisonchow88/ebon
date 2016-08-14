@@ -27,7 +27,7 @@ class ControllerPagesTravelLine extends AController {
 		$this->loadModel('travel/mode');
 		$this->loadModel('travel/line');
 		$this->loadModel('resource/tag');
-		$this->loadModel('user/user');
+		$this->loadModel('account/user');
 		
 		$data = $this->model_travel_line->getLine();
 		

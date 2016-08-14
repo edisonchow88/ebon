@@ -39,13 +39,12 @@ class ControllerModalTravelEditTrip extends AController {
 		$i = 'section_general';
 		$modal_input[$i]['section'] = 'General';
 		
-		$i = 'admin';
-		$modal_input[$i]['label'] = 'Admin';
+		$i = 'user';
+		$modal_input[$i]['label'] = 'User';
 		$modal_input[$i]['id'] = 'user-id';
 		$modal_input[$i]['name'] = 'user_id';
-		$modal_input[$i]['type'] = 'hidden';
-		$modal_input[$i]['required'] = false;
-		$modal_input[$i]['json'] = 'user.username';
+		$modal_input[$i]['type'] = 'text';
+		$modal_input[$i]['required'] = true;
 		
 		$i = 'status';
 		$modal_input[$i]['label'] = 'Status';

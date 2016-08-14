@@ -29,7 +29,7 @@ class ControllerPagesTravelActivity extends AController {
 		$this->loadModel('travel/line');
 		$this->loadModel('travel/day');
 		$this->loadModel('travel/activity');
-		$this->loadModel('user/user');
+		$this->loadModel('account/user');
 		$this->loadModel('resource/tag');
 		$this->loadModel('resource/image');
 		//END

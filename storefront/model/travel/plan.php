@@ -3,10 +3,10 @@ if(!defined('DIR_CORE') || !IS_ADMIN){
 	header('Location: static_pages/');
 }
 
-class ModelTravelTrip extends Model{
+class ModelTravelPlan extends Model{
 	
-	private $table = "trip";
-	private $table_description = "trip_description";
+	private $table = "trip_plan";
+	private $table_description = "trip_plan_description";
 	
 	public function getFields($table) {
 		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
@@ -26,16 +26,19 @@ class ModelTravelTrip extends Model{
 		return $output;
 	}
 	
-	public function getTrip($trip_id='') {
-		$trip = array();
+	public function getPlan($plan_id='',$trip_id='') {
+		$plan = array();
 		
-		if($trip_id == '') {
+		if($plan_id == '') {
 			$sql = "
 				SELECT * 
 				FROM " . $this->db->table($this->table) . " t1 
 				LEFT JOIN ".$this->db->table($this->table_description)." t2 
-				ON t1.trip_id = t2.trip_id 
-				ORDER BY t1.travel_date DESC 
+				ON t1.plan_id = t2.plan_id 
+			";
+			if($trip_id != '') { $sql .= " WHERE t1.trip_id = '" . (int)$this->db->escape($trip_id) . "' "; }
+			$sql .= "
+				ORDER BY t1.trip_id DESC, t1.sort_order ASC 
 			";
 		}
 		else {
@@ -43,20 +46,20 @@ class ModelTravelTrip extends Model{
 				SELECT * 
 				FROM " . $this->db->table($this->table) . " t1 
 				LEFT JOIN ".$this->db->table($this->table_description)." t2 
-				ON t1.trip_id = t2.trip_id 
-				WHERE t1.trip_id = '" . (int)$trip_id . "' 
+				ON t1.plan_id = t2.plan_id 
+				WHERE t1.plan_id = '" . (int)$plan_id . "' 
 			";
 
 		}
 		$query = $this->db->query($sql);
 		
-		if($trip_id == '') {
+		if($plan_id == '') {
 			foreach($query->rows as $result){
-				$output[$result['trip_id']] = $result;
-				$output[$result['trip_id']]['name'] = ucwords($result['name']);
-				$output[$result['trip_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
-				$output[$result['trip_id']]['user'] = $this->model_account_user->getUser($result['user_id']); //IMPORTANT: need to call model at controller
-				$output[$result['trip_id']]['status'] = $this->model_travel_status->getStatus($result['status_id']); //IMPORTANT: need to call model at controller
+				$output[$result['plan_id']] = $result;
+				$output[$result['plan_id']]['name'] = ucwords($result['name']);
+				$output[$result['plan_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+				$output[$result['plan_id']]['trip'] = $this->model_travel_trip->getTrip($result['trip_id']); //IMPORTANT: need to call model at controller
+				$output[$result['plan_id']]['mode'] = $this->model_travel_mode->getMode($result['mode_id']); //IMPORTANT: need to call model at controller
 			}
 		}
 		else {
@@ -64,14 +67,18 @@ class ModelTravelTrip extends Model{
 			$output = $query->row;
 			$output['name'] = ucwords($result['name']);
 			$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
-			$output['user'] = $this->model_account_user->getUser($result['user_id']); //IMPORTANT: need to call model at controller
-			$output['status'] = $this->model_travel_status->getStatus($result['status_id']); //IMPORTANT: need to call model at controller
+			$output['trip'] = $this->model_travel_trip->getTrip($result['trip_id']); //IMPORTANT: need to call model at controller
+			$output['mode'] = $this->model_travel_mode->getMode($result['mode_id']); //IMPORTANT: need to call model at controller
 		}
 		
 		return $output;
 	}
 	
-	public function addTrip($data) {
+	public function getPlanByTripId($trip_id) {
+		return $this->getPlan('',$trip_id);
+	}
+	
+	public function addPlan($data) {
 		//START: table
 		$fields = $this->getFields($this->db->table($this->table));
 		
@@ -90,13 +97,13 @@ class ModelTravelTrip extends Model{
 		$query = $this->db->query($sql);
 		//END
 		
-		$trip_id = $this->db->getLastId();
+		$plan_id = $this->db->getLastId();
 		
 		//START:table_description
 		$fields = $this->getFields($this->db->table($this->table_description));
 		
 		$update = array();
-		$update[] = "trip_id = '" . $trip_id. "'";
+		$update[] = "plan_id = '" . $plan_id. "'";
 		
 		foreach($fields as $f){
 			if(isset($data[$f]))
@@ -110,13 +117,13 @@ class ModelTravelTrip extends Model{
 		$query = $this->db->query($sql);
 		//END
 		
-		$this->cache->delete('trip');
+		$this->cache->delete('plan');
 		
-		return $trip_id;
+		return $plan_id;
 	}
 	
-	public function editTrip($trip_id, $data) {
-		//table
+	public function editPlan($plan_id, $data) {
+		//START: table
 		$fields = $this->getFields($this->db->table($this->table));
 		
 		$update = array();
@@ -130,12 +137,13 @@ class ModelTravelTrip extends Model{
 			$sql = "
 				UPDATE " . $this->db->table($this->table) . " 
 				SET " . implode(',', $update) . "
-				WHERE trip_id = '" . (int)$trip_id . "'
+				WHERE plan_id = '" . (int)$plan_id . "'
 			";
 			$query = $this->db->query($sql);
 		}
+		//END
 		
-		//table_description
+		//START: table_description
 		$fields = $this->getFields($this->db->table($this->table_description));
 		
 		$update = array();
@@ -148,31 +156,34 @@ class ModelTravelTrip extends Model{
 			$sql = "
 				UPDATE " . $this->db->table($this->table_description) . " 
 				SET " . implode(',', $update) . "
-				WHERE trip_id = '" . (int)$trip_id . "'
+				WHERE plan_id = '" . (int)$plan_id . "'
 			";
 			$query = $this->db->query($sql);
 		}
+		//END
 		
-		$this->cache->delete('trip');
+		$this->cache->delete('plan');
 		return true;
 	}
 	
-	public function deleteTrip($trip_id) {
-		//table
+	public function deletePlan($plan_id) {
+		//START: table
 		$sql = "
 			DELETE FROM " . $this->db->table($this->table) . " 
-			WHERE trip_id = '" . (int)$trip_id . "'
+			WHERE plan_id = '" . (int)$plan_id . "'
 		";
 		$query = $this->db->query($sql);
+		//END
 		
-		//table_description
+		//START: table_description
 		$sql = "
 			DELETE FROM " . $this->db->table($this->table_description) . " 
-			WHERE trip_id = '" . (int)$trip_id . "'
+			WHERE plan_id = '" . (int)$plan_id . "'
 		";
 		$query = $this->db->query($sql);
+		//END
 		
-		$this->cache->delete('trip');
+		$this->cache->delete('plan');
 		return true;
 	}
 }

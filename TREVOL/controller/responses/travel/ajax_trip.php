@@ -12,7 +12,7 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 		$this->loadModel('travel/status');
 		$this->loadModel('travel/plan');
 		$this->loadModel('travel/mode');
-		$this->loadModel('user/user');
+		$this->loadModel('account/user');
 		
 		foreach($_POST as $key => $value) {
 			$this->data[$key] = $value;

@@ -28,7 +28,7 @@ class ControllerPagesTravelDay extends AController {
 		$this->loadModel('travel/mode');
 		$this->loadModel('travel/line');
 		$this->loadModel('travel/day');
-		$this->loadModel('user/user');
+		$this->loadModel('account/user');
 		$this->loadModel('resource/tag');
 		//END
 		

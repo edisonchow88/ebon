@@ -25,7 +25,7 @@ class ControllerPagesTravelPlan extends AController {
 		$this->loadModel('travel/status');
 		$this->loadModel('travel/mode');
 		$this->loadModel('travel/plan');
-		$this->loadModel('user/user');
+		$this->loadModel('account/user');
 		
 		$data = $this->model_travel_plan->getPlan();
 		

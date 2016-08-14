@@ -25,7 +25,7 @@ class ControllerPagesTravelTrip extends AController {
 		$this->loadModel('travel/status');
 		$this->loadModel('travel/plan');
 		$this->loadModel('travel/mode');
-		$this->loadModel('user/user');
+		$this->loadModel('account/user');
 		
 		$data = $this->model_travel_trip->getTrip();
 		

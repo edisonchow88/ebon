@@ -47,6 +47,7 @@
 				$get['id'] = 'modal-'.$get['action'].'-'.$modal['object_id'];
 				$get['function'] = $get['action'].str_replace(" ","",$modal['object_name']).'()';
 				$get['ajax'] = $ajax;
+				$get['target_action'] = $modal['action'];
 			//END
 			
 			//START: set form
@@ -60,7 +61,7 @@
 				$output ='';
 				$output .= $this->writeModal($modal['id'],$modal['title'],$modal['body'],$modal['next'],$modal['function']);
 				$output .= $this->writeScript($modal['id'],$modal['action'],$modal['function'],$modal['ajax']);
-				$output .= $this->writeScriptForGet($get['id'],$get['action'],$get['function'],$get['ajax'],$form['edit']['input']);
+				$output .= $this->writeScriptForGet($get['id'],$get['action'],$get['function'],$get['ajax'],$get['target_action'],$form['edit']['input']);
 			//END
 			
 			return $output;
@@ -102,10 +103,50 @@
 			return $output;
 		}
 		
+		public function review($object,$ajax,$form) {
+			//START: set modal
+				$modal['action'] = 'review';
+				$modal['object'] = $object;
+				$modal['object_id'] = str_replace("_","-",$object);
+				$modal['object_name'] = ucwords(str_replace("_"," ",$object));
+				$modal['id'] = 'modal-'.$modal['action'].'-'.$modal['object_id'];
+				$modal['title'] = ucwords($modal['action'].' '.$modal['object_name']);
+				$modal['function'] = $modal['action'].str_replace(" ","",$modal['object_name']).'()';
+				$modal['ajax'] = $ajax;
+			//END
+			
+			//START: set for get script
+				$get['action'] = 'get';
+				$get['id'] = 'modal-'.$get['action'].'-'.$modal['object_id'];
+				$get['function'] = $get['action'].str_replace(" ","",$modal['object_name']).'()';
+				$get['ajax'] = $ajax;
+				$get['target_action'] = $modal['action'];
+			//END
+			
+			//START: set form
+				foreach($form as $action => $f) {
+					$id = 'modal-'.$action.'-'.$modal['object_id'].'-form';
+					$modal['body'] .= $this->writeForm($id,$action,$f['input']);
+				}
+			//END
+			
+			//START: set output
+				$output ='';
+				$output .= $this->writeModal($modal['id'],$modal['title'],$modal['body'],$modal['next'],$modal['function']);
+				$output .= $this->writeScript($modal['id'],$modal['action'],$modal['function'],$modal['ajax']);
+				$output .= $this->writeScriptForGet($get['id'],$get['action'],$get['function'],$get['ajax'],$get['target_action'],$form['review']['input']);
+			//END
+			
+			return $output;
+		}
+		
 		public function writeModal($id,$title,$body,$next,$function) {
 			$content = '';
 			
 			//START: [modal]
+				if(isset($next)) { 
+					$next_button = '<button type="button" class="btn btn-danger" onclick="'.$function.';">'.$next.'</button>';
+				}
 				$content .= '
 					<div class="modal fade" id="'.$id.'" role="dialog">
 						<div class="modal-dialog">
@@ -122,7 +163,7 @@
 						
 								<div class="modal-footer">
 									<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-									<button type="button" class="btn btn-danger" onclick="'.$function.';">'.$next.'</button>
+									'.$next_button.'
 								</div>
 							</div>
 						</div>
@@ -350,7 +391,7 @@
 			return $content;
 		}
 		
-		private function writeScriptForGet($id,$action,$function,$ajax,$input='') {
+		private function writeScriptForGet($id,$action,$function,$ajax,$target_action,$input='') {
 			$content = '';
 			
 			$content .= '<script>';
@@ -362,15 +403,15 @@
 					$content .= 'var data = "";';
 					$content .= 'var query = url + data;';
 					$content .= 'xmlhttp.onreadystatechange = function() {';
-						$content .= 'document.getElementById("'.str_replace('get','edit',$id).'-form-alert").innerHTML = "";';
+						$content .= 'document.getElementById("'.str_replace('get',$target_action,$id).'-form-alert").innerHTML = "";';
 						//START: [if connection success]
 							$content .= 'if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {';
 								$content .= 'var json = JSON.parse(xmlhttp.responseText);';
 								foreach($input as $i) {
 									if(!isset($i['section'])) {
-										$content .= 'document.getElementById("'.str_replace('get','edit',$id).'-form-input-'.$i['id'].'").value = json.'.$i['name'].';';
+										$content .= 'document.getElementById("'.str_replace('get',$target_action,$id).'-form-input-'.$i['id'].'").value = json.'.$i['name'].';';
 										if(isset($i['json'])) {
-											$content .= 'document.getElementById("'.str_replace('get','edit',$id).'-form-text-'.$i['id'].'").innerHTML = json.'.$i['json'].';';
+											$content .= 'document.getElementById("'.str_replace('get',$target_action,$id).'-form-text-'.$i['id'].'").innerHTML = json.'.$i['json'].';';
 										}
 									}
 								}

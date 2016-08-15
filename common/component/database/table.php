@@ -17,7 +17,31 @@
 					';
 				}
 				else {
-					$header_left = '';
+					$list = '';
+					foreach($related as $r) {
+						if(isset($r['divider'])) {
+							$list .= '<hr/>';
+						}
+						else {
+							if($r['url'] == 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']) {
+								$list .= '<li class="active"><a class="disabled">'.ucwords($r['title']).'</a></li>';
+							}
+							else {
+								$list .= '<li><a href="'.$r['url'].'">'.ucwords($r['title']).'</a></li>';
+							}
+						}
+					}
+					$header_left = '
+						<div class="dropdown">
+							<a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+								<i class="fa fa-fw fa-desktop"></i> View
+								<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu" style="margin-top:-2px !important;">
+								'.$list.'
+							</ul>
+						</div>
+					';
 				}
 			//END
 			
@@ -114,14 +138,29 @@
 			//END
 			
 			//START: [default formatter]
+				$format['status'] = '
+					var status = JSON.parse(row.status);
+				return "<i class=\'fa fa-fw fa-circle\' style=\'color:" + status.color + ";\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'" + status.name + "\'></i>";
+				';
+				$format['description'] = '
+					if(row.description != \'\') {
+					return "<i class=\'fa fa-fw fa-ellipsis-h\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'" + row.description + "\'></i>";
+				}
+				';
 				$format['count'] = '
-					return "<a class=\'btn btn-default btn-block\'>" + row.count + "</a>";
+					if(row.count != 0) {
+						return "<a class=\'btn btn-default\' style=\'min-width:40px;\'>" + row.count + "</a>";
+					}
 				';
 				$format['color'] = '
 					return "<i class=\'fa fa-fw fa-circle\' style=\'color:" + row.color + ";\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'" + row.color + "\'></i>";
 				';
 				$format['icon'] = '
 					return "<i class=\'fa fa-fw " + row.icon + "\' data-toggle=\'tooltip\' title=\'" + row.icon + "\'></i>";
+				';
+				$format['mode'] = '
+					var mode = JSON.parse(row.mode);
+					return "<i class=\'fa fa-fw " + mode.icon + "\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'" + mode.name + "\'></i>";
 				';
 				$format['tag'] = '
 					var tag = JSON.parse(row.tag);
@@ -155,23 +194,31 @@
 				$format['date_modified'] = '
 					return "<span data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'" + row.date_modified + "\'>" + row.date_modified.substring(0, 10) + "</span>";
 				';
+				if($action['review'] != true) { $off_review = 'hidden'; }
 				if($action['edit'] != true) { $off_edit = 'hidden'; }
 				if($action['delete'] != true) { $off_delete = 'hidden'; }
 				$format['commands'] = '
 					return ""
 					+ "<nav style=\'display:inline !important; margin-left:10px !important;\'>"
 							+ "<ul class=\'pagination\' style=\'margin: 0px !important;\'>"
-								+ "<li>"
+								+ "<li class=\''.$off_review.'\'>"
+									+ "<span class=\'nopadding\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'Review\'>"
+									+ "<a class=\'btn btn-sm command-review\' data-toggle=\'modal\' data-target=\'#modal-review-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
+										+ "Review"
+									+ "</a>"
+									+ "</span>"
+								+ "</li>"
+								+ "<li class=\''.$off_edit.'\'>"
 									+ "<span class=\'nopadding\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'Edit\'>"
-									+ "<a class=\'btn btn-sm command-edit '.$off_edit.'\' data-toggle=\'modal\' data-target=\'#modal-edit-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
+									+ "<a class=\'btn btn-sm command-edit\' data-toggle=\'modal\' data-target=\'#modal-edit-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
 										+ "<span class=\'fa fa-fw fa-pencil\'>"
 										+ "</span>"
 									+ "</a>"
 									+ "</span>"
 								+ "</li>"
-								+ "<li>"
+								+ "<li class=\''.$off_delete.'\'>"
 									+ "<span class=\'nopadding\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'Delete\'>"
-									+ "<a class=\'btn btn-sm command-delete '.$off_delete.'\' data-toggle=\'modal\' data-target=\'#modal-delete-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
+									+ "<a class=\'btn btn-sm command-delete\' data-toggle=\'modal\' data-target=\'#modal-delete-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
 										+ "<span class=\'fa fa-fw fa-trash-o\'>"
 										+ "</span>"
 									+ "</a>"
@@ -222,6 +269,12 @@
 						{
 							document.getElementById("modal-delete-'.$object_id.'-form-input-'.$object_id.'-id").value = $(this).data("row-id");
 							document.getElementById("modal-delete-'.$object_id.'-form-text-'.$object_id.'-id").innerHTML = $(this).data("row-id");
+							$($(this).attr("data-target")).modal("show");
+						})
+						.end().find(".command-review").on("click", function(e)
+						{
+							document.getElementById("modal-get-'.$object_id.'-form-input-'.$object_id.'-id").value = $(this).data("row-id");
+							get'.$object_name_no_space.'();
 							$($(this).attr("data-target")).modal("show");
 						})
 						'.$grid_function.'

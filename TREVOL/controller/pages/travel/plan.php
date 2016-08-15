@@ -6,56 +6,258 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 class ControllerPagesTravelPlan extends AController {
 
   	public function main() {
-        //init controller data
-        $this->extensions->hk_InitData($this,__FUNCTION__);
-
-    	$title = "Trip Plan";
-    	$this->document->setTitle($title);
-
-		$this->view->assign('error_warning', $this->session->data['warning']);
-		if (isset($this->session->data['warning'])) {
-			unset($this->session->data['warning']);
-		}
-		$this->view->assign('success', $this->session->data['success']);
-		if (isset($this->session->data['success'])) {
-			unset($this->session->data['success']);
-		}
+        //START: init controller data
+        	$this->extensions->hk_InitData($this,__FUNCTION__);
+		//END
 		
-		$this->loadModel('travel/trip');
-		$this->loadModel('travel/status');
-		$this->loadModel('travel/mode');
-		$this->loadModel('travel/plan');
-		$this->loadModel('account/user');
+		//START: set title
+			$title = "Plan";
+			$this->document->setTitle($title);
+		//END
 		
-		$data = $this->model_travel_plan->getPlan();
+		//START: set alert
+			$this->view->assign('error_warning', $this->session->data['warning']);
+			if (isset($this->session->data['warning'])) {
+				unset($this->session->data['warning']);
+			}
+			$this->view->assign('success', $this->session->data['success']);
+			if (isset($this->session->data['success'])) {
+				unset($this->session->data['success']);
+			}
+		//END
 		
-		foreach($data as $row) {
-			$plan_id = $row['plan_id'];
+		//START: set model
+			$this->loadModel('travel/trip');
+		//END
+		
+		//START: set data
+			$data = $this->model_travel_trip->getPlan();
+		//END
+		
+		//START: process data and set result
+			if(count($data) > 0 ) {
+				foreach($data as $row) {
+					$plan_id = $row['plan_id'];
 			
-			//following sequence is important
-			$result[$plan_id]['plan_id'] = $row['plan_id'];
-			$result[$plan_id]['trip_id'] = $row['trip_id'];
-			$result[$plan_id]['trip'] = $row['trip']['name'];
-			$result[$plan_id]['name'] = $row['name'];
-			$result[$plan_id]['mode'] = json_encode($row['mode']);
-			$result[$plan_id]['sort_order'] = $row['sort_order'];
-			$result[$plan_id]['travel_date'] = $row['travel_date'];
-			$result[$plan_id]['date_added'] = $row['date_added'];
-			$result[$plan_id]['date_modified'] = $row['date_modified'];
-		}
+					//following sequence is important
+					$result[$plan_id]['plan_id'] = $row['plan_id'];
+					$result[$plan_id]['trip_id'] = $row['trip_id'];
+					$result[$plan_id]['trip'] = $row['trip']['name'];
+					$result[$plan_id]['name'] = $row['name'];
+					$result[$plan_id]['mode'] = json_encode($row['mode']);
+					$result[$plan_id]['sort_order'] = $row['sort_order'];
+					$result[$plan_id]['selected'] = $row['selected'];
+					$result[$plan_id]['travel_date'] = $row['travel_date'];
+					$result[$plan_id]['date_added'] = $row['date_added'];
+					$result[$plan_id]['date_modified'] = $row['date_modified'];
+				}
+			}
+		//END
 		
-		//include modal
-		$this->addChild('modal/travel/add_plan', 'modal_add_plan', 'modal/travel/add_plan.tpl');
-		$this->addChild('modal/travel/edit_plan', 'modal_edit_plan', 'modal/travel/edit_plan.tpl');
-		$this->addChild('modal/travel/delete_plan', 'modal_delete_plan', 'modal/travel/delete_plan.tpl');
+		//START: set column
+			/* [SAMPLE]
+			$i = '';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'true';
+			*/
+			
+			$i = 'plan_id';
+			$column[$i]['name'] = 'id';
+			$column[$i]['title'] = 'Id';
+			$column[$i]['type'] = 'numeric';
+			$column[$i]['width'] = '80px';
+			$column[$i]['order'] = '';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'true';
+			
+			$i = 'trip_id';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'false';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'trip';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'true';
+			
+			$i = 'name';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'true';
+			
+			$i = 'mode';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'sort_order';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'selected';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'travel_date';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'date_added';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'false';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'date_modified';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'false';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'commands';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['align'] = 'right';
+			$column[$i]['sortable'] = 'false';
+			$column[$i]['searchable'] = 'false';
+		//END
 		
-		$this->view->assign('result', $result);
+		//START: set component
+			$this->loadComponent('database/table');
+			$object = 'plan';
+			$table['column'] = $column;
+			$table['row'] = $result;
+			//START: [action]
+				$action['add'] = false;
+				$action['edit'] = false;
+				$action['delete'] = true;
+			//END
+			//START: [related]
+				$related = array();
+				$i = 'trip';
+				$related[$i]['title'] = $i;
+				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
+				$i = 'plan';
+				$related[$i]['title'] = $i;
+				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
+				$i = 'day';
+				$related[$i]['title'] = $i;
+				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
+				$i = 'line';
+				$related[$i]['title'] = $i;
+				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
+				$i = '';
+				$related[$i]['divider'] = $i;
+				$i = 'status';
+				$related[$i]['title'] = $i;
+				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
+				$i = 'mode';
+				$related[$i]['title'] = $i;
+				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
+			//END
+			//START: [setting]
+				$grid['setting']['caseSensitive'] = 'false';
+				$grid['setting']['rowCount'] = -1;
+				$grid['setting']['columnSelection'] = 'false';
+				$grid['setting']['multiSort'] = 'false';
+			//END
+			$component['table'] = $this->component_database_table->writeTable($object,$table,$action,$related,$grid);
+		//END
 		
-		$this->processTemplate('pages/travel/plan.tpl' );
-
-        //update controller data
-        $this->extensions->hk_UpdateData($this,__FUNCTION__);
+		//START: set modal
+			//$this->addChild('modal/travel/add_plan', 'modal_add_plan', 'modal/travel/add_plan.tpl');
+			//$this->addChild('modal/travel/edit_plan', 'modal_edit_plan', 'modal/travel/edit_plan.tpl');
+			//$this->addChild('modal/travel/delete_plan', 'modal_delete_plan', 'modal/travel/delete_plan.tpl');
+		//END
+		
+		//START: set variable
+			$this->view->assign('component', $component);
+		//END
+		
+		//START: set template
+			$this->processTemplate('pages/travel/plan.tpl' );
+		//END
+		
+        //START: update controller data
+        	$this->extensions->hk_UpdateData($this,__FUNCTION__);
+		//END
 	}
 }
 ?>
+
+
+
 

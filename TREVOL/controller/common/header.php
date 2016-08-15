@@ -97,7 +97,7 @@ class ControllerCommonHeader extends AController {
 			$link['resource/dataset'] = $this->html->getSecureURL('resource/dataset');
 			$link['account/user'] = $this->html->getSecureURL('account/user');
 			$link['account/admin'] = $this->html->getSecureURL('account/admin');
-			$link['database'] = $this->html->getSecureURL('database/database_list');
+			$link['travel/trip'] = $this->html->getSecureURL('travel/trip');
 			$link['log'] = $this->html->getSecureURL('tool/error_log');
 			$link['language'] = $this->html->getSecureURL('localisation/language_definitions');
 			$link['logout'] = $this->html->getSecureURL('index/logout');

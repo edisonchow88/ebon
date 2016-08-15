@@ -88,7 +88,7 @@
 				</li>
                 <li>
 					<div class="btn-group">
-						<a href="<?php echo $link['database']; ?>" class="btn btn-default tp-icon">
+						<a href="<?php echo $link['travel/trip']; ?>" class="btn btn-default tp-icon">
 							Trip
 						</a>
 					</div>

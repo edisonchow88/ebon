@@ -172,7 +172,7 @@ class ModelTravelTrip extends Model{
 	//END
 	
 	//START: [Line]
-		public function getLine($line_id='',$plan_id='') {
+		public function getLine($line_id='',$day_id='') {
 			$line = array();
 			
 			if($line_id == '') {
@@ -180,9 +180,9 @@ class ModelTravelTrip extends Model{
 					SELECT * 
 					FROM " . $this->db->table($this->table_line) . " 
 				";
-				if($plan_id != '') { 
+				if($day_id != '') { 
 					$sql .= " 
-						WHERE plan_id = '" . (int)$this->db->escape($plan_id) . "' 
+						WHERE day_id = '" . (int)$this->db->escape($day_id) . "' 
 					"; 
 				}
 				$sql .= "
@@ -202,43 +202,39 @@ class ModelTravelTrip extends Model{
 			if($line_id == '') {
 				foreach($query->rows as $result){
 					$output[$result['line_id']] = $result;
-					$output[$result['line_id']]['plan'] = $this->getPlan($result['plan_id']); 
-					$output[$result['line_id']]['tag'] = $this->model_resource_tag->getTag($result['tag_id']); //IMPORTANT: need to call model at controller
 				}
 			}
 			else {
 				$output = $result = $query->row;
-				$output['plan'] = $this->getPlan($result['plan_id']);
-				$output['tag'] = $this->model_resource_tag->getTag($result['tag_id']); //IMPORTANT: need to call model at controller
 			}
 			
 			return $output;
 		}
 		
-		public function getLineByPlanId($plan_id) {
-			return $this->getLine('',$plan_id);
+		public function getLineByDayId($day_id) {
+			return $this->getLine('',$day_id);
 		}
 	//END
 	
 	//START: [day]
-		public function getDay($day_id='',$line_id='') {
+		public function getDay($day_id='',$plan_id='') {
 			$day = array();
 			
 			if($day_id == '') {
 				$sql = "
-					SELECT * 
+					SELECT *, t1.day_id
 					FROM " . $this->db->table($this->table_day) . " t1 
 					LEFT JOIN ".$this->db->table($this->table_day_description)." t2 
 					ON t1.day_id = t2.day_id 
 				";
-				if($line_id != '') { $sql .= " WHERE t1.line_id = '" . (int)$this->db->escape($line_id) . "' "; }
+				if($plan_id != '') { $sql .= " WHERE t1.plan_id = '" . (int)$this->db->escape($plan_id) . "' "; }
 				$sql .= "
-					ORDER BY t1.day_id DESC 
+					ORDER BY t1.sort_order ASC 
 				";
 			}
 			else {
 				$sql = "
-					SELECT * 
+					SELECT *, t1.day_id 
 					FROM " . $this->db->table($this->table_day) . " t1 
 					LEFT JOIN ".$this->db->table($this->table_day_description)." t2 
 					ON t1.day_id = t2.day_id 
@@ -267,8 +263,14 @@ class ModelTravelTrip extends Model{
 			return $output;
 		}
 		
+		/*
 		public function getDayByLineId($line_id) {
 			return $this->getDay('',$line_id);
+		}
+		*/
+		
+		public function getDayByPlanId($plan_id) {
+			return $this->getDay('',$plan_id);
 		}
 	//END
 	
@@ -306,10 +308,12 @@ class ModelTravelTrip extends Model{
 					$output[$result['activity_id']] = $result;
 					$output[$result['activity_id']]['name'] = ucwords($result['name']);
 					$output[$result['activity_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+					/*
 					$output[$result['activity_id']]['line'] = $this->getLine($result['line_id']);
 					$output[$result['activity_id']]['day'] = $this->getDay($result['day_id']);
 					$output[$result['activity_id']]['tag'] = $this->model_resource_tag->getTag($result['tag_id']); //IMPORTANT:  load model at controller
 					$output[$result['activity_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],'30px'); //IMPORTANT:  load model at controller
+					*/
 				}
 			}
 			else {
@@ -317,10 +321,12 @@ class ModelTravelTrip extends Model{
 				$output = $query->row;
 				$output['name'] = ucwords($result['name']);
 				$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+				/*
 				$output['line'] = $this->getLine($result['line_id']);
 				$output['day'] = $this->getDay($result['day_id']);
 				$output['tag'] = $this->model_resource_tag->getTag($result['tag_id']); //IMPORTANT: need to call model at controller
 				$output['image'] = $this->model_resource_image->getImage($result['image_id'],'30px'); //IMPORTANT: need to call model at controller
+				*/
 			}
 			//END
 			
@@ -333,20 +339,32 @@ class ModelTravelTrip extends Model{
 	//END
 	
 	//START: [combo]
-		public function getAllLineByPlanId($plan_id) {
-			$line = $this->getLineByPlanId($plan_id);
-			$i = 0;
-			foreach($line as $line_id => $value) {
-				if($line[$line_id]['tag_id'] == 1029) {
-					$output[$i] = $line[$line_id];
-					$output[$i]['content'] = $this->getDayByLineId($line_id);
+		public function getPlanDetail($plan_id) {
+			$day = $this->getDayByPlanId($plan_id);
+			
+			foreach($day as $day_id => $d) {
+				unset($line); //reset
+				$line = $this->getLineByDayId($d['day_id']);
+				if(count($line) > 0) {
+					foreach($line as $line_id => $l) {
+						if($l['type'] == 'poi') {
+							$content = $this->getActivity($l['id']);
+						}
+						$line[$line_id]['content'] = $content;
+					}
+					$line = array_values($line);
+					$day[$day_id]['line'] = $line;
+					$day[$day_id]['percentage'] = count($line)*10;
 				}
-				else if($line[$line_id]['tag_id'] == 1030) {
-					$output[$i] = $line[$line_id];
-					$output[$i]['content'] = $this->getActivityByLineId($line_id);
+				else {
+					$day[$day_id]['line'] = '';
+					$day[$day_id]['percentage'] = 0;
 				}
-				$i += 1;
 			}
+			$day = array_values($day);
+			
+			$output['day'] = $day;
+		
 			return $output;
 		}
 	//END

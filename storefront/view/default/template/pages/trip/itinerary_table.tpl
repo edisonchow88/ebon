@@ -1,23 +1,13 @@
-<!-- Latest compiled and minified CSS (Jquery UI)-->
+<!-- START: [Bootstrap toggle button] -->
+    <link href="<?php echo $this->templateResource('/stylesheet/bootstrap-toggle.min.css'); ?>" rel="stylesheet">
+    <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/bootstrap-toggle.min.js'); ?>"></script>
+<!-- END -->
+
+<!-- START: [Bootstrap confirmation dialog] -->
 <!--
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-
-<script type="text/javascript">
-// Change JQueryUI plugin names to fix name collision with Bootstrap.
-//$.widget.bridge('uitooltip', $.ui.tooltip);
-//$.widget.bridge('uibutton', $.ui.button);
-</script>
-
-<!-- Latest compiled and minified JavaScript (Bootstrap)-->
-<!--
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-<!-- Bootstrap Toggle button-->
-<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.js"></script>
+	<script type="text/javascript" src="<?php echo $this->templateResource('/javascript/bootstrap-confirmation.js'); ?>"></script>
+-->
+<!-- END -->
 
 <style>
     #section-content-itinerary {
@@ -198,55 +188,61 @@
 <script>
 <!-- START: load table -->
 	$(document).ready(function(){
-		<!-- START: 1st loop for tbody -->
-		$.getJSON("<?php echo $ajax_itinerary; ?>", function(result) {
-
-			$.each(result.day, function(i, field) {	
-			
-			printDay( "#planner-table", i , this.line_id, this.percentage);
-		
-			
-				<!-- START: 2nd loop for row (poi) -->		
-					$.each(this.poi, function(x, poi) {
-					// Call print poi function and send data, more data to be added.
-					// >> printPoi( tr_id, day_index, poi_index, poi_line_id, poi_info, poi_name ,action)
-					printPoi( "#day-group" + i, i , x, poi.poi_id, poi.info, poi.name);
-					})
-				<!-- END -->
-				
-			});
-		
-		<!-- START: add pocket at end of table -->
-		$("#planner-table").append(""
-			+ "<tbody class='pocket' id='pocket'>"
-				+ "<tr class='day-list row-fixed'>"
-					+ "<td colspan='7' class='index'>"
-						+ "<div class='btn-group' role='group' aria-label='Basic example'>"
-							+ "<button type='button' class='btn btn-default btn-lg toggle-icon'>"
-								+ "<i class='fa fa-shopping-basket fa-lg' aria-hidden='true'></br><span>Pocket</span></i>"
-							+ "</button>"
-							+ "<button type='button' class='btn btn-default btn-lg'>"
-								+ "<i class='fa fa-plus-square fa-lg add-day-icon' aria-hidden='true'></br><span>Add Day</span></i>"
-						+ "</div>"
-					+ "</td>"
-				+ "</tr>" 
-		);
+		<!-- START: set POST data -->
+			var data = {
+				"action":"refresh_plan",
+				"plan_id":"4",
+			};
 		<!-- END -->
 		
-		// INIT: initilize update function
-		initPageUpdate();
-		updateEvent();
+		<!-- START: 1st loop for tbody -->
+		$.post("<?php echo $ajax_itinerary; ?>", data, function(result) {
+			alert(result);
+			$.each(result.day, function(i, field) {	
+				printDay( "#planner-table", i , this.day_id, this.percentage);
+				<!-- START: 2nd loop for row (poi) -->		
+					$.each(this.line, function(x, line) {
+					// Call print poi function and send data, more data to be added.
+					// >> printPoi( tr_id, day_index, poi_index, poi_line_id, poi_info, poi_name ,action)
+						if(line.type == 'poi') {
+							var poi = line.content;
+							printPoi( "#day-group" + i, i , x, line.id, poi.name, poi.name);
+						}
+					})
+				<!-- END -->
+			});
 		
-		$('.handle-icon').on('mousedown', function() {
-			var this_day_group = $(this).closest("tbody").attr("id");
-			$("#"+ this_day_group +" .poi-list").hide();
-			if (!$("#"+ this_day_group).hasClass("poi-hidden")) {
-			$(this).on('mouseup', function() {updatePoiHidden(this_day_group);});
-			}
+			<!-- START: add pocket at end of table -->
+				$("#planner-table").append(""
+					+ "<tbody class='pocket' id='pocket'>"
+						+ "<tr class='day-list row-fixed'>"
+							+ "<td colspan='7' class='index'>"
+								+ "<div class='btn-group' role='group' aria-label='Basic example'>"
+									+ "<button type='button' class='btn btn-default btn-lg toggle-icon'>"
+										+ "<i class='fa fa-shopping-basket fa-lg' aria-hidden='true'></br><span>Pocket</span></i>"
+									+ "</button>"
+									+ "<button type='button' class='btn btn-default btn-lg'>"
+										+ "<i class='fa fa-plus-square fa-lg add-day-icon' aria-hidden='true'></br><span>Add Day</span></i>"
+								+ "</div>"
+							+ "</td>"
+						+ "</tr>" 
+				);
+			<!-- END -->
+			
+			// INIT: initilize update function
+			initPageUpdate();
+			updateEvent();
+			
+			$('.handle-icon').on('mousedown', function() {
+				var this_day_group = $(this).closest("tbody").attr("id");
+				$("#"+ this_day_group +" .poi-list").hide();
+				if (!$("#"+ this_day_group).hasClass("poi-hidden")) {
+				$(this).on('mouseup', function() {updatePoiHidden(this_day_group);});
+				}
 			});
 		
 		
-		}); //////////// END of getJason Fuction, function must load before this for sequence
+		}, "json"); //////////// END of getJason Fuction, function must load before this for sequence
 	});
 	
 
@@ -284,11 +280,11 @@ function updateEvent() {
 }
 
 // START print day - output day list and its action button.
-function printDay( table_id, index, day_line_id, percentage,action) {
+function printDay( table_id, index, day_id, percentage,action) {
 	
 		var data =		""+ "<tbody class='day-group poi-hidden' id='day-group"+ index +"'>"
 						+ "<tr class='day-list row-fixed'>"
-						+ "<td class='index hidden' id='day" + index +"'> Line" + day_line_id + "</td>"
+						+ "<td class='index hidden' id='day" + index +"'>" + day_id + "</td>"
 						+ "<td class='d-day'></td>"
 						+ "<td class='d-date'></td>"
 						+ "<td class='hidden'></td>"

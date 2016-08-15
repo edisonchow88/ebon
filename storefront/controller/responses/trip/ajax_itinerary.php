@@ -4,76 +4,87 @@ if (! defined ( 'DIR_CORE' )) {
 }
 
 class ControllerResponsesTripAjaxItinerary extends AController {
-	//START: set common variable
-		public $data = array();
-	//END
+	
+	public $data = array();
 	
 	public function main() {
-		//START: init controller data
-			$this->extensions->hk_InitData($this, __FUNCTION__);
-		//END
-		
 		//START: testing script
 			foreach($_POST as $key => $value) {
 				$this->data[$key] = $value;
 			}	
 			
-			$text = html_entity_decode($this->data['send']);
-			$json = json_decode($text,true);
-			
-			$this->loadModel('travel/trip');
-			$this->loadModel('resource/tag');
-			$this->loadModel('resource/image');
-			
-			$result['plan'] = $this->model_travel_trip->getAllLineByPlanId($json['plan_id']);
-			$result['success'][] = '';
-			
-			$response = json_encode($result);
-			echo $response;
-			return;
-			
-			if($action == 'get_trip') { $this->get_trip(); return; }
+			if($this->data['action'] == 'refresh_plan') { $this->refresh_plan(); return; }
 			else { 
-			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
+				//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 				$result['warning'][] = 'System Failure: Please contact Admin.'; 
 				$response = json_encode($result);
 				echo $response;	
+				return;
 			}
-		//END
-		
-		//START: set modal
-		//END
-		
-		//START: set data
-		//END
-		
-		//START: set result
-		//END
-		
-		//START: set modal
-		//END
-		
-		//START: set link
-		//END
-		
-		//START: set variable
-			$this->view->batchAssign($this->data);
-		//END
-		
-		//START: set template 
-			$this->processTemplate('responses/trip/ajax_itinerary.tpl');
-		//END
-		
-		//START: init controller data
-			$this->extensions->hk_UpdateData($this, __FUNCTION__);
+			
 		//END
 	}
 	
+	public function refresh_plan() {
+		$result['day'] = array();
+		$line = array();
+		$line[] = array('line_id' => 1, 'type' => 'poi', 'id' => 1, 'sort_order' => 1, 'content' => array( 'name' => 'Kiyomizu Temple', 'info' => 'DAY1POI1'));
+		$line[] = array('line_id' => 2, 'type' => 'poi', 'id' => 2, 'sort_order' => 2, 'content' => array( 'name' => 'Tokyo Temple', 'info' => 'DAY1POI2'));
+		$line[] = array('line_id' => 3, 'type' => 'poi', 'id' => 3, 'sort_order' => 3, 'content' => array( 'name' => 'Osaka Temple', 'info' => 'DAY1POI3'));
+		$result['day'][] = array('day_id' => 1, 'sort_order' => 1, 'percentage' => '30', 'line' => $line);
+		$line = array();
+		$line[] = array('line_id' => 1, 'type' => 'poi', 'id' => 1, 'sort_order' => 1, 'content' => array( 'name' => 'Kiyomizu Temple', 'info' => 'DAY1POI1'));
+		$line[] = array('line_id' => 2, 'type' => 'poi', 'id' => 2, 'sort_order' => 2, 'content' => array( 'name' => 'Tokyo Temple', 'info' => 'DAY1POI2'));
+		$line[] = array('line_id' => 3, 'type' => 'poi', 'id' => 3, 'sort_order' => 3, 'content' => array( 'name' => 'Osaka Temple', 'info' => 'DAY1POI3'));
+		$result['day'][] = array('day_id' => 2, 'sort_order' => 2, 'percentage' => '50', 'line' => $line);
+		/*
+		$this->loadModel('travel/trip');
+		$result = $this->model_travel_trip->getPlanDetail($this->data['plan_id']);
+		*/
+		$response = json_encode($result);
+		echo $response;
+	}
+	
 	public function get_trip() {
-		$result['trip'] = $this->model_travel_trip->getTrip($this->data[$trip_id]);
+		$text = html_entity_decode($this->data['send']);
+		$json = json_decode($text,true);
 		
+		$this->loadModel('travel/trip');
+		$this->loadModel('resource/tag');
+		$this->loadModel('resource/image');
+		
+		$result['plan'] = $this->model_travel_trip->getAllLineByPlanId($json['plan_id']);
 		$result['success'][] = '';
+		
 		$response = json_encode($result);
 		echo $response;
 	}
 }
+
+/*
+
+ {"day" : 
+[ 
+		{
+		"day_id": "1",
+		"sort_order": "1",
+        "percentage": "30",
+		"line": [	
+					{"line_id" : "1", "type" : "line", "id": "1", "content": {"name":"Kiyomizu Temple", "info": "DAY1POI1"}, "sort_order": "1"},
+					{"line_id" : "2", "type" : "line", "id": "1", "content": {"name":"Kiyomizu Temple", "info": "DAY1POI1"}, "sort_order": "2"},
+					{"line_id" : "3", "type" : "line", "id": "1", "content": {"name":"Kiyomizu Temple", "info": "DAY1POI1"}, "sort_order": "3"},
+				]
+		},
+		{
+		"day_id": "2",
+		"sort_order": "2",
+        "percentage": "50",
+		"line": [	
+					{"line_id" : "1", "type" : "line", "id": "1", "content": {"name":"Kiyomizu Temple", "info": "DAY1POI1"}, "sort_order": "1"},
+					{"line_id" : "2", "type" : "line", "id": "1", "content": {"name":"Kiyomizu Temple", "info": "DAY1POI1"}, "sort_order": "2"},
+					{"line_id" : "3", "type" : "line", "id": "1", "content": {"name":"Kiyomizu Temple", "info": "DAY1POI1"}, "sort_order": "3"},
+				]
+		},
+]
+ }
+ */

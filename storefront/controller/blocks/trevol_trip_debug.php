@@ -33,7 +33,7 @@ class ControllerBlocksTrevolTripDebug extends AController {
 		
 		//START: set form
 			$id = 'hidden-itinerary-form';
-			$action = 'view';
+			$action = '';
 			$input = array();
 			//START: set input [ORDER IS IMPORTANT]
 				$i ='action';
@@ -42,7 +42,6 @@ class ControllerBlocksTrevolTripDebug extends AController {
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = false;
 				$input[$i]['value'] = $this->data['action'];
-				$input[$i]['type'] = 'disabled';
 				
 				$i ='user_id';
 				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));

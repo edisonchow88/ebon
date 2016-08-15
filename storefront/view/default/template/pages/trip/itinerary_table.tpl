@@ -196,18 +196,15 @@
 		<!-- END -->
 		
 		<!-- START: 1st loop for tbody -->
-		$.post("<?php echo $ajax_itinerary; ?>", data, function(result) {
-			alert(result);
-			$.each(result.day, function(i, field) {	
-				printDay( "#planner-table", i , this.day_id, this.percentage);
+		$.post("<?php echo $ajax_itinerary; ?>", data, function(plan) {
+			alert(plan);
+			$.each(plan.day, function(i, field) {	
+				printDay( "#planner-table", i , this.day_id, this.duration);
 				<!-- START: 2nd loop for row (poi) -->		
 					$.each(this.line, function(x, line) {
 					// Call print poi function and send data, more data to be added.
-					// >> printPoi( tr_id, day_index, poi_index, poi_line_id, poi_info, poi_name ,action)
-						if(line.type == 'poi') {
-							var poi = line.content;
-							printPoi( "#day-group" + i, i , x, line.id, poi.name, poi.name);
-						}
+					// >> printLine( tr_id, day_index, poi_index, poi_line_id, poi_info, poi_name ,action)
+						printLine("#day-group" + i, i , x, line.id, line.title, line.title);
 					})
 				<!-- END -->
 			});
@@ -280,7 +277,7 @@ function updateEvent() {
 }
 
 // START print day - output day list and its action button.
-function printDay( table_id, index, day_id, percentage,action) {
+function printDay( table_id, index, day_id, duration,action) {
 	
 		var data =		""+ "<tbody class='day-group poi-hidden' id='day-group"+ index +"'>"
 						+ "<tr class='day-list row-fixed'>"
@@ -290,7 +287,7 @@ function printDay( table_id, index, day_id, percentage,action) {
 						+ "<td class='hidden'></td>"
 						+ "<td>"
 							+ "<div class='progress'>"
-								+ "<div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='"+percentage+"' aria-valuemin='0' aria-valuemax='100' style='width:"+percentage+"%'>"
+								+ "<div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='"+duration+"' aria-valuemin='0' aria-valuemax='100' style='width:"+(duration/(60*12))*100+"%'>"
 								+ "</div>"
 								+ "</div>"
 						+ "</td>"
@@ -334,7 +331,7 @@ function printDay( table_id, index, day_id, percentage,action) {
 } // END print day
 
 // START print POI - output poi list and its action button for this/selected day.
-function printPoi( tr_id, day_index, poi_index, poi_line_id, poi_info, poi_name ,action) {
+function printLine( tr_id, day_index, poi_index, poi_line_id, poi_info, poi_name ,action) {
 
 		var data =		""+ "<tr class='poi-list' id='day"+day_index+"poi"+poi_index+"'>"
 						+ "<td></td>"

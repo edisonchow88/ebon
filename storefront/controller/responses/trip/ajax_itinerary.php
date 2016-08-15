@@ -28,15 +28,15 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	public function refresh_plan() {
 		$result['day'] = array();
 		$line = array();
-		$line[] = array('line_id' => 1, 'type' => 'poi', 'id' => 1, 'sort_order' => 1, 'content' => array( 'name' => 'Kiyomizu Temple', 'info' => 'DAY1POI1'));
-		$line[] = array('line_id' => 2, 'type' => 'poi', 'id' => 2, 'sort_order' => 2, 'content' => array( 'name' => 'Tokyo Temple', 'info' => 'DAY1POI2'));
-		$line[] = array('line_id' => 3, 'type' => 'poi', 'id' => 3, 'sort_order' => 3, 'content' => array( 'name' => 'Osaka Temple', 'info' => 'DAY1POI3'));
-		$result['day'][] = array('day_id' => 1, 'sort_order' => 1, 'percentage' => '30', 'line' => $line);
+		$line[] = array('line_id' => 1, 'type' => 'poi', 'id' => 1, 'sort_order' => 1, 'title' => 'Kiyomizu Temple');
+		$line[] = array('line_id' => 2, 'type' => 'poi', 'id' => 2, 'sort_order' => 2, 'title' => 'Tokyo Temple');
+		$line[] = array('line_id' => 3, 'type' => 'poi', 'id' => 3, 'sort_order' => 3, 'title' => 'Osaka Temple');
+		$result['day'][] = array('day_id' => 1, 'sort_order' => 1, 'duration' => '180', 'line' => $line);
 		$line = array();
-		$line[] = array('line_id' => 1, 'type' => 'poi', 'id' => 1, 'sort_order' => 1, 'content' => array( 'name' => 'Kiyomizu Temple', 'info' => 'DAY1POI1'));
-		$line[] = array('line_id' => 2, 'type' => 'poi', 'id' => 2, 'sort_order' => 2, 'content' => array( 'name' => 'Tokyo Temple', 'info' => 'DAY1POI2'));
-		$line[] = array('line_id' => 3, 'type' => 'poi', 'id' => 3, 'sort_order' => 3, 'content' => array( 'name' => 'Osaka Temple', 'info' => 'DAY1POI3'));
-		$result['day'][] = array('day_id' => 2, 'sort_order' => 2, 'percentage' => '50', 'line' => $line);
+		$line[] = array('line_id' => 1, 'type' => 'poi', 'id' => 1, 'sort_order' => 1, 'title' => 'Kiyomizu Temple');
+		$line[] = array('line_id' => 2, 'type' => 'poi', 'id' => 2, 'sort_order' => 2, 'title' => 'Tokyo Temple');
+		$line[] = array('line_id' => 3, 'type' => 'poi', 'id' => 3, 'sort_order' => 3, 'title' => 'Osaka Temple');
+		$result['day'][] = array('day_id' => 2, 'sort_order' => 2, 'duration' => '210', 'line' => $line);
 		/*
 		$this->loadModel('travel/trip');
 		$result = $this->model_travel_trip->getPlanDetail($this->data['plan_id']);

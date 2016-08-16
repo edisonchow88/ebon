@@ -147,10 +147,18 @@ class ControllerPagesTravelMode extends AController {
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/travel/mode/review_mode', 'modal_review_mode', 'modal/travel/mode/review_mode.tpl');
-			$this->addChild('modal/travel/mode/add_mode', 'modal_add_mode', 'modal/travel/mode/add_mode.tpl');
-			$this->addChild('modal/travel/mode/edit_mode', 'modal_edit_mode', 'modal/travel/mode/edit_mode.tpl');
-			$this->addChild('modal/travel/mode/delete_mode', 'modal_delete_mode', 'modal/travel/mode/delete_mode.tpl');
+			if($action['review'] == true) {
+				$this->addChild('modal/travel/mode/review_mode', 'modal_review_mode', 'modal/travel/mode/review_mode.tpl');
+			}
+			if($action['add'] == true) {
+				$this->addChild('modal/travel/mode/add_mode', 'modal_add_mode', 'modal/travel/mode/add_mode.tpl');
+			}
+			if($action['edit'] == true) {
+				$this->addChild('modal/travel/mode/edit_mode', 'modal_edit_mode', 'modal/travel/mode/edit_mode.tpl');
+			}
+			if($action['delete'] == true) {
+				$this->addChild('modal/travel/mode/delete_mode', 'modal_delete_mode', 'modal/travel/mode/delete_mode.tpl');
+			}
 		//END
 		
 		//START: set variable

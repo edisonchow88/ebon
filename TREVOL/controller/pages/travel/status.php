@@ -173,10 +173,18 @@ class ControllerPagesTravelStatus extends AController {
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/travel/status/review_status', 'modal_review_status', 'modal/travel/status/review_status.tpl');
-			$this->addChild('modal/travel/status/add_status', 'modal_add_status', 'modal/travel/status/add_status.tpl');
-			$this->addChild('modal/travel/status/edit_status', 'modal_edit_status', 'modal/travel/status/edit_status.tpl');
-			$this->addChild('modal/travel/status/delete_status', 'modal_delete_status', 'modal/travel/status/delete_status.tpl');
+			if($action['review'] == true) {
+				$this->addChild('modal/travel/status/review_status', 'modal_review_status', 'modal/travel/status/review_status.tpl');
+			}
+			if($action['add'] == true) {
+				$this->addChild('modal/travel/status/add_status', 'modal_add_status', 'modal/travel/status/add_status.tpl');
+			}
+			if($action['edit'] == true) {
+				$this->addChild('modal/travel/status/edit_status', 'modal_edit_status', 'modal/travel/status/edit_status.tpl');
+			}
+			if($action['delete'] == true) {
+				$this->addChild('modal/travel/status/delete_status', 'modal_delete_status', 'modal/travel/status/delete_status.tpl');
+			}
 		//END
 		
 		//START: set variable

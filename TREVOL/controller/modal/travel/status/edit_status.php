@@ -26,6 +26,26 @@ class ControllerModalTravelStatusEditStatus extends AController {
 					//START: set input [ORDER IS IMPORTANT]
 						$input = array();
 						
+						$i ='language_id';
+						$language = $this->language->getAvailableLanguages();
+						$current_language = $this->language->getCurrentLanguage();
+						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+						$input[$i]['id'] = str_replace("_","-",$i);
+						$input[$i]['name'] = $i;
+						$input[$i]['required'] = true;
+						$input[$i]['type'] = 'select';
+						$input[$i]['option'] = $language;
+						
+						$i ='name';
+						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+						$input[$i]['id'] = str_replace("_","-",$i);
+						$input[$i]['name'] = $i;
+						$input[$i]['required'] = true;
+						$input[$i]['type'] = 'text';
+						
+						$i ='general';
+						$input['section'.$i]['section'] = ucwords(str_replace("_"," ",$i));
+						
 						$i ='status_id';
 						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 						$input[$i]['id'] = str_replace("_","-",$i);
@@ -40,13 +60,6 @@ class ControllerModalTravelStatusEditStatus extends AController {
 						$input[$i]['name'] = $i;
 						$input[$i]['required'] = true;
 						$input[$i]['type'] = 'color';
-						
-						$i ='name';
-						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
-						$input[$i]['id'] = str_replace("_","-",$i);
-						$input[$i]['name'] = $i;
-						$input[$i]['required'] = true;
-						$input[$i]['type'] = 'text';
 						
 						$i ='sort_order';
 						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));

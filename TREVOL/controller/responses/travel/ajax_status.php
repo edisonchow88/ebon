@@ -84,13 +84,19 @@ class ControllerResponsesTravelAjaxStatus extends AController {
 	}
 	
 	public function verify() {
-		if($this->data['name'] == '') {
-			$result['warning'][] = '<b>Name</b> is missing';
-		}
-		
-		if($this->data['color'] == '') {
-			$result['warning'][] = '<b>Color</b> is missing';
-		}
+		//START: set requirement
+			if($this->data['language_id'] == '') {
+				$result['warning'][] = '<b>Language</b> is missing';
+			}
+			
+			if($this->data['name'] == '') {
+				$result['warning'][] = '<b>Name</b> is missing';
+			}
+			
+			if($this->data['color'] == '') {
+				$result['warning'][] = '<b>Color</b> is missing';
+			}
+		//END
 		
 		if(count($result['warning']) > 0) { 
 			$response = json_encode($result);

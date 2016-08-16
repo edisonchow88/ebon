@@ -227,112 +227,190 @@ class ModelTravelTrip extends Model{
 		}
 		
 		public function addStatus($data) {
-			//START: table
-			$fields = $this->getFields($this->db->table($this->table_status));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			
-			$sql = "
-				INSERT INTO `" . $this->db->table($this->table_status) . "` 
-				SET " . implode(',', $update) . "
-			";
-			$query = $this->db->query($sql);
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_status));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f]))
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				}
+				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			//END
 			
-			$status_id = $this->db->getLastId();
-			
-			//START:table_description
-			$fields = $this->getFields($this->db->table($this->table_status_description));
-			
-			$update = array();
-			$update[] = "status_id = '" . $status_id. "'";
-			
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			
-			$sql = "
-				INSERT INTO `" . $this->db->table($this->table_status_description) . "` 
-				SET " . implode(',', $update) . "
-			";
-			$query = $this->db->query($sql);
+			//START: run sql
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_status) . "` 
+					SET " . implode(',', $update) . "
+				";
+				$query = $this->db->query($sql);
 			//END
 			
-			$this->cache->delete('status');
+			//START: get id
+				$status_id = $this->db->getLastId();
+				$data['status_id'] = $status_id;
+			//END
 			
-			return $status_id;
+			//START: run chain reaction
+				$this->addStatusDescription($data);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('status');
+			//END
+			
+			//START: return
+				return $status_id;
+			//END
 		}
 		
 		public function editStatus($status_id, $data) {
-			//START: table
-			$fields = $this->getFields($this->db->table($this->table_status));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			
-			if(!empty($update)){
-				$sql = "
-					UPDATE " . $this->db->table($this->table_status) . " 
-					SET " . implode(',', $update) . "
-					WHERE status_id = '" . (int)$status_id . "'
-				";
-				$query = $this->db->query($sql);
-			}
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_status));
+				
+				$update = array();
+				foreach($fields as $f) {
+					if(isset($data[$f])) {
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+				}
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			//END
 			
-			//START: table_description
-			$fields = $this->getFields($this->db->table($this->table_status_description));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			
-			if(!empty($update)){
-				$sql = "
-					UPDATE " . $this->db->table($this->table_status_description) . " 
-					SET " . implode(',', $update) . "
-					WHERE status_id = '" . (int)$status_id . "'
-				";
-				$query = $this->db->query($sql);
-			}
+			//START: run sql
+				if(!empty($update)) {
+					$sql = "
+						UPDATE " . $this->db->table($this->table_status) . " 
+						SET " . implode(',', $update) . "
+						WHERE status_id = '" . (int)$status_id . "'
+					";
+					$query = $this->db->query($sql);
+				}
 			//END
 			
-			$this->cache->delete('status');
-			return true;
+			//START: run chain reaction
+				if(isset($data['language_id'])) {
+					$this->editStatusDescriptionByStatusIdAndLanguageId($status_id, $data['language_id'], $data);
+				}
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('status');
+			//END
+			
+			//START: return
+				return true;
+			//END
 		}
 		
 		public function deleteStatus($status_id) {
-			//START: table
-			$sql = "
-				DELETE FROM " . $this->db->table($this->table_status) . " 
-				WHERE status_id = '" . (int)$status_id . "'
-			";
-			$query = $this->db->query($sql);
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_status) . " 
+					WHERE status_id = '" . (int)$status_id . "'
+				";
+				$query = $this->db->query($sql);
 			//END
 			
-			//START: table_description
-			$sql = "
-				DELETE FROM " . $this->db->table($this->table_status_description) . " 
-				WHERE status_id = '" . (int)$status_id . "'
-			";
-			$query = $this->db->query($sql);
+			//START: run chain reaction
+				$this->deleteStatusDescriptionByStatusId($status_id);
 			//END
 			
-			$this->cache->delete('status');
-			return true;
+			//START: clear cache
+				$this->cache->delete('status');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+	//END
+	
+	//START: [status description]
+		public function addStatusDescription($data) {
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_status_description));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f]))
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				}
+				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			//END
+			
+			//START: run sql
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_status_description) . "` 
+					SET " . implode(',', $update) . "
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: get id
+				$description_id = $this->db->getLastId();
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('status_description');
+			//END
+			
+			//START: return
+				return $description_id;
+			//END
+		}
+		
+		public function editStatusDescriptionByStatusIdAndLanguageId($status_id, $language_id, $data) {
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_status_description));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f]))
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				}
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			//END
+			
+			//START: run sql
+				if(!empty($update)){
+					$sql = "
+						UPDATE " . $this->db->table($this->table_status_description) . " 
+						SET " . implode(',', $update) . "
+						WHERE status_id = '" . (int)$status_id . "' 
+						AND language_id = '" . (int)$language_id . "'
+					";
+					$query = $this->db->query($sql);
+				}
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('status_description');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+		
+		public function deleteStatusDescriptionByStatusId($status_id) {
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_status_description) . " 
+					WHERE status_id = '" . (int)$status_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('status_description');
+			//END
+			
+			//START: return
+				return true;
+			//END
 		}
 	//END
 	

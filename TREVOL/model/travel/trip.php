@@ -424,7 +424,7 @@ class ModelTravelTrip extends Model{
 					FROM " . $this->db->table($this->table_mode) . " t1 
 					LEFT JOIN ".$this->db->table($this->table_mode_description)." t2 
 					ON t1.mode_id = t2.mode_id 
-					ORDER BY t2.name ASC 
+					ORDER BY t1.mode_id DESC 
 				";
 			}
 			else {
@@ -457,112 +457,190 @@ class ModelTravelTrip extends Model{
 		}
 		
 		public function addMode($data) {
-			//START: table
-			$fields = $this->getFields($this->db->table($this->table_mode));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			
-			$sql = "
-				INSERT INTO `" . $this->db->table($this->table_mode) . "` 
-				SET " . implode(',', $update) . "
-			";
-			$query = $this->db->query($sql);
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_mode));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f]))
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				}
+				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			//END
 			
-			$mode_id = $this->db->getLastId();
-			
-			//START:table_description
-			$fields = $this->getFields($this->db->table($this->table_mode_description));
-			
-			$update = array();
-			$update[] = "mode_id = '" . $mode_id. "'";
-			
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			
-			$sql = "
-				INSERT INTO `" . $this->db->table($this->table_mode_description) . "` 
-				SET " . implode(',', $update) . "
-			";
-			$query = $this->db->query($sql);
+			//START: run sql
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_mode) . "` 
+					SET " . implode(',', $update) . "
+				";
+				$query = $this->db->query($sql);
 			//END
 			
-			$this->cache->delete('mode');
+			//START: get id
+				$mode_id = $this->db->getLastId();
+				$data['mode_id'] = $mode_id;
+			//END
 			
-			return $mode_id;
+			//START: run chain reaction
+				$this->addModeDescription($data);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('mode');
+			//END
+			
+			//START: return
+				return $mode_id;
+			//END
 		}
 		
 		public function editMode($mode_id, $data) {
-			//START: table
-			$fields = $this->getFields($this->db->table($this->table_mode));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			
-			if(!empty($update)){
-				$sql = "
-					UPDATE " . $this->db->table($this->table_mode) . " 
-					SET " . implode(',', $update) . "
-					WHERE mode_id = '" . (int)$mode_id . "'
-				";
-				$query = $this->db->query($sql);
-			}
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_mode));
+				
+				$update = array();
+				foreach($fields as $f) {
+					if(isset($data[$f])) {
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+				}
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			//END
 			
-			//START: table_description
-			$fields = $this->getFields($this->db->table($this->table_mode_description));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			
-			if(!empty($update)){
-				$sql = "
-					UPDATE " . $this->db->table($this->table_mode_description) . " 
-					SET " . implode(',', $update) . "
-					WHERE mode_id = '" . (int)$mode_id . "'
-				";
-				$query = $this->db->query($sql);
-			}
+			//START: run sql
+				if(!empty($update)) {
+					$sql = "
+						UPDATE " . $this->db->table($this->table_mode) . " 
+						SET " . implode(',', $update) . "
+						WHERE mode_id = '" . (int)$mode_id . "'
+					";
+					$query = $this->db->query($sql);
+				}
 			//END
 			
-			$this->cache->delete('mode');
-			return true;
+			//START: run chain reaction
+				if(isset($data['language_id'])) {
+					$this->editModeDescriptionByModeIdAndLanguageId($mode_id, $data['language_id'], $data);
+				}
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('mode');
+			//END
+			
+			//START: return
+				return true;
+			//END
 		}
 		
 		public function deleteMode($mode_id) {
-			//START: table
-			$sql = "
-				DELETE FROM " . $this->db->table($this->table_mode) . " 
-				WHERE mode_id = '" . (int)$mode_id . "'
-			";
-			$query = $this->db->query($sql);
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_mode) . " 
+					WHERE mode_id = '" . (int)$mode_id . "'
+				";
+				$query = $this->db->query($sql);
 			//END
 			
-			//START: table_description
-			$sql = "
-				DELETE FROM " . $this->db->table($this->table_mode_description) . " 
-				WHERE mode_id = '" . (int)$mode_id . "'
-			";
-			$query = $this->db->query($sql);
+			//START: run chain reaction
+				$this->deleteModeDescriptionByModeId($mode_id);
 			//END
 			
-			$this->cache->delete('mode');
-			return true;
+			//START: clear cache
+				$this->cache->delete('mode');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+	//END
+	
+	//START: [mode description]
+		public function addModeDescription($data) {
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_mode_description));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f]))
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				}
+				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			//END
+			
+			//START: run sql
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_mode_description) . "` 
+					SET " . implode(',', $update) . "
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: get id
+				$description_id = $this->db->getLastId();
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('mode_description');
+			//END
+			
+			//START: return
+				return $description_id;
+			//END
+		}
+		
+		public function editModeDescriptionByModeIdAndLanguageId($mode_id, $language_id, $data) {
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_mode_description));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f]))
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				}
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			//END
+			
+			//START: run sql
+				if(!empty($update)){
+					$sql = "
+						UPDATE " . $this->db->table($this->table_mode_description) . " 
+						SET " . implode(',', $update) . "
+						WHERE mode_id = '" . (int)$mode_id . "' 
+						AND language_id = '" . (int)$language_id . "'
+					";
+					$query = $this->db->query($sql);
+				}
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('mode_description');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+		
+		public function deleteModeDescriptionByModeId($mode_id) {
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_mode_description) . " 
+					WHERE mode_id = '" . (int)$mode_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('mode_description');
+			//END
+			
+			//START: return
+				return true;
+			//END
 		}
 	//END
 	

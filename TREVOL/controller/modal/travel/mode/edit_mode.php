@@ -26,28 +26,9 @@ class ControllerModalTravelModeEditMode extends AController {
 					//START: set input [ORDER IS IMPORTANT]
 						$input = array();
 						
-						$i ='mode_id';
-						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
-						$input[$i]['id'] = str_replace("_","-",$i);
-						$input[$i]['name'] = $i;
-						$input[$i]['type'] = 'hidden';
-						$input[$i]['required'] = false;
-						$input[$i]['json'] = $i;
 						
-						$i = 'section_general';
-						$input[$i]['section'] = 'General';
-						
-						$i = 'icon';
-						$input[$i]['label'] = 'Icon';
-						$input[$i]['id'] = 'icon';
-						$input[$i]['name'] = 'icon';
-						$input[$i]['type'] = 'text';
-						$input[$i]['required'] = true;
-						$input[$i]['help'] = 'fa-awesome';
-						$input[$i]['link'] = 'http://fontawesome.io/icons/';
-						
-						$i = 'section_description';
-						$input[$i]['section'] = 'Description';
+						$i ='description';
+						$input['section'.$i]['section'] = ucwords(str_replace("_"," ",$i));
 						
 						$i = 'language';
 						$language = $this->language->getCurrentLanguage();
@@ -64,6 +45,26 @@ class ControllerModalTravelModeEditMode extends AController {
 						$input[$i]['name'] = 'name';
 						$input[$i]['type'] = 'text';
 						$input[$i]['required'] = true;
+						
+						$i ='general';
+						$input['section'.$i]['section'] = ucwords(str_replace("_"," ",$i));
+						
+						$i ='mode_id';
+						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+						$input[$i]['id'] = str_replace("_","-",$i);
+						$input[$i]['name'] = $i;
+						$input[$i]['type'] = 'hidden';
+						$input[$i]['required'] = false;
+						$input[$i]['json'] = $i;
+						
+						$i = 'icon';
+						$input[$i]['label'] = 'Icon';
+						$input[$i]['id'] = 'icon';
+						$input[$i]['name'] = 'icon';
+						$input[$i]['type'] = 'text';
+						$input[$i]['required'] = true;
+						$input[$i]['help'] = 'fa-awesome';
+						$input[$i]['link'] = 'http://fontawesome.io/icons/';
 					//END
 					
 					$form[$f]['input'] = $input;

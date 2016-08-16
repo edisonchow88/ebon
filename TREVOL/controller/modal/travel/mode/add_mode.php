@@ -26,8 +26,30 @@ class ControllerModalTravelModeAddMode extends AController {
 					//START: set input [ORDER IS IMPORTANT]
 						$input = array();
 						
-						$i = 'section_general';
-						$input[$i]['section'] = 'General';
+						$i ='description';
+						$input['section'.$i]['section'] = ucwords(str_replace("_"," ",$i));
+						
+						$i ='language_id';
+						$language = $this->language->getAvailableLanguages();
+						$current_language = $this->language->getCurrentLanguage();
+						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+						$input[$i]['id'] = str_replace("_","-",$i);
+						$input[$i]['name'] = $i;
+						$input[$i]['required'] = true;
+						$input[$i]['type'] = 'select';
+						$input[$i]['value'] = $current_language['language_id'];
+						$input[$i]['option'] = $language;
+						
+						$i ='name';
+						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+						$input[$i]['id'] = str_replace("_","-",$i);
+						$input[$i]['name'] = $i;
+						$input[$i]['required'] = true;
+						$input[$i]['value'] = '';
+						$input[$i]['type'] = 'text';
+						
+						$i ='general';
+						$input['section'.$i]['section'] = ucwords(str_replace("_"," ",$i));
 						
 						$i = 'icon';
 						$input[$i]['label'] = 'Icon';
@@ -37,26 +59,6 @@ class ControllerModalTravelModeAddMode extends AController {
 						$input[$i]['required'] = true;
 						$input[$i]['help'] = 'fa-awesome';
 						$input[$i]['link'] = 'http://fontawesome.io/icons/';
-						
-						$i = 'section_description';
-						$input[$i]['section'] = 'Description';
-						
-						$i = 'language';
-						$language = $this->language->getCurrentLanguage();
-						$input[$i]['label'] = 'Language';
-						$input[$i]['id'] = 'language-id';
-						$input[$i]['name'] = 'language_id';
-						$input[$i]['type'] = 'hidden';
-						$input[$i]['required'] = false;
-						$input[$i]['value'] = $language['language_id'];
-						$input[$i]['text'] = $language['name'];
-						
-						$i = 'name';
-						$input[$i]['label'] = 'Name';
-						$input[$i]['id'] = 'name';
-						$input[$i]['name'] = 'name';
-						$input[$i]['type'] = 'text';
-						$input[$i]['required'] = true;
 					//END
 					
 					$form[$f]['input'] = $input;

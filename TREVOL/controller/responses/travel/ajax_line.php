@@ -98,7 +98,7 @@ class ControllerResponsesTravelAjaxLine extends AController {
 			}
 		//END
 		
-		//START: convert data format
+		//START: convert data format for NULL
 			foreach($this->data as $key => $value) {
 				if($value == '') {
 					$this->data[$key] = 'NULL';

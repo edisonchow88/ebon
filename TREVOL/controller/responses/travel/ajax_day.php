@@ -99,10 +99,20 @@ class ControllerResponsesTravelAjaxDay extends AController {
 			}
 		//END
 		
-		if(count($result['warning']) > 0) { 
-			$response = json_encode($result);
-			echo $response;	
-			return 'failed';
-		}
+		//START: convert data format for NULL
+			foreach($this->data as $key => $value) {
+				if($value == '') {
+					$this->data[$key] = 'NULL';
+				}
+			}
+		//END
+		
+		//START: return warning if failed
+			if(count($result['warning']) > 0) { 
+				$response = json_encode($result);
+				echo $response;	
+				return 'failed';
+			}
+		//END
 	}
 }

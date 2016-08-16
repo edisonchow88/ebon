@@ -345,6 +345,7 @@
 											}
 											content += "</ul></div>";
 											document.getElementById("'.$id.'-form-alert").innerHTML = content;
+											$("#'.$id.'").scrollTop(0);
 										}
 									';
 								//END

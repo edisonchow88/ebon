@@ -652,155 +652,141 @@ class ModelTravelTrip extends Model{
 	//END
 	
 	//START: [day]
-		public function getDay($day_id='',$line_id='') {
+		public function getDay($day_id='',$plan_id='') {
 			$day = array();
 			
-			if($day_id == '') {
-				$sql = "
-					SELECT * 
-					FROM " . $this->db->table($this->table_day) . "
-				";
-				if($line_id != '') { $sql .= " WHERE line_id = '" . (int)$this->db->escape($line_id) . "' "; }
-				$sql .= "
-					ORDER BY day_id DESC 
-				";
-			}
-			else {
-				$sql = "
-					SELECT * 
-					FROM " . $this->db->table($this->table_day) . " 
-					WHERE day_id = '" . (int)$day_id . "' 
-				";
-	
-			}
-			$query = $this->db->query($sql);
-			
-			//START: output
-			if($day_id == '') {
-				foreach($query->rows as $result){
-					$output[$result['day_id']] = $result;
+			//START: run sql
+				if($day_id == '') {
+					$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table_day) . "
+					";
+					if($plan_id != '') { $sql .= " WHERE plan_id = '" . (int)$this->db->escape($plan_id) . "' "; }
+					$sql .= "
+						ORDER BY plan_id DESC, sort_order ASC 
+					";
 				}
-			}
-			else {
-				$result = $query->row;
-				$output = $query->row;
-			}
+				else {
+					$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table_day) . " 
+						WHERE day_id = '" . (int)$day_id . "' 
+					";
+		
+				}
+				$query = $this->db->query($sql);
 			//END
 			
-			return $output;
+			//START: set output
+				if($day_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['day_id']] = $result;
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+				}
+			//END
+			
+			//START: return
+				return $output;
+			//END
 		}
 		
-		public function getDayByLineId($line_id) {
-			return $this->getDay('',$line_id);
+		public function getDayByPlanId($plan_id) {
+			return $this->getDay('',$plan_id);
 		}
 		
 		public function addDay($data) {
-			//START: table
-			$fields = $this->getFields($this->db->table($this->table_day));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			
-			$sql = "
-				INSERT INTO `" . $this->db->table($this->table_day) . "` 
-				SET " . implode(',', $update) . "
-			";
-			$query = $this->db->query($sql);
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_day));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f]))
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				}
+				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			//END
 			
-			$day_id = $this->db->getLastId();
-			
-			//START:table_description
-			$fields = $this->getFields($this->db->table($this->table_day_description));
-			
-			$update = array();
-			$update[] = "day_id = '" . $day_id. "'";
-			
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			
-			$sql = "
-				INSERT INTO `" . $this->db->table($this->table_day_description) . "` 
-				SET " . implode(',', $update) . "
-			";
-			$query = $this->db->query($sql);
+			//START: run sql	
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_day) . "` 
+					SET " . implode(',', $update) . "
+				";
+				$query = $this->db->query($sql);
 			//END
 			
-			$this->cache->delete('day');
+			//START: clear cache
+				$this->cache->delete('day');
+			//END
 			
-			return $day_id;
+			//START: return
+				$day_id = $this->db->getLastId();
+				return $day_id;
+			//END
 		}
 		
 		public function editDay($day_id, $data) {
-			//START: table
-			$fields = $this->getFields($this->db->table($this->table_day));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			
-			if(!empty($update)){
-				$sql = "
-					UPDATE " . $this->db->table($this->table_day) . " 
-					SET " . implode(',', $update) . "
-					WHERE day_id = '" . (int)$day_id . "'
-				";
-				$query = $this->db->query($sql);
-			}
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_day));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f]))
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				}
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			//END
 			
-			//START: table_description
-			$fields = $this->getFields($this->db->table($this->table_day_description));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			
-			if(!empty($update)){
-				$sql = "
-					UPDATE " . $this->db->table($this->table_day_description) . " 
-					SET " . implode(',', $update) . "
-					WHERE day_id = '" . (int)$day_id . "'
-				";
-				$query = $this->db->query($sql);
-			}
+			//START: run sql
+				if(!empty($update)){
+					$sql = "
+						UPDATE " . $this->db->table($this->table_day) . " 
+						SET " . implode(',', $update) . "
+						WHERE day_id = '" . (int)$day_id . "'
+					";
+					$query = $this->db->query($sql);
+				}
 			//END
 			
-			$this->cache->delete('day');
-			return true;
+			//START: clear cache
+				$this->cache->delete('day');
+			//END
+			
+			//START: return
+				return true;
+			//END
 		}
 		
 		public function deleteDay($day_id) {
-			//START: table
-			$sql = "
-				DELETE FROM " . $this->db->table($this->table_day) . " 
-				WHERE day_id = '" . (int)$day_id . "'
-			";
-			$query = $this->db->query($sql);
+			//START: verify
+				$day = $this->getDay($day_id);
+				$plan_id = $day['plan_id'];
+				$days = $this->getDayByPlanId($plan_id);
+				if(count($days) <= 1) {
+					$output['warning'][] = 'Cannot have less than one day.';
+					return $output;
+				}
 			//END
 			
-			//START: table_description
-			$sql = "
-				DELETE FROM " . $this->db->table($this->table_day_description) . " 
-				WHERE day_id = '" . (int)$day_id . "'
-			";
-			$query = $this->db->query($sql);
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_day) . " 
+					WHERE day_id = '" . (int)$day_id . "'
+				";
+				$query = $this->db->query($sql);
 			//END
 			
-			$this->cache->delete('day');
-			return true;
+			//START: clear cache
+				$this->cache->delete('day');
+			//END
+			
+			//START: return
+				return true;
+			//END
 		}
 	//END
 	

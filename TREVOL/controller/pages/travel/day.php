@@ -41,7 +41,8 @@ class ControllerPagesTravelDay extends AController {
 			
 					//following sequence is important
 					$result[$day_id]['day_id'] = $row['day_id'];
-					$result[$day_id]['plan_id'] = $row['plan_id'];
+					$plan = $this->model_travel_trip->getPlan($row['plan_id']);
+					$result[$day_id]['plan'] = $plan['name'];
 					$result[$day_id]['sort_order'] = $row['sort_order'];
 				}
 			}
@@ -71,7 +72,7 @@ class ControllerPagesTravelDay extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
 			
-			$i = 'plan_id';
+			$i = 'plan';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
@@ -111,9 +112,9 @@ class ControllerPagesTravelDay extends AController {
 			$table['row'] = $result;
 			//START: [action]
 				$action['review'] = true;
-				$action['add'] = false;
-				$action['edit'] = false;
-				$action['delete'] = false;
+				$action['add'] = true;
+				$action['edit'] = true;
+				$action['delete'] = true;
 			//END
 			//START: [related]
 				$related = array();
@@ -148,10 +149,18 @@ class ControllerPagesTravelDay extends AController {
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/travel/day/review_day', 'modal_review_day', 'modal/travel/day/review_day.tpl');
-			//$this->addChild('modal/travel/day/add_day', 'modal_add_day', 'modal/travel/day/add_day.tpl');
-			//$this->addChild('modal/travel/day/edit_day', 'modal_edit_day', 'modal/travel/day/edit_day.tpl');
-			//$this->addChild('modal/travel/day/delete_day', 'modal_delete_day', 'modal/travel/day/delete_day.tpl');
+			if($action['review'] == true) {
+				$this->addChild('modal/travel/day/review_day', 'modal_review_day', 'modal/travel/day/review_day.tpl');
+			}
+			if($action['add'] == true) {
+				$this->addChild('modal/travel/day/add_day', 'modal_add_day', 'modal/travel/day/add_day.tpl');
+			}
+			if($action['edit'] == true) {
+				$this->addChild('modal/travel/day/edit_day', 'modal_edit_day', 'modal/travel/day/edit_day.tpl');
+			}
+			if($action['delete'] == true) {
+				$this->addChild('modal/travel/day/delete_day', 'modal_delete_day', 'modal/travel/day/delete_day.tpl');
+			}
 		//END
 		
 		//START: set variable

@@ -60,7 +60,7 @@ class ControllerResponsesTravelAjaxDay extends AController {
 		
 		$day_id = $this->data['day_id']; 
 		$execution = $this->model_travel_trip->editDay($day_id, $this->data); 
-		if($execution == true) { 
+		if($execution === true) { 
 			$this->session->data['success'] = "Success: <b>Trip Day #".$day_id."</b> has been modified";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -73,7 +73,7 @@ class ControllerResponsesTravelAjaxDay extends AController {
 	public function delete() {
 		$day_id = $this->data['day_id']; 
 		$execution = $this->model_travel_trip->deleteDay($day_id); 
-		if($execution == true) { 
+		if($execution === true) { 
 			$this->session->data['success'] = "Success: <b>Trip Day #".$day_id."</b> has been deleted";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -81,13 +81,22 @@ class ControllerResponsesTravelAjaxDay extends AController {
 			$response = json_encode($result);
 			echo $response;
 		}
+		else {
+			$result['warning'] = $execution['warning'];
+			$response = json_encode($result);
+			echo $response;
+		}
 	}
 	
 	public function verify() {
 		//START: set requirement
-		if($this->data['plan_id'] == '') {
-			$result['warning'][] = 'Please input <b>Plan</b>';
-		}
+			if($this->data['plan_id'] == '') {
+				$result['warning'][] = 'Please input <b>Plan</b>';
+			}
+			
+			if($this->data['sort_order'] == '') {
+				$result['warning'][] = 'Please input <b>Sort Order</b>';
+			}
 		//END
 		
 		if(count($result['warning']) > 0) { 

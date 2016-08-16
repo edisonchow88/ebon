@@ -84,15 +84,27 @@ class ControllerResponsesTravelAjaxLine extends AController {
 	}
 	
 	public function verify() {
-		//START: Requirement
-		if($this->data['plan_id'] == '') {
-			$result['warning'][] = 'Please input <b>Plan</b>';
-		}
+		//START: set requirement
+			if($this->data['day_id'] == '') {
+				$result['warning'][] = 'Please input <b>Day</b>';
+			}
+			
+			if($this->data['type'] == '') {
+				$result['warning'][] = 'Please input <b>Type</b>';
+			}
+			
+			if($this->data['sort_order'] == '') {
+				$result['warning'][] = 'Please input <b>Sort Order</b>';
+			}
+		//END
 		
-		if($this->data['tag_id'] == '') {
-			$result['warning'][] = 'Please input <b>Tag</b>';
-		}
-		//END: Requirement
+		//START: convert data format
+			foreach($this->data as $key => $value) {
+				if($value == '') {
+					$this->data[$key] = 'NULL';
+				}
+			}
+		//END
 		
 		if(count($result['warning']) > 0) { 
 			$response = json_encode($result);

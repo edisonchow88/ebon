@@ -202,7 +202,7 @@ class ControllerPagesTravelLine extends AController {
 			$i = 'commands';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = '';
-			$column[$i]['width'] = '';
+			$column[$i]['width'] = '180px';
 			$column[$i]['align'] = 'right';
 			$column[$i]['sortable'] = 'false';
 			$column[$i]['searchable'] = 'false';
@@ -215,9 +215,9 @@ class ControllerPagesTravelLine extends AController {
 			$table['row'] = $result;
 			//START: [action]
 				$action['review'] = true;
-				$action['add'] = false;
-				$action['edit'] = false;
-				$action['delete'] = false;
+				$action['add'] = true;
+				$action['edit'] = true;
+				$action['delete'] = true;
 			//END
 			//START: [related]
 				$related = array();
@@ -252,10 +252,18 @@ class ControllerPagesTravelLine extends AController {
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/travel/line/review_line', 'modal_review_line', 'modal/travel/line/review_line.tpl');
-			//$this->addChild('modal/travel/line/add_line', 'modal_add_line', 'modal/travel/line/add_line.tpl');
-			//$this->addChild('modal/travel/line/edit_line', 'modal_edit_line', 'modal/travel/line/edit_line.tpl');
-			//$this->addChild('modal/travel/line/delete_line', 'modal_delete_line', 'modal/travel/line/delete_line.tpl');
+			if($action['review'] == true) {
+				$this->addChild('modal/travel/line/review_line', 'modal_review_line', 'modal/travel/line/review_line.tpl');
+			}
+			if($action['add'] == true) {
+				$this->addChild('modal/travel/line/add_line', 'modal_add_line', 'modal/travel/line/add_line.tpl');
+			}
+			if($action['edit'] == true) {
+				$this->addChild('modal/travel/line/edit_line', 'modal_edit_line', 'modal/travel/line/edit_line.tpl');
+			}
+			if($action['delete'] == true) {
+				$this->addChild('modal/travel/line/delete_line', 'modal_delete_line', 'modal/travel/line/delete_line.tpl');
+			}
 		//END
 		
 		//START: set variable

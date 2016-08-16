@@ -223,7 +223,7 @@
 									$content .= $i['label'];
 									$content .= '</label>';
 									$content .= '<div class="control-label col-sm-1 col-xs-2 text-center">';
-									if($i['required'] == true) {
+									if($i['required'] == true && $i['type'] != 'hidden') {
 										$content .= '<i class="fa fa-asterisk fa-fw text-warning" data-toggle="tooltip" data-placement="bottom" title="Required"></i>';
 									}
 									$content .= '</div>';

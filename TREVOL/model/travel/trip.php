@@ -6,7 +6,6 @@ if(!defined('DIR_CORE') || !IS_ADMIN){
 class ModelTravelTrip extends Model{
 	
 	private $table = "trip";
-	private $table_description = "trip_description";
 	private $table_status = "trip_status";
 	private $table_status_description = "trip_status_description";
 	private $table_mode = "trip_mode";
@@ -38,149 +37,140 @@ class ModelTravelTrip extends Model{
 		public function getTrip($trip_id='') {
 			$trip = array();
 			
-			if($trip_id == '') {
-				$sql = "
-					SELECT * 
-					FROM " . $this->db->table($this->table) . " t1 
-					LEFT JOIN ".$this->db->table($this->table_description)." t2 
-					ON t1.trip_id = t2.trip_id 
-					ORDER BY t1.trip_id DESC 
-				";
-			}
-			else {
-				$sql = "
-					SELECT * 
-					FROM " . $this->db->table($this->table) . " t1 
-					LEFT JOIN ".$this->db->table($this->table_description)." t2 
-					ON t1.trip_id = t2.trip_id 
-					WHERE t1.trip_id = '" . (int)$trip_id . "' 
-				";
-	
-			}
-			$query = $this->db->query($sql);
-			
-			if($trip_id == '') {
-				foreach($query->rows as $result){
-					$output[$result['trip_id']] = $result;
-					$output[$result['trip_id']]['name'] = ucwords($result['name']);
-					$output[$result['trip_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
-					$output[$result['trip_id']]['status'] = $this->getStatus($result['status_id']);
+			//START: run sql
+				if($trip_id == '') {
+					$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table) . " 
+						ORDER BY trip_id DESC 
+					";
 				}
-			}
-			else {
-				$result = $query->row;
-				$output = $query->row;
-				$output['name'] = ucwords($result['name']);
-				$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
-				$output['status'] = $this->getStatus($result['status_id']);
-			}
+				else {
+					$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table) . " 
+						WHERE trip_id = '" . (int)$trip_id . "' 
+					";
+		
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				if($trip_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['trip_id']] = $result;
+						$output[$result['trip_id']]['name'] = ucwords($result['name']);
+						$output[$result['trip_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+						$output[$result['trip_id']]['status'] = $this->getStatus($result['status_id']);
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+					$output['name'] = ucwords($result['name']);
+					$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+					$output['status'] = $this->getStatus($result['status_id']);
+				}
+			//END
 			
 			return $output;
 		}
 		
 		public function addTrip($data) {
-			//START: table
-			$fields = $this->getFields($this->db->table($this->table));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			
-			$sql = "
-				INSERT INTO `" . $this->db->table($this->table) . "` 
-				SET " . implode(',', $update) . "
-			";
-			$query = $this->db->query($sql);
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f])) {
+						if($data[$f] == 'NULL') {
+							$update[$f] = $f . " = NULL";
+						}
+						else {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+				}
+				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			//END
 			
-			$trip_id = $this->db->getLastId();
-			
-			//START:table_description
-			$fields = $this->getFields($this->db->table($this->table_description));
-			
-			$update = array();
-			$update[] = "trip_id = '" . $trip_id. "'";
-			
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			
-			$sql = "
-				INSERT INTO `" . $this->db->table($this->table_description) . "` 
-				SET " . implode(',', $update) . "
-			";
-			$query = $this->db->query($sql);
+			//START: run sql
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table) . "` 
+					SET " . implode(',', $update) . "
+				";
+				$query = $this->db->query($sql);
 			//END
 			
-			$this->cache->delete('trip');
+			//START: set id 
+				$trip_id = $this->db->getLastId();
+			//END
 			
-			return $trip_id;
+			//START: clear cache
+				$this->cache->delete('trip');
+			//END
+			
+			//START: return
+				return $trip_id;
+			//END
 		}
 		
 		public function editTrip($trip_id, $data) {
-			//table
-			$fields = $this->getFields($this->db->table($this->table));
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f])) {
+						if($data[$f] == 'NULL') {
+							$update[$f] = $f . " = NULL";
+						}
+						else {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+				}
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			//END
 			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			//START: run sql
+				if(!empty($update)){
+					$sql = "
+						UPDATE " . $this->db->table($this->table) . " 
+						SET " . implode(',', $update) . "
+						WHERE trip_id = '" . (int)$trip_id . "'
+					";
+					$query = $this->db->query($sql);
+				}
+			//END
 			
-			if(!empty($update)){
-				$sql = "
-					UPDATE " . $this->db->table($this->table) . " 
-					SET " . implode(',', $update) . "
-					WHERE trip_id = '" . (int)$trip_id . "'
-				";
-				$query = $this->db->query($sql);
-			}
+			//START: clear cache
+				$this->cache->delete('trip');
+			//END
 			
-			//table_description
-			$fields = $this->getFields($this->db->table($this->table_description));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			
-			if(!empty($update)){
-				$sql = "
-					UPDATE " . $this->db->table($this->table_description) . " 
-					SET " . implode(',', $update) . "
-					WHERE trip_id = '" . (int)$trip_id . "'
-				";
-				$query = $this->db->query($sql);
-			}
-			
-			$this->cache->delete('trip');
-			return true;
+			//START: return
+				return true;
+			//END
 		}
 		
 		public function deleteTrip($trip_id) {
-			//table
-			$sql = "
-				DELETE FROM " . $this->db->table($this->table) . " 
-				WHERE trip_id = '" . (int)$trip_id . "'
-			";
-			$query = $this->db->query($sql);
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table) . " 
+					WHERE trip_id = '" . (int)$trip_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
 			
-			//table_description
-			$sql = "
-				DELETE FROM " . $this->db->table($this->table_description) . " 
-				WHERE trip_id = '" . (int)$trip_id . "'
-			";
-			$query = $this->db->query($sql);
+			//START: clear cache
+				$this->cache->delete('trip');
+			//END
 			
-			$this->cache->delete('trip');
-			return true;
+			//START: return
+				return true;
+			//END
 		}
 	//END
 	
@@ -876,8 +866,14 @@ class ModelTravelTrip extends Model{
 				
 				$update = array();
 				foreach($fields as $f){
-					if(isset($data[$f]))
-						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					if(isset($data[$f])) {
+						if($data[$f] == 'NULL') {
+							$update[$f] = $f . " = NULL";
+						}
+						else {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
 				}
 				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
 				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
@@ -907,8 +903,14 @@ class ModelTravelTrip extends Model{
 				
 				$update = array();
 				foreach($fields as $f){
-					if(isset($data[$f]))
-						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					if(isset($data[$f])) {
+						if($data[$f] == 'NULL') {
+							$update[$f] = $f . " = NULL";
+						}
+						else {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
 				}
 				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			//END

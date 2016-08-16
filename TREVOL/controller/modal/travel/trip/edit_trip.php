@@ -26,6 +26,9 @@ class ControllerModalTravelTripEditTrip extends AController {
 					//START: set input [ORDER IS IMPORTANT]
 						$input = array();
 						
+						$i ='description';
+						$input['section'.$i]['section'] = ucwords(str_replace("_"," ",$i));
+						
 						$i ='language_id';
 						$language = $this->language->getAvailableLanguages();
 						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
@@ -41,6 +44,13 @@ class ControllerModalTravelTripEditTrip extends AController {
 						$input[$i]['name'] = $i;
 						$input[$i]['required'] = true;
 						$input[$i]['type'] = 'text';
+						
+						$i ='description';
+						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+						$input[$i]['id'] = str_replace("_","-",$i);
+						$input[$i]['name'] = $i;
+						$input[$i]['required'] = false;
+						$input[$i]['type'] = 'textarea';
 						
 						$i ='general';
 						$input['section'.$i]['section'] = ucwords(str_replace("_"," ",$i));

@@ -46,6 +46,7 @@ class ControllerPagesTravelTrip extends AController {
 					$result[$trip_id]['trip_id'] = $row['trip_id'];
 					$result[$trip_id]['user_id'] = $row['user_id'];
 					$result[$trip_id]['status'] = json_encode($row['status']);
+					$result[$trip_id]['language'] = $row['language']['name'];
 					$result[$trip_id]['name'] = $row['name'];
 					$result[$trip_id]['description'] = $row['description'];
 					$result[$trip_id]['plan'] = count($plan);
@@ -99,6 +100,18 @@ class ControllerPagesTravelTrip extends AController {
 			$column[$i]['searchable'] = 'true';
 			
 			$i = 'status';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'langauge';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';

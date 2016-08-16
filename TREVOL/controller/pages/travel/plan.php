@@ -189,7 +189,7 @@ class ControllerPagesTravelPlan extends AController {
 			$i = 'commands';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = '';
-			$column[$i]['width'] = '';
+			$column[$i]['width'] = '180px';
 			$column[$i]['align'] = 'right';
 			$column[$i]['sortable'] = 'false';
 			$column[$i]['searchable'] = 'false';
@@ -202,9 +202,9 @@ class ControllerPagesTravelPlan extends AController {
 			$table['row'] = $result;
 			//START: [action]
 				$action['review'] = true;
-				$action['add'] = false;
-				$action['edit'] = false;
-				$action['delete'] = false;
+				$action['add'] = true;
+				$action['edit'] = true;
+				$action['delete'] = true;
 			//END
 			//START: [related]
 				$related = array();
@@ -239,10 +239,18 @@ class ControllerPagesTravelPlan extends AController {
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/travel/plan/review_plan', 'modal_review_plan', 'modal/travel/plan/review_plan.tpl');
-			//$this->addChild('modal/travel/plan/add_plan', 'modal_add_plan', 'modal/travel/plan/add_plan.tpl');
-			//$this->addChild('modal/travel/plan/edit_plan', 'modal_edit_plan', 'modal/travel/plan/edit_plan.tpl');
-			//$this->addChild('modal/travel/plan/delete_plan', 'modal_delete_plan', 'modal/travel/plan/delete_plan.tpl');
+			if($action['review'] == true) {
+				$this->addChild('modal/travel/plan/review_plan', 'modal_review_plan', 'modal/travel/plan/review_plan.tpl');
+			}
+			if($action['add'] == true) {
+				$this->addChild('modal/travel/plan/add_plan', 'modal_add_plan', 'modal/travel/plan/add_plan.tpl');
+			}
+			if($action['edit'] == true) {
+				$this->addChild('modal/travel/plan/edit_plan', 'modal_edit_plan', 'modal/travel/plan/edit_plan.tpl');
+			}
+			if($action['delete'] == true) {
+				$this->addChild('modal/travel/plan/delete_plan', 'modal_delete_plan', 'modal/travel/plan/delete_plan.tpl');
+			}
 		//END
 		
 		//START: set variable

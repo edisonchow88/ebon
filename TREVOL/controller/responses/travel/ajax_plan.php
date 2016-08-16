@@ -84,18 +84,46 @@ class ControllerResponsesTravelAjaxPlan extends AController {
 	}
 	
 	public function verify() {
-		if($this->data['trip_id'] == '') {
-			$result['warning'][] = 'Please input <b>Trip</b>';
-		}
+		//START: set requirement
+			if($this->data['trip_id'] == '') {
+				$result['warning'][] = '<b>Trip</b> is missing';
+			}
+			
+			if($this->data['mode_id'] == '') {
+				$result['warning'][] = '<b>Mode</b> is missing';
+			}
+			
+			if($this->data['sort_order'] == '') {
+				$result['warning'][] = '<b>Sort Order</b> is missing';
+			}
+			
+			if($this->data['selected'] == '') {
+				$result['warning'][] = '<b>Selected</b> is missing';
+			}
+			
+			if($this->data['language_id'] == '') {
+				$result['warning'][] = '<b>Language</b> is missing';
+			}
+			
+			if($this->data['name'] == '') {
+				$result['warning'][] = '<b>Name</b> is missing';
+			}
+		//END
 		
-		if($this->data['name'] == '') {
-			$result['warning'][] = 'Please input <b>Name</b>';
-		}
+		//START: convert data format
+			foreach($this->data as $key => $value) {
+				if($value == '') {
+					$this->data[$key] = 'NULL';
+				}
+			}
+		//END
 		
-		if(count($result['warning']) > 0) { 
-			$response = json_encode($result);
-			echo $response;	
-			return 'failed';
-		}
+		//START: return warning if failed
+			if(count($result['warning']) > 0) { 
+				$response = json_encode($result);
+				echo $response;	
+				return 'failed';
+			}
+		//END
 	}
 }

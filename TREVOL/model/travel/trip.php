@@ -492,47 +492,51 @@ class ModelTravelTrip extends Model{
 		public function getPlan($plan_id='',$trip_id='') {
 			$plan = array();
 			
-			if($plan_id == '') {
-				$sql = "
-					SELECT * 
-					FROM " . $this->db->table($this->table_plan) . " t1 
-					LEFT JOIN ".$this->db->table($this->table_plan_description)." t2 
-					ON t1.plan_id = t2.plan_id 
-				";
-				if($trip_id != '') { $sql .= " WHERE t1.trip_id = '" . (int)$this->db->escape($trip_id) . "' "; }
-				$sql .= "
-					ORDER BY t1.trip_id DESC, t1.sort_order ASC 
-				";
-			}
-			else {
-				$sql = "
-					SELECT * 
-					FROM " . $this->db->table($this->table_plan) . " t1 
-					LEFT JOIN ".$this->db->table($this->table_plan_description)." t2 
-					ON t1.plan_id = t2.plan_id 
-					WHERE t1.plan_id = '" . (int)$plan_id . "' 
-				";
-	
-			}
-			$query = $this->db->query($sql);
-			
-			if($plan_id == '') {
-				foreach($query->rows as $result){
-					$output[$result['plan_id']] = $result;
-					$output[$result['plan_id']]['name'] = ucwords($result['name']);
-					$output[$result['plan_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
-					$output[$result['plan_id']]['trip'] = $this->getTrip($result['trip_id']);
-					$output[$result['plan_id']]['mode'] = $this->getMode($result['mode_id']);
+			//START: run sql
+				if($plan_id == '') {
+					$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table_plan) . " t1 
+						LEFT JOIN ".$this->db->table($this->table_plan_description)." t2 
+						ON t1.plan_id = t2.plan_id 
+					";
+					if($trip_id != '') { $sql .= " WHERE t1.trip_id = '" . (int)$this->db->escape($trip_id) . "' "; }
+					$sql .= "
+						ORDER BY t1.trip_id DESC, t1.sort_order ASC 
+					";
 				}
-			}
-			else {
-				$result = $query->row;
-				$output = $query->row;
-				$output['name'] = ucwords($result['name']);
-				$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
-				$output['trip'] = $this->getTrip($result['trip_id']);
-				$output['mode'] = $this->getMode($result['mode_id']);
-			}
+				else {
+					$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table_plan) . " t1 
+						LEFT JOIN ".$this->db->table($this->table_plan_description)." t2 
+						ON t1.plan_id = t2.plan_id 
+						WHERE t1.plan_id = '" . (int)$plan_id . "' 
+					";
+		
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				if($plan_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['plan_id']] = $result;
+						$output[$result['plan_id']]['name'] = ucwords($result['name']);
+						$output[$result['plan_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+						$output[$result['plan_id']]['trip'] = $this->getTrip($result['trip_id']);
+						$output[$result['plan_id']]['mode'] = $this->getMode($result['mode_id']);
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+					$output['name'] = ucwords($result['name']);
+					$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
+					$output['trip'] = $this->getTrip($result['trip_id']);
+					$output['mode'] = $this->getMode($result['mode_id']);
+				}
+			//END
 			
 			return $output;
 		}
@@ -547,8 +551,14 @@ class ModelTravelTrip extends Model{
 			
 			$update = array();
 			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				if(isset($data[$f])) {
+					if($data[$f] == 'NULL') {
+						$update[$f] = $f . " = NULL";
+					}
+					else {
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+				}
 			}
 			if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
@@ -591,8 +601,14 @@ class ModelTravelTrip extends Model{
 			
 			$update = array();
 			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+				if(isset($data[$f])) {
+					if($data[$f] == 'NULL') {
+						$update[$f] = $f . " = NULL";
+					}
+					else {
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+				}
 			}
 			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			

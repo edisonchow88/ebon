@@ -49,7 +49,13 @@ class ControllerPagesTravelTrip extends AController {
 					$result[$trip_id]['name'] = $row['name'];
 					$result[$trip_id]['description'] = $row['description'];
 					$result[$trip_id]['plan'] = count($plan);
-					$result[$trip_id]['travel_date'] = $row['travel_date'];
+					unset($travel_date);
+					foreach($plan as $p) {
+						if($p['selected'] == 1) {
+							$travel_date = $p['travel_date'];
+						}
+					}
+					$result[$trip_id]['travel_date'] = $travel_date;
 					$result[$trip_id]['date_added'] = $row['date_added'];
 					$result[$trip_id]['date_modified'] = $row['date_modified'];
 				}
@@ -180,7 +186,7 @@ class ControllerPagesTravelTrip extends AController {
 			$i = 'commands';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = '';
-			$column[$i]['width'] = '';
+			$column[$i]['width'] = '180px';
 			$column[$i]['align'] = 'right';
 			$column[$i]['sortable'] = 'false';
 			$column[$i]['searchable'] = 'false';
@@ -192,10 +198,10 @@ class ControllerPagesTravelTrip extends AController {
 			$table['column'] = $column;
 			$table['row'] = $result;
 			//START: [action]
-				$action['add'] = false;
-				$action['edit'] = false;
-				$action['delete'] = false;
 				$action['review'] = true;
+				$action['add'] = true;
+				$action['edit'] = true;
+				$action['delete'] = true;
 			//END
 			//START: [related]
 				$related = array();
@@ -230,10 +236,18 @@ class ControllerPagesTravelTrip extends AController {
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/travel/trip/review_trip', 'modal_review_trip', 'modal/travel/trip/review_trip.tpl');
-			//$this->addChild('modal/travel/trip/add_trip', 'modal_add_trip', 'modal/travel/trip/add_trip.tpl');
-			//$this->addChild('modal/travel/trip/edit_trip', 'modal_edit_trip', 'modal/travel/trip/edit_trip.tpl');
-			//$this->addChild('modal/travel/trip/delete_trip', 'modal_delete_trip', 'modal/travel/trip/delete_trip.tpl');
+			if($action['review'] == true) {
+				$this->addChild('modal/travel/trip/review_trip', 'modal_review_trip', 'modal/travel/trip/review_trip.tpl');
+			}
+			if($action['add'] == true) {
+				$this->addChild('modal/travel/trip/add_trip', 'modal_add_trip', 'modal/travel/trip/add_trip.tpl');
+			}
+			if($action['edit'] == true) {
+				$this->addChild('modal/travel/trip/edit_trip', 'modal_edit_trip', 'modal/travel/trip/edit_trip.tpl');
+			}
+			if($action['delete'] == true) {
+				$this->addChild('modal/travel/trip/delete_trip', 'modal_delete_trip', 'modal/travel/trip/delete_trip.tpl');
+			}
 		//END
 		
 		//START: set variable

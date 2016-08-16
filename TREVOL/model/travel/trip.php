@@ -44,7 +44,7 @@ class ModelTravelTrip extends Model{
 					FROM " . $this->db->table($this->table) . " t1 
 					LEFT JOIN ".$this->db->table($this->table_description)." t2 
 					ON t1.trip_id = t2.trip_id 
-					ORDER BY t1.travel_date DESC 
+					ORDER BY t1.trip_id DESC 
 				";
 			}
 			else {

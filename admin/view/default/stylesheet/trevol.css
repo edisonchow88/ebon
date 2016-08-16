@@ -10,12 +10,20 @@ form section::before {
     height: 1px;
     width: 100%;
     margin: 15px 0;
-    background: #DDD;
 }
 
 .modal-form {
 	margin:auto;
 	width:500px;
+}
+
+.row {
+	margin-left:0;
+	margin-right:0;
+}
+
+.tab-content {
+	background-color:#FFF;
 }
 
 /* START: auto display dropdown menu when hover */

@@ -5,7 +5,7 @@
 	}
 //END
 
-class ControllerModalTravelTripReviewTrip extends AController {
+class ControllerModalTravelPlanReviewPlan extends AController {
 
   	public function main() {
         //START: initiate controller data
@@ -16,8 +16,8 @@ class ControllerModalTravelTripReviewTrip extends AController {
 			$this->loadComponent('database/modal');
 			
 			//START: set modal
-				$modal['object'] = 'trip';
-				$modal['ajax'] = $this->html->getSecureURL('travel/ajax_trip');
+				$modal['object'] = 'plan';
+				$modal['ajax'] = $this->html->getSecureURL('travel/ajax_plan');
 				
 				//START: set form
 					$f = 'review';
@@ -26,7 +26,19 @@ class ControllerModalTravelTripReviewTrip extends AController {
 					//START: set input [ORDER IS IMPORTANT]
 						$input = array();
 						
-						$column = $this->model_travel_trip->getFields($this->db->table('trip'));
+						$column = $this->model_travel_trip->getFields($this->db->table('trip_plan'));
+						
+						foreach($column as $c) {
+							$i = $c;
+							$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+							$input[$i]['id'] = str_replace("_","-",$i);
+							$input[$i]['name'] = $i;
+							$input[$i]['type'] = 'hidden';
+							$input[$i]['required'] = false;
+							$input[$i]['json'] = $i;
+						}
+						
+						$column = $this->model_travel_trip->getFields($this->db->table('trip_plan_description'));
 						
 						foreach($column as $c) {
 							$i = $c;
@@ -53,7 +65,7 @@ class ControllerModalTravelTripReviewTrip extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('modal/travel/trip/review_trip.tpl' );
+			$this->processTemplate('modal/travel/plan/review_plan.tpl' );
 		//END
 		
 		//START: update controller data

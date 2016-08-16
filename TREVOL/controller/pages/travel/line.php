@@ -43,7 +43,7 @@ class ControllerPagesTravelLine extends AController {
 					$result[$line_id]['line_id'] = $row['line_id'];
 					$result[$line_id]['day_id'] = $row['day_id'];
 					$result[$line_id]['type'] = $row['type'];
-					$result[$line_id]['id'] = $row['id'];
+					$result[$line_id]['type_id'] = $row['type_id'];
 					$result[$line_id]['title'] = $row['title'];
 					$result[$line_id]['description'] = $row['description'];
 					$result[$line_id]['time'] = $row['time'];
@@ -103,7 +103,7 @@ class ControllerPagesTravelLine extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'false';
 			
-			$i = 'id';
+			$i = 'type_id';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
@@ -214,9 +214,10 @@ class ControllerPagesTravelLine extends AController {
 			$table['column'] = $column;
 			$table['row'] = $result;
 			//START: [action]
+				$action['review'] = true;
 				$action['add'] = false;
 				$action['edit'] = false;
-				$action['delete'] = true;
+				$action['delete'] = false;
 			//END
 			//START: [related]
 				$related = array();
@@ -251,9 +252,10 @@ class ControllerPagesTravelLine extends AController {
 		//END
 		
 		//START: set modal
-			//$this->addChild('modal/travel/add_line', 'modal_add_line', 'modal/travel/add_line.tpl');
-			//$this->addChild('modal/travel/edit_line', 'modal_edit_line', 'modal/travel/edit_line.tpl');
-			//$this->addChild('modal/travel/delete_line', 'modal_delete_line', 'modal/travel/delete_line.tpl');
+			$this->addChild('modal/travel/line/review_line', 'modal_review_line', 'modal/travel/line/review_line.tpl');
+			//$this->addChild('modal/travel/line/add_line', 'modal_add_line', 'modal/travel/line/add_line.tpl');
+			//$this->addChild('modal/travel/line/edit_line', 'modal_edit_line', 'modal/travel/line/edit_line.tpl');
+			//$this->addChild('modal/travel/line/delete_line', 'modal_delete_line', 'modal/travel/line/delete_line.tpl');
 		//END
 		
 		//START: set variable

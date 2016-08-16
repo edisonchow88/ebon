@@ -110,9 +110,10 @@ class ControllerPagesTravelDay extends AController {
 			$table['column'] = $column;
 			$table['row'] = $result;
 			//START: [action]
+				$action['review'] = true;
 				$action['add'] = false;
 				$action['edit'] = false;
-				$action['delete'] = true;
+				$action['delete'] = false;
 			//END
 			//START: [related]
 				$related = array();
@@ -147,9 +148,10 @@ class ControllerPagesTravelDay extends AController {
 		//END
 		
 		//START: set modal
-			//$this->addChild('modal/travel/add_day', 'modal_add_day', 'modal/travel/add_day.tpl');
-			//$this->addChild('modal/travel/edit_day', 'modal_edit_day', 'modal/travel/edit_day.tpl');
-			//$this->addChild('modal/travel/delete_day', 'modal_delete_day', 'modal/travel/delete_day.tpl');
+			$this->addChild('modal/travel/day/review_day', 'modal_review_day', 'modal/travel/day/review_day.tpl');
+			//$this->addChild('modal/travel/day/add_day', 'modal_add_day', 'modal/travel/day/add_day.tpl');
+			//$this->addChild('modal/travel/day/edit_day', 'modal_edit_day', 'modal/travel/day/edit_day.tpl');
+			//$this->addChild('modal/travel/day/delete_day', 'modal_delete_day', 'modal/travel/day/delete_day.tpl');
 		//END
 		
 		//START: set variable

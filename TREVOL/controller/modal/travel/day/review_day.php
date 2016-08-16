@@ -5,7 +5,7 @@
 	}
 //END
 
-class ControllerModalTravelTripReviewTrip extends AController {
+class ControllerModalTravelDayReviewDay extends AController {
 
   	public function main() {
         //START: initiate controller data
@@ -16,8 +16,8 @@ class ControllerModalTravelTripReviewTrip extends AController {
 			$this->loadComponent('database/modal');
 			
 			//START: set modal
-				$modal['object'] = 'trip';
-				$modal['ajax'] = $this->html->getSecureURL('travel/ajax_trip');
+				$modal['object'] = 'day';
+				$modal['ajax'] = $this->html->getSecureURL('travel/ajax_day');
 				
 				//START: set form
 					$f = 'review';
@@ -26,7 +26,7 @@ class ControllerModalTravelTripReviewTrip extends AController {
 					//START: set input [ORDER IS IMPORTANT]
 						$input = array();
 						
-						$column = $this->model_travel_trip->getFields($this->db->table('trip'));
+						$column = $this->model_travel_trip->getFields($this->db->table('trip_day'));
 						
 						foreach($column as $c) {
 							$i = $c;
@@ -53,7 +53,7 @@ class ControllerModalTravelTripReviewTrip extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('modal/travel/trip/review_trip.tpl' );
+			$this->processTemplate('modal/travel/day/review_day.tpl' );
 		//END
 		
 		//START: update controller data

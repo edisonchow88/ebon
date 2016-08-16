@@ -109,6 +109,7 @@ class ControllerPagesTravelMode extends AController {
 			$table['column'] = $column;
 			$table['row'] = $result;
 			//START: [action]
+				$action['review'] = true;
 				$action['add'] = true;
 				$action['edit'] = true;
 				$action['delete'] = true;
@@ -146,9 +147,10 @@ class ControllerPagesTravelMode extends AController {
 		//END
 		
 		//START: set modal
-			//$this->addChild('modal/travel/add_mode', 'modal_add_mode', 'modal/travel/add_mode.tpl');
-			//$this->addChild('modal/travel/edit_mode', 'modal_edit_mode', 'modal/travel/edit_mode.tpl');
-			//$this->addChild('modal/travel/delete_mode', 'modal_delete_mode', 'modal/travel/delete_mode.tpl');
+			$this->addChild('modal/travel/mode/review_mode', 'modal_review_mode', 'modal/travel/mode/review_mode.tpl');
+			$this->addChild('modal/travel/mode/add_mode', 'modal_add_mode', 'modal/travel/mode/add_mode.tpl');
+			$this->addChild('modal/travel/mode/edit_mode', 'modal_edit_mode', 'modal/travel/mode/edit_mode.tpl');
+			$this->addChild('modal/travel/mode/delete_mode', 'modal_delete_mode', 'modal/travel/mode/delete_mode.tpl');
 		//END
 		
 		//START: set variable

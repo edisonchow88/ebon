@@ -47,7 +47,6 @@
 				$get['id'] = 'modal-'.$get['action'].'-'.$modal['object_id'];
 				$get['function'] = $get['action'].str_replace(" ","",$modal['object_name']).'()';
 				$get['ajax'] = $ajax;
-				$get['target_action'] = $modal['action'];
 			//END
 			
 			//START: set form
@@ -61,7 +60,7 @@
 				$output ='';
 				$output .= $this->writeModal($modal['id'],$modal['title'],$modal['body'],$modal['next'],$modal['function']);
 				$output .= $this->writeScript($modal['id'],$modal['action'],$modal['function'],$modal['ajax']);
-				$output .= $this->writeScriptForGet($get['id'],$get['action'],$get['function'],$get['ajax'],$get['target_action'],$form['edit']['input']);
+				$output .= $this->writeScriptForGet($get['id'],$get['action'],$get['function'],$get['ajax'],$form['edit']['input']);
 			//END
 			
 			return $output;
@@ -115,14 +114,6 @@
 				$modal['ajax'] = $ajax;
 			//END
 			
-			//START: set for get script
-				$get['action'] = 'get';
-				$get['id'] = 'modal-'.$get['action'].'-'.$modal['object_id'];
-				$get['function'] = $get['action'].str_replace(" ","",$modal['object_name']).'()';
-				$get['ajax'] = $ajax;
-				$get['target_action'] = $modal['action'];
-			//END
-			
 			//START: set form
 				foreach($form as $action => $f) {
 					$id = 'modal-'.$action.'-'.$modal['object_id'].'-form';
@@ -133,8 +124,7 @@
 			//START: set output
 				$output ='';
 				$output .= $this->writeModal($modal['id'],$modal['title'],$modal['body'],$modal['next'],$modal['function']);
-				$output .= $this->writeScript($modal['id'],$modal['action'],$modal['function'],$modal['ajax']);
-				$output .= $this->writeScriptForGet($get['id'],$get['action'],$get['function'],$get['ajax'],$get['target_action'],$form['review']['input']);
+				$output .= $this->writeScriptForReview($modal['id'],$modal['action'],$modal['function'],$modal['ajax'],$form['review']['input']);
 			//END
 			
 			return $output;
@@ -391,7 +381,7 @@
 			return $content;
 		}
 		
-		private function writeScriptForGet($id,$action,$function,$ajax,$target_action,$input='') {
+		private function writeScriptForGet($id,$action,$function,$ajax,$input='') {
 			$content = '';
 			
 			$content .= '<script>';
@@ -403,16 +393,68 @@
 					$content .= 'var data = "";';
 					$content .= 'var query = url + data;';
 					$content .= 'xmlhttp.onreadystatechange = function() {';
-						$content .= 'document.getElementById("'.str_replace('get',$target_action,$id).'-form-alert").innerHTML = "";';
+						$content .= 'document.getElementById("'.str_replace('get','edit',$id).'-form-alert").innerHTML = "";';
 						//START: [if connection success]
 							$content .= 'if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {';
 								$content .= 'var json = JSON.parse(xmlhttp.responseText);';
 								foreach($input as $i) {
 									if(!isset($i['section'])) {
-										$content .= 'document.getElementById("'.str_replace('get',$target_action,$id).'-form-input-'.$i['id'].'").value = json.'.$i['name'].';';
+										$content .= 'document.getElementById("'.str_replace('get','edit',$id).'-form-input-'.$i['id'].'").value = json.'.$i['name'].';';
 										if(isset($i['json'])) {
-											$content .= 'document.getElementById("'.str_replace('get',$target_action,$id).'-form-text-'.$i['id'].'").innerHTML = json.'.$i['json'].';';
+											$content .= 'document.getElementById("'.str_replace('get','edit',$id).'-form-text-'.$i['id'].'").innerHTML = json.'.$i['json'].';';
 										}
+									}
+								}
+							$content .='}';
+						//END
+						
+						//START: [if connection failed]
+							$content .='
+								else {}
+							';
+						//END
+					$content .='};';
+					$content .='xmlhttp.open("POST", query, true);';
+					$content .='xmlhttp.send(form_data);';
+				$content .= '}';
+				
+				//START: fix browser warning of "Synchronous XMLHttpRequest on the main thread is deprecated..."
+				//[Note:  this fix may lead to unexpected behavior since the script is loaded after the HTML]
+					$content .= '
+						$.ajaxPrefilter(function( options, originalOptions, jqXHR ) {
+							options.async = true;
+						});
+					';
+				//END
+			$content .= '</script>';
+			
+			return $content;
+		}
+		
+		private function writeScriptForReview($id,$action,$function,$ajax,$input='') {
+			$content = '';
+			
+			$content .= '<script>';
+				$content .= 'function '.$function.' {';
+					$content .= 'var form_element = document.querySelector("#'.$id.'-form");';
+					$content .= 'var form_data = new FormData(form_element);';
+					$content .= 'var xmlhttp = new XMLHttpRequest();';
+					$content .= 'var url = "'.$ajax.'";';
+					$content .= 'var data = "";';
+					$content .= 'var query = url + data;';
+					$content .= 'xmlhttp.onreadystatechange = function() {';
+						$content .= 'document.getElementById("'.$id.'-form-alert").innerHTML = "";';
+						//START: [if connection success]
+							$content .= 'if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {';
+								$content .= 'var json = JSON.parse(xmlhttp.responseText);';
+								foreach($input as $i) {
+									if(!isset($i['section'])) {
+										$content .= 'document.getElementById("'.$id.'-form-input-'.$i['id'].'").value = json.'.$i['name'].';';
+										$content .= 'if(json.'.$i['json'].' != null) {';
+										$content .= 'document.getElementById("'.$id.'-form-text-'.$i['id'].'").innerHTML = json.'.$i['json'].';';
+										$content .= '} else {';
+										$content .= 'document.getElementById("'.$id.'-form-text-'.$i['id'].'").innerHTML = "NULL";';
+										$content .= '}';
 									}
 								}
 							$content .='}';

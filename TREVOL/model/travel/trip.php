@@ -14,9 +14,7 @@ class ModelTravelTrip extends Model{
 	private $table_plan = "trip_plan";
 	private $table_plan_description = "trip_plan_description";
 	private $table_day = "trip_day";
-	private $table_day_description = "trip_day_description";
 	private $table_line = "trip_line";
-	private $table_line_description = "trip_line_description";
 	
 	public function getFields($table) {
 		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
@@ -660,22 +658,18 @@ class ModelTravelTrip extends Model{
 			if($day_id == '') {
 				$sql = "
 					SELECT * 
-					FROM " . $this->db->table($this->table_day) . " t1 
-					LEFT JOIN ".$this->db->table($this->table_day_description)." t2 
-					ON t1.day_id = t2.day_id 
+					FROM " . $this->db->table($this->table_day) . "
 				";
-				if($line_id != '') { $sql .= " WHERE t1.line_id = '" . (int)$this->db->escape($line_id) . "' "; }
+				if($line_id != '') { $sql .= " WHERE line_id = '" . (int)$this->db->escape($line_id) . "' "; }
 				$sql .= "
-					ORDER BY t1.day_id DESC 
+					ORDER BY day_id DESC 
 				";
 			}
 			else {
 				$sql = "
 					SELECT * 
-					FROM " . $this->db->table($this->table_day) . " t1 
-					LEFT JOIN ".$this->db->table($this->table_day_description)." t2 
-					ON t1.day_id = t2.day_id 
-					WHERE t1.day_id = '" . (int)$day_id . "' 
+					FROM " . $this->db->table($this->table_day) . " 
+					WHERE day_id = '" . (int)$day_id . "' 
 				";
 	
 			}
@@ -685,15 +679,11 @@ class ModelTravelTrip extends Model{
 			if($day_id == '') {
 				foreach($query->rows as $result){
 					$output[$result['day_id']] = $result;
-					$output[$result['day_id']]['name'] = ucwords($result['name']);
-					$output[$result['day_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 				}
 			}
 			else {
 				$result = $query->row;
 				$output = $query->row;
-				$output['name'] = ucwords($result['name']);
-				$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 			}
 			//END
 			
@@ -815,7 +805,7 @@ class ModelTravelTrip extends Model{
 	//END
 	
 	//START: [line]
-		public function getLine($line_id='',$plan_id='') {
+		public function getLine($line_id='',$day_id='') {
 			$line = array();
 			
 			if($line_id == '') {
@@ -823,9 +813,9 @@ class ModelTravelTrip extends Model{
 					SELECT * 
 					FROM " . $this->db->table($this->table_line) . " 
 				";
-				if($plan_id != '') { 
+				if($day_id != '') { 
 					$sql .= " 
-						WHERE plan_id = '" . (int)$this->db->escape($plan_id) . "' 
+						WHERE day_id = '" . (int)$this->db->escape($day_id) . "' 
 					"; 
 				}
 				$sql .= "
@@ -845,12 +835,10 @@ class ModelTravelTrip extends Model{
 			if($line_id == '') {
 				foreach($query->rows as $result){
 					$output[$result['line_id']] = $result;
-					$output[$result['line_id']]['plan'] = $this->getPlan($result['plan_id']);
 				}
 			}
 			else {
 				$output = $result = $query->row;
-				$output['plan'] = $this->getPlan($result['plan_id']);
 			}
 			
 			return $output;

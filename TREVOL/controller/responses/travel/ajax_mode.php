@@ -3,14 +3,13 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerResponsesTravelAjaxTrip extends AController {
+class ControllerResponsesTravelAjaxMode extends AController {
 	
 	public $data = array();
 
 	public function main() {
 		//START: load model
 			$this->loadModel('travel/trip');
-			$this->loadModel('account/user');
 		//END
 		
 		foreach($_POST as $key => $value) {
@@ -34,8 +33,8 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 	}
 	
 	public function get() {
-		$trip_id = $this->data['trip_id']; 
-		$result = $this->model_travel_trip->getTrip($trip_id);
+		$mode_id = $this->data['mode_id']; 
+		$result = $this->model_travel_trip->getMode($mode_id);
 		$response = json_encode($result);
 		echo $response;
 	}
@@ -47,8 +46,8 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 	public function add() {
 		if($this->verify() == 'failed') { return; }
 		
-		$trip_id = $this->model_travel_trip->addTrip($this->data); 
-		$this->session->data['success'] = 'Success: New <b>Trip #'.$trip_id.'</b> has been added';
+		$mode_id = $this->model_travel_trip->addMode($this->data); 
+		$this->session->data['success'] = 'Success: New <b>Mode #'.$mode_id.'</b> has been added';
 		
 		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 		$result['success'][] = true;
@@ -59,10 +58,10 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 	public function edit() {
 		if($this->verify() == 'failed') { return; }
 		
-		$trip_id = $this->data['trip_id']; 
-		$execution = $this->model_travel_trip->editTrip($trip_id, $this->data); 
+		$mode_id = $this->data['mode_id']; 
+		$execution = $this->model_travel_trip->editMode($mode_id, $this->data); 
 		if($execution == true) { 
-			$this->session->data['success'] = "Success: <b>Trip #".$trip_id."</b> has been modified";
+			$this->session->data['success'] = "Success: <b>Mode #".$mode_id."</b> has been modified";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 			$result['success'][] = true;
@@ -72,10 +71,10 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 	}
 	
 	public function delete() {
-		$trip_id = $this->data['trip_id']; 
-		$execution = $this->model_travel_trip->deleteTrip($trip_id); 
+		$mode_id = $this->data['mode_id']; 
+		$execution = $this->model_travel_trip->deleteMode($mode_id); 
 		if($execution == true) { 
-			$this->session->data['success'] = "Success: <b>Trip #".$trip_id."</b> has been deleted";
+			$this->session->data['success'] = "Success: <b>Mode #".$mode_id."</b> has been deleted";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 			$result['success'][] = true;
@@ -87,6 +86,10 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 	public function verify() {
 		if($this->data['name'] == '') {
 			$result['warning'][] = 'Please input <b>Name</b>';
+		}
+		
+		if($this->data['icon'] == '') {
+			$result['warning'][] = 'Please input <b>Icon</b>';
 		}
 		
 		if(count($result['warning']) > 0) { 

@@ -201,9 +201,10 @@ class ControllerPagesTravelPlan extends AController {
 			$table['column'] = $column;
 			$table['row'] = $result;
 			//START: [action]
+				$action['review'] = true;
 				$action['add'] = false;
 				$action['edit'] = false;
-				$action['delete'] = true;
+				$action['delete'] = false;
 			//END
 			//START: [related]
 				$related = array();
@@ -238,9 +239,10 @@ class ControllerPagesTravelPlan extends AController {
 		//END
 		
 		//START: set modal
-			//$this->addChild('modal/travel/add_plan', 'modal_add_plan', 'modal/travel/add_plan.tpl');
-			//$this->addChild('modal/travel/edit_plan', 'modal_edit_plan', 'modal/travel/edit_plan.tpl');
-			//$this->addChild('modal/travel/delete_plan', 'modal_delete_plan', 'modal/travel/delete_plan.tpl');
+			$this->addChild('modal/travel/plan/review_plan', 'modal_review_plan', 'modal/travel/plan/review_plan.tpl');
+			//$this->addChild('modal/travel/plan/add_plan', 'modal_add_plan', 'modal/travel/plan/add_plan.tpl');
+			//$this->addChild('modal/travel/plan/edit_plan', 'modal_edit_plan', 'modal/travel/plan/edit_plan.tpl');
+			//$this->addChild('modal/travel/plan/delete_plan', 'modal_delete_plan', 'modal/travel/plan/delete_plan.tpl');
 		//END
 		
 		//START: set variable

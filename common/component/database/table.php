@@ -231,8 +231,10 @@
 			//END
 			
 			//START: [new or overwrite formatter]
-				foreach($formatter as $k => $v) {
-					$format[$k] = $v;
+				if($formatter != '') {
+					foreach($formatter as $k => $v) {
+						$format[$k] = $v;
+					}
 				}
 			//END
 			
@@ -273,8 +275,8 @@
 						})
 						.end().find(".command-review").on("click", function(e)
 						{
-							document.getElementById("modal-get-'.$object_id.'-form-input-'.$object_id.'-id").value = $(this).data("row-id");
-							get'.$object_name_no_space.'();
+							document.getElementById("modal-review-'.$object_id.'-form-input-'.$object_id.'-id").value = $(this).data("row-id");
+							review'.$object_name_no_space.'();
 							$($(this).attr("data-target")).modal("show");
 						})
 						'.$grid_function.'

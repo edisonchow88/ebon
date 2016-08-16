@@ -5,7 +5,7 @@
 	}
 //END
 
-class ControllerModalTravelTripReviewTrip extends AController {
+class ControllerModalTravelModeDeleteMode extends AController {
 
   	public function main() {
         //START: initiate controller data
@@ -16,27 +16,20 @@ class ControllerModalTravelTripReviewTrip extends AController {
 			$this->loadComponent('database/modal');
 			
 			//START: set modal
-				$modal['object'] = 'trip';
-				$modal['ajax'] = $this->html->getSecureURL('travel/ajax_trip');
+				$modal['object'] = 'mode';
+				$modal['ajax'] = $this->html->getSecureURL('travel/ajax_mode');
 				
 				//START: set form
-					$f = 'review';
+					$f = 'delete';
 					$form[$f]['action'] = $f;
 					
 					//START: set input [ORDER IS IMPORTANT]
 						$input = array();
 						
-						$column = $this->model_travel_trip->getFields($this->db->table('trip'));
-						
-						foreach($column as $c) {
-							$i = $c;
-							$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
-							$input[$i]['id'] = str_replace("_","-",$i);
-							$input[$i]['name'] = $i;
-							$input[$i]['type'] = 'hidden';
-							$input[$i]['required'] = false;
-							$input[$i]['json'] = $i;
-						}
+						$i ='mode_id';
+						$input[$i]['id'] = str_replace("_","-",$i);
+						$input[$i]['name'] = $i;
+						$input[$i]['type'] = 'hidden';
 					//END
 					
 					$form[$f]['input'] = $input;
@@ -45,7 +38,7 @@ class ControllerModalTravelTripReviewTrip extends AController {
 				$modal['form'] = $form;
 			//END
 			
-			$modal_component['modal_form'] = $this->component_database_modal->review($modal['object'],$modal['ajax'],$modal['form']);
+			$modal_component['modal_form'] = $this->component_database_modal->delete($modal['object'],$modal['ajax'],$modal['form']);
 		//END
 		
 		//START: set variable
@@ -53,7 +46,7 @@ class ControllerModalTravelTripReviewTrip extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('modal/travel/trip/review_trip.tpl' );
+			$this->processTemplate('modal/travel/mode/delete_mode.tpl' );
 		//END
 		
 		//START: update controller data

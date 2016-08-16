@@ -85,11 +85,11 @@ class ControllerResponsesTravelAjaxStatus extends AController {
 	
 	public function verify() {
 		if($this->data['name'] == '') {
-			$result['warning'][] = 'Please input <b>Name</b>';
+			$result['warning'][] = '<b>Name</b> is missing';
 		}
 		
 		if($this->data['color'] == '') {
-			$result['warning'][] = 'Please input <b>Color</b>';
+			$result['warning'][] = '<b>Color</b> is missing';
 		}
 		
 		if(count($result['warning']) > 0) { 

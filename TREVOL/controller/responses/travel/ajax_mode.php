@@ -60,7 +60,7 @@ class ControllerResponsesTravelAjaxMode extends AController {
 		
 		$mode_id = $this->data['mode_id']; 
 		$execution = $this->model_travel_trip->editMode($mode_id, $this->data); 
-		if($execution == true) { 
+		if($execution === true) { 
 			$this->session->data['success'] = "Success: <b>Mode #".$mode_id."</b> has been modified";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -73,7 +73,7 @@ class ControllerResponsesTravelAjaxMode extends AController {
 	public function delete() {
 		$mode_id = $this->data['mode_id']; 
 		$execution = $this->model_travel_trip->deleteMode($mode_id); 
-		if($execution == true) { 
+		if($execution === true) { 
 			$this->session->data['success'] = "Success: <b>Mode #".$mode_id."</b> has been deleted";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -85,11 +85,11 @@ class ControllerResponsesTravelAjaxMode extends AController {
 	
 	public function verify() {
 		if($this->data['name'] == '') {
-			$result['warning'][] = 'Please input <b>Name</b>';
+			$result['warning'][] = '<b>Name</b> is missing';
 		}
 		
 		if($this->data['icon'] == '') {
-			$result['warning'][] = 'Please input <b>Icon</b>';
+			$result['warning'][] = '<b>Icon</b> is missing';
 		}
 		
 		if(count($result['warning']) > 0) { 

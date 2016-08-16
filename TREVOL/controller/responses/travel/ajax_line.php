@@ -60,7 +60,7 @@ class ControllerResponsesTravelAjaxLine extends AController {
 		
 		$line_id = $this->data['line_id']; 
 		$execution = $this->model_travel_trip->editLine($line_id, $this->data); 
-		if($execution == true) { 
+		if($execution === true) { 
 			$this->session->data['success'] = "Success: <b>Trip Line #".$line_id."</b> has been modified";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -73,7 +73,7 @@ class ControllerResponsesTravelAjaxLine extends AController {
 	public function delete() {
 		$line_id = $this->data['line_id']; 
 		$execution = $this->model_travel_trip->deleteLine($line_id); 
-		if($execution == true) { 
+		if($execution === true) { 
 			$this->session->data['success'] = "Success: <b>Trip Line #".$line_id."</b> has been deleted";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -86,15 +86,15 @@ class ControllerResponsesTravelAjaxLine extends AController {
 	public function verify() {
 		//START: set requirement
 			if($this->data['day_id'] == '') {
-				$result['warning'][] = 'Please input <b>Day</b>';
+				$result['warning'][] = '<b>Day</b> is missing';
 			}
 			
 			if($this->data['type'] == '') {
-				$result['warning'][] = 'Please input <b>Type</b>';
+				$result['warning'][] = '<b>Type</b> is missing';
 			}
 			
 			if($this->data['sort_order'] == '') {
-				$result['warning'][] = 'Please input <b>Sort Order</b>';
+				$result['warning'][] = '<b>Sort Order</b> is missing';
 			}
 		//END
 		

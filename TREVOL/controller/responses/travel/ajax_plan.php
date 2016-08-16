@@ -60,7 +60,7 @@ class ControllerResponsesTravelAjaxPlan extends AController {
 		
 		$plan_id = $this->data['plan_id']; 
 		$execution = $this->model_travel_trip->editPlan($plan_id, $this->data); 
-		if($execution == true) { 
+		if($execution === true) { 
 			$this->session->data['success'] = "Success: <b>Trip Plan #".$plan_id."</b> has been modified";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -73,7 +73,7 @@ class ControllerResponsesTravelAjaxPlan extends AController {
 	public function delete() {
 		$plan_id = $this->data['plan_id']; 
 		$execution = $this->model_travel_trip->deletePlan($plan_id); 
-		if($execution == true) { 
+		if($execution === true) { 
 			$this->session->data['success'] = "Success: <b>Trip Plan #".$plan_id."</b> has been deleted";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 

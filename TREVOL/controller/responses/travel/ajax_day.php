@@ -91,11 +91,11 @@ class ControllerResponsesTravelAjaxDay extends AController {
 	public function verify() {
 		//START: set requirement
 			if($this->data['plan_id'] == '') {
-				$result['warning'][] = 'Please input <b>Plan</b>';
+				$result['warning'][] = '<b>Plan</b> is missing';
 			}
 			
 			if($this->data['sort_order'] == '') {
-				$result['warning'][] = 'Please input <b>Sort Order</b>';
+				$result['warning'][] = '<b>Sort Order</b> is missing';
 			}
 		//END
 		

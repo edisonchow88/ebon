@@ -183,67 +183,113 @@
 			border: medium dotted #666;
 		}
 	/* END */
-  </style>
+</style>
+
+
+<div id="section-content-itinerary">
+	<div id="section-content-itinerary-header">
+    </div>
+    <div id="section-content-itinerary-content" >
+    	<div id="section-content-itinerary-header-button">
+            <a 
+                class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
+                onclick="close_section_content('itinerary');"
+                data-toggle='tooltip' 
+                data-placement='bottom' 
+                title='Close Itinerary' 
+            >
+                <i class="fa fa-fw" id="section-content-map-header-close">&times;</i>
+            </a>
+            <a 
+                class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
+                onclick="open_section_content('itinerary');"
+                data-toggle='tooltip' 
+                data-placement='bottom' 
+                title='Expand Itinerary' 
+            >
+                <i class="fa fa-fw fa-arrows-alt"></i>
+            </a>
+        </div>
+        <table class="table itinerary-table" id="planner-table">
+            <thead>
+            	<th class="hidden">#</th>
+                <th>Day</th>
+                <th >Date</th>
+                <th class="hidden">City</th>
+                <th>Activity</th>
+                <th class="hidden">Fee</th>
+                <th></th>
+            </thead>
+        </table>
+    </div>    
+
+    <div id="section-content-itinerary-footer">
+    	<a class="btn btn-primary add-day-icon">Add Day</a>
+        <a class="btn btn-default">Add Note</a>
+    </div>
+</div>
 
 <script>
-<!-- START: load table -->
-	$(document).ready(function(){
-		<!-- START: set POST data -->
-			var data = {
-				"action":"refresh_plan",
-				"plan_id":"4",
-			};
-		<!-- END -->
-		
-		<!-- START: 1st loop for tbody -->
-		$.post("<?php echo $ajax_itinerary; ?>", data, function(plan) {
-			alert(plan);
-			$.each(plan.day, function(i, field) {	
-				printDay( "#planner-table", i , this.day_id, this.duration);
-				<!-- START: 2nd loop for row (poi) -->		
-					$.each(this.line, function(x, line) {
-					// Call print poi function and send data, more data to be added.
-					// >> printLine( tr_id, day_index, poi_index, poi_line_id, poi_info, poi_name ,action)
-						printLine("#day-group" + i, i , x, line.id, line.title, line.title);
-					})
-				<!-- END -->
-			});
-		
-			<!-- START: add pocket at end of table -->
-				$("#planner-table").append(""
-					+ "<tbody class='pocket' id='pocket'>"
-						+ "<tr class='day-list row-fixed'>"
-							+ "<td colspan='7' class='index'>"
-								+ "<div class='btn-group' role='group' aria-label='Basic example'>"
-									+ "<button type='button' class='btn btn-default btn-lg toggle-icon'>"
-										+ "<i class='fa fa-shopping-basket fa-lg' aria-hidden='true'></br><span>Pocket</span></i>"
-									+ "</button>"
-									+ "<button type='button' class='btn btn-default btn-lg'>"
-										+ "<i class='fa fa-plus-square fa-lg add-day-icon' aria-hidden='true'></br><span>Add Day</span></i>"
-								+ "</div>"
-							+ "</td>"
-						+ "</tr>" 
-				);
+<?php if($this->user->isLogged() != '') { ?>
+	<!-- START: load table -->
+		$(document).ready(function(){
+			<!-- START: set POST data -->
+				var data = {
+					"action":"refresh_plan",
+					"plan_id":"4",
+				};
 			<!-- END -->
 			
-			// INIT: initilize update function
-			initPageUpdate();
-			updateEvent();
+			<!-- START: 1st loop for tbody -->
+			$.post("<?php echo $ajax_itinerary; ?>", data, function(plan) {
+				$.each(plan.day, function(i, field) {	
+					printDay( "#planner-table", i , this.day_id, this.duration);
+					<!-- START: 2nd loop for row (poi) -->		
+						$.each(this.line, function(x, line) {
+						// Call print poi function and send data, more data to be added.
+						// >> printLine( tr_id, day_index, poi_index, poi_line_id, poi_info, poi_name ,action)
+							printLine("#day-group" + i, i , x, line.id, line.title, line.title);
+						})
+					<!-- END -->
+				});
 			
-			$('.handle-icon').on('mousedown', function() {
-				var this_day_group = $(this).closest("tbody").attr("id");
-				$("#"+ this_day_group +" .poi-list").hide();
-				if (!$("#"+ this_day_group).hasClass("poi-hidden")) {
-				$(this).on('mouseup', function() {updatePoiHidden(this_day_group);});
-				}
-			});
-		
-		
-		}, "json"); //////////// END of getJason Fuction, function must load before this for sequence
-	});
-	
-
-<!-- END -->
+				<!-- START: add pocket at end of table -->
+					$("#planner-table").append(""
+						+ "<tbody class='pocket' id='pocket'>"
+							+ "<tr class='day-list row-fixed'>"
+								+ "<td colspan='7' class='index'>"
+									+ "<div class='btn-group' role='group' aria-label='Basic example'>"
+										+ "<button type='button' class='btn btn-default btn-lg toggle-icon'>"
+											+ "<i class='fa fa-shopping-basket fa-lg' aria-hidden='true'></br><span>Pocket</span></i>"
+										+ "</button>"
+										+ "<button type='button' class='btn btn-default btn-lg'>"
+											+ "<i class='fa fa-plus-square fa-lg add-day-icon' aria-hidden='true'></br><span>Add Day</span></i>"
+									+ "</div>"
+								+ "</td>"
+							+ "</tr>" 
+						+ "</tbody>"
+					);
+				<!-- END -->
+				
+				// INIT: initilize update function
+				initPageUpdate();
+				updateEvent();
+				
+				$('.handle-icon').on('mousedown', function() {
+					var this_day_group = $(this).closest("tbody").attr("id");
+					$("#"+ this_day_group +" .poi-list").hide();
+					if (!$("#"+ this_day_group).hasClass("poi-hidden")) {
+					$(this).on('mouseup', function() {updatePoiHidden(this_day_group);});
+					}
+				});
+			
+			
+			}, "json"); //////////// END of getJason Fuction, function must load before this for sequence
+		});
+	<!-- END -->
+<?php } else { ?>
+	$('#section-content-itinerary-content').append('Login is required');
+<?php } ?>
 
 ////////////////////////////// PAGE LOAD INITIATE FUNCTION//////////////////////////////
 // START initPageUpdate - To initiate 1st load Update
@@ -590,53 +636,11 @@ function updateIndexDate(){
 
 </script>
 
-<div id="section-content-itinerary">
-	<div id="section-content-itinerary-header">
-    </div>
-    <div id="section-content-itinerary-content" >
-    	<div id="section-content-itinerary-header-button">
-            <a 
-                class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
-                onclick="close_section_content('itinerary');"
-                data-toggle='tooltip' 
-                data-placement='bottom' 
-                title='Close Itinerary' 
-            >
-                <i class="fa fa-fw" id="section-content-map-header-close">&times;</i>
-            </a>
-            <a 
-                class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
-                onclick="open_section_content('itinerary');"
-                data-toggle='tooltip' 
-                data-placement='bottom' 
-                title='Expand Itinerary' 
-            >
-                <i class="fa fa-fw fa-arrows-alt"></i>
-            </a>
-        </div>
-        <table class="table itinerary-table" id="planner-table">
-            <thead>
-            	<th class="hidden">#</th>
-                <th>Day</th>
-                <th >Date</th>
-                <th class="hidden">City</th>
-                <th>Activity</th>
-                <th class="hidden">Fee</th>
-                <th></th>
-            </thead>
-        </table>
-    </div>    
-
-    <div id="section-content-itinerary-footer">
-    	<a class="btn btn-primary add-day-icon">Add Day</a>
-        <a class="btn btn-default">Add Note</a>
-    </div>
-</div>
 
  <!-- Modal -->
+ <!--
     <div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
                 	<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -665,9 +669,7 @@ function updateIndexDate(){
     	<button>123 </button>">Dismissible popover
     </a>
     <button class="btn btn-default" data-toggle="confirmation">Confirmation</button>
-	<!-- Trigger the modal with a button -->
 	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
-
-   
 </div>
 </div>
+-->

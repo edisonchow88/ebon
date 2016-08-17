@@ -11,7 +11,6 @@ class ModelTravelTrip extends Model{
 	private $table_mode = "trip_mode";
 	private $table_mode_description = "trip_mode_description";
 	private $table_plan = "trip_plan";
-	private $table_plan_description = "trip_plan_description";
 	private $table_day = "trip_day";
 	private $table_line = "trip_line";
 	
@@ -108,6 +107,18 @@ class ModelTravelTrip extends Model{
 				$trip_id = $this->db->getLastId();
 			//END
 			
+			//START: run chain reaction
+				//START: set data
+					$plan['trip_id'] = $trip_id;
+					$plan['mode_id'] = 1;
+					$plan['name'] = 'Plan 1';
+					$plan['sort_order'] = 1;
+					$plan['selected'] = 1;
+					$plan['travel_date'] = NULL;
+				//END
+				$this->addPlan($plan);
+			//END
+			
 			//START: clear cache
 				$this->cache->delete('trip');
 			//END
@@ -162,6 +173,10 @@ class ModelTravelTrip extends Model{
 					WHERE trip_id = '" . (int)$trip_id . "'
 				";
 				$query = $this->db->query($sql);
+			//END
+			
+			//START: run chain reaction
+				$this->deletePlanByTripId($trip_id);
 			//END
 			
 			//START: clear cache
@@ -642,22 +657,18 @@ class ModelTravelTrip extends Model{
 				if($plan_id == '') {
 					$sql = "
 						SELECT * 
-						FROM " . $this->db->table($this->table_plan) . " t1 
-						LEFT JOIN ".$this->db->table($this->table_plan_description)." t2 
-						ON t1.plan_id = t2.plan_id 
+						FROM " . $this->db->table($this->table_plan) . " 
 					";
-					if($trip_id != '') { $sql .= " WHERE t1.trip_id = '" . (int)$this->db->escape($trip_id) . "' "; }
+					if($trip_id != '') { $sql .= " WHERE trip_id = '" . (int)$this->db->escape($trip_id) . "' "; }
 					$sql .= "
-						ORDER BY t1.trip_id DESC, t1.sort_order ASC 
+						ORDER BY trip_id DESC, sort_order ASC 
 					";
 				}
 				else {
 					$sql = "
 						SELECT * 
-						FROM " . $this->db->table($this->table_plan) . " t1 
-						LEFT JOIN ".$this->db->table($this->table_plan_description)." t2 
-						ON t1.plan_id = t2.plan_id 
-						WHERE t1.plan_id = '" . (int)$plan_id . "' 
+						FROM " . $this->db->table($this->table_plan) . " 
+						WHERE plan_id = '" . (int)$plan_id . "' 
 					";
 		
 				}
@@ -669,7 +680,6 @@ class ModelTravelTrip extends Model{
 					foreach($query->rows as $result){
 						$output[$result['plan_id']] = $result;
 						$output[$result['plan_id']]['name'] = ucwords($result['name']);
-						$output[$result['plan_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 						$output[$result['plan_id']]['trip'] = $this->getTrip($result['trip_id']);
 						$output[$result['plan_id']]['mode'] = $this->getMode($result['mode_id']);
 					}
@@ -678,7 +688,6 @@ class ModelTravelTrip extends Model{
 					$result = $query->row;
 					$output = $query->row;
 					$output['name'] = ucwords($result['name']);
-					$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 					$output['trip'] = $this->getTrip($result['trip_id']);
 					$output['mode'] = $this->getMode($result['mode_id']);
 				}
@@ -692,123 +701,140 @@ class ModelTravelTrip extends Model{
 		}
 		
 		public function addPlan($data) {
-			//START: table
-			$fields = $this->getFields($this->db->table($this->table_plan));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f])) {
-					if($data[$f] == 'NULL') {
-						$update[$f] = $f . " = NULL";
-					}
-					else {
-						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_plan));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f])) {
+						if($data[$f] == 'NULL') {
+							$update[$f] = $f . " = NULL";
+						}
+						else {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
 					}
 				}
-			}
-			if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			
-			$sql = "
-				INSERT INTO `" . $this->db->table($this->table_plan) . "` 
-				SET " . implode(',', $update) . "
-			";
-			$query = $this->db->query($sql);
+				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			//END
 			
-			$plan_id = $this->db->getLastId();
-			
-			//START:table_description
-			$fields = $this->getFields($this->db->table($this->table_plan_description));
-			
-			$update = array();
-			$update[] = "plan_id = '" . $plan_id. "'";
-			
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			
-			$sql = "
-				INSERT INTO `" . $this->db->table($this->table_plan_description) . "` 
-				SET " . implode(',', $update) . "
-			";
-			$query = $this->db->query($sql);
+			//START: run sql
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_plan) . "` 
+					SET " . implode(',', $update) . "
+				";
+				$query = $this->db->query($sql);
 			//END
 			
-			$this->cache->delete('plan');
+			//START: set id
+				$plan_id = $this->db->getLastId();
+			//END
+			
+			//START: run chain reaction
+				//START: set data
+					$day['plan_id'] = $plan_id;
+					$day['sort_order'] = 1;
+				//END
+				$this->addDay($day);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('plan');
+			//END
 			
 			return $plan_id;
 		}
 		
 		public function editPlan($plan_id, $data) {
-			//START: table
-			$fields = $this->getFields($this->db->table($this->table_plan));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f])) {
-					if($data[$f] == 'NULL') {
-						$update[$f] = $f . " = NULL";
-					}
-					else {
-						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_plan));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f])) {
+						if($data[$f] == 'NULL') {
+							$update[$f] = $f . " = NULL";
+						}
+						else {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
 					}
 				}
-			}
-			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
-			
-			if(!empty($update)){
-				$sql = "
-					UPDATE " . $this->db->table($this->table_plan) . " 
-					SET " . implode(',', $update) . "
-					WHERE plan_id = '" . (int)$plan_id . "'
-				";
-				$query = $this->db->query($sql);
-			}
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			//END
 			
-			//START: table_description
-			$fields = $this->getFields($this->db->table($this->table_plan_description));
-			
-			$update = array();
-			foreach($fields as $f){
-				if(isset($data[$f]))
-					$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
-			}
-			
-			if(!empty($update)){
-				$sql = "
-					UPDATE " . $this->db->table($this->table_plan_description) . " 
-					SET " . implode(',', $update) . "
-					WHERE plan_id = '" . (int)$plan_id . "'
-				";
-				$query = $this->db->query($sql);
-			}
+			//START: run sql
+				if(!empty($update)){
+					$sql = "
+						UPDATE " . $this->db->table($this->table_plan) . " 
+						SET " . implode(',', $update) . "
+						WHERE plan_id = '" . (int)$plan_id . "'
+					";
+					$query = $this->db->query($sql);
+				}
 			//END
 			
-			$this->cache->delete('plan');
+			//START: clear cache
+				$this->cache->delete('plan');
+			//END
+			
 			return true;
 		}
 		
 		public function deletePlan($plan_id) {
-			//START: table
-			$sql = "
-				DELETE FROM " . $this->db->table($this->table_plan) . " 
-				WHERE plan_id = '" . (int)$plan_id . "'
-			";
-			$query = $this->db->query($sql);
+			//START: verify
+				$plan = $this->getPlan($plan_id);
+				$trip_id = $plan['trip_id'];
+				$plans = $this->getPlanByTripId($trip_id);
+				if(count($plans) <= 1) {
+					$output['warning'][] = '<b>Trip</b> cannot have less than one plan.';
+					return $output;
+				}
 			//END
 			
-			//START: table_description
-			$sql = "
-				DELETE FROM " . $this->db->table($this->table_plan_description) . " 
-				WHERE plan_id = '" . (int)$plan_id . "'
-			";
-			$query = $this->db->query($sql);
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_plan) . " 
+					WHERE plan_id = '" . (int)$plan_id . "'
+				";
+				$query = $this->db->query($sql);
 			//END
 			
-			$this->cache->delete('plan');
+			//START: run chain reaction
+				$this->deleteDayByPlanId($plan_id);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('plan');
+			//END
+			
+			return true;
+		}
+		
+		public function deletePlanByTripId($trip_id) {
+			//START: get all child
+				$plan = $this->getPlanByTripId($trip_id);
+			//END
+			
+			//START: run chain reaction
+				foreach($plan as $p) {
+					$this->deleteDayByPlanId($p['plan_id']);
+				}
+			//END
+			
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_plan) . " 
+					WHERE trip_id = '" . (int)$trip_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('plan');
+			//END
+			
 			return true;
 		}
 	//END
@@ -941,7 +967,7 @@ class ModelTravelTrip extends Model{
 				$plan_id = $day['plan_id'];
 				$days = $this->getDayByPlanId($plan_id);
 				if(count($days) <= 1) {
-					$output['warning'][] = 'Cannot have less than one day.';
+					$output['warning'][] = '<b>Plan</b> cannot have less than one day.';
 					return $output;
 				}
 			//END
@@ -954,6 +980,10 @@ class ModelTravelTrip extends Model{
 				$query = $this->db->query($sql);
 			//END
 			
+			//START: run chain reaction
+				$this->deleteLineByDayId($day_id);
+			//END
+			
 			//START: clear cache
 				$this->cache->delete('day');
 			//END
@@ -961,6 +991,32 @@ class ModelTravelTrip extends Model{
 			//START: return
 				return true;
 			//END
+		}
+		
+		public function deleteDayByPlanId($plan_id) {
+			//START: get all child
+				$day = $this->getDayByPlanId($plan_id);
+			//END
+			
+			//START: run chain reaction
+				foreach($day as $d) {
+					$this->deleteLineByDayId($d['day_id']);
+				}
+			//END
+			
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_day) . " 
+					WHERE plan_id = '" . (int)$plan_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('day');
+			//END
+			
+			return true;
 		}
 	//END
 	
@@ -1004,8 +1060,8 @@ class ModelTravelTrip extends Model{
 			return $output;
 		}
 		
-		public function getLineByPlanId($plan_id) {
-			return $this->getLine('',$plan_id);
+		public function getLineByDayId($day_id) {
+			return $this->getLine('',$day_id);
 		}
 		
 		public function addLine($data) {
@@ -1081,6 +1137,22 @@ class ModelTravelTrip extends Model{
 			//END
 			
 			$this->cache->delete('line');
+			return true;
+		}
+		
+		public function deleteLineByDayId($day_id) {
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_line) . " 
+					WHERE day_id = '" . (int)$day_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('line');
+			//END
+			
 			return true;
 		}
 	//END

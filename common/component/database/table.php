@@ -1,6 +1,6 @@
 <?php
 	class componentDatabaseTable extends component{
-		public function writeTable($object,$table,$action,$related,$grid) {
+		public function writeTable($object,$table,$action,$related,$grid,$link) {
 			$object_id= str_replace("_","-",$object);
 			$object_name = ucwords(str_replace("_"," ",$object));
 			
@@ -119,13 +119,13 @@
 						</div>
 					</div>			
 				';
-				$content .= $this->writeScriptForTable($object,$grid['setting'],$grid['formatter'],$action,$grid['function']);
+				$content .= $this->writeScriptForTable($object,$grid['setting'],$grid['formatter'],$action,$grid['function'],$link);
 				$content .= $this->writeScriptForClearSearch();
 				return $content;
 			//END
 		}
 		
-		private function writeScriptForTable($object,$setting,$formatter,$action,$function) {
+		private function writeScriptForTable($object,$setting,$formatter,$action,$function,$link) {
 			$object_id= str_replace("_","-",$object);
 			$object_name = ucwords(str_replace("_"," ",$object));
 			$object_name_no_space = str_replace(" ","",$object_name);
@@ -193,6 +193,11 @@
 				';
 				$format['date_modified'] = '
 					return "<span data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'" + row.date_modified + "\'>" + row.date_modified.substring(0, 10) + "</span>";
+				';
+				$format['child'] = '
+					if(row.count != 0) {
+						return "<a class=\'btn btn-default\' style=\'min-width:40px;\' href=\''.$link['child'].'&'.$object.'_id='.'"+row.id+"\'>" + row.child + "</a>";
+					}
 				';
 				if($action['review'] != true) { $off_review = 'hidden'; }
 				if($action['edit'] != true) { $off_edit = 'hidden'; }

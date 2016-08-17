@@ -30,8 +30,12 @@ class ControllerPagesTravelDay extends AController {
 			$this->loadModel('travel/trip');
 		//END
 		
+		//START: set parent id
+			if(isset($_GET['plan_id'])) { $plan_id = $_GET['plan_id']; }
+		//END
+		
 		//START: set data
-			$data = $this->model_travel_trip->getDay();
+			$data = $this->model_travel_trip->getDay('',$plan_id);
 		//END
 		
 		//START: process data and set result
@@ -44,6 +48,8 @@ class ControllerPagesTravelDay extends AController {
 					$plan = $this->model_travel_trip->getPlan($row['plan_id']);
 					$result[$day_id]['plan'] = $plan['name'];
 					$result[$day_id]['sort_order'] = $row['sort_order'];
+					$line = $this->model_travel_trip->getLineByDayId($day_id);
+					$result[$day_id]['line'] = count($line);
 				}
 			}
 		//END
@@ -86,6 +92,18 @@ class ControllerPagesTravelDay extends AController {
 			
 			$i = 'sort_order';
 			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'line';
+			$column[$i]['name'] = 'child';
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
@@ -145,7 +163,10 @@ class ControllerPagesTravelDay extends AController {
 				$grid['setting']['columnSelection'] = 'false';
 				$grid['setting']['multiSort'] = 'false';
 			//END
-			$component['table'] = $this->component_database_table->writeTable($object,$table,$action,$related,$grid);
+			//START: [link]
+				$link['child'] = $this->html->getSecureURL('travel/line');
+			//END
+			$component['table'] = $this->component_database_table->writeTable($object,$table,$action,$related,$grid,$link);
 		//END
 		
 		//START: set modal

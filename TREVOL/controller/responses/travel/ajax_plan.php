@@ -81,6 +81,11 @@ class ControllerResponsesTravelAjaxPlan extends AController {
 			$response = json_encode($result);
 			echo $response;
 		}
+		else {
+			$result['warning'] = $execution['warning'];
+			$response = json_encode($result);
+			echo $response;
+		}
 	}
 	
 	public function verify() {
@@ -93,20 +98,16 @@ class ControllerResponsesTravelAjaxPlan extends AController {
 				$result['warning'][] = '<b>Mode</b> is missing';
 			}
 			
+			if($this->data['name'] == '') {
+				$result['warning'][] = '<b>Name</b> is missing';
+			}
+			
 			if($this->data['sort_order'] == '') {
 				$result['warning'][] = '<b>Sort Order</b> is missing';
 			}
 			
 			if($this->data['selected'] == '') {
 				$result['warning'][] = '<b>Selected</b> is missing';
-			}
-			
-			if($this->data['language_id'] == '') {
-				$result['warning'][] = '<b>Language</b> is missing';
-			}
-			
-			if($this->data['name'] == '') {
-				$result['warning'][] = '<b>Name</b> is missing';
 			}
 		//END
 		

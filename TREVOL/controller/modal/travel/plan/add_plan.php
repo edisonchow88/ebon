@@ -42,6 +42,13 @@ class ControllerModalTravelPlanAddPlan extends AController {
 						$input[$i]['type'] = 'select';
 						$input[$i]['option'] = $this->model_travel_trip->getMode();
 						
+						$i ='name';
+						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+						$input[$i]['id'] = str_replace("_","-",$i);
+						$input[$i]['name'] = $i;
+						$input[$i]['required'] = true;
+						$input[$i]['type'] = 'text';
+						
 						$i ='sort_order';
 						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 						$input[$i]['id'] = str_replace("_","-",$i);
@@ -66,24 +73,6 @@ class ControllerModalTravelPlanAddPlan extends AController {
 						$input[$i]['name'] = $i;
 						$input[$i]['required'] = false;
 						$input[$i]['type'] = 'date';
-						
-						$i ='language_id';
-						$language = $this->language->getAvailableLanguages();
-						$current_language = $this->language->getCurrentLanguage();
-						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
-						$input[$i]['id'] = str_replace("_","-",$i);
-						$input[$i]['name'] = $i;
-						$input[$i]['required'] = true;
-						$input[$i]['type'] = 'select';
-						$input[$i]['value'] = $current_language['language_id'];
-						$input[$i]['option'] = $language;
-						
-						$i ='name';
-						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
-						$input[$i]['id'] = str_replace("_","-",$i);
-						$input[$i]['name'] = $i;
-						$input[$i]['required'] = true;
-						$input[$i]['type'] = 'text';
 					//END
 					
 					$form[$f]['input'] = $input;

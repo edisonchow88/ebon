@@ -30,8 +30,13 @@ class ControllerPagesTravelLine extends AController {
 			$this->loadModel('travel/trip');
 		//END
 		
+		//START: set day id
+			if(isset($_GET['day_id'])) { $day_id = $_GET['day_id']; }
+		//END
+		
+		
 		//START: set data
-			$data = $this->model_travel_trip->getLine();
+			$data = $this->model_travel_trip->getLine('',$day_id);
 		//END
 		
 		//START: process data and set result

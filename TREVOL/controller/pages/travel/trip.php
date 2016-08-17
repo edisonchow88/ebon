@@ -148,7 +148,7 @@ class ControllerPagesTravelTrip extends AController {
 			$column[$i]['searchable'] = 'false';
 			
 			$i = 'plan';
-			$column[$i]['name'] = 'count';
+			$column[$i]['name'] = 'child';
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
@@ -245,7 +245,10 @@ class ControllerPagesTravelTrip extends AController {
 				$grid['setting']['columnSelection'] = 'false';
 				$grid['setting']['multiSort'] = 'false';
 			//END
-			$component['table'] = $this->component_database_table->writeTable($object,$table,$action,$related,$grid);
+			//START: [link]
+				$link['child'] = $this->html->getSecureURL('travel/plan');
+			//END
+			$component['table'] = $this->component_database_table->writeTable($object,$table,$action,$related,$grid,$link);
 		//END
 		
 		//START: set modal

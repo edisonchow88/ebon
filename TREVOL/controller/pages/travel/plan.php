@@ -30,8 +30,12 @@ class ControllerPagesTravelPlan extends AController {
 			$this->loadModel('travel/trip');
 		//END
 		
+		//START: set parent id
+			if(isset($_GET['trip_id'])) { $trip_id = $_GET['trip_id']; }
+		//END
+		
 		//START: set data
-			$data = $this->model_travel_trip->getPlan();
+			$data = $this->model_travel_trip->getPlan('',$trip_id);
 		//END
 		
 		//START: process data and set result
@@ -43,13 +47,13 @@ class ControllerPagesTravelPlan extends AController {
 					$result[$plan_id]['plan_id'] = $row['plan_id'];
 					$result[$plan_id]['trip_id'] = $row['trip_id'];
 					$result[$plan_id]['trip'] = $row['trip']['name'];
-					$result[$plan_id]['name'] = $row['name'];
 					$result[$plan_id]['mode'] = json_encode($row['mode']);
+					$result[$plan_id]['name'] = $row['name'];
 					$result[$plan_id]['sort_order'] = $row['sort_order'];
 					$result[$plan_id]['selected'] = $row['selected'];
 					$result[$plan_id]['travel_date'] = $row['travel_date'];
-					$result[$plan_id]['date_added'] = $row['date_added'];
-					$result[$plan_id]['date_modified'] = $row['date_modified'];
+					$day = $this->model_travel_trip->getDayByPlanId($plan_id);
+					$result[$plan_id]['day'] = count($day);
 				}
 			}
 		//END
@@ -102,18 +106,6 @@ class ControllerPagesTravelPlan extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
 			
-			$i = 'name';
-			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['type'] = '';
-			$column[$i]['width'] = '';
-			$column[$i]['order'] = '';
-			$column[$i]['align'] = '';
-			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'true';
-			$column[$i]['sortable'] = 'true';
-			$column[$i]['searchable'] = 'true';
-			
 			$i = 'mode';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
@@ -125,6 +117,18 @@ class ControllerPagesTravelPlan extends AController {
 			$column[$i]['visible'] = 'true';
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'false';
+			
+			$i = 'name';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'true';
 			
 			$i = 'sort_order';
 			$column[$i]['name'] = $i;
@@ -162,27 +166,15 @@ class ControllerPagesTravelPlan extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'false';
 			
-			$i = 'date_added';
-			$column[$i]['name'] = $i;
+			$i = 'day';
+			$column[$i]['name'] = 'child';
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'false';
-			$column[$i]['sortable'] = 'true';
-			$column[$i]['searchable'] = 'false';
-			
-			$i = 'date_modified';
-			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['type'] = '';
-			$column[$i]['width'] = '';
-			$column[$i]['order'] = '';
-			$column[$i]['align'] = '';
-			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'false';
+			$column[$i]['visible'] = 'true';
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'false';
 			
@@ -235,7 +227,10 @@ class ControllerPagesTravelPlan extends AController {
 				$grid['setting']['columnSelection'] = 'false';
 				$grid['setting']['multiSort'] = 'false';
 			//END
-			$component['table'] = $this->component_database_table->writeTable($object,$table,$action,$related,$grid);
+			//START: [link]
+				$link['child'] = $this->html->getSecureURL('travel/day');
+			//END
+			$component['table'] = $this->component_database_table->writeTable($object,$table,$action,$related,$grid,$link);
 		//END
 		
 		//START: set modal

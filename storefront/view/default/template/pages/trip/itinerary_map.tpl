@@ -41,14 +41,22 @@
 </style>
 
 <div id="section-content-map">
-    <div id="section-content-map-header">
+	<div style="position:relative; z-index:3;">
+        <div id="section-view-button" class="hidden-xs hidden-sm hidden-md">
+            <a class="btn btn-primary" data-toggle='tooltip' data-placement='bottom' title='Discover' onclick="toggle_section_content('guide');">
+                <i class="fa fa-search fa-2x" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+    <div id="section-content-map-header" class="hidden-sm hidden-md hidden-lg">
         <div class="row">
             <div class="spacer-bar hidden-xs hidden-sm col-md-12 col-lg-12"></div>
         </div>
         <div class="row">
-            <div class="input-group pull-left inline col-xs-12 col-sm-12 col-md-12 col-lg-9">
+            <div class="input-group pull-left inline col-xs-12">
                 <input class="form-control" type="text" placeholder='Search ...'  />
             </div>
+            <!--
             <div class="inline pull-right col-md-12 col-lg-3">
                 <a 
                 	class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
@@ -69,6 +77,7 @@
                 	<i class="fa fa-fw fa-arrows-alt"></i>
                 </a>
             </div>
+            -->
         </div>
     </div>
     <div id="section-content-map-content">
@@ -127,7 +136,7 @@
             initMap();
         });
         
-        var target = document.getElementById('section-right');
+        var target = document.getElementById('section-center');
         observer.observe(target, { attributes : true, attributeFilter : ['style'] });
     </script>
 <!-- END -->

@@ -213,7 +213,7 @@ var buildNotifier = function(data){
 
 	list.append('<li class="new"><a href="<?php echo $message_manager_url; ?>"><?php echo $text_read_all_messages; ?></a></li>');
 }
-<?php if($this->user->isLogged()){?>
+<?php if($this->admin->isLogged()){?>
 $(document).ready(function(){
 	notifier_updater();
 	system_checker();

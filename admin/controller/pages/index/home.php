@@ -205,7 +205,7 @@ class ControllerPagesIndexHome extends AController {
 		}
 
 		//check quick start quide based on no last_login and if it is not yet completed
-		if( !$this->user->getLastLogin() && $this->session->data['quick_start_step'] != 'finished') {
+		if( !$this->admin->getLastLogin() && $this->session->data['quick_start_step'] != 'finished') {
 			$store_id = !isset($this->session->data['current_store_id']) ? 0 : $this->session->data['current_store_id'];
 			$resources_scripts = $this->dispatch(
 			    'responses/common/resource_library/get_resources_scripts',

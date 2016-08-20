@@ -1,21 +1,6 @@
 <?php  
 /*------------------------------------------------------------------------------
-  $Id$
-
-  AbanteCart, Ideal OpenSource Ecommerce Solution
-  http://www.AbanteCart.com
-
-  Copyright © 2011-2015 Belavier Commerce LLC
-
-  This source file is subject to Open Software License (OSL 3.0)
-  License details is bundled with this package in the file LICENSE.txt.
-  It is also available at this URL:
-  <http://www.opensource.org/licenses/OSL-3.0>
-
- UPGRADE NOTE:
-   Do not edit or add to this file if you wish to upgrade AbanteCart to newer
-   versions in the future. If you wish to customize AbanteCart for your
-   needs please refer to http://www.AbanteCart.com for more information.
+TREVOL
 ------------------------------------------------------------------------------*/
 if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
@@ -35,7 +20,7 @@ class ControllerCommonFooter extends AController {
 		$this->data['contact'] =  $this->html->getURL('content/contact');
     	$this->data['sitemap'] =  $this->html->getURL('content/sitemap');
     	$this->data['account'] =  $this->html->getSecureURL('account/account');
-		$this->data['logged'] =  $this->customer->isLogged();
+		//[DISABLED BY TREVOL]$this->data['logged'] =  $this->customer->isLogged();
 		$this->data['login'] =  $this->html->getSecureURL('account/login');
 		$this->data['logout'] =  $this->html->getURL('account/logout');
     	$this->data['cart'] =  $this->html->getURL('checkout/cart');

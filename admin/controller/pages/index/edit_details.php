@@ -1,21 +1,6 @@
 <?php
 /*------------------------------------------------------------------------------
-  $Id$
-
-  AbanteCart, Ideal OpenSource Ecommerce Solution
-  http://www.AbanteCart.com
-
-  Copyright © 2011-2015 Belavier Commerce LLC
-
-  This source file is subject to Open Software License (OSL 3.0)
-  License details is bundled with this package in the file LICENSE.txt.
-  It is also available at this URL:
-  <http://www.opensource.org/licenses/OSL-3.0>
-
- UPGRADE NOTE:
-   Do not edit or add to this file if you wish to upgrade AbanteCart to newer
-   versions in the future. If you wish to customize AbanteCart for your
-   needs please refer to http://www.AbanteCart.com for more information.
+TREVOL
 ------------------------------------------------------------------------------*/
 if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
@@ -30,8 +15,8 @@ class ControllerPagesIndexEditDetails extends AController {
 		//init controller data
 		$this->extensions->hk_InitData($this,__FUNCTION__);
 
-		$this->loadModel('user/user');
-		$this->loadLanguage('user/user');
+		$this->loadModel('user/admin');
+		$this->loadLanguage('user/admin');
 
 		$this->document->setTitle( $this->language->get('text_edit_details') );
 
@@ -54,7 +39,7 @@ class ControllerPagesIndexEditDetails extends AController {
 		}
 
 		if ($this->request->is_POST() && $this->_validate()) {
-			$this->model_user_user->editUser($this->user->getId(), $this->request->post);
+			$this->model_user_admin->editAdmin($this->admin->getId(), $this->request->post);
 			$this->session->data['success'] = $this->language->get('text_success_details');
 			$this->redirect( $this->html->getSecureURL('index/edit_details') );
 		}
@@ -68,19 +53,19 @@ class ControllerPagesIndexEditDetails extends AController {
 		$this->data['error'] = $this->error;
 
 
-		$user_info = $this->model_user_user->getUser( $this->user->getId() );
+		$admin_info = $this->model_user_admin->getAdmin( $this->admin->getId() );
 
 		$fields = array('firstname', 'lastname', 'email');
 		foreach ( $fields as $f ) {
 			if (isset ( $this->request->post [$f] )) {
 				$this->data [$f] = $this->request->post [$f];
 			} else {
-				$this->data[$f] = $user_info[$f];
+				$this->data[$f] = $admin_info[$f];
 			}
 		}
 
 		$this->data['action'] = $this->html->getSecureURL('index/edit_details');
-		$this->data['update'] = $this->html->getSecureURL('listing_grid/user/update_field','&id='.$this->user->getId() );
+		$this->data['update'] = $this->html->getSecureURL('listing_grid/admin/update_field','&id='.$this->admin->getId() );
 		$form = new AForm('HS');
 
 		$form->setForm(

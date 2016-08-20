@@ -108,6 +108,48 @@ final class ALoader {
             return false;
         }
 	}
+	
+	/* ADDED by TREVOL */
+	public function component($component, $mode = '') {
+
+		//force mode alows to load components for ALL extensions to bypass extension enabled only status
+		//This might be helpful in storefront. In admin all installed extenions are available 
+		$force = '';
+		if ($mode == 'force') {
+			$force = 'all';
+		}
+		
+		$section = DIR_ROOT . '/common/';
+		
+        $file  = $section . 'component/' . $component . '.php';
+        if ( $this->registry->has('extensions') && $result = $this->extensions->isExtensionResource('M', $component, $force, $mode) ) {
+            if ( is_file($file) ) {
+                $warning = new AWarning("Extension <b>{$result['extension']}</b> override component <b>$component</b>" );
+                $warning->toDebug();
+            }
+            $file = $result['file'];
+        }
+
+		$class = 'Component' . preg_replace('/[^a-zA-Z0-9]/', '', $component);
+		$obj_name = 'component_' . str_replace('/', '_', $component);
+
+		//if modal is loaded return it back 
+		if ( is_object($this->registry->get($obj_name) )) {
+			return $this->registry->get($obj_name);
+		} else if (file_exists($file)) {
+			include_once($file);
+			$this->registry->set($obj_name, new $class($this->registry));
+			return $this->registry->get($obj_name);
+		} else if ( $mode != 'silent' ) {
+			$backtrace = debug_backtrace();
+		 	$file_info =  $backtrace[ 0 ][ 'file' ] . ' on line ' . $backtrace[ 0 ][ 'line' ];
+			throw new AException(AC_ERR_LOAD, 'Error: Could not load component ' . $component . ' from ' . $file_info);
+            return false;
+		} else {
+            return false;
+        }
+	}
+	
 
 	/**
 	 * @param string $driver

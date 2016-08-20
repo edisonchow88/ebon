@@ -41,8 +41,8 @@ class ControllerPagesAccountUser extends AController {
 					
 					//NOTE: sequence is important
 					$result[$user_id]['user_id'] = $row['user_id'];
-					$user_group = $this->model_account_user->getUserGroup($row['user_group_id']);
-					$result[$user_id]['user_group'] = $user_group['name'];
+					$role = $this->model_account_user->getRole($row['role_id']);
+					$result[$user_id]['role'] = $role['name'];
 					$result[$user_id]['email'] = $row['email'];
 					$result[$user_id]['last_login'] = $row['last_login'];
 					$result[$user_id]['date_added'] = $row['date_added'];
@@ -52,7 +52,7 @@ class ControllerPagesAccountUser extends AController {
 		//END
 		
 		//START: set column
-			/* [Template]
+			/* [SAMPLE]
 			$i = '';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
@@ -75,7 +75,7 @@ class ControllerPagesAccountUser extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
 			
-			$i = 'user_group';
+			$i = 'role';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
@@ -145,20 +145,32 @@ class ControllerPagesAccountUser extends AController {
 			$column[$i]['searchable'] = 'false';
 		//END
 		
-		//START: set modal
-			$this->addChild('modal/account/add_user', 'modal_add_user', 'modal/account/add_user.tpl');
-			$this->addChild('modal/account/edit_user', 'modal_edit_user', 'modal/account/edit_user.tpl');
-			$this->addChild('modal/account/delete_user', 'modal_delete_user', 'modal/account/delete_user.tpl');
+		//START: set component
+			$this->loadComponent('database/table');
+			$object = 'user';
+			$table['column'] = $column;
+			$table['row'] = $result;
+			$action['add'] = true;
+			$action['edit'] = true;
+			$action['delete'] = true;
+			$related = array();
+			$related[0]['title'] = 'role';
+			$related[0]['url'] = $this->html->getSecureURL('account/user_role');
+			$grid['setting']['caseSensitive'] = 'false';
+			$grid['setting']['rowCount'] = -1;
+			$grid['setting']['columnSelection'] = 'false';
+			$grid['setting']['multiSort'] = 'false';
+			$component['table'] = $this->component_database_table->writeTable($object,$table,$action,$related,$grid);
 		//END
 		
-		//START: set link
-			$link['account/user_group'] = $this->html->getSecureURL('account/user_group');
+		//START: set modal
+			$this->addChild('modal/account/user/add_user', 'modal_add_user', 'modal/account/user/add_user.tpl');
+			$this->addChild('modal/account/user/edit_user', 'modal_edit_user', 'modal/account/user/edit_user.tpl');
+			$this->addChild('modal/account/user/delete_user', 'modal_delete_user', 'modal/account/user/delete_user.tpl');
 		//END
 		
 		//START: set variable
-			if(count($column) > 0) { $this->view->assign('column', $column); }
-			if(count($link) > 0) { $this->view->assign('link', $link); }
-			if(count($result) > 0) { $this->view->assign('result', $result); }
+			$this->view->assign('component', $component);
 		//END
 		
 		//START: set template

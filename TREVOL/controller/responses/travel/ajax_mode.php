@@ -8,7 +8,9 @@ class ControllerResponsesTravelAjaxMode extends AController {
 	public $data = array();
 
 	public function main() {
-		$this->loadModel('travel/mode');
+		//START: load model
+			$this->loadModel('travel/trip');
+		//END
 		
 		foreach($_POST as $key => $value) {
 			$this->data[$key] = $value;
@@ -18,6 +20,7 @@ class ControllerResponsesTravelAjaxMode extends AController {
 		unset($this->data['action']);
 		
 		if($action == 'get') { $this->get(); }
+		else if($action == 'review') { $this->review(); }
 		else if($action == 'add') { $this->add(); }
 		else if($action == 'edit') { $this->edit(); }
 		else if($action == 'delete') { $this->delete(); }
@@ -31,15 +34,19 @@ class ControllerResponsesTravelAjaxMode extends AController {
 	
 	public function get() {
 		$mode_id = $this->data['mode_id']; 
-		$result = $this->model_travel_mode->getMode($mode_id);
+		$result = $this->model_travel_trip->getMode($mode_id);
 		$response = json_encode($result);
 		echo $response;
+	}
+	
+	public function review() {
+		$this->get();
 	}
 	
 	public function add() {
 		if($this->verify() == 'failed') { return; }
 		
-		$mode_id = $this->model_travel_mode->addMode($this->data); 
+		$mode_id = $this->model_travel_trip->addMode($this->data); 
 		$this->session->data['success'] = 'Success: New <b>Mode #'.$mode_id.'</b> has been added';
 		
 		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -52,8 +59,8 @@ class ControllerResponsesTravelAjaxMode extends AController {
 		if($this->verify() == 'failed') { return; }
 		
 		$mode_id = $this->data['mode_id']; 
-		$execution = $this->model_travel_mode->editMode($mode_id, $this->data); 
-		if($execution == true) { 
+		$execution = $this->model_travel_trip->editMode($mode_id, $this->data); 
+		if($execution === true) { 
 			$this->session->data['success'] = "Success: <b>Mode #".$mode_id."</b> has been modified";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -65,8 +72,8 @@ class ControllerResponsesTravelAjaxMode extends AController {
 	
 	public function delete() {
 		$mode_id = $this->data['mode_id']; 
-		$execution = $this->model_travel_mode->deleteMode($mode_id); 
-		if($execution == true) { 
+		$execution = $this->model_travel_trip->deleteMode($mode_id); 
+		if($execution === true) { 
 			$this->session->data['success'] = "Success: <b>Mode #".$mode_id."</b> has been deleted";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -77,13 +84,19 @@ class ControllerResponsesTravelAjaxMode extends AController {
 	}
 	
 	public function verify() {
-		if($this->data['name'] == '') {
-			$result['warning'][] = 'Please input <b>Name</b>';
+		//START: set requirement
+			if($this->data['language_id'] == '') {
+				$result['warning'][] = '<b>Language</b> is missing';
+			}
+			
+			if($this->data['name'] == '') {
+				$result['warning'][] = '<b>Name</b> is missing';
+			}
+			
+			if($this->data['icon'] == '') {
+			$result['warning'][] = '<b>Icon</b> is missing';
 		}
-		
-		if($this->data['icon'] == '') {
-			$result['warning'][] = 'Please input <b>Icon</b>';
-		}
+		//END
 		
 		if(count($result['warning']) > 0) { 
 			$response = json_encode($result);

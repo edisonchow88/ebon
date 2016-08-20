@@ -1,23 +1,7 @@
-<!-- Latest compiled and minified CSS (Jquery UI)-->
-<!--
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-
-<script type="text/javascript">
-// Change JQueryUI plugin names to fix name collision with Bootstrap.
-//$.widget.bridge('uitooltip', $.ui.tooltip);
-//$.widget.bridge('uibutton', $.ui.button);
-</script>
-
-<!-- Latest compiled and minified JavaScript (Bootstrap)-->
-<!--
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-<!-- Bootstrap Toggle button-->
-<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.js"></script>
+<!-- START: [Bootstrap toggle button] -->
+    <link href="<?php echo $this->templateResource('/stylesheet/bootstrap-toggle.min.css'); ?>" rel="stylesheet">
+    <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/bootstrap-toggle.min.js'); ?>"></script>
+<!-- END -->
 
 <style>
     #section-content-itinerary {
@@ -25,77 +9,92 @@
     }
 	
 	#section-content-itinerary-header {
-		position:relative;
-		margin-right:15px;
+		border-bottom:solid thin #DDD;
     }
 	
 	#section-content-itinerary-header-button {
-		position:absolute;
-		top:35px;
-		right:0;
-		margin-right:7px;
+		height:50px;
     }
 	
 	#section-content-itinerary-header-button > a {
+		display:block;
 		padding:0;
 		height:30px;
-		width:30px;
+		padding:15px 22px;
 	}
     
     #section-content-itinerary-content {
         position:relative;
         overflow-y:scroll;
-        overflow-x:auto;	
+        overflow-x:auto;
+		direction:rtl;	
     }
 	
-	#section-content-itinerary-footer {
-		position:absolute;
-		bottom:0;
-		width:100%;
-    }
-	
-	#section-content-itinerary-footer > a {
-		width:50%;
-		height:40px;
-		padding:10px;
-		display:block;
-		float:left;
-		border-left:none;
-		border-right:none;
-		border-bottom:none;
-    }
-    
-    #section-content-itinerary-debug {
-        border:1px solid #999;
-        height: 100vh;
-        padding:10px;
-    }
+	#section-content-itinerary-content > div {
+		direction:ltr; 
+	}
 	
 	/* START: itinerary table */
         .itinerary-table {
-			font-size:12px;
+			font-size:11px;
 			text-align:left;
 			table-layout:auto !important;
 			width: 100%;
 		}
 		
 		.itinerary-table > thead > tr { 
-            background-color:#EEE;
-            height:70px;
+            /* 
+			background-color:#EEE;
+            height:70px; 
+			*/
+			height:40px;
         }
 		
 		.itinerary-table > thead > tr > th {
 			padding:7px;
 			border:0;
-            border-bottom:solid thin #EEE;
+            border-bottom:solid thin #DDD;
+			vertical-align:middle;
+			color:#96979d;
+			font-weight:normal;
+		}
+		
+		.itinerary-table .row-line {
+			background-color:#FFC;
+		}
+		
+		.itinerary-table .row-line-button {
+			background-color:#FFC;
+		}
+		
+		.itinerary-table .row-button > td {
+			padding:0;
+		}
+		
+		.itinerary-table .row-button a {
+			height:47px;
+			color:#999;
+			padding-top:15px;
+		}
+		
+		.itinerary-table > tbody > tr:hover {
+			background-color:#EEE;
+			cursor:pointer;
+		}
+		
+		.itinerary-table > tbody > .selected {
+			background-color:#FF9;
 		}
 		
 		.itinerary-table > tbody > tr > td {
 			height:48px;
-			padding:7px;
+			padding:0;
+			padding-left:7px;
+			padding-right:7px;
 			border:0;
-            border-bottom:solid thin #EEE;
+            border-bottom:solid thin #DDD;
 			vertical-align:middle;
+			color:black;
 		}
 		
 		.itinerary-table > tbody+tbody {
@@ -107,18 +106,20 @@
 		.day-list {
 		}
 		
-		.poi-list {
+		/*
+		.row-line {
 			background-color:#FFC;
 		}
+		*/
 		
 		.backup {
 			background-color:#DDD;
 		}
 		
 		.progress {
-			width:80px;
+			width:45px;
 			height:15px;
-			margin:12px 0;
+			margin:6px 0;
 		}
 		
 		.toggle {
@@ -173,9 +174,9 @@
 		
 	/* START: itinerary table draggable effect */
 		.ui-draggable-placeholder-day {
-			background-color: rgba(220,220,220,0.3);
-			height: 80px !important;
+			background-color: #EEE;
 			text-align: center;
+			height: 48px;
 		}
 		
 		.ui-draggable-placeholder {
@@ -185,7 +186,7 @@
 		}
 		
 		.ui-draggable-helper {
-			height: 30px;
+			height: 48px;
 			background-color: white;
 			opacity: 0.5;
 			font-size: 1.5em;
@@ -193,488 +194,634 @@
 			border: medium dotted #666;
 		}
 	/* END */
-  </style>
-
-<script>
-<!-- START: load table -->
-	$(document).ready(function(){
-		<!-- START: 1st loop for tbody -->
-		$.getJSON("<?php echo $ajax_itinerary; ?>", function(result) {
-
-			$.each(result.day, function(i, field) {	
-			
-			printDay( "#planner-table", i , this.line_id, this.percentage);
-		
-			
-				<!-- START: 2nd loop for row (poi) -->		
-					$.each(this.poi, function(x, poi) {
-					// Call print poi function and send data, more data to be added.
-					// >> printPoi( tr_id, day_index, poi_index, poi_line_id, poi_info, poi_name ,action)
-					printPoi( "#day-group" + i, i , x, poi.poi_id, poi.info, poi.name);
-					})
-				<!-- END -->
-				
-			});
-		
-		<!-- START: add pocket at end of table -->
-		$("#planner-table").append(""
-			+ "<tbody class='pocket' id='pocket'>"
-				+ "<tr class='day-list row-fixed'>"
-					+ "<td colspan='7' class='index'>"
-						+ "<div class='btn-group' role='group' aria-label='Basic example'>"
-							+ "<button type='button' class='btn btn-default btn-lg toggle-icon'>"
-								+ "<i class='fa fa-shopping-basket fa-lg' aria-hidden='true'></br><span>Pocket</span></i>"
-							+ "</button>"
-							+ "<button type='button' class='btn btn-default btn-lg'>"
-								+ "<i class='fa fa-plus-square fa-lg add-day-icon' aria-hidden='true'></br><span>Add Day</span></i>"
-						+ "</div>"
-					+ "</td>"
-				+ "</tr>" 
-		);
-		<!-- END -->
-		
-		// INIT: initilize update function
-		initPageUpdate();
-		updateEvent();
-		
-		$('.handle-icon').on('mousedown', function() {
-			var this_day_group = $(this).closest("tbody").attr("id");
-			$("#"+ this_day_group +" .poi-list").hide();
-			if (!$("#"+ this_day_group).hasClass("poi-hidden")) {
-			$(this).on('mouseup', function() {updatePoiHidden(this_day_group);});
-			}
-			});
-		
-		
-		}); //////////// END of getJason Fuction, function must load before this for sequence
-	});
 	
-
-<!-- END -->
-
-////////////////////////////// PAGE LOAD INITIATE FUNCTION//////////////////////////////
-// START initPageUpdate - To initiate 1st load Update
-function initPageUpdate() {
-		//Initialize: All bootstrap toggle for Backup
-		$('.backup-toggle').bootstrapToggle();
-		//Initialize: Set All POI Hidden - kept now for more smooth transition
-		$(".day-group tr:not(:first-child)").hide();
-		//Initialize: Setting up Sorting for Day (tbody)
-		setDaySort();
-		//Initialize: Setting up Sorting for POI (tr) 
-		setPoiSort();
-		//Initialize: Update index and date
-		updateIndexDate();
-} // END initPageUpdate
-
-function updateEvent() {
-		//OnClick Event: Call Function clickTogglePoi- Hide/Show POI
-		$('.toggle-icon').off().on('click', clickTogglePoi);
-		//OnClick Event: Toggle ready/backup for POI 
-		$('.backup-toggle').off().change(function() {
-		$(this).closest('.poi-list').toggleClass('backup');
-		// !!!!!need to add function to remove total time calculation in a day.
-		})		
-		// OnClick Event: Run modal - Delete POI, Delete Day
-		$('.remove-icon').off().on('click' ,{action:"remove"}, runModal);
-		// OnClick Event: Run modal - Delete POI, Delete Day
-		$('.add-day-icon').off().on('click' ,{action:"add-day"}, runModal);
-		//OnClick Event: Response with Modal ok Button
-		$('#modal-confirm').off().on('click' , responseModal );
-}
-
-// START print day - output day list and its action button.
-function printDay( table_id, index, day_line_id, percentage,action) {
-	
-		var data =		""+ "<tbody class='day-group poi-hidden' id='day-group"+ index +"'>"
-						+ "<tr class='day-list row-fixed'>"
-						+ "<td class='index hidden' id='day" + index +"'> Line" + day_line_id + "</td>"
-						+ "<td class='d-day'></td>"
-						+ "<td class='d-date'></td>"
-						+ "<td class='hidden'></td>"
-						+ "<td>"
-							+ "<div class='progress'>"
-								+ "<div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='"+percentage+"' aria-valuemin='0' aria-valuemax='100' style='width:"+percentage+"%'>"
-								+ "</div>"
-								+ "</div>"
-						+ "</td>"
-						+ "<td class='hidden'></td>"
-						+ "<td class='action-button' id='day-action-button_" + index +"'></td>"
-						+ "</tr>"
-						+ "<tr class='poi-empty'><td colspan='7'>There is no plan for today.</td></tr>";	
-	
-		var day_button =""+ "<div>"
-						+ "<a type='button' class='btn btn-simple pull-right remove-icon' data-toggle='confirmation-delete'>"
-							+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
-						+ "</a>"
-						+ "<a type='button' class='btn btn-simple pull-right handle-icon'>"
-							+ "<i class='fa fa-fw fa-arrows' aria-hidden='true'></i>"
-						+ "</a>"
-						+ "<a type='button' class='btn btn-simple pull-right toggle-icon'>"
-							+ "<i class='fa fa-fw fa-chevron-circle-down' aria-hidden='true'></i>"
-						+ "</a>"
-						+ "</div>";
-
-		// When add day >> add new day (tbody+tr) to last row			
-		if (action == "add-day")$(table_id).children(".pocket").last().before(data); // change if pocket remove
-		// When 1st run >> append to table
-		else	$( table_id ).append(data); 	
-	
-		// Print all action button for this day
-		$("#day-action-button_" + index ).append(day_button);
-		
-		if (action == "add-day") {
-			// Update index and date for NEW added day 
-			updateIndexDate();
-			// Update sortable for NEW added day 
-			setPoiSort ();
-			// Update show empty hint for NEW added day
-	   	 	updatePoiEmpty ("day-group" + index);
-			// Update close POI list for NEW added day
-			updatePoiHidden("day-group" + index);
-			// Update onclick event for NEW added day
-			updateEvent();
+	/* START: */
+		.table-plan-row-line-column-time {
 		}
-} // END print day
-
-// START print POI - output poi list and its action button for this/selected day.
-function printPoi( tr_id, day_index, poi_index, poi_line_id, poi_info, poi_name ,action) {
-
-		var data =		""+ "<tr class='poi-list' id='day"+day_index+"poi"+poi_index+"'>"
-						+ "<td></td>"
-						+ "<td class='order' ></td>"
-						+ "<td class='hidden'>" + poi_line_id + "</td>"
-						+ "<td class='hidden poi-info'>" + poi_info+ "</td>"
-						+ "<td>" + poi_name+ "</td>"
-						+ "<td class='hidden'></td>"
-						+ "<td class='poi-action-button text-right' id='poi-action-button_"+day_index+"_"+poi_index+"'></td>"
-						+ "</tr>";
+	/* END */
 	
-	
-		var poi_button= ""+ "<div>"
-						+ "<a type='button' class='btn btn-simple pull-right remove-icon' data-toggle='confirmation-delete' data-on-confirm=''>"
-						+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
-						+ "</a>"
-						+ "<a type='button' class='btn btn-simple pull-right poi-handle-icon'>"
-						+ "<i class='fa fa-fw fa-arrows' aria-hidden='true'></i>"
-						+ "</a>"
-							+ "<div class='pull-right'>"
-							+ "<input class='backup-toggle' type='checkbox' checked data-toggle='toggle' data-on='ON' data-off='OFF' data-onstyle='success' data-offstyle='danger' data-size='mini'>"
-							+ "</div>"
-						+ "</div>";
-	
-		// when add poi >> add poi(tr) to last row in selected day(tbody) NOT COMPLETE YET!!
-		if (action == "add-poi") $( tr_id + day_index +".poi-list" ).last().after(data);	
-		// when 1st run >> append to this day(tbody)
-		else $( tr_id).append(data);
-		
-		<!-- START: add button group for current poi -->
-		$("#poi-action-button_"+day_index+"_"+poi_index).append(poi_button);
-		
-		if (action == "add-poi") {
-			// Update onclick event for NEW added POI
-			updateEvent();
-			// Update show empty hint for this day (remove empty hint when new POI added)
-	    	updatePoiEmpty ("day-group" + day_index);
-			// Update close POI list for this day
-			updatePoiHidden("day-group" + day_index);
-		}
-}// END print POI
-
-// START updatePoiEmpty - make hint show up when day-group empty
-function updatePoiEmpty (day_group_id) {
-	// get SELECTOR for current day-group >> .poi-empty is the class for the hint tr (normally hidden)
-	var is_empty = $("#"+day_group_id).children(".poi-empty");
-	// when current day-group doesnt have POI >> show hint, "can-toggle" make hint can affected by POI toggle button 
-	if ($("#"+day_group_id).children(".poi-list").length < 1 ) {
-	is_empty.show("slow");
-	is_empty.addClass("can-toggle");
-	}
-	// When current day-group have POI >> hide hint, make hint always hidden and cannot affected by POI toggle button
-	else {
-	is_empty.hide("slow");
-	is_empty.removeClass("can-toggle");
-	}
-}// END updatePoiEmpty
-
-// START updatePoiHidden - check this day-group poi-list hidden status and update
-function updatePoiHidden (day_group_id) {
-	// get SELECTOR for current day-group
-	var is_hidden = $("#"+day_group_id).children(".poi-list, .can-toggle");
-	// when current day-group is hidden >> hide poi-list, make sure toggle button is correct.
-	if ($("#"+day_group_id).hasClass("poi-hidden") ) {
-	is_hidden.hide("slow");
-	$("#"+ day_group_id +" .fa-chevron-circle-down" ).removeClass("fa-flip-vertical").fadeIn("slow");
-	}
-	// when current day-group is visible >> show poi-list, make sure toggle button is correct.
-	else {
-	is_hidden.show("slow");
-	$("#"+ day_group_id +" .fa-chevron-circle-down" ).addClass("fa-flip-vertical").fadeIn("slow");
-	}
-}//Empty updatePoiHidden
-
-// START runModal - Activate Modal Dialog (get event data) 
-function runModal(event) {	
-	if ( event.data.action == "remove") {
-		var this_id;
-		if ($(this).parents("tr").hasClass("day-list")) 	this_id = $(this).closest("tbody").attr("id");
-		else this_id = $(this).closest(".poi-list").attr("id");
-		$(".modal-body").html("Remove current POI "+ this_id +"?");
-		$("#modal-confirm").data( "data", {target_id: this_id, action: event.data.action} );	
-	}
-	
-	else if ( event.data.action == "add-day") {
-		$(".modal-body").html("Add new day?");
-		$("#modal-confirm").data( "data", {target_id: this_id, action: event.data.action} );	
-	}
-	$("#myModal").modal();
-}// END Activate Modal Dialog
-
-// START responseModal - Remove Row Function (DAY or POI) ->Add day
-function responseModal() {
-	if ($(this).data("data").action == "remove") {
-		var remove_id = $(this).data("data").target_id;
-		$( "#" + remove_id ).fadeOut( "slow", function() {
-		$( "#" + remove_id ).remove()
-		;});
-	}
-	
-	else if ($(this).data("data").action == "add-day") {
-	var count = $(".day-group").length;
-	var i = count ;
-	// IMPORTANT to ask database add new row then get the latest day-id
-	printDay( "#planner-table", i, "after", 0 ,"add-day");
-	} 
-	
-}// END responceModal
-
-
-// START Toggle hide/show POI in Day function
-function clickTogglePoi() {
-	// get SELECTOR for current day-group
-	var this_class = $(this).closest("tbody").attr("id");
-	// get SELECTOR for previous shown day-group, if have
-	var pre_hidden = $(".day-group").not(".poi-hidden").attr("id");
-	// add/remove Poi-list hidden status for current day-group
-	$("#" + this_class).toggleClass("poi-hidden");
-	// add Poi-list hidden status for previous shown day-group (when open this day, close all other day)
-	$("#" + pre_hidden).addClass("poi-hidden");
-	
-	updatePoiHidden (this_class);
-	updatePoiHidden (pre_hidden);
-	
-}// END Toggle hide/show POI in Day function
-
-// START Set Day Sorting Function
-function setDaySort () {	
-	var from_day_group_index;
-	var from_day_group_id;
-	var to_day_group_id;
-	$("#planner-table").sortable({	
-	revert: true,
-	axis: "y",
-	start: function(e, ui){
-        $(ui.helper).addClass("ui-draggable-helper");
-		$(ui.placeholder).addClass("ui-draggable-placeholder-day");
-		$(ui.helper).html($(ui.item).find(".day").html());
-		from_day_group_index = $(ui.item).index();
-		from_day_group_id = ui.item.attr("id");
-			},
-    items: ">.day-group:not(:last-child)", 
-	cancel: ">.poi-list" ,
-    appendTo: "parent",
-	handle: "tr .handle-icon",
-    helper: function(event, ui) {
-		var drag_day = $(this).attr("id");
-    	return $('<div style="white-space:nowrap; height:80px;"/>');},
-	placeholder: {
-        element: function(currentItem) {
-			// Customize Placeholder with number of child not hidden
-			var count = $("tr").children("td:not(.hidden)").length;
-            return $("<tr><td colspan ='"+ count +"'></td></tr>");
-        },
-        update: function(container, p) {
-            return;
-        }
-    },
-	sort: function(event, ui) {
-		if (from_day_group_index > $(ui.placeholder).index()) to_day_group_id = $(ui.placeholder).next("tbody").attr("id");
-		else to_day_group_id = $(ui.placeholder).prev("tbody").attr("id");
-		this_day = $("#" + to_day_group_id +" .d-day").html();
-		$(ui.placeholder).children("td").html("Reschedule to "+this_day);
-	},	
-	cursorAt: {top: 15},
-	stop: function( event, ui ) {
-		updateIndexDate();
-		updatePoiHidden(from_day_group_id);
-}
-}).disableSelection();
-}// End Day Sorting Function
-
-
-
-// START Set POI Sorting Function
-function setPoiSort () {
-	var from_day_group_id;
-	var to_day_group_id;
-		$(".day-group").sortable({
-	//delay: 100,
-	axis: "y",
-	start: function(e, ui){
-        $(ui.helper).addClass("ui-draggable-helper");
-		$(ui.helper).html($(ui.item).find(".poi-info").html());
-		$(ui.placeholder).addClass("ui-draggable-placeholder");
-		from_day_group_id = ui.item.parent().attr("id");
-			},
-    items: ">.poi-list",
-    appendTo: "parent",
-	connectWith: ".day-group",
-	placeholder: {
-        element: function(currentItem) {
-			// Customize Placeholder with number of child not hidden
-			var count = $("tr").children("td:not(.hidden)").length;
-			return $("<tr><td colspan ='"+ count +"'></td></tr>");
-        },
-        update: function(container, p) {
-            return;
-        }
-	},
-	sort: function(event, ui) {
-		var p_onday = $(ui.placeholder).closest("tbody").attr("id");
-		p_onday = $("#" + p_onday +" .day").html();
-		$(ui.placeholder).children("td").html("Move to "+ p_onday);
-	},	
-	cursorAt: { top: 15  },
-    helper: function(event, ui) {
-    return $('<div style="white-space:nowrap; height:30px;"/>');},
-	update: function( event, ui ) {
-		var this_day = $(this).closest("tbody").attr("id");
-		//if (( $("#" + this_day).children(".poi-list:hidden").length >0 ))  $("#" + this_day +" tr:not(:first-child):visible").fadeToggle();
-		to_day_group_id = this_day;
-	},
-	stop: function( event, ui ) {
-		updatePoiEmpty (from_day_group_id);
-		updatePoiEmpty (to_day_group_id);
-		updatePoiHidden (to_day_group_id);
-}
-	
-}).disableSelection();
-}// End POI Sorting Function
-
-// START get date list
-function getDateList ()
-{	var first_date = new Date("2016-02-09");
-	//var no_of_days = 4;
-	var no_of_days = $(".day-group").length;
-	var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-	var day_list = [];
-	for (i = 0; i < no_of_days; i++) {
-  		myDate = new Date(first_date.setDate(first_date.getDate() + 1));
-  		day_list[i] = myDate.getDate() + "&nbsp;" + monthNames[(myDate.getMonth())] ;
-			// Add year? -->  + "-" + myDate.getFullYear()
-}
-
-	return day_list;
-}// End get date list
-
-// START Update Day Index and Date
-function updateIndexDate(){
-		var date_list = getDateList ();
-		
-		$('.day-list').each(function(){
-     	var index= $(this).parent('.day-group').index();
-		$(this).find(".d-day").fadeOut(300, function() {
-        $(this).html("D" +index).fadeIn(300);
-		});
-		$(this).find(".d-date").fadeOut(300, function() {
-        $(this).html(date_list[index-1]).fadeIn(300);
-		});
-	})	
-}// END Update Day Index and Date
-
-
-
-
-</script>
+</style>
 
 <div id="section-content-itinerary">
 	<div id="section-content-itinerary-header">
-    </div>
-    <div id="section-content-itinerary-content" >
     	<div id="section-content-itinerary-header-button">
-            <a 
-                class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
-                onclick="close_section_content('itinerary');"
-                data-toggle='tooltip' 
-                data-placement='bottom' 
-                title='Close Itinerary' 
-            >
-                <i class="fa fa-fw" id="section-content-map-header-close">&times;</i>
-            </a>
-            <a 
-                class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
-                onclick="open_section_content('itinerary');"
-                data-toggle='tooltip' 
-                data-placement='bottom' 
-                title='Expand Itinerary' 
-            >
-                <i class="fa fa-fw fa-arrows-alt"></i>
-            </a>
-        </div>
-        <table class="table itinerary-table" id="planner-table">
-            <thead>
-            	<th class="hidden">#</th>
-                <th>Day</th>
-                <th >Date</th>
-                <th class="hidden">City</th>
-                <th>Activity</th>
-                <th class="hidden">Fee</th>
-                <th></th>
-            </thead>
-        </table>
-    </div>    
-
-    <div id="section-content-itinerary-footer">
-    	<a class="btn btn-primary add-day-icon">Add Day</a>
-        <a class="btn btn-default">Add Note</a>
-    </div>
-</div>
-
- <!-- Modal -->
-    <div id="myModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                	<button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-            <div class="modal-body">
-            	<p>Some text in the modal.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="modal-confirm" class="btn btn-default" data-dismiss="modal">Confirm</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
+            <a class="pull-right noselect">Set Date</a>
         </div>
     </div>
-
-
-
-
-<div id="section-content-itinerary-debug" class="hidden col-sm-3">
-    <p>This is for the trip data</p>
-    <p id="trip">Trip Name</p>
-    <p>No.of Day: <?php echo $maxday; ?> </p>
-    <p id="debug">Debug: </p>
-    <p id="debug2">Debug: </p>
-    <p id="debug3">Debug: </p>
-    <a tabindex="0" class="btn btn-lg btn-danger" role="button" data-toggle="confirmation" data-trigger="focus" title="Dismissible popover" data-content="		
-    	<button>123 </button>">Dismissible popover
-    </a>
-    <button class="btn btn-default" data-toggle="confirmation">Confirmation</button>
-	<!-- Trigger the modal with a button -->
-	<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
-
-   
+    <div id="section-content-itinerary-content">
+        <div id="section-content-itinerary-content-table">
+            <table class="table itinerary-table" id="table-plan">
+                <thead>
+                    <?php
+                        foreach($column as $c) {
+                            echo '<th ';
+                                echo 'style="';
+                                    echo 'text-align:'.$c['headerAlign'].';';
+                                    echo 'width:'.$c['width'].';';
+                                    echo $c['headerStyle'];
+                                echo '" ';
+                                echo 'class="';
+                                    if($c['visible'] == 'false') { echo 'hidden '; }
+                                    echo $c['class'];
+                                echo '" ';
+                            echo '>';
+                            echo $c['title'];
+                            echo '</th>';
+                        }
+                    ?>
+                </thead>
+            </table>
+        </div>
+    </div>
 </div>
-</div>
+
+<script>
+	<!-- START: declare global value [!important] -->
+		var column = <?php echo $column_json; ?>;
+	<!-- END -->
+	
+	<!-- START: jquery function to serialize form -->
+		$.fn.serializeObject = function() {
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name] !== undefined) {
+					if (!o[this.name].push) {
+						o[this.name] = [o[this.name]];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	<!-- END -->
+	
+	//THIS IS INCOMPLETE
+	function getFormPlanValue() {
+		var serial = $('#form-plan').find('.row-day input').not('[value="undefined"]').serialize();
+		var serial = JSON.stringify($('#form-plan').serializeObject());
+		var day = 1;
+		$.each($('.form-day'), function(i, val) {
+			day = JSON.stringify($('#form-day').serializeObject());
+		});
+		var day = JSON.stringify($('#form-day').serializeObject());
+		alert(day);
+	}
+	//INCOMPLETE
+	
+	function printDay(column, day, day_raw) {
+		<!-- START: set column -->
+			$.each(column, function(i, col) {
+				<!-- START: select <td> property -->
+					if(typeof col.dayId != 'undefined') { col.id = col.dayId; }
+					if(typeof col.dayName != 'undefined') { col.name = col.dayName; }
+					if(typeof col.dayClass != 'undefined') { col.class = col.dayClass; }
+				<!-- END -->
+				<!-- START: set <td> property -->
+					column += "<td ";
+						column += "id='table-plan-tbody-day-" + day.day_id + "-column-" + col.id + "' ";
+						column += 'class="';
+							if(typeof col.class != 'undefined') { column += col.class+' '; }
+							if(col.visible == 'false') { column += 'hidden '; }
+						column += '" ';
+						column += 'style="';
+							if(typeof col.dayStyle != 'undefined') { column += col.dayStyle; }
+							if(col.align != '') { column += 'text-align:' + col.align + ';'; }
+						column += '" ';
+					column += ">";
+				<!-- END -->
+				<!-- START: set <td> value -->
+					if(col.type == 'progress') {
+						column += ""
+							+ "<div class='progress'>"
+								+ "<div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='" + day[col.name] + "' aria-valuemin='0' aria-valuemax='100' style='width:" + (day[col.name]/(60*12))*100 + "%'>"
+								+ "</div>"
+							+ "</div>"
+						;
+					}
+					else {
+						if(typeof day[col.name] != 'undefined') {
+							column += day[col.name];
+						}
+					}
+				<!-- END -->
+				<!-- START: set hidden input -->
+					column += ""
+						+ "<input "
+							+ "id='table-plan-tbody-day-" + day.day_id + "-column-" + col.id + "-hidden-input' "
+							+ 'name="day_' + day['day_id'] + '.' + col.name + '" '
+							+ "class='hidden' "
+							+ "value='" + day_raw[col.name] + "'"
+						+ "/>"
+					;
+				<!-- END -->
+				<!-- START: close <td> -->
+					column += "</td>";
+				<!-- END -->
+				
+			});
+		<!-- END -->
+		
+		<!-- START: set output for day -->
+			var output_day = ""
+				+ "<tbody id='table-plan-tbody-day-"+day.day_id+"' class='tbody-day'>"
+					+ "<tr class='row-day'>"
+							+ column
+					+ "</tr>"
+				+ "</tbody>"
+			;
+		<!-- END -->
+		
+		<!-- START: set output for command -->
+			var output_command = ""
+				+ "<div>"
+					+ "<a type='button' class='btn btn-simple pull-right icon-sort'>"
+						+ "<i class='fa fa-fw fa-arrows-v' aria-hidden='true'></i>"
+					+ "</a>"
+					+ "<a type='button' class='btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete'>"
+						+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
+					+ "</a>"
+					+ "<a type='button' class='btn btn-simple pull-right icon-toggle-day'>"
+						+ "<i class='fa fa-fw fa-chevron-circle-down' aria-hidden='true'></i>"
+					+ "</a>"
+				+ "</div>"
+			;
+		<!-- END -->
+		
+		<!-- START: print output for day -->
+			$("#table-plan").append(output_day); 
+		<!-- END -->
+		
+		<!-- START: print output for command -->
+			$("#table-plan-tbody-day-" + day.day_id + "-column-command").html("");
+			$("#table-plan-tbody-day-" + day.day_id + "-column-command").append(output_command);
+		<!-- END -->
+	}
+	
+	function printLine(column, line, line_raw) {
+		<!-- START: set column -->
+			$.each(column, function(i, col) {
+				<!-- START: select <td> property -->
+					if(typeof col.lineId != 'undefined') { col.id = col.lineId; }
+					if(typeof col.lineName != 'undefined') { col.name = col.lineName; }
+					if(typeof col.lineClass != 'undefined') { col.class = col.lineClass; }
+				<!-- END -->
+				<!-- START: set <td> property -->
+					column += "<td ";
+						column += "id='table-plan-row-line-" + line.line_id + "-column-" + col.id + "' ";
+						column += 'class="';
+							if(typeof col.class != 'undefined') { column += col.class+' '; }
+							if(col.visible == 'false') { column += 'hidden '; }
+						column += '" ';
+						column += 'style="';
+							if(typeof col.lineStyle != 'undefined') { column += col.lineStyle; }
+							if(col.align != '') { column += 'text-align:' + col.align + ';'; }
+						column += '" ';
+					column += ">";
+				<!-- END -->
+				<!-- START: set <td> text -->
+					if(typeof line[col.name] != 'undefined' && line[col.name] != null) {
+						if(col.name == 'time') {
+							column += ''
+								+ '<input '
+									+ 'class="table-plan-row-line-column-time" '
+									+ 'type="time" '
+									+ 'value="' + line[col.name] + '" '
+								+ '/>'
+							;
+						}
+						else {
+							column += line[col.name];
+						}
+					}
+					else {
+						if(col.name == 'time') {
+							column += ''
+								+ '<input '
+									+ 'class="table-plan-row-line-column-time" '
+									+ 'type="time" '
+								+ '/>'
+							;
+						}
+					}
+				<!-- END -->
+				<!-- START: set hidden input -->
+					column += ""
+						+ "<input "
+							+ "id='table-plan-row-line-" + line.line_id + "-column-" + col.id + "-hidden-input' "
+							+ 'name="day_' + line['day_id'] + '_line_' + line['line_id'] + '_' + col.name + '" '
+							+ "class='hidden' "
+							+ "value='" + line_raw[col.name] + "'"
+						+ "/>"
+					;
+				<!-- END -->
+				<!-- START: close <td> -->
+					column += "</td>";
+				<!-- END -->
+			});
+		<!-- END -->
+		
+		<!-- START: set output for line -->
+			var output_line = ""
+				+"<tr class='row-line hidden'>"
+					+ column
+				+"</tr>"
+			;
+		<!-- END -->
+		
+		<!-- START: set output for command -->
+			var output_command = ""
+				+ "<div>"
+					+ "<a type='button' class='btn btn-simple pull-right icon-sort'>"
+						+ "<i class='fa fa-fw fa-arrows-v' aria-hidden='true'></i>"
+					+ "</a>"
+					+ "<a type='button' class='btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete'>"
+						+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
+					+ "</a>"
+				+ "</div>"
+			;
+		<!-- END -->
+		
+		<!-- START: print output for line -->
+			$("#table-plan-tbody-day-"+line.day_id).append(output_line); 
+		<!-- END -->
+		
+		<!-- START: print output for command -->
+			$("#table-plan-row-line-" + line.line_id + "-column-command").html("");
+			$("#table-plan-row-line-" + line.line_id + "-column-command").append(output_command);
+		<!-- END -->
+	}
+	
+	function printButtonAddDay(column) {
+		<!-- START: set output -->
+			var output = ""
+				+ "<tbody>"
+					+"<tr class='row-button'>>"
+						+ "<td "
+							+ "colspan='" + column.length + "' "
+						+ ">"
+							+ "<a class='text-center btn-block' onclick='getFormPlanValue();'>"
+								+ "Add New Day"
+							+ "</a>"
+						+ "</td>"
+					+"</tr>"
+				+ "</tbody>"
+			;
+		<!-- END -->
+		
+		<!-- START: print output -->
+			$("#table-plan").append(output); 
+		<!-- END -->
+	}
+	
+	function printButtonAddLine(column, tbody) {
+		<!-- START: set output -->
+			var output = ""
+				+"<tr class='row-button row-line-button hidden'>"
+					+ "<td "
+						+ "colspan='" + column.length + "' "
+					+ ">"
+						+ "<a class='text-center btn-block'>"
+							+ "Add New Line"
+						+ "</a>"
+					+ "</td>"
+				+"</tr>"
+			;
+		<!-- END -->
+		
+		<!-- START: print output -->
+			$(tbody).append(output); 
+		<!-- END -->
+	}
+	
+	function toggleDay() {
+		var selected_day = $(this).closest("tbody").attr("id");
+		if($("#" + selected_day + " .row-day").hasClass("selected") == true && $("#" + selected_day + " .row-line").hasClass("hidden") == false) {
+			$(".row-line").addClass("hidden");
+			$(".row-line-button").addClass("hidden");
+			$(".fa-chevron-circle-down").removeClass("fa-flip-vertical");
+		}
+		else {
+			$(".row-day").removeClass("selected");
+			$(".row-line").addClass("hidden");
+			$(".row-line-button").addClass("hidden");
+			$(".fa-chevron-circle-down").removeClass("fa-flip-vertical");
+			$("#" + selected_day + " .row-day").toggleClass("selected");
+			$("#" + selected_day + " .row-line").toggleClass("hidden");
+			$("#" + selected_day + " .row-line-button").toggleClass("hidden");
+			$("#" + selected_day + " .fa-chevron-circle-down").toggleClass("fa-flip-vertical");
+		}
+	}
+	
+	function updateTablePlanButtonEvent() {
+		$(".row-day").on("click", toggleDay);
+		$('.icon-sort').on('mousedown', function() {
+			var selected_day = $(this).closest("tbody").attr("id");
+			$("# "+ selected_day + " .row-line").addClass("hidden");
+			$(this).on('mouseup', function() {	
+				$("# "+ selected_day + " .row-line").removeClass("hidden");
+			});
+		});
+	}
+	
+	function initSortableDay (data_cooked) {	
+		var from_row_day_index;
+		var from_row_day_id;
+		var to_row_day_id;
+		$("#table-plan").sortable({	
+			delay: 100,
+			axis: "y",
+			items: ">.tbody-day", 
+			handle: ">.row-day",
+			appendTo: "parent",	
+			cursorAt: {
+				top: 15
+			},
+			helper: function(event, ui) {
+				return $('<div style="white-space:nowrap; height:48px;"></div>');
+			},
+			placeholder: {
+				element: function(currentItem) {
+					var count = $("tr").children("td:not(.hidden)").length;
+					return $("<tr><td colspan ='"+ count +"'></td></tr>");
+				},
+				update: function(container, p) {
+					return;
+				}
+			},
+			start: function(e, ui) {
+				$(ui.helper).addClass("ui-draggable-helper");
+				$(ui.placeholder).addClass("ui-draggable-placeholder-day");
+				$(ui.helper).html($(ui.item).find(".day").html());
+				from_row_day_index = $(ui.item).index();
+				from_row_day_id = ui.item.attr("id");
+			},
+			sort: function(event, ui) {
+				if (from_row_day_index > $(ui.placeholder).index()) { 
+					to_row_day_id = $(ui.placeholder).next("tbody").attr("id");
+				}
+				else {
+					to_row_day_id = $(ui.placeholder).prev("tbody").attr("id");
+				}
+				sort_order = $("#" + to_row_day_id + " .col-sort-order").html();
+				$(ui.placeholder).children("td").html("Reschedule to D"+sort_order);
+			},
+			stop: function( event, ui ) {
+				updateTablePlanDayDate(data_cooked);
+			}
+		}).disableSelection();
+	}
+	
+	function initSortableLine () {
+		var from_row_day_id;
+		var to_row_day_id;
+		$(".tbody-day").sortable({
+			delay: 100,
+			axis: "y",
+			items: ">.row-line",
+			appendTo: "parent",
+			connectWith: ".tbody-day",	
+			cursorAt: { 
+				top: 15
+			},
+			helper: function(event, ui) {
+				return $('<div style="height:48px;"></div>');
+			},
+			placeholder: {
+				element: function(currentItem) {
+					// Customize Placeholder with number of child not hidden
+					var count = $("tr").children("td:not(.hidden)").length;
+					return $("<tr><td colspan ='"+ count +"'></td></tr>");
+				},
+				update: function(container, p) {
+					return;
+				}
+			},
+			start: function(e, ui) {
+				$(ui.helper).addClass("ui-draggable-helper");
+				$(ui.helper).html($(ui.item).find(".poi-info").html());
+				$(ui.placeholder).addClass("ui-draggable-placeholder");
+				from_row_day_id = ui.item.parent().attr("id");
+			},
+			sort: function(event, ui) {
+				var tbody = $(ui.placeholder).closest("tbody").attr("id");
+				day_sort_order = $("#" + tbody + " .col-sort-order").html();
+				$(ui.placeholder).children("td").html("Move to D"+ day_sort_order);
+			},
+			update: function( event, ui ) {
+				var selected_day = $(this).closest("tbody").attr("id");
+				to_row_day_id = selected_day;
+			},
+			stop: function( event, ui ) {
+			}
+		}).disableSelection();
+	}
+	
+	<!-- START: script for manage data -->
+		function updateTablePlanDayDate(data_cooked) {
+			$('.row-day').each(function(){
+				var speed = 300;
+				var index= $(this).parent('.tbody-day').index();
+				$(this).find(".col-sort-order").fadeOut(speed, function() {
+					$(this).html(index).fadeIn(speed);
+				});
+				$(this).find(".col-day").fadeOut(speed, function() {
+					$(this).html("D" +index).fadeIn(speed);
+				});
+				$(this).find(".col-date").fadeOut(speed, function() {
+					$(this).html(data_cooked.day[index-1].date).fadeIn(speed);
+				});
+			})	
+		}
+	<!-- END -->
+	
+	<!-- START: script for manage data format -->
+		function setTablePlanDataFormatForDayDay(plan) {
+			for (i=0; i<plan.day.length; i++) {
+				plan.day[i].day = 'D'+plan.day[i].sort_order;
+			}
+			return plan;
+		}
+		
+		function setTablePlanDataFormatForDayDate(plan) {	
+			var first_date = new Date(plan.travel_date);
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			for (i=0; i<plan.day.length; i++) {
+				myDate = new Date(first_date.setDate(first_date.getDate() + 1));
+				var weekday = new Array(7);
+				weekday[0]=  "Ｓ";
+				weekday[1] = "Ｍ";
+				weekday[2] = "Ｔ";
+				weekday[3] = "Ｗ";
+				weekday[4] = "Ｔ";
+				weekday[5] = "Ｆ";
+				weekday[6] = "Ｓ";
+				var myWeekday = weekday[myDate.getDay()];
+				plan.day[i].date = myDate.getDate() + "&nbsp;" + monthNames[(myDate.getMonth())] + "&nbsp;&nbsp;&nbsp;(" + myWeekday + ")";
+			}
+			return plan;
+		}
+		
+		function setTablePlanDataFormatForDayDuration(plan) {
+			for(i=0; i<plan.day.length; i++) {
+				if(typeof plan.day[i].line != 'undefined' &&  plan.day[i].line.length > 0) {
+					plan.day[i].duration = 0;
+					for(j=0; j<plan.day[i].line.length; j++) {
+						var duration = plan.day[i].line[j].duration;
+						plan.day[i].duration += duration;
+					}
+				}
+				else {
+					plan.day[i].duration = 0;
+				}
+			}
+			return plan;
+		}
+		
+		function setTablePlanDataFormatForLineDuration(plan) {
+			for(i=0; i<plan.day.length; i++) {
+				if(typeof plan.day[i].line != 'undefined' &&  plan.day[i].line.length > 0) {
+					for(j=0; j<plan.day[i].line.length; j++) {
+						var duration = plan.day[i].line[j].duration;
+						var hour = Math.floor(duration/ 60);
+						var minute = duration % 60;
+						if(hour >= 1) {
+							minute = ("0" + minute).slice(-2);
+							plan.day[i].line[j].duration = hour+'h '+minute+'m';
+						}
+						else {
+							plan.day[i].line[j].duration = minute+'m';
+						}
+					}
+				}
+			}
+			return plan;
+		}
+	<!-- END -->
+	
+	
+	<!-- START: script for manage display -->
+		function refreshTablePlan() {
+			<?php if($this->user->isLogged() != '') { ?>
+				<!-- START: [logged] -->
+					<!-- START: set data -->
+						var data = {
+							"action":"refresh_plan",
+							"plan_id":"4",
+						};
+					<!-- END -->
+				
+					<!-- START: send POST -->
+						$.post("<?php echo $ajax_itinerary; ?>", data, function(plan) {
+							runRefreshTablePlan(plan);
+						}, "json");
+					<!-- END -->
+				<!-- END -->
+			<?php } else { ?>
+				<!-- START: [not logged] -->
+					var plan = getCookie('plan');
+					if(plan == '') {
+						<!-- START: [first time] -->
+							var plan = {
+								name:"Plan 1",
+								travel_date:new Date("2016-02-09"),
+								day:[
+									{
+										day_id:1,
+										sort_order:1,
+										line:[
+											{
+												line_id:1,
+												day_id:1,
+												sort_order:1,
+												time:"10:00",
+												duration:30,
+												title:"Tokyo Tower"
+											},
+											{
+												line_id:2,
+												day_id:1,
+												sort_order:2,
+												time:"11:00",
+												duration:60,
+												title:"Osaka Tower"
+											},
+											{
+												line_id:3,
+												day_id:1,
+												sort_order:3,
+												time:"15:00",
+												duration:90,
+												title:"Kyoto Tower"
+											}
+										]
+									},
+									{
+										"day_id":2,
+										"sort_order":2,
+									},
+									{
+										"day_id":3,
+										"sort_order":3,
+									}
+								]
+							};
+							plan = JSON.stringify(plan);
+							setCookie('plan',plan,1);
+							plan = JSON.parse(plan);
+							runRefreshTablePlan(plan);
+						<!-- END -->
+					}
+					else {
+						<!-- START: [revisit] -->
+							plan = JSON.parse(plan);
+							runRefreshTablePlan(plan);
+						<!-- END -->
+					}
+				<!-- END -->
+			<?php } ?>
+		}
+			
+		function runRefreshTablePlan(plan) {
+			<!-- START: set raw data -->
+				var data_raw = $.extend(true,{},plan); //IMPORTANT: to make sure clone without reference
+			<!-- END -->
+			
+			<!-- START: set data format-->
+				plan = setTablePlanDataFormatForDayDay(plan);
+				plan = setTablePlanDataFormatForDayDate(plan);
+				plan = setTablePlanDataFormatForDayDuration(plan);
+				plan = setTablePlanDataFormatForLineDuration(plan);
+			<!-- END -->
+			
+			<!-- START: set modified data -->
+				data_cooked = plan;
+			<!-- END -->
+			
+			<!-- START: print table -->
+				$.each(data_cooked.day, function(i) {
+					printDay(window.column, this, data_raw.day[i]);
+					if(typeof this.line != 'undefined' && this.line.length > 0) {
+						$.each(this.line, function(j) {
+							printLine(window.column, this, data_raw.day[i].line[j]);
+						});
+					}
+					printButtonAddLine(window.column, "#table-plan-tbody-day-" + this.day_id);
+				});
+				printButtonAddDay(window.column);
+			<!-- END -->
+			
+			<!-- START: init function -->
+				updateTablePlanButtonEvent();
+				initSortableDay(data_cooked);
+				initSortableLine();
+			<!-- END -->
+		}
+	<!-- END -->
+	
+	$(document).ready(function() {
+		refreshTablePlan();
+	});
+</script>

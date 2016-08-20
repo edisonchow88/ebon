@@ -8,11 +8,10 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 	public $data = array();
 
 	public function main() {
-		$this->loadModel('travel/trip');
-		$this->loadModel('travel/status');
-		$this->loadModel('travel/plan');
-		$this->loadModel('travel/mode');
-		$this->loadModel('user/user');
+		//START: load model
+			$this->loadModel('travel/trip');
+			$this->loadModel('account/user');
+		//END
 		
 		foreach($_POST as $key => $value) {
 			$this->data[$key] = $value;
@@ -22,6 +21,7 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 		unset($this->data['action']);
 		
 		if($action == 'get') { $this->get(); }
+		else if($action == 'review') { $this->review(); }
 		else if($action == 'add') { $this->add(); }
 		else if($action == 'edit') { $this->edit(); }
 		else if($action == 'delete') { $this->delete(); }
@@ -38,6 +38,10 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 		$result = $this->model_travel_trip->getTrip($trip_id);
 		$response = json_encode($result);
 		echo $response;
+	}
+	
+	public function review() {
+		$this->get();
 	}
 	
 	public function add() {
@@ -57,7 +61,7 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 		
 		$trip_id = $this->data['trip_id']; 
 		$execution = $this->model_travel_trip->editTrip($trip_id, $this->data); 
-		if($execution == true) { 
+		if($execution === true) { 
 			$this->session->data['success'] = "Success: <b>Trip #".$trip_id."</b> has been modified";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -70,7 +74,7 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 	public function delete() {
 		$trip_id = $this->data['trip_id']; 
 		$execution = $this->model_travel_trip->deleteTrip($trip_id); 
-		if($execution == true) { 
+		if($execution === true) { 
 			$this->session->data['success'] = "Success: <b>Trip #".$trip_id."</b> has been deleted";
 			
 			//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -81,14 +85,38 @@ class ControllerResponsesTravelAjaxTrip extends AController {
 	}
 	
 	public function verify() {
-		if($this->data['name'] == '') {
-			$result['warning'][] = 'Please input <b>Name</b>';
-		}
+		//START: set requirement
+			if($this->data['language_id'] == '') {
+				$result['warning'][] = '<b>Language</b> is missing';
+			}
+			
+			if($this->data['name'] == '') {
+				$result['warning'][] = '<b>Name</b> is missing';
+			}
+			
+			if($this->data['user_id'] == '') {
+				$result['warning'][] = '<b>User</b> is missing';
+			}
+			
+			if($this->data['status_id'] == '') {
+				$result['warning'][] = '<b>Status</b> is missing';
+			}
+		//END
 		
-		if(count($result['warning']) > 0) { 
-			$response = json_encode($result);
-			echo $response;	
-			return 'failed';
-		}
+		//START: convert data format for NULL
+			foreach($this->data as $key => $value) {
+				if($value == '') {
+					$this->data[$key] = 'NULL';
+				}
+			}
+		//END
+		
+		//START: return warning if failed
+			if(count($result['warning']) > 0) { 
+				$response = json_encode($result);
+				echo $response;	
+				return 'failed';
+			}
+		//END
 	}
 }

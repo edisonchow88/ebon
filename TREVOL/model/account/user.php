@@ -7,7 +7,7 @@
 		
 		//START: Set Table
 			private $table = "user";
-			private $table_group = "user_group";
+			private $table_group = "user_role";
 		//END
 		
 		//START: Set Common Function
@@ -145,30 +145,30 @@
 		//END
 		
 		//START: [User Group]
-			public function getUserGroup($user_group_id='') {
-				if($user_group_id == '') {
+			public function getRole($role_id='') {
+				if($role_id == '') {
 					$sql = "
 						SELECT *
 						FROM " . $this->db->table($this->table_group) . " 
-						ORDER BY user_group_id DESC 
+						ORDER BY role_id DESC 
 					";
 				}
 				else {
 					$sql = "
 						SELECT *
 						FROM " . $this->db->table($this->table_group) . " 
-						WHERE user_group_id = '" . (int)$user_group_id . "' 
+						WHERE role_id = '" . (int)$role_id . "' 
 					";
 		
 				}
 				$query = $this->db->query($sql);
 				
 				//START: Set Output
-				if($user_group_id == '') {
+				if($role_id == '') {
 					foreach($query->rows as $result){
-						$output[$result['user_group_id']] = $result;
-						$output[$result['user_group_id']]['name'] = ucwords($result['name']);
-						$output[$result['user_group_id']]['description'] = ucfirst($result['description']);
+						$output[$result['role_id']] = $result;
+						$output[$result['role_id']]['name'] = ucwords($result['name']);
+						$output[$result['role_id']]['description'] = ucfirst($result['description']);
 					}
 				}
 				else {
@@ -182,7 +182,7 @@
 				return $output;
 			}
 			
-			public function addUserGroup($data) {
+			public function addRole($data) {
 				//START: Run SQL
 					$fields = $this->getFields($this->db->table($this->table_group));
 					
@@ -203,17 +203,17 @@
 					$query = $this->db->query($sql);
 				//END
 				
-				$user_group_id = $this->db->getLastId();
+				$role_id = $this->db->getLastId();
 				
 				//START: Run Chain Reaction
 				//END
 				
-				$this->cache->delete('user_group');
+				$this->cache->delete('role');
 				
-				return $user_group_id;
+				return $role_id;
 			}
 			
-			public function editUserGroup($user_group_id, $data) {
+			public function editRole($role_id, $data) {
 				//START: Run SQL
 					$fields = $this->getFields($this->db->table($this->table_group));
 					
@@ -228,21 +228,21 @@
 						$sql = "
 							UPDATE " . $this->db->table($this->table_group) . " 
 							SET " . implode(',', $update) . "
-							WHERE user_group_id = '" . (int)$user_group_id . "'
+							WHERE role_id = '" . (int)$role_id . "'
 						";
 						$query = $this->db->query($sql);
 					}
 				//END
 				
-				$this->cache->delete('user_group');
+				$this->cache->delete('role');
 				return true;
 			}
 			
-			public function deleteUserGroup($user_group_id) {
+			public function deleteRole($role_id) {
 				//START: Run SQL
 					$sql = "
 						DELETE FROM " . $this->db->table($this->table_group) . " 
-						WHERE user_group_id = '" . (int)$user_group_id . "'
+						WHERE role_id = '" . (int)$role_id . "'
 					";
 					$query = $this->db->query($sql);
 				//END
@@ -250,17 +250,17 @@
 				//START: Run Chain Reaction
 				//END
 				
-				$this->cache->delete('user_group');
+				$this->cache->delete('role');
 				return true;
 			}
 		//END
 		
 		//START: [Extra]
-			public function countUserByUserGroupId($user_group_id='') {
+			public function countUserByRoleId($role_id='') {
 				$sql = "
 					SELECT COUNT(*) as count
 					FROM " . $this->db->table($this->table) . " 
-					WHERE user_group_id = '" . (int)$user_group_id . "' 
+					WHERE role_id = '" . (int)$role_id . "' 
 				";
 				$query = $this->db->query($sql);
 				

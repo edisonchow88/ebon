@@ -165,6 +165,7 @@ ul {
 		#wrapper-title input {
 			box-shadow:none;
 			border:solid thin #FFF;
+			min-width:270px;
 		}
 		
 		#wrapper-title input:hover {
@@ -390,6 +391,58 @@ ul {
 	#wrapper-account li a:hover {
 		color:#fff;
 		background-color:#e93578;
+	}
+/* END */
+
+/* START: wrapper-debug */
+	#wrapper-debug-button {
+		position:fixed;
+		top:50px;
+		right:20px;
+		z-index:3;
+	}
+	
+	#wrapper-debug {
+		position:relative;
+		z-index:1000;
+		border-top:solid thin #EEE;
+	}
+	
+	#wrapper-debug-modal-background {
+		position:absolute;
+		top:0;
+		right:0;
+		height:calc(100vh - 48px);
+		width:calc(100vw);
+		background-color:#000;
+		opacity:0.2;
+		display:none;
+	}
+	
+	#wrapper-debug-modal-body {
+		position:absolute;
+		top:0;
+		right:0;
+	}
+	
+	#wrapper-debug-modal-shadow {
+		position:absolute;
+		top:6px;
+		right:0;
+		width:100%;
+		height:calc(100vh - 48px - 6px);
+		display:none;
+	}
+	
+	#wrapper-debug-modal-content {
+		position:absolute;
+		top:0;
+		right:0;
+		width:100%;
+		height:calc(100vh - 48px);
+		padding:15px 0;
+		background-color:#FFF;
+		display:none;
 	}
 /* END */
 
@@ -724,4 +777,9 @@ ul {
 
 .label-pill {
 	border-radius: 4px;
+}
+
+.control-label {
+	padding-top:7px;
+	padding-bottom:7px;
 }

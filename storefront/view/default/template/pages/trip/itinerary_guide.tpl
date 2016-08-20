@@ -197,14 +197,16 @@
 </style>
 <div id="section-content-guide">
     <div id="section-content-guide-header">
+    	<!--
         <div class="row">
             <div class="spacer-bar hidden-xs hidden-sm col-md-12 col-lg-12"></div>
         </div>
+        -->
         <div class="row">
-            <div class="input-group pull-left inline col-xs-12 col-sm-12 col-md-12 col-lg-9">
+            <div class="input-group pull-left inline col-xs-12 col-sm-12 col-md-12 col-lg-10">
                 <input class="form-control" type="text" placeholder='Search ...'  />
             </div>
-            <div class="inline pull-right col-md-12 col-lg-3">
+            <div class="inline pull-right col-md-12 col-lg-2">
                 <a 
                 	class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
                 	onclick="close_section_content('guide');"
@@ -214,6 +216,7 @@
                 >
                 	<i class="fa fa-fw" id="section-content-guide-header-close">&times;</i>
                 </a>
+                <!--
                 <a 
                 	class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
                 	onclick="open_section_content('guide');"
@@ -223,6 +226,7 @@
                 >
                 	<i class="fa fa-fw fa-arrows-alt"></i>
                 </a>
+                -->
             </div>
         </div>
     </div>

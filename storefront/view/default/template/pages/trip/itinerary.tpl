@@ -1,3 +1,18 @@
+<style>
+	#section-view-button {
+		position:absolute;
+		top:10px;
+		right:-1px;
+	}
+	
+	#section-view-button > .btn {
+		font-size:9px;
+		padding:10px;
+		border:solid thin #EEE;
+		border-radius:5px 0 0 5px;
+	}
+</style>
+
 <div id="section-body">
 	<div id="section-view-xs" class="hidden-md hidden-lg">
     	<ul>
@@ -20,7 +35,7 @@
             </select>
         </div>
     </div>
-	<div id="section-view" class="box-shadow hidden-xs hidden-sm hidden-md">
+	<div id="section-view" class="box-shadow hidden-xs hidden-sm hidden-md hidden-lg">
     	<ul>
         	<li><i class="fa fa-fw fa-eye"></i></li>
         	<li id="section-view-list-guide" class="active">
@@ -60,13 +75,13 @@
     </div>
     <div id="section-content" class="box-shadow">
         <div id="section-left">
-            <?php echo $content_section_guide; ?>
-        </div>
-        <div id="section-center">
             <?php echo $content_section_table; ?>
         </div>
-        <div id="section-right">
+        <div id="section-center">
             <?php echo $content_section_map; ?>
+        </div>
+        <div id="section-right">
+            <?php echo $content_section_guide; ?>
         </div>
     </div>
 </div>
@@ -83,7 +98,7 @@
 <script>
 	var max_section_content_window = 3;
 	var section_content_window = 3;
-	var section_content_window_guide = true;
+	var section_content_window_guide = false;
 	var section_content_window_itinerary = true;
 	var section_content_window_map = true;
 	
@@ -199,24 +214,24 @@
 		resize_section_content();
 		
 		if(section_content_window_guide == true) { 
-			show_section_content('left','guide'); 
+			show_section_content('right','guide'); 
 		} 
 		else { 
-			hide_section_content('left','guide'); 
+			hide_section_content('right','guide'); 
 		}
 		
 		if(section_content_window_itinerary == true) { 
-			show_section_content('center','itinerary'); 
+			show_section_content('left','itinerary'); 
 		} 
 		else { 
-			hide_section_content('center','itinerary'); 
+			hide_section_content('left','itinerary'); 
 		}
 		
 		if(section_content_window_map == true) { 
-			show_section_content('right','map'); 
+			show_section_content('center','map'); 
 		}
 		else {
-			hide_section_content('right','map'); 
+			hide_section_content('center','map'); 
 		}
 		update_section_view_md_select();
 	}
@@ -255,7 +270,7 @@
 			document.getElementById('section-right').style.height = height;
 			document.getElementById('section-content-guide-content').style.height = content_height;
 			document.getElementById('section-content-itinerary-content').style.height = itinerary_height;
-			document.getElementById('section-content-map-content').style.height = content_height;
+			document.getElementById('section-content-map-content').style.height =height;
 		}
 		else {
 			max_section_content_window = 3;
@@ -264,7 +279,7 @@
 			var body_height = 'calc(100vh - 48px - 2px - 40px)';
 			var height = 'calc(100vh - 48px - 2px - 30px - 40px)';
 			var content_height = 'calc(100vh - 48px - 2px - 30px - 70px - 40px)';
-			var itinerary_height = 'calc(100vh - 48px - 2px - 30px - 70px - 40px + 70px)';
+			var itinerary_height = 'calc(100vh - 48px - 2px - 30px - 40px - 50px)';
 			document.getElementById('section-body').style.height = body_height;
 			document.getElementById('section-content').style.height = height;
 			document.getElementById('section-left').style.height = height;
@@ -272,7 +287,10 @@
 			document.getElementById('section-right').style.height = height;
 			document.getElementById('section-content-guide-content').style.height = content_height;
 			document.getElementById('section-content-itinerary-content').style.height = itinerary_height;
-			document.getElementById('section-content-map-content').style.height = content_height;
+			document.getElementById('section-content-map-content').style.height = height;
+			
+			section_content_window_itinerary = true;
+			section_content_window_map = true;
 		}
 	}
 	
@@ -318,10 +336,16 @@
 			document.getElementById('section-right').style.width = width;
 		}
 		else if(section_content_window == 2) {
-			var width = '50%';
-			document.getElementById('section-left').style.width = width;
-			document.getElementById('section-center').style.width = width;
-			document.getElementById('section-right').style.width = width;
+			if(max_section_content_window == 2) {
+				var width = '50%';
+				document.getElementById('section-left').style.width = width;
+				document.getElementById('section-center').style.width = width;
+				document.getElementById('section-right').style.width = width;
+			}
+			else {
+				document.getElementById('section-left').style.width = '75%';
+				document.getElementById('section-center').style.width = '25%';
+			}
 		}
 		else if(section_content_window ==3) {
 			var width = '33.33%';

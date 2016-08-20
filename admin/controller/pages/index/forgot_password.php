@@ -1,21 +1,6 @@
 <?php
 /*------------------------------------------------------------------------------
-  $Id$
-
-  AbanteCart, Ideal OpenSource Ecommerce Solution
-  http://www.AbanteCart.com
-
-  Copyright © 2011-2015 Belavier Commerce LLC
-
-  This source file is subject to Open Software License (OSL 3.0)
-  License details is bundled with this package in the file LICENSE.txt.
-  It is also available at this URL:
-  <http://www.opensource.org/licenses/OSL-3.0>
-
- UPGRADE NOTE:
-   Do not edit or add to this file if you wish to upgrade AbanteCart to newer
-   versions in the future. If you wish to customize AbanteCart for your
-   needs please refer to http://www.AbanteCart.com for more information.
+TREVOL
 ------------------------------------------------------------------------------*/
 if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
@@ -23,7 +8,7 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 class ControllerPagesIndexForgotPassword extends AController {
 
 	public $data = array();
-	private $user_data;
+	private $admin_data;
 	public $error = array();
 
 	public function main() {
@@ -164,11 +149,11 @@ class ControllerPagesIndexForgotPassword extends AController {
 		if ($this->request->is_POST() && $this->_validateCaptcha()) {
 
 			//generate password
-			$password = AUser::generatePassword(8);
-			$this->model_user_user->editUser($this->user_data['user_id'], array('password' => $password));
+			$password = AAdmin::generatePassword(8);
+			$this->model_user_admin->editAdmin($this->admin_data['user_id'], array('password' => $password));
 
 			$mail = new AMail($this->config);
-			$mail->setTo($this->user_data['email']);
+			$mail->setTo($this->admin_data['email']);
 			$mail->setFrom($this->config->get('store_main_email'));
 			$mail->setSender($this->config->get('config_owner'));
 			$mail->setSubject(sprintf($this->language->get('reset_email_subject'), $this->config->get('store_name')));
@@ -288,7 +273,7 @@ class ControllerPagesIndexForgotPassword extends AController {
 			$this->error['email'] = $this->language->get('error_email');
 		}
 
-		if ( !$this->error && !$this->user->validate($this->request->post['username'], $this->request->post['email']) ) {
+		if ( !$this->error && !$this->admin->validate($this->request->post['username'], $this->request->post['email']) ) {
 			$this->error['warning'] = $this->language->get('error_match');
 		}
 
@@ -333,11 +318,11 @@ class ControllerPagesIndexForgotPassword extends AController {
 			$this->error['warning'] =  $this->language->get('error_hash');
 		} else {
 			$this->loadModel('user/user');
-			$users = $this->model_user_user->getUsers( array( 'search' => "email = '".$this->db->escape($email)."'" ) );
-			if ( empty( $users ) ) {
+			$admin = $this->model_user_admin->getAdmins( array( 'search' => "email = '".$this->db->escape($email)."'" ) );
+			if ( empty( $admin ) ) {
 				$this->error['warning'] =  $this->language->get('error_hash');
 			} else {
-				$this->user_data = $users[0];
+				$this->admin_data = $admin[0];
 			}
 		}
 

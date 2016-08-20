@@ -1653,10 +1653,6 @@ h1.productname {
 }
 
 .tab-content {
-	background-color: #FFFFFF;
-	border: 1px solid #E7E7E7;
-	border-radius: 3px 3px 3px 3px;
-	border-top: none;
 	padding: 15px
 }
 

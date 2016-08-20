@@ -288,7 +288,7 @@ class ControllerPagesIndexForgotPassword extends AController {
 			$this->error['email'] = $this->language->get('error_email');
 		}
 
-		if ( !$this->error && !$this->user->validate($this->request->post['username'], $this->request->post['email']) ) {
+		if ( !$this->error && !$this->admin->validate($this->request->post['username'], $this->request->post['email']) ) {
 			$this->error['warning'] = $this->language->get('error_match');
 		}
 

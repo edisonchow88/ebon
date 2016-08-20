@@ -1,27 +1,12 @@
 <?php
 /*------------------------------------------------------------------------------
-  $Id$
-
-  AbanteCart, Ideal OpenSource Ecommerce Solution
-  http://www.AbanteCart.com
-
-  Copyright © 2011-2015 Belavier Commerce LLC
-
-  This source file is subject to Open Software License (OSL 3.0)
-  License details is bundled with this package in the file LICENSE.txt.
-  It is also available at this URL:
-  <http://www.opensource.org/licenses/OSL-3.0>
-  
- UPGRADE NOTE: 
-   Do not edit or add to this file if you wish to upgrade AbanteCart to newer
-   versions in the future. If you wish to customize AbanteCart for your
-   needs please refer to http://www.AbanteCart.com for more information.  
+TREVOL
 ------------------------------------------------------------------------------*/
 // set default encoding for multibyte php mod
 mb_internal_encoding('UTF-8');
 ini_set('default_charset', 'utf-8');
 
-// AbanteCart Version
+// Trevol Version
 include('version.php');
 define('VERSION', MASTER_VERSION . '.' . MINOR_VERSION . '.' . VERSION_BUILT);
 
@@ -230,6 +215,7 @@ try {
 	require_once(DIR_CORE . 'engine/view.php');
 	require_once(DIR_CORE . 'engine/loader.php');
 	require_once(DIR_CORE . 'engine/model.php');
+	require_once(DIR_CORE . 'engine/component.php'); //added by TREVOL
 	require_once(DIR_CORE . 'engine/registry.php');
 	require_once(DIR_CORE . 'engine/resources.php');
 	require_once(DIR_CORE . 'engine/html.php');
@@ -266,14 +252,15 @@ try {
 	require_once(DIR_CORE . 'lib/download.php');
 
 // Application Classes
-	require_once(DIR_CORE . 'lib/customer.php');
-	require_once(DIR_CORE . 'lib/order.php');
-	require_once(DIR_CORE . 'lib/order_status.php');
+	//[DISABLED BY TREVOL]require_once(DIR_CORE . 'lib/customer.php');
+	//[DISABLED BY TREVOL]require_once(DIR_CORE . 'lib/order.php');
+	//[DISABLED BY TREVOL]require_once(DIR_CORE . 'lib/order_status.php');
 	require_once(DIR_CORE . 'lib/currency.php');
-	require_once(DIR_CORE . 'lib/tax.php');
-	require_once(DIR_CORE . 'lib/weight.php');
-	require_once(DIR_CORE . 'lib/length.php');
-	require_once(DIR_CORE . 'lib/cart.php');
+	//[DISABLED BY TREVOL]require_once(DIR_CORE . 'lib/tax.php');
+	//[DISABLED BY TREVOL]require_once(DIR_CORE . 'lib/weight.php');
+	//[DISABLED BY TREVOL]require_once(DIR_CORE . 'lib/length.php');
+	//[DISABLED BY TREVOL]require_once(DIR_CORE . 'lib/cart.php');
+	require_once(DIR_CORE . 'lib/admin.php');
 	require_once(DIR_CORE . 'lib/user.php');
 	require_once(DIR_CORE . 'lib/dataset.php');
 	require_once(DIR_CORE . 'lib/encryption.php');
@@ -283,12 +270,10 @@ try {
 	require_once(DIR_CORE . 'lib/filter.php');
 	require_once(DIR_CORE . 'lib/listing.php');
 	require_once(DIR_CORE . 'lib/task_manager.php');
-	require_once(DIR_CORE . 'lib/trip.php');
-	require_once(DIR_CORE . 'lib/draft.php');
 
 //Admin manager classes
 	if (IS_ADMIN) {
-		require_once(DIR_CORE . 'lib/order_manager.php');
+		//[DISABLED BY TREVOL]require_once(DIR_CORE . 'lib/order_manager.php');
 		require_once(DIR_CORE . 'lib/layout_manager.php');
 		require_once(DIR_CORE . 'lib/content_manager.php');
 		require_once(DIR_CORE . 'lib/package_manager.php');
@@ -412,8 +397,9 @@ try {
 // Document
 	$registry->set('document', new ADocument());
 
-// AbanteCart Snapshot details
-	$registry->set('snapshot', 'AbanteCart/' . VERSION . ' ' . $_SERVER['SERVER_SOFTWARE'] . ' (' . $_SERVER['SERVER_NAME'] . ')');
+// Trevol Snapshot details
+/*[DIABLED BY TREVOL]
+	$registry->set('snapshot', 'Trevol/' . VERSION . ' ' . $_SERVER['SERVER_SOFTWARE'] . ' (' . $_SERVER['SERVER_NAME'] . ')');
 //Non-apache fix for REQUEST_URI
 	if (!isset($_SERVER['REQUEST_URI'])) {
 		$_SERVER['REQUEST_URI'] = substr($_SERVER['PHP_SELF'], 1);
@@ -422,6 +408,7 @@ try {
 		}
 	}
 	$registry->set('uri', $_SERVER['REQUEST_URI']);
+*/
 
 //main instance of data encryption 
 	$registry->set('dcrypt', new ADataEncryption());
@@ -437,7 +424,7 @@ try {
 	
 	}
 	$registry->set('extensions', $extensions);
-
+	
 //validate template
 	$is_valid = false;
 	$enabled_extensions = $extensions->getEnabledExtensions();
@@ -497,7 +484,7 @@ try {
 	$registry->set('layout', new ALayout($registry, $template));
 
 // load download class
-	$registry->set('download',new ADownload());
+	//[DISABLED BY TREVOL]$registry->set('download',new ADownload());
 
 //load main language section
 	$registry->set('language', $lang_obj);
@@ -506,7 +493,7 @@ try {
 	$hook->hk_InitEnd();
 
 //load order status class
-	$registry->set('order_status',new AOrderStatus());
+	//[DISABLED BY TREVOL]$registry->set('order_status',new AOrderStatus());
 } //eof try
 catch (AException $e) {
 	ac_exception_handler($e);

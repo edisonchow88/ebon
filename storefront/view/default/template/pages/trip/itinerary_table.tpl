@@ -797,13 +797,13 @@
 			$('.plan-day-tr').each(function(){
 				var speed = 300;
 				var index = $('.plan-day-tr').index(this) + 1;
-				$(this).find(".plan-col-sort-order").fadeOut(speed, function() {
+				$(this).find(".plan-day-form .plan-col-sort-order").fadeOut(speed, function() {
 					$(this).html(index).fadeIn(speed);
 				});
-				$(this).find(".plan-col-day").fadeOut(speed, function() {
+				$(this).find(".plan-day-form .plan-col-day").fadeOut(speed, function() {
 					$(this).html("D" +index).fadeIn(speed);
 				});
-				$(this).find(".plan-col-date").fadeOut(speed, function() {
+				$(this).find(".plan-day-form .plan-col-date").fadeOut(speed, function() {
 					$(this).html(data_cooked.day[index-1].date).fadeIn(speed);
 				});
 			})	

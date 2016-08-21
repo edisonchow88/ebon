@@ -30,6 +30,7 @@
 			text-align:left;
 			font-size:11px;
 			line-height:26px;
+			color:#333;
 		}
 		
 		.plan-thead {
@@ -118,11 +119,19 @@
 		}
 		
 		.plan-btn-add-line {
-			background-color:#FFE;
+			background-color:#FFC;
 		}
 		
-		.plan-btn-add-line:hover {
-			background-color:#FFA;
+		.plan-btn-tr a {
+			color:#CCC;
+		}
+		
+		.plan-btn-tr a:hover {
+			color:#333;
+		}
+		
+		.plan-btn-tr:hover {
+			background-color:#EEE;
 		}
 	/* END */
 	

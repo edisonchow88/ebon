@@ -17,7 +17,7 @@
 			height:50px;
 		}
 		
-		#section-content-itinerary-header-button > a {
+		#section-content-itinerary-header a {
 			display:block;
 			padding:0;
 			height:30px;
@@ -548,17 +548,27 @@
 			
 			<!-- START -->
 				var html_plan_form_hidden='';
+				$.each(column, function(i, col) {
+					html_plan_form_hidden += ""
+						+ "<input "
+							+ "id='plan-line-" + line.line_id + "-col-" + col.id + "-input-hidden' "
+							+ 'name="' + col.name + '" '
+							+ "class='plan-input-hidden hidden' "
+							+ "value='" + line_raw[col.name] + "'"
+						+ "/>"
+					;
+				});
 			<!-- END -->
 			
 			<!-- START: set output for line -->
 				var output_line = ""
 					+ "<div class='plan-line-tr' id='plan-line-" + line.line_id + "-tr'>"
-						+ "<div class='plan-line-form plan-form' id='plan-line-" + line.line_id + "-form'>"
+						+ "<form class='plan-line-form plan-form' id='plan-line-" + line.line_id + "-form'>"
 							+ html_plan_form
-						+ "</div>"
-						+ "<div class='plan-line-form-hidden plan-form-hidden hidden' id='plan-line-" + line.line_id + "-form-hidden'>"
+						+ "</form>"
+						+ "<form class='plan-line-form-hidden plan-form-hidden hidden' id='plan-line-" + line.line_id + "-form-hidden'>"
 							+ html_plan_form_hidden
-						+ "</div>"
+						+ "</form>"
 					+ "</div>"
 				;
 			<!-- END -->
@@ -606,7 +616,7 @@
 			<!-- START: set output -->
 				var output = ""
 					+"<div class='plan-btn-add-day plan-btn-tr '>"
-						+ "<a class='text-center btn-block' onclick='getFormPlanValue();'>"
+						+ "<a class='text-center btn-block'>"
 							+ "Add New Day"
 						+ "</a>"
 					+"</div>"
@@ -652,7 +662,7 @@
 					plan.day[i].duration = 0;
 					for(j=0; j<plan.day[i].line.length; j++) {
 						var duration = plan.day[i].line[j].duration;
-						plan.day[i].duration += duration;
+						plan.day[i].duration += parseInt(duration);
 					}
 				}
 				else {
@@ -690,10 +700,11 @@
 				var selected_day = $(this).closest(".plan-day-tr").attr("id");
 				$("# "+ selected_day + " .plan-day-content").addClass("hidden");
 				$(this).on('mouseup', function() {	
-					$("# "+ selected_day + " .plan-day-content").removeClass("hidden");
-				});
-			})
+						$("# "+ selected_day + " .plan-day-content").removeClass("hidden");
+					});
+				})
 			;
+			$(".plan-btn-add-day").on("click", addPlanDay);
 		}
 		
 		function toggleDay() {
@@ -754,6 +765,7 @@
 				},
 				stop: function( event, ui ) {
 					updatePlanTableDayDate(data_cooked);
+					updatePlanTableCookie();
 				}
 			}).disableSelection();
 		}
@@ -802,6 +814,43 @@
 	<!-- END -->
 	
 	<!-- START: [update data] -->
+		function updatePlanTableCookie() {
+			var serial = '';
+			serial += '{';
+				serial += '"name":"Plan 1"';
+				serial += ',';
+				serial += '"travel_date":"2016-02-09"';
+				serial += ',';
+				serial += '"day":';
+				serial += '[';
+				<!-- START: [day] -->
+					$.each($('.plan-day-form-hidden'), function(i, val) {
+						var day_id = $(this).find($('.plan-input-hidden[name=day_id]')).val();
+						serial += JSON.stringify($('#plan-day-'+day_id+'-form-hidden').find('.plan-input-hidden').not('[value="undefined"]').serializeObject());
+						serial = serial.slice(0,-1);
+						<!-- START: [line] -->
+							if($('#plan-day-'+day_id+'-line .plan-line-form-hidden').length > 0) {
+								serial += ',';
+								serial += '"line":';
+								serial += '[';
+									$.each($('#plan-day-'+day_id+'-line').children($('.plan-line-form-hidden')), function(j, val) {
+										var line_id = $(this).find($('.plan-input-hidden[name=line_id]')).val();
+										serial += JSON.stringify($('#plan-line-'+line_id+'-form-hidden').find('.plan-input-hidden').not('[value="undefined"]').serializeObject());
+										serial += ',';
+									});
+									serial = serial.slice(0,-1);
+								serial += ']';
+							}
+						<!-- END -->
+						serial += '},';
+					});
+					serial = serial.slice(0,-1);
+				<!-- END -->
+				serial += ']';
+			serial += '}';
+			setCookie('plan',serial,1);
+		}
+		
 		function updatePlanTableDayDate(data_cooked) {
 			$('.plan-day-tr').each(function(){
 				var speed = 300;
@@ -809,6 +858,7 @@
 				$(this).find(".plan-day-form .plan-col-sort-order").fadeOut(speed, function() {
 					$(this).html(index).fadeIn(speed);
 				});
+				$(this).find(".plan-day-form-hidden").find('.plan-input-hidden[name=sort_order]').val(index);
 				$(this).find(".plan-day-form .plan-col-day").fadeOut(speed, function() {
 					$(this).html("D" +index).fadeIn(speed);
 				});
@@ -816,6 +866,30 @@
 					$(this).html(data_cooked.day[index-1].date).fadeIn(speed);
 				});
 			})	
+		}
+	<!-- END -->
+	
+	<!-- START: jquery function to serialize form -->
+		$.fn.serializeObject = function() {
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name] !== undefined) {
+					if (!o[this.name].push) {
+						o[this.name] = [o[this.name]];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	<!-- END -->
+	
+	<!-- START: [day function] -->
+		function addPlanDay() {
+			updatePlanTableCookie(); 
 		}
 	<!-- END -->
 	

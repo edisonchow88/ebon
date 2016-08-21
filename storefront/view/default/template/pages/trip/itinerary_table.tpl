@@ -442,6 +442,7 @@
 						+ "</form>"
 						+ "<div class='plan-day-content hidden' id='plan-day-" + day.day_id + "-content'>"
 							+ "<div class='plan-day-line' id='plan-day-" + day.day_id + "-line'>"
+							+ "<div class='just-as-target'>123</div>"
 							+ "</div>"
 						+ "</div>"
 					+ "</div>"
@@ -695,7 +696,7 @@
 			}
 			else {
 				$(".plan-day-tr").removeClass("selected");
-				$(".plan-day-content").addClass("hidden");
+				//$(".plan-day-content").addClass("hidden");
 				$(".fa-chevron-circle-down").removeClass("fa-flip-vertical");
 				$("#" + selected_day).toggleClass("selected");
 				$("#" + selected_day + " .plan-day-content").toggleClass("hidden");
@@ -757,7 +758,7 @@
 				axis: "y",
 				items: ">.plan-line-tr",
 				appendTo: "parent",
-				connectWith: ".plan-day-content",	
+				connectWith: ".plan-day-line",	
 				cursorAt: { 
 					top: 15
 				},
@@ -776,6 +777,9 @@
 					$(ui.helper).addClass("ui-draggable-helper");
 					$(ui.placeholder).addClass("ui-draggable-placeholder");
 					from_row_day_id = ui.item.parent().attr("id");
+				},
+				out: function(event, ui) {
+					//$(".plan-day-content").removeClass("hidden");
 				},
 				sort: function(event, ui) {
 					var day = $(ui.placeholder).closest(".plan-day-tr").attr("id");

@@ -120,7 +120,8 @@
 		}
 		
 		.plan-btn-add-line {
-			background-color:#FFC;
+			background-color:#FFE;
+			border:  thin dashed #F00 !important;
 		}
 		
 		.plan-btn-tr a {
@@ -128,14 +129,7 @@
 		}
 		
 		.plan-btn-tr a:hover {
-			color:#333;
-			background-color:#FFE;
-			border:  thin dashed #F00 !important;
-			opacity: 0.5;
-		}
-		
-		.plan-btn-add-line:hover {
-			opacity: 1;
+			color:#333;	
 		}
 		
 		.plan-btn-tr:hover {

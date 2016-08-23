@@ -120,7 +120,6 @@
 		}
 		
 		.plan-btn-add-line {
-<<<<<<< HEAD
 			background-color:#FFC;
 		}
 		
@@ -130,7 +129,6 @@
 		
 		.plan-btn-tr a:hover {
 			color:#333;
-=======
 			background-color:#FFE;
 			border:  thin dashed #F00 !important;
 			opacity: 0.5;
@@ -138,7 +136,6 @@
 		
 		.plan-btn-add-line:hover {
 			opacity: 1;
->>>>>>> refs/heads/new-master-edit
 		}
 		
 		.plan-btn-tr:hover {

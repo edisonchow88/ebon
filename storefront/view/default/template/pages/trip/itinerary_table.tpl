@@ -2,7 +2,7 @@
     <link href="<?php echo $this->templateResource('/stylesheet/bootstrap-toggle.min.css'); ?>" rel="stylesheet">
     <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/bootstrap-toggle.min.js'); ?>"></script>
 <!-- END -->
-
+  
 <style>
 	/* START: [section] */
 		#section-content-itinerary {
@@ -266,7 +266,7 @@
 		
 	/* END */
 </style>
-
+<div><button class="btn btn-default" data-toggle="confirmation" data-placement="bottom">Confirmation on bottom</button></div>
 <div id="section-content-itinerary">
 	<div id="section-content-itinerary-header">
     	<div id="section-content-itinerary-header-content">
@@ -1079,6 +1079,7 @@
 				over: function(e, ui) {
 					$(".plan-day-tr").droppable("disable");
 					$(ui.helper).html(ui.item.find(".plan-col-activity").html());
+					$(".drophover").removeClass("drophover");
 				},
 				out: function(e, ui) {
 					$(".plan-day-tr").droppable("enable");
@@ -1214,5 +1215,6 @@
 	
 	$(document).ready(function() {
 		refreshPlanTable();
+		$('[data-toggle=confirmation]').confirmation();
 	});
 </script>

@@ -11,6 +11,8 @@
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/jquery.touchSwipe.min.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/jquery.ba-throttle-debounce.min.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/jquery.onebyone.min.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->templateResource('/javascript/bootstrap-confirmation.min.js'); ?>"></script>
+
 
 <?php foreach ($scripts_bottom as $script) { ?>
 	<script type="text/javascript" src="<?php echo $script; ?>"></script>

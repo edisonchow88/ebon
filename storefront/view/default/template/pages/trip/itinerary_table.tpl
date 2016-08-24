@@ -160,6 +160,7 @@
 		
 		.plan-day-tr.selected {
 			background-color:#FF6;
+			border:solid medium  #FC0 !important;
 		}
 		
 		.plan-line-tr {
@@ -167,7 +168,8 @@
 		}
 		
 		.plan-btn-add-line {
-			background-color:#FFC;
+			background-color:#FFE;
+			border:  thin dashed #F00 !important;
 		}
 		
 		.plan-btn-tr a {
@@ -175,7 +177,7 @@
 		}
 		
 		.plan-btn-tr a:hover {
-			color:#333;
+			color:#333;	
 		}
 		
 		.plan-btn-tr:hover {
@@ -253,6 +255,11 @@
 			text-align:center;
 			border: medium dotted #666;
 		}
+		
+		.drophover {
+			background-color: #FC3 !important;
+		}
+		
 	/* END */
 </style>
 
@@ -550,6 +557,7 @@
 						+ "</form>"
 						+ "<div class='plan-day-content hidden' id='plan-day-" + day.day_id + "-content'>"
 							+ "<div class='plan-day-line' id='plan-day-" + day.day_id + "-line'>"
+							+ "<div class='target-sort-line hidden' style='height:5px;'></div>"
 							+ "</div>"
 						+ "</div>"
 					+ "</div>"
@@ -700,6 +708,7 @@
 				var output = ""
 					+"<div class='plan-btn-add-line plan-btn-tr'>"
 						+ "<a class='text-center btn-block'>"
+							+ "<i class='fa fa-plus' aria-hidden='true'></i> &nbsp;&nbsp;"
 							+ "Add New Activity"
 						+ "</a>"
 					+"</div>"
@@ -798,15 +807,17 @@
 	<!-- START: [button function] -->
 		function updatePlanTableButtonEvent() {
 			$(".plan-day-form").on("click", toggleDay);
-			$('.icon-sort').on('mousedown', function() {
-				var selected_day = $(this).closest(".plan-day-tr").attr("id");
-				$("# "+ selected_day + " .plan-day-content").addClass("hidden");
+			$('.plan-day-form').on('mousedown', function() {
+				clearTimeout(this.downTimer);
+				if (!$(this).children(".plan-day-content"). hasClass("hidden")){
+					this.downTimer = setTimeout(function() {
+        				toggleDay();  
+    				}, 99); 
+				}
 				$(this).on('mouseup', function() {	
-						$("# "+ selected_day + " .plan-day-content").removeClass("hidden");
+    					clearTimeout(this.downTimer);
 					});
-				})
-			;
-			$(".plan-btn-add-day").on("click", addPlanDay);
+			});
 		}
 		
 		function updateDateFormButtonEvent() {
@@ -957,13 +968,11 @@
 		}
 		
 		function initSortableDay (data_cooked) {	
-			var from_row_day_index;
-			var from_row_day_id;
-			var to_row_day_id;
 			$(".plan-day").sortable({	
 				delay: 100,
 				axis: "y",
 				items: ">.plan-day-tr", 
+				cancel: ">.plan-line-tr",
 				handle: ">.plan-day-form",
 				appendTo: "parent",	
 				cursorAt: {
@@ -982,19 +991,25 @@
 				},
 				start: function(e, ui) {
 					$(ui.helper).addClass("ui-draggable-helper");
-					$(ui.placeholder).addClass("ui-draggable-placeholder-day");
-					from_row_day_index = $(ui.item).index();
-					from_row_day_id = ui.item.attr("id");
+					$(ui.placeholder).addClass("ui-draggable-placeholder-day");		
 				},
 				sort: function(event, ui) {
-					if (from_row_day_index > $(ui.placeholder).index()) { 
-						to_row_day_id = $(ui.placeholder).next(".plan-day-tr").attr("id");
+					var to_day_text;
+					var from_index = $(ui.item).index();
+					var to_index = $(ui.placeholder).index();
+					$(ui.helper).html(ui.item.find(".plan-col-day").html());
+					if ( from_index > to_index) { 
+						to_day_text = $(ui.placeholder).next(".plan-day-tr").find(".plan-col-day").html();
+						$(ui.placeholder).html("Reschedule to " + to_day_text);	
 					}
 					else {
-						to_row_day_id = $(ui.placeholder).prev(".plan-day-tr").attr("id");
-					}
-					sort_order = $("#" + to_row_day_id + " .plan-col-sort-order").html();
-					$(ui.placeholder).html("Reschedule to D"+sort_order);
+						to_day_text = $(ui.placeholder).prev(".plan-day-tr").find(".plan-col-day").html();
+						$(ui.placeholder).html("Reschedule to " + to_day_text);	
+					}					
+				},
+				receive: function( event, ui ) {
+					var sender_id = ui.sender.attr("id");
+					alert(ui.position[0].top);
 				},
 				stop: function( event, ui ) {
 					updatePlanTableDayDate();
@@ -1006,12 +1021,36 @@
 		function initSortableLine() {
 			var from_row_day_id;
 			var to_row_day_id;
+			var drop_id_to_sortable;
+			
+			$(".plan-day-tr").droppable({
+				accept: ".plan-line-tr",
+				hoverClass: "drophover",
+				over: function( event, ui ) {
+					var current_drag_id = $(ui.draggable).parent().attr("id");
+					var current_over_id = $(this).find(".plan-day-line").attr("id");
+					var current_drag_activities_text = $("#"+current_drag_id).find(".plan-col-activity").html();					
+					var current_over_day_text = $("#"+current_over_id).parent().parent().find(".plan-col-day").html();
+					// Remove hover when it is into same day.
+					if (current_over_id == current_drag_id) {
+						$(".drophover").not(".plan-line-tr").removeClass("drophover");
+					}
+					else {
+						$(ui.helper).html("Drop "+ current_drag_activities_text +" > " + current_over_day_text);
+					}
+				},
+				drop: function( event, ui ) {
+					var drop_id = $(this).find(".plan-day-line").attr("id");
+					drop_id_to_sortable = drop_id;	
+					$(".plan-day-tr").droppable("disable");
+				}
+			});
+								
 			$(".plan-day-line").sortable({
 				delay: 100,
 				axis: "y",
 				items: ">.plan-line-tr",
 				appendTo: "parent",
-				connectWith: ".plan-day-content",	
 				cursorAt: { 
 					top: 15
 				},
@@ -1029,18 +1068,29 @@
 				start: function(e, ui) {
 					$(ui.helper).addClass("ui-draggable-helper");
 					$(ui.placeholder).addClass("ui-draggable-placeholder");
-					from_row_day_id = ui.item.parent().attr("id");
+					//hide add activities button when drag
+					$(".plan-btn-add-line").hide();
+				},
+				over: function(e, ui) {
+					$(".plan-day-tr").droppable("disable");
+					$(ui.helper).html(ui.item.find(".plan-col-activity").html());
+				},
+				out: function(e, ui) {
+					$(".plan-day-tr").droppable("enable");
 				},
 				sort: function(event, ui) {
 					var day = $(ui.placeholder).closest(".plan-day-tr").attr("id");
 					day_sort_order = $("#" + day + " .col-sort-order").html();
-					$(ui.placeholder).children("div").html("Move to D"+ day_sort_order);
-				},
-				update: function( event, ui ) {
-					var selected_day = $(this).closest(".plan-day-tr").attr("id");
-					to_row_day_id = selected_day;
+					$(ui.placeholder).children("div").html("Drop into D"+ day_sort_order);
+					to_row_day_id = $(ui.placeholder).prev().attr("id");	
 				},
 				stop: function( event, ui ) {
+					//drop activieties into the day.
+					$(ui.item).appendTo("#"+drop_id_to_sortable);
+					//show add activities button after drop.
+					$(".plan-btn-add-line").show();
+					//ensure hoverclass is not active after drop.
+					$(".drophover").removeClass("drophover");
 				}
 			}).disableSelection();
 		}

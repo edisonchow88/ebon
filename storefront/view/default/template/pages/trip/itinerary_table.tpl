@@ -160,7 +160,6 @@
 		
 		.plan-day-tr.selected {
 			background-color:#FF6;
-			border:solid medium  #FC0 !important;
 		}
 		
 		.plan-line-tr {
@@ -169,7 +168,10 @@
 		
 		.plan-btn-add-line {
 			background-color:#FFE;
-			border:  thin dashed #F00 !important;
+		}
+		
+		.plan-btn-add-line a {
+			outline:thin dashed #CCC;
 		}
 		
 		.plan-btn-tr a {
@@ -236,15 +238,17 @@
 		.ui-draggable-placeholder-day {
 			background-color: #EEE;
 			text-align: center;
-			height: 40px;
+			height: 41px;
 			line-height:26px;
 			padding:7px;
+			border-bottom:solid thin #DDD;
 		}
 		
 		.ui-draggable-placeholder {
 			background-color: rgba(220,220,220,0.3);
-			height: 30px;
+			height: 41px;
 			text-align: center;
+			border-bottom:solid thin #DDD;
 		}
 		
 		.ui-draggable-helper {
@@ -725,6 +729,7 @@
 				var output = ""
 					+"<div class='plan-btn-add-day plan-btn-tr '>"
 						+ "<a class='text-center btn-block'>"
+							+ "<i class='fa fa-plus' aria-hidden='true'></i> &nbsp;&nbsp;"
 							+ "Add New Day"
 						+ "</a>"
 					+"</div>"

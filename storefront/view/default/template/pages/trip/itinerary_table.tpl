@@ -1097,6 +1097,8 @@
 					$(".plan-btn-add-line").show();
 					//ensure hoverclass is not active after drop.
 					$(".drophover").removeClass("drophover");
+					updatePlanTableLineDayIdAndSortOrder();
+					updatePlanTableCookie();
 				}
 			}).disableSelection();
 		}
@@ -1180,6 +1182,20 @@
 					$(this).html(day[index-1]).fadeIn(speed);
 				});
 			})	
+		}
+		
+		function updatePlanTableLineDayIdAndSortOrder() {
+			var day_id;
+			var index;
+			$('.plan-day-tr').each(function() {
+				index = 1;
+				day_id = $(this).find('.plan-day-form-hidden').find('.plan-input-hidden[name=day_id]').val();
+				$(this).find('.plan-line-tr').each(function() {
+					$(this).find(".plan-line-form-hidden").find('.plan-input-hidden[name=day_id]').val(day_id);
+					$(this).find(".plan-line-form-hidden").find('.plan-input-hidden[name=sort_order]').val(index);
+					index += 1;
+				});
+			});
 		}
 	<!-- END -->
 	

@@ -11,17 +11,65 @@
 		
 		#section-content-itinerary-header {
 			border-bottom:solid thin #DDD;
+			height:50px;
 		}
 		
-		#section-content-itinerary-header-button {
-			height:50px;
+		#section-content-itinerary-header {
+			position:relative;
+			overflow-y:scroll;
+			overflow-x:auto;
+			direction:rtl;
+		}
+		
+		#section-content-itinerary-header > div {
+			direction:ltr;
+		}
+		
+		#section-content-itinerary-header::-webkit-scrollbar {
+			background:transparent;
+		}
+		
+		#section-content-itinerary-header::-webkit-scrollbar-thumb {
+			background:rgba(255,0,0,0.1) !important;
 		}
 		
 		#section-content-itinerary-header a {
 			display:block;
-			padding:0;
-			height:30px;
+			height:49px;
 			padding:15px 22px;
+		}
+		
+		#section-content-itinerary-header label {
+			color:#333;
+			font-size:11px;
+		}
+		
+		#section-content-itinerary-header input {
+			height:30px;
+			margin:9px;
+			color:#333;
+			font-size:11px;
+		}
+		
+		#section-content-itinerary-header-set-date {
+			padding-left:7px;
+		}
+		
+		#section-content-itinerary-content {
+			position:relative;
+		}
+		
+		#section-content-itinerary-content-modal-background {
+			position:absolute;
+			background-color:#000;
+			opacity:0.2;
+			width:100%;
+			height:500px;
+			z-index:1;
+		}
+		
+		#plan-date-form-alert {
+			font-size:11px;
 		}
 	/* END */
 	
@@ -112,7 +160,6 @@
 		
 		.plan-day-tr.selected {
 			background-color:#FF6;
-			border:solid medium  #FC0 !important;
 		}
 		
 		.plan-line-tr {
@@ -121,7 +168,10 @@
 		
 		.plan-btn-add-line {
 			background-color:#FFE;
-			border:  thin dashed #F00 !important;
+		}
+		
+		.plan-btn-add-line a {
+			outline:thin dashed #CCC;
 		}
 		
 		.plan-btn-tr a {
@@ -188,15 +238,17 @@
 		.ui-draggable-placeholder-day {
 			background-color: #EEE;
 			text-align: center;
-			height: 40px;
+			height: 41px;
 			line-height:26px;
 			padding:7px;
+			border-bottom:solid thin #DDD;
 		}
 		
 		.ui-draggable-placeholder {
 			background-color: rgba(220,220,220,0.3);
-			height: 30px;
+			height: 41px;
 			text-align: center;
+			border-bottom:solid thin #DDD;
 		}
 		
 		.ui-draggable-helper {
@@ -217,11 +269,30 @@
 <div><button class="btn btn-default" data-toggle="confirmation" data-placement="bottom">Confirmation on bottom</button></div>
 <div id="section-content-itinerary">
 	<div id="section-content-itinerary-header">
-    	<div id="section-content-itinerary-header-button">
-            <a class="pull-right noselect">Set Date</a>
+    	<div id="section-content-itinerary-header-content">
+            <div id="section-content-itinerary-header-button">
+                <a class="btn-show-date-form pull-right noselect">Set Date</a>
+            </div>
+            <div id="section-content-itinerary-header-set-date" class="text-left hidden">
+            	<form id="plan-date-form">
+                    <label>Start :</label>
+                    <input type="date" name="travel_date" min="" max=""/>
+                    <label class="input-last-date">End :</label>
+                    <input class="input-last-date" type="date" name="last_date" min="" max="" required/>
+                    <span id='plan-date-form-alert'></span>
+                    <a class="btn-save-date-form pull-right noselect btn-primary">Done</a>
+                	<a class="btn-cancel-date-form pull-right noselect btn-default">Cancel</a>
+                </form>
+                <form id="plan-date-form-hidden" class="hidden">
+                    <input type="date" name="travel_date"/>
+                    <input type="date" name="last_date"/>
+                    <input name="num_of_day"/>
+                </form>
+            </div>
         </div>
     </div>
     <div id="section-content-itinerary-content">
+    	<div id="section-content-itinerary-content-modal-background" class="hidden"></div>
     	<div class='plan-table'>
         	<div class='plan-thead'>
             	<div class='plan-thead-tr plan-tr'>
@@ -356,6 +427,10 @@
 				data_cooked = plan;
 			<!-- END -->
 			
+			<!-- START: set plan date -->
+				printDate(data_raw);
+			<!-- END -->
+			
 			<!-- START: print table -->
 				$.each(data_cooked.day, function(i) {
 					printDay(column, this, data_raw.day[i]);
@@ -371,6 +446,7 @@
 			
 			<!-- START: init function -->
 				updatePlanTableButtonEvent();
+				updateDateFormButtonEvent();
 				initSortableDay(data_cooked);
 				initSortableLine();
 			<!-- END -->
@@ -378,6 +454,33 @@
 	<!-- END -->
 	
 	<!-- START: script to print on screen -->
+		function printDate(data) {
+			var travel_date;
+			var last_date;
+			var day;
+			var month;
+			var num_of_day;
+			
+			date = new Date(data.travel_date);
+			num_of_day = data.day.length; 
+			
+			travel_date = date;
+			day = ("0" + travel_date.getDate()).slice(-2);
+			month = ("0" + (travel_date.getMonth() + 1)).slice(-2);
+			travel_date = travel_date.getFullYear() + "-" + (month) + "-" + (day) ;
+			
+			last_date = new Date(date.setDate(date.getDate() + num_of_day - 1));
+			day = ("0" + last_date.getDate()).slice(-2);
+			month = ("0" + (last_date.getMonth() + 1)).slice(-2);
+			last_date = last_date.getFullYear() + "-" + (month) + "-" + (day) ;
+			
+			$('#plan-date-form input[name=travel_date]').val(travel_date);
+			$('#plan-date-form input[name=last_date]').val(last_date);
+			$('#plan-date-form-hidden input[name=travel_date]').val(travel_date);
+			$('#plan-date-form-hidden input[name=last_date]').val(last_date);
+			$('#plan-date-form-hidden input[name=num_of_day]').val(data.day.length);
+		}
+		
 		function printDay(column, day, day_raw) {
 			<!-- START: set html_plan_form -->
 				var html_plan_form = '';
@@ -626,6 +729,7 @@
 				var output = ""
 					+"<div class='plan-btn-add-day plan-btn-tr '>"
 						+ "<a class='text-center btn-block'>"
+							+ "<i class='fa fa-plus' aria-hidden='true'></i> &nbsp;&nbsp;"
 							+ "Add New Day"
 						+ "</a>"
 					+"</div>"
@@ -647,20 +751,23 @@
 		}
 		
 		function setPlanTableDataFormatForDayDate(plan) {	
-			var first_date = new Date(plan.travel_date);
-			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-			for (i=0; i<plan.day.length; i++) {
-				myDate = new Date(first_date.setDate(first_date.getDate() + 1));
+			if(plan.travel_date != '') {
+				var first_date = new Date(plan.travel_date);
+				first_date.setDate(first_date.getDate() - 1);
+				var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 				var weekday = new Array(7);
-				weekday[0]=  "Ｓ";
-				weekday[1] = "Ｍ";
-				weekday[2] = "Ｔ";
-				weekday[3] = "Ｗ";
-				weekday[4] = "Ｔ";
-				weekday[5] = "Ｆ";
-				weekday[6] = "Ｓ";
-				var myWeekday = weekday[myDate.getDay()];
-				plan.day[i].date = myDate.getDate() + "&nbsp;" + monthNames[(myDate.getMonth())] + "&nbsp;&nbsp;&nbsp;(" + myWeekday + ")";
+					weekday[0]=  "Ｓ";
+					weekday[1] = "Ｍ";
+					weekday[2] = "Ｔ";
+					weekday[3] = "Ｗ";
+					weekday[4] = "Ｔ";
+					weekday[5] = "Ｆ";
+					weekday[6] = "Ｓ";
+				for (i=0; i<plan.day.length; i++) {
+					myDate = new Date(first_date.setDate(first_date.getDate() + 1));
+					var myWeekday = weekday[myDate.getDay()];
+					plan.day[i].date = ("0" + myDate.getDate()).slice(-2) + "&nbsp;" + monthNames[(myDate.getMonth())] + "&nbsp;&nbsp;&nbsp;(" + myWeekday + ")";
+				}
 			}
 			return plan;
 		}
@@ -717,6 +824,137 @@
 					});
 			});
 		}
+		
+		function updateDateFormButtonEvent() {
+			$(".btn-show-date-form").on("click", showDateForm);
+			$(".btn-save-date-form").on("click", saveDateForm);
+			$(".btn-cancel-date-form").on("click", cancelDateForm);
+			$("#plan-date-form input[name=travel_date]").on("change", updateDateForm);
+			$("#plan-date-form input[name=last_date]").on("change", updateDateForm);
+		}
+		
+		<!-- START: [date form] -->
+			function showDateForm() {
+				$("#section-content-itinerary-header-button").addClass("hidden");
+				$("#section-content-itinerary-header-set-date").removeClass("hidden");
+				$("#section-content-itinerary-content-modal-background").removeClass("hidden");
+				$('#plan-date-form-hidden input[name=num_of_day]').val($('.plan-day-tr').length);
+				updateDateForm();
+				//$("#section-content-itinerary-content-modal-background").off().on("click", cancelDateForm);
+			}
+			
+			function hideDateForm() {
+				$("#section-content-itinerary-header-button").removeClass("hidden");
+				$("#section-content-itinerary-header-set-date").addClass("hidden");
+				$("#section-content-itinerary-content-modal-background").addClass("hidden");
+				$("#section-content-itinerary-content-modal-background").off();
+			}
+			
+			function saveDateForm() {
+				$('#plan-date-form-hidden input[name=travel_date]').val($('#plan-date-form input[name=travel_date]').val());
+				$('#plan-date-form-hidden input[name=last_date]').val($('#plan-date-form input[name=last_date]').val());
+				savePlanTravelDate();
+				updatePlanTableDayDate();
+				hideDateForm();
+			}
+			
+			function cancelDateForm() {
+				$('#plan-date-form input[name=travel_date]').val($('#plan-date-form-hidden input[name=travel_date]').val());
+				$('#plan-date-form input[name=last_date]').val($('#plan-date-form-hidden input[name=last_date]').val());
+				hideDateForm();
+			}
+			
+			function calculateNewLastDate(num_of_day) {
+				var date;
+				var day;
+				var month;
+				var new_last_day;
+				var day_unit;
+				
+				date = new Date($('#plan-date-form input[name=travel_date]').val());
+				new_last_date = new Date(date.setDate(date.getDate() + num_of_day - 1));
+				day = ("0" + new_last_date.getDate()).slice(-2);
+				month = ("0" + (new_last_date.getMonth() + 1)).slice(-2);
+				return new_last_date = new_last_date.getFullYear() + "-" + (month) + "-" + (day);
+			}
+			
+			function updateDateForm() {
+				<!-- START: get variable -->
+					var first_date = $('#plan-date-form input[name=travel_date]').val();
+					var last_date = $('#plan-date-form input[name=last_date]').val();
+					var num_of_day = parseInt($('#plan-date-form-hidden input[name=num_of_day]').val());
+				<!-- END -->
+				<!-- START: set max and min for input -->
+					var today = new Date();
+					var dd = today.getDate();
+					var mm = today.getMonth()+1;
+					var yyyy = today.getFullYear();
+					if(dd<10){
+						dd='0'+dd
+					} 
+					if(mm<10){
+						mm='0'+mm
+					}
+					today = yyyy+'-'+mm+'-'+dd;
+					
+					date = new Date($('#plan-date-form input[name=travel_date]').val());
+					min_last_date = new Date(date.setDate(date.getDate() + $('.plan-day-tr').length - 1));
+					day = ("0" + min_last_date.getDate()).slice(-2);
+					month = ("0" + (min_last_date.getMonth() + 1)).slice(-2);
+					min_last_date = min_last_date.getFullYear() + "-" + (month) + "-" + (day);
+					
+					$('#plan-date-form input[name=travel_date]').attr('min',today);
+					$('#plan-date-form input[name=last_date]').attr('min',min_last_date);
+				<!-- END -->
+				
+				if(first_date == '') {
+					$('#plan-date-form input[name=last_date]').val('');
+					$('.input-last-date').addClass('hidden');
+				}
+				else if(first_date != '' && last_date == '') {
+					new_last_date = calculateNewLastDate(num_of_day);
+					$('#plan-date-form input[name=last_date]').val(new_last_date);
+					$('.input-last-date').removeClass('hidden');
+				}
+				else if(first_date > last_date) {
+					new_last_date = calculateNewLastDate(num_of_day);
+					$('#plan-date-form input[name=last_date]').val(new_last_date);
+					
+				}
+				else {
+					var one_day = 24*60*60*1000;
+					var firstDate = new Date(first_date);
+					var secondDate = new Date(last_date);
+					var new_num_of_day = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(one_day))) + 1;
+					if(new_num_of_day <= $('#plan-date-form-hidden input[name=num_of_day]').val()) {
+						if(this.name == 'last_date') {
+							num_of_day = new_num_of_day;
+						}
+						else {
+							new_last_date = calculateNewLastDate(num_of_day);
+							$('#plan-date-form input[name=last_date]').val(new_last_date);
+							num_of_day = $('#plan-date-form-hidden input[name=num_of_day]').val();
+						}
+					}
+					else {
+						num_of_day = new_num_of_day;
+					}
+				}
+				
+				<!-- START: set unit -->
+					if(num_of_day > 1) { 
+						day_unit = 'days'; 
+					}
+					else { 
+						day_unit = 'day'; 
+					}
+				<!-- END -->
+				<!-- START: print alert -->
+					$('#plan-date-form-alert').html('Total ' + num_of_day + '&nbsp;' + day_unit);
+					$('#plan-date-form-hidden input[name=num_of_day]').val(num_of_day);
+				<!-- END -->
+			}
+		<!-- END -->
 		
 		function toggleDay() {
 			var selected_day = $(this).closest(".plan-day-tr").attr("id");
@@ -779,7 +1017,7 @@
 					alert(ui.position[0].top);
 				},
 				stop: function( event, ui ) {
-					updatePlanTableDayDate(data_cooked);
+					updatePlanTableDayDate();
 					updatePlanTableCookie();
 				}
 			}).disableSelection();
@@ -870,7 +1108,7 @@
 			serial += '{';
 				serial += '"name":"Plan 1"';
 				serial += ',';
-				serial += '"travel_date":"2016-02-09"';
+				serial += '"travel_date":"'+$('#plan-date-form-hidden input[name=travel_date]').val()+'"';
 				serial += ',';
 				serial += '"day":';
 				serial += '[';
@@ -902,7 +1140,32 @@
 			setCookie('plan',serial,1);
 		}
 		
-		function updatePlanTableDayDate(data_cooked) {
+		function updatePlanTableDayDate() {
+			var travel_date = $('#plan-date-form input[name=travel_date]').val();
+			var num_of_day = $('#plan-date-form-hidden input[name=num_of_day]').val();
+			var day = new Array();
+			var date;
+			
+			if(travel_date != '') {
+				var first_date = new Date(travel_date);
+				first_date.setDate(first_date.getDate() - 1);
+				var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+				var weekday = new Array(7);
+					weekday[0]=  "Ｓ";
+					weekday[1] = "Ｍ";
+					weekday[2] = "Ｔ";
+					weekday[3] = "Ｗ";
+					weekday[4] = "Ｔ";
+					weekday[5] = "Ｆ";
+					weekday[6] = "Ｓ";
+				for (i=0; i<num_of_day; i++) {
+					myDate = new Date(first_date.setDate(first_date.getDate() + 1));
+					var myWeekday = weekday[myDate.getDay()];
+					date = ("0" + myDate.getDate()).slice(-2) + "&nbsp;" + monthNames[(myDate.getMonth())] + "&nbsp;&nbsp;&nbsp;(" + myWeekday + ")";
+					day.push(date);
+				}
+			}
+			
 			$('.plan-day-tr').each(function(){
 				var speed = 300;
 				var index = $('.plan-day-tr').index(this) + 1;
@@ -914,7 +1177,7 @@
 					$(this).html("D" +index).fadeIn(speed);
 				});
 				$(this).find(".plan-day-form .plan-col-date").fadeOut(speed, function() {
-					$(this).html(data_cooked.day[index-1].date).fadeIn(speed);
+					$(this).html(day[index-1]).fadeIn(speed);
 				});
 			})	
 		}
@@ -938,7 +1201,13 @@
 		};
 	<!-- END -->
 	
-	<!-- START: [day function] -->
+	<!-- START: [edit plan] -->
+		function savePlanTravelDate() {
+			updatePlanTableCookie(); 
+		}
+	<!-- END -->
+	
+	<!-- START: [edit day] -->
 		function addPlanDay() {
 			updatePlanTableCookie(); 
 		}

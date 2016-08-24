@@ -1098,6 +1098,7 @@
 					//ensure hoverclass is not active after drop.
 					$(".drophover").removeClass("drophover");
 					updatePlanTableLineDayIdAndSortOrder();
+					updatePlanTableDuration();
 					updatePlanTableCookie();
 				}
 			}).disableSelection();
@@ -1182,6 +1183,23 @@
 					$(this).html(day[index-1]).fadeIn(speed);
 				});
 			})	
+		}
+		
+		function updatePlanTableDuration() {
+			var day_duration;
+			var line_duration;
+			var percentage;
+			
+			$('.plan-day-tr').each(function() {
+				day_duration = 0;
+				$(this).find('.plan-line-tr').each(function() {
+					line_duration = $(this).find(".plan-line-form-hidden").find('.plan-input-hidden[name=duration]').val();
+					day_duration += parseInt(line_duration);
+				});
+				$(this).find('.progress-bar').attr('value',day_duration);
+				percentage = day_duration / (60*12) * 100;
+				$(this).find('.progress-bar').css('width', percentage + "%");
+			});
 		}
 		
 		function updatePlanTableLineDayIdAndSortOrder() {

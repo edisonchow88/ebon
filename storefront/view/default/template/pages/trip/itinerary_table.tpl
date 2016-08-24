@@ -823,6 +823,7 @@
     					clearTimeout(this.downTimer);
 					});
 			});
+			$(".plan-btn-add-day").on("click", addPlanDay);
 		}
 		
 		function updateDateFormButtonEvent() {
@@ -1208,6 +1209,21 @@
 	
 	<!-- START: [edit day] -->
 		function addPlanDay() {
+			<!-- START: set column -->
+				var column = <?php echo $column_json; ?>;
+			<!-- END -->
+			<!-- START: set data -->
+				var sort_order = parseInt($('.plan-day-tr').length) + 1;
+				var day_id = sort_order;
+				var data = {'day_id':day_id,'sort_order':sort_order};
+			<!-- END -->
+			<!-- START: update hidden input -->
+				var old_num_of_day = parseInt($('#plan-date-form-hidden input[name=num_of_day]').val());
+				var new_num_of_day = old_num_of_day + 1;
+				$('#plan-date-form-hidden input[name=num_of_day]').val(new_num_of_day);
+			<!-- END -->
+			printDay(column,data,data);
+			updatePlanTableDayDate();
 			updatePlanTableCookie(); 
 		}
 	<!-- END -->

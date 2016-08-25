@@ -823,6 +823,7 @@
     					clearTimeout(this.downTimer);
 					});
 			});
+			$(".plan-btn-add-day").on("click", addPlanDay);
 		}
 		
 		function updateDateFormButtonEvent() {
@@ -1097,6 +1098,8 @@
 					$(".plan-btn-add-line").show();
 					//ensure hoverclass is not active after drop.
 					$(".drophover").removeClass("drophover");
+					updatePlanTableLineDayIdAndSortOrder();
+					updatePlanTableCookie();
 				}
 			}).disableSelection();
 		}
@@ -1122,7 +1125,7 @@
 								serial += ',';
 								serial += '"line":';
 								serial += '[';
-									$.each($('#plan-day-'+day_id+'-line').children($('.plan-line-form-hidden')), function(j, val) {
+									$.each($('#plan-day-'+day_id+'-line').find($('.plan-line-form-hidden')), function(j, val) {
 										var line_id = $(this).find($('.plan-input-hidden[name=line_id]')).val();
 										serial += JSON.stringify($('#plan-line-'+line_id+'-form-hidden').find('.plan-input-hidden').not('[value="undefined"]').serializeObject());
 										serial += ',';
@@ -1181,6 +1184,20 @@
 				});
 			})	
 		}
+		
+		function updatePlanTableLineDayIdAndSortOrder() {
+			var day_id;
+			var index;
+			$('.plan-day-tr').each(function() {
+				index = 1;
+				day_id = $(this).find('.plan-day-form-hidden').find('.plan-input-hidden[name=day_id]').val();
+				$(this).find('.plan-line-tr').each(function() {
+					$(this).find(".plan-line-form-hidden").find('.plan-input-hidden[name=day_id]').val(day_id);
+					$(this).find(".plan-line-form-hidden").find('.plan-input-hidden[name=sort_order]').val(index);
+					index += 1;
+				});
+			});
+		}
 	<!-- END -->
 	
 	<!-- START: jquery function to serialize form -->
@@ -1209,6 +1226,21 @@
 	
 	<!-- START: [edit day] -->
 		function addPlanDay() {
+			<!-- START: set column -->
+				var column = <?php echo $column_json; ?>;
+			<!-- END -->
+			<!-- START: set data -->
+				var sort_order = parseInt($('.plan-day-tr').length) + 1;
+				var day_id = sort_order;
+				var data = {'day_id':day_id,'sort_order':sort_order};
+			<!-- END -->
+			<!-- START: update hidden input -->
+				var old_num_of_day = parseInt($('#plan-date-form-hidden input[name=num_of_day]').val());
+				var new_num_of_day = old_num_of_day + 1;
+				$('#plan-date-form-hidden input[name=num_of_day]').val(new_num_of_day);
+			<!-- END -->
+			printDay(column,data,data);
+			updatePlanTableDayDate();
 			updatePlanTableCookie(); 
 		}
 	<!-- END -->

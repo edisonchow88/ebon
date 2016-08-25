@@ -275,7 +275,6 @@
 		
 	/* END */
 </style>
-<div><button class="btn btn-default" data-toggle="confirmation" data-placement="bottom">Confirmation on bottom</button></div>
 <div id="section-content-itinerary">
 	<div id="section-content-itinerary-header">
     	<div id="section-content-itinerary-header-content">

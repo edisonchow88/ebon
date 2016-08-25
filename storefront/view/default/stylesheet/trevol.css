@@ -615,14 +615,14 @@ ul {
 				float:left;
 				width:calc(100% / 3);
 				height:calc(100vh - 30px - 48px - 40px);
-				border-right:solid thin #EEE;
+				border-right:solid 2px #EEE;
 			}
 			
 			#section-center {
 				float:left;
 				width:calc(100% / 3);
 				height:calc(100vh - 30px - 48px - 40px);
-				border-right:solid thin #EEE;
+				border-right:solid 2px #EEE;
 			}
 			
 			#section-right {

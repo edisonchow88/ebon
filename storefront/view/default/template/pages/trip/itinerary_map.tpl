@@ -41,13 +41,15 @@
 </style>
 
 <div id="section-content-map">
+	<!--
 	<div style="position:relative; z-index:3;">
         <div id="section-view-button" class="hidden-xs hidden-sm hidden-md">
-            <a class="btn btn-primary" data-toggle='tooltip' data-placement='bottom' title='Discover' onclick="toggle_section_content('guide');">
+            <a id='button-discover' class="btn btn-primary" data-toggle='tooltip' data-placement='bottom' title='Discover'>
                 <i class="fa fa-search fa-2x" aria-hidden="true"></i>
             </a>
         </div>
     </div>
+    -->
     <div id="section-content-map-header" class="hidden-sm hidden-md hidden-lg">
         <div class="row">
             <div class="spacer-bar hidden-xs hidden-sm col-md-12 col-lg-12"></div>

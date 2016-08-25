@@ -75,13 +75,13 @@
     </div>
     <div id="section-content" class="box-shadow">
         <div id="section-left">
-            <?php echo $content_section_table; ?>
+            <?php echo $content_section_guide; ?>
         </div>
         <div id="section-center">
-            <?php echo $content_section_map; ?>
+            <?php echo $content_section_table; ?>
         </div>
         <div id="section-right">
-            <?php echo $content_section_guide; ?>
+            <?php echo $content_section_map; ?>
         </div>
     </div>
 </div>
@@ -214,24 +214,24 @@
 		resize_section_content();
 		
 		if(section_content_window_guide == true) { 
-			show_section_content('right','guide'); 
+			show_section_content('left','guide'); 
 		} 
 		else { 
-			hide_section_content('right','guide'); 
+			hide_section_content('left','guide'); 
 		}
 		
 		if(section_content_window_itinerary == true) { 
-			show_section_content('left','itinerary'); 
+			show_section_content('center','itinerary'); 
 		} 
 		else { 
-			hide_section_content('left','itinerary'); 
+			hide_section_content('center','itinerary'); 
 		}
 		
 		if(section_content_window_map == true) { 
-			show_section_content('center','map'); 
+			show_section_content('right','map'); 
 		}
 		else {
-			hide_section_content('center','map'); 
+			hide_section_content('right','map'); 
 		}
 		update_section_view_md_select();
 	}
@@ -343,15 +343,14 @@
 				document.getElementById('section-right').style.width = width;
 			}
 			else {
-				document.getElementById('section-left').style.width = '75%';
-				document.getElementById('section-center').style.width = '25%';
+				document.getElementById('section-center').style.width = '75%';
+				document.getElementById('section-right').style.width = '25%';
 			}
 		}
 		else if(section_content_window ==3) {
-			var width = '33.33%';
-			document.getElementById('section-left').style.width = width;
-			document.getElementById('section-center').style.width = width;
-			document.getElementById('section-right').style.width = width;
+			document.getElementById('section-left').style.width = '60%';
+			document.getElementById('section-center').style.width = '15%';
+			document.getElementById('section-right').style.width = '25%';
 		}
 	}
 	

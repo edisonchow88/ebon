@@ -71,6 +71,14 @@
 		#plan-date-form-alert {
 			font-size:11px;
 		}
+		
+		#btn-search {
+			border-radius: 10px;
+			margin:8px 0;
+			height:33px !important;
+			padding:7px 10px !important;
+			border:none;
+		}
 	/* END */
 	
 	/* START: [plan table] */
@@ -105,7 +113,7 @@
 			overflow-y:scroll;
 			overflow-x:auto;
 			direction:rtl;
-			height:420px;	
+			height:calc(100vh - 50px - 30px - 50px - 40px - 40px);	
 		}
 		
 		.plan-tbody > div {
@@ -114,6 +122,7 @@
 		
 		.plan-thead {
 			border-bottom:solid thin #DDD;
+			font-weight:bold;
 		}
 		
 		.plan-thead-tr.plan-tr {
@@ -271,6 +280,7 @@
 	<div id="section-content-itinerary-header">
     	<div id="section-content-itinerary-header-content">
             <div id="section-content-itinerary-header-button">
+            	<a id='btn-search' class="btn btn-primary pull-left noselect"><i class="fa fa-fw fa-search"></i> Discover</a>
                 <a class="btn-show-date-form pull-right noselect">Set Date</a>
             </div>
             <div id="section-content-itinerary-header-set-date" class="text-left hidden">
@@ -854,6 +864,14 @@
 			function saveDateForm() {
 				$('#plan-date-form-hidden input[name=travel_date]').val($('#plan-date-form input[name=travel_date]').val());
 				$('#plan-date-form-hidden input[name=last_date]').val($('#plan-date-form input[name=last_date]').val());
+				var day_difference = parseInt($('#plan-date-form-hidden input[name=num_of_day]').val()  - $('.plan-day-tr').length);
+				if(day_difference > 0) {
+					for(i=0;i<day_difference;i++) {
+						setTimeout(function() {
+							addPlanDay();
+						}, 10);
+					}
+				}
 				savePlanTravelDate();
 				updatePlanTableDayDate();
 				hideDateForm();
@@ -1182,7 +1200,10 @@
 				$(this).find(".plan-day-form .plan-col-date").fadeOut(speed, function() {
 					$(this).html(day[index-1]).fadeIn(speed);
 				});
-			})	
+				if($('#section-content-guide').is(':visible')) {
+					minimizePlanTableColumn();
+				}
+			})
 		}
 		
 		function updatePlanTableDuration() {
@@ -1259,6 +1280,11 @@
 			printDay(column,data,data);
 			updatePlanTableDayDate();
 			updatePlanTableCookie(); 
+			<!-- START -->
+				if($('#section-content-guide').is(':visible')) {
+					minimizePlanTableColumn();
+				}
+			<!-- END -->
 		}
 	<!-- END -->
 	
@@ -1266,3 +1292,57 @@
 		refreshPlanTable();
 	});
 </script>
+
+<!-- START: add function to search button -->
+	<script>
+		function minimizePlanTableColumn() {
+			$('.plan-col-datetime').hide();
+			$('.plan-col-date').hide();
+			$('.plan-col-time').hide();
+			$('.plan-col-location').hide();
+			$('.plan-col-activity').hide();
+			$('.plan-col-command').hide();
+			$('.plan-day-content').hide();
+			$('.plan-col-day').css('padding-left','15px');
+		}
+		
+        $('#btn-search').on('click', function() {
+            toggle_section_content('guide');
+            if($('#section-content-guide').is(':visible')) {
+                $('.plan-thead').hide();
+                $('.plan-tbody').css('overflow-y','hidden');
+				minimizePlanTableColumn();
+                <!-- START: modify itinerary header -->
+                    $('.btn-show-date-form').hide();
+                    $('#btn-search').addClass('btn-block');
+                    $('#btn-search').removeClass('pull-left');
+                    $('#btn-search').removeClass('btn');
+                    $('#btn-search').removeClass('btn-primary');
+                    $('#btn-search').html('View Itinerary');
+                    $('#section-content-itinerary-header').css('overflow-y','hidden');
+                <!-- END -->
+            }
+            else {
+                $('.plan-thead').show();
+                $('.plan-col-datetime').show();
+                $('.plan-col-date').show();
+                $('.plan-col-time').show();
+                $('.plan-col-location').show();
+                $('.plan-col-activity').show();
+                $('.plan-col-command').show();
+                $('.plan-day-content').show();
+                $('.plan-tbody').css('overflow-y','scroll');
+                $('.plan-col-day').css('padding-left','7px');
+                <!-- START: modify itinerary header -->
+                    $('.btn-show-date-form').show();
+                    $('#btn-search').removeClass('btn-block');
+                    $('#btn-search').addClass('pull-left');
+                    $('#btn-search').addClass('btn');
+                    $('#btn-search').addClass('btn-primary');
+                    $('#btn-search').html('<i class="fa fa-fw fa-search"></i> Discover');
+                    $('#section-content-itinerary-header').css('overflow-y','scroll');
+                <!-- END -->
+            }
+        });
+    </script>
+<!-- END -->

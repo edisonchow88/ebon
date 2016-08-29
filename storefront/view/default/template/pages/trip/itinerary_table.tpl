@@ -392,13 +392,13 @@
 												line_id:3,
 												day_id:1,
 												sort_order:3,
-												time:'',
-												duration:'',
+												time:null,
+												duration:null,
 												activity:"Visit",
 												place:"Kyoto Tower",
-												fee:'',
-												currency:'',
-												note:''
+												fee:null,
+												currency:null,
+												note:null
 											}
 										]
 									},
@@ -643,6 +643,9 @@
 							if(typeof line[col.name] != 'undefined' && line[col.name] != null && line[col.name] != '') {
 								html_plan_form += '<i class="fa fa-fw fa-sticky-note" data-toggle="tooltip" data-placement="bottom" title="'+line[col.name]+'"></i>';
 							}
+							else {
+								html_plan_form += '<i class="fa fa-fw fa-sticky-note hidden" data-toggle="tooltip" data-placement="bottom"></i>';
+							}
 						}
 						else if(typeof line[col.name] != 'undefined' && line[col.name] != null) {
 							html_plan_form += line[col.name];
@@ -657,12 +660,14 @@
 			<!-- START -->
 				var html_plan_form_hidden='';
 				$.each(column, function(i, col) {
+					var value = line_raw[col.name];
+					if(typeof value == 'undefined' || value == null || value == '') { value = ''; } 
 					html_plan_form_hidden += ""
 						+ "<input "
 							+ "id='plan-line-" + line.line_id + "-col-" + col.id + "-input-hidden' "
 							+ 'name="' + col.name + '" '
 							+ "class='plan-input-hidden hidden' "
-							+ "value='" + line_raw[col.name] + "'"
+							+ "value='" + value + "'"
 						+ "/>"
 					;
 				});
@@ -715,7 +720,7 @@
 			<!-- START: set output -->
 				var output = ""
 					+"<div class='plan-btn-add-line plan-btn-tr'>"
-						+ "<a class='text-center btn-block'>"
+						+ "<a class='text-center btn-block' data-toggle='modal' data-target='#modal-edit-line'>"
 							+ "<i class='fa fa-plus' aria-hidden='true'></i> &nbsp;&nbsp;"
 							+ "Add New Activity"
 						+ "</a>"
@@ -782,7 +787,7 @@
 					plan.day[i].duration = 0;
 					for(j=0; j<plan.day[i].line.length; j++) {
 						var duration = plan.day[i].line[j].duration;
-						if(duration != 'undefined' && duration != '') {
+						if(typeof duration != 'undefined' && duration != null && duration != '') {
 							plan.day[i].duration += parseInt(duration);
 						}
 					}
@@ -799,7 +804,7 @@
 				if(typeof plan.day[i].line != 'undefined' &&  plan.day[i].line.length > 0) {
 					for(j=0; j<plan.day[i].line.length; j++) {
 						var duration = plan.day[i].line[j].duration;
-						if(duration != 'undefined' && duration != '') {
+						if(typeof duration != 'undefined' && duration != null && duration != '') {
 							var hour = Math.floor(duration/ 60);
 							var minute = duration % 60;
 							if(hour >= 1) {
@@ -835,6 +840,7 @@
 					});
 			});
 			$(".plan-btn-add-day").on("click", addPlanDay);
+			$(".plan-btn-add-line").on("click", openAddPlanLineModal);
 			$('.icon-edit').on('click', function() {
 				var line = $(this).closest('.plan-line-tr').attr('id');
 				openEditPlanLineModal(line);
@@ -1296,9 +1302,42 @@
 	<!-- END -->
 	
 	<!-- START: [edit line] -->
+		function openAddPlanLineModal() {
+			$('#modal-edit-line-form').trigger("reset");
+			
+			<!-- START: [modal] -->
+				$('#modal-edit-line .modal-title').html('Add Activity');
+				$('#modal-edit-line-form input[name=action]').val('add');
+				$('#modal-edit-line .btn-primary').off().on('click', saveAddPlanLineForm);;
+			<!-- END -->
+			
+			<!-- START: [value] -->
+				var day_id = $(this).closest('.plan-day-tr').find('.plan-day-form-hidden input[name=day_id]').val();
+				$('#modal-edit-line-form input[name=day_id]').val(day_id);
+			<!-- END -->
+			
+			<!-- START: [time] -->
+				$('#modal-edit-line-form input[name=time]').attr('type','text');
+				$('#modal-edit-line-form input[name=time]').val('');
+			<!-- END -->
+			
+			<!-- START: [duration] -->
+				$('#modal-edit-line-form input[name=duration]').val(''); 
+				$('#modal-edit-line-form input[name=duration]').show();
+				$('#modal-edit-line-form-input-hourminute').hide();
+			<!-- END -->
+		}
+		
 		function openEditPlanLineModal(line) {
 			$('#modal-edit-line-form').trigger("reset");
 			
+			<!-- START: [modal] -->
+				$('#modal-edit-line .modal-title').html('Edit Activity');
+				$('#modal-edit-line-form input[name=action]').val('edit');
+				$('#modal-edit-line .btn-primary').off().on('click', saveEditPlanLineForm);
+			<!-- END -->
+			
+			var day_id = $('#'+line).find('.plan-line-form-hidden input[name=day_id]').val();
 			var line_id = $('#'+line).find('.plan-line-form-hidden input[name=line_id]').val();
 			var place = $('#'+line).find('.plan-line-form-hidden input[name=place]').val();
 			var activity = $('#'+line).find('.plan-line-form-hidden input[name=activity]').val();
@@ -1312,9 +1351,9 @@
 			var note = $('#'+line).find('.plan-line-form-hidden input[name=note]').val();
 			
 			$('#modal-edit-line-form input[name=line_id]').val(line_id);
-			if(place != 'undefined') { $('#modal-edit-line-form input[name=place]').val(place); }
-			if(activity != 'undefined') { $('#modal-edit-line-form input[name=activity]').val(activity); }
-			if(time != 'undefined' && time !='') { 
+			if(typeof place != 'undefined') { $('#modal-edit-line-form input[name=place]').val(place); }
+			if(typeof activity != 'undefined') { $('#modal-edit-line-form input[name=activity]').val(activity); }
+			if(typeof time != 'undefined' && time != '' && time != null) { 
 				$('#modal-edit-line-form input[name=time]').attr('type','time');
 				$('#modal-edit-line-form input[name=time]').val(time);
 			}
@@ -1322,7 +1361,7 @@
 				$('#modal-edit-line-form input[name=time]').attr('type','text');
 				$('#modal-edit-line-form input[name=time]').val('');
 			}
-			if(duration != 'undefined' && duration !='') { 
+			if(typeof duration != 'undefined' && duration != '' && duration != null) { 
 				$('#modal-edit-line-form input[name=duration]').val(duration); 
 				$('#modal-edit-line-form input[name=duration]').hide();
 				$('#modal-edit-line-form-input-hourminute').show();
@@ -1334,9 +1373,89 @@
 				$('#modal-edit-line-form input[name=duration]').show();
 				$('#modal-edit-line-form-input-hourminute').hide();
 			}
-			if(fee != 'undefined') { $('#modal-edit-line-form input[name=fee]').val(fee); }
-			if(currency != 'undefined') { $('#modal-edit-line-form select[name=currency]').val(currency); }
-			if(note != 'undefined') { $('#modal-edit-line-form textarea[name=note]').val(note); }
+			if(typeof fee != 'undefined' && fee != '' && fee != null) {  $('#modal-edit-line-form input[name=fee]').val(fee); }
+			if(typeof currency != 'undefined' && currency != '' && currency != null) {  $('#modal-edit-line-form select[name=currency]').val(currency); }
+			if(typeof note != 'undefined' && note != '' && note != null) { $('#modal-edit-line-form textarea[name=note]').val(note); }
+		}
+		
+		function convertLineDurationFormat(duration) {
+			var formatted_duration;
+			if(typeof duration != 'undefined' && duration != null && duration != '') {
+				var hour = Math.floor(duration/ 60);
+				var minute = duration % 60;
+				if(hour >= 1) {
+					minute = ("0" + minute).slice(-2);
+					formatted_duration = hour+'h '+minute+'m';
+				}
+				else {
+					formatted_duration = minute+'m';
+				}
+			}
+			else {
+				formatted_duration = '';
+			}
+			return formatted_duration;
+		}
+		
+		function saveAddPlanLineForm() {
+			
+			<!-- START: get form data -->
+				var line_id = $('.plan-line-tr').length + 1;
+				var day_id = $('#modal-edit-line-form input[name=day_id]').val();
+				var sort_order = $('#plan-day-'+day_id+'-line .plan-line-tr').length + 1;
+				var time = $('#modal-edit-line-form input[name=time]').val()||null;
+				var hour = $('#modal-edit-line-form input[name=hour]').val();
+				var minute = $('#modal-edit-line-form input[name=minute]').val();
+				var duration  = (parseInt(hour) * 60 + parseInt(minute))||null;
+				var formatted_duration = convertLineDurationFormat(duration);
+				var activity = $('#modal-edit-line-form input[name=activity]').val()||null;
+				var place = $('#modal-edit-line-form input[name=place]').val()||null;
+				var fee = $('#modal-edit-line-form input[name=fee]').val()||null;
+				var currency = $('#modal-edit-line-form select[name=currency]').val()||null;
+				var note = $('#modal-edit-line-form textarea[name=note]').val()||null;
+			<!-- END -->
+			
+			<!-- START: set print data -->
+				var column = <?php echo $column_json; ?>;
+				var line = 
+					{
+						line_id		:line_id,
+						day_id		:day_id,
+						sort_order	:sort_order,
+						time		:time,
+						duration	:formatted_duration,
+						activity	:activity,
+						place		:place,
+						fee			:fee,
+						currency	:currency,
+						note		:note
+					}
+				;
+				var line_raw =
+					{
+						line_id		:line_id,
+						day_id		:day_id,
+						sort_order	:sort_order,
+						time		:time,
+						duration	:duration,
+						activity	:activity,
+						place		:place,
+						fee			:fee,
+						currency	:currency,
+						note		:note
+					}
+				;
+			<!-- END -->
+			
+			printLine(column,line,line_raw);
+			
+			<!-- START: init function -->
+				updatePlanTableButtonEvent();
+				updateDateFormButtonEvent();
+				updatePlanTableDuration();
+				initSortableDay(data_cooked);
+				initSortableLine();
+			<!-- END -->
 		}
 		
 		function saveEditPlanLineForm() {
@@ -1346,7 +1465,7 @@
 			var time = $('#modal-edit-line-form input[name=time]').val();
 			var hour = $('#modal-edit-line-form input[name=hour]').val();
 			var minute = $('#modal-edit-line-form input[name=minute]').val();
-			var duration = parseInt(hour) * 60 + parseInt(minute);
+			var duration = (parseInt(hour) * 60 + parseInt(minute))||null;
 			var fee = $('#modal-edit-line-form input[name=fee]').val();
 			var currency = $('#modal-edit-line-form select[name=currency]').val();
 			var note = $('#modal-edit-line-form textarea[name=note]').val();
@@ -1362,10 +1481,23 @@
 			$('#plan-line-'+line_id+'-tr').find('.plan-col-place').html(place);
 			$('#plan-line-'+line_id+'-tr').find('.plan-col-activity').html(activity);
 			$('#plan-line-'+line_id+'-tr').find('.plan-col-time').html(time);
-			$('#plan-line-'+line_id+'-tr').find('.plan-col-duration').html(hour+'h '+minute+'m');
+			if(duration == null) { 
+				$('#plan-line-'+line_id+'-tr').find('.plan-col-duration').html('');
+			}
+			else {
+				$('#plan-line-'+line_id+'-tr').find('.plan-col-duration').html(hour+'h '+minute+'m');
+			}
 			$('#plan-line-'+line_id+'-tr').find('.plan-col-fee').html(fee);
 			$('#plan-line-'+line_id+'-tr').find('.plan-col-currency').html(currency);
+			
 			$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').attr('data-original-title',note);
+			
+			if(note != '') { 
+				$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').removeClass('hidden'); 
+			}
+			else {
+				$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').addClass('hidden'); 
+			}
 			
 			updatePlanTableCookie();
 			updatePlanTableDuration();

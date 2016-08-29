@@ -62,7 +62,7 @@ class ControllerPagesTripItineraryTable extends AController {
 			$column[$i]['id'] = str_replace("_","-",$i);
 			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['width'] = '50px';
+			$column[$i]['width'] = '40px';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['thAlign'] = 'left';
@@ -81,7 +81,7 @@ class ControllerPagesTripItineraryTable extends AController {
 			$column[$i]['lineName'] = $j;
 			$column[$i]['lineId'] = str_replace("_","-",$j);
 			$column[$i]['lineClass'] = 'plan-col-'.str_replace("_","-",$j);
-			$column[$i]['width'] = '100px';
+			$column[$i]['width'] = '80px';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['thAlign'] = 'left';
@@ -92,10 +92,10 @@ class ControllerPagesTripItineraryTable extends AController {
 			$column[$i]['id'] = str_replace("_","-",$i);
 			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['headerStyle'] = 'margin-right:20px;';
-			$column[$i]['dayStyle'] = 'margin-right:20px;';
-			$column[$i]['lineStyle'] = 'margin-right:20px;';
-			$column[$i]['width'] = '60px';
+			$column[$i]['headerStyle'] = 'margin-right:10px;';
+			$column[$i]['dayStyle'] = 'margin-right:10px;';
+			$column[$i]['lineStyle'] = 'margin-right:10px;';
+			$column[$i]['width'] = '55px';
 			$column[$i]['align'] = 'right';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['thAlign'] = 'left';
@@ -118,7 +118,7 @@ class ControllerPagesTripItineraryTable extends AController {
 			$column[$i]['id'] = str_replace("_","-",$i);
 			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['width'] = '150px';
+			$column[$i]['width'] = '200px';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['thAlign'] = 'left';

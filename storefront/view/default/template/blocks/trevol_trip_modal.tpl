@@ -79,7 +79,9 @@
             </div>
         <div class="modal-body nopadding">
             <form id="modal-edit-line-form">
-            	<input type="hidden" name="line_id" />
+            	<input type="hidden" name="day_id" />
+                <input type="hidden" name="line_id" />
+                <input type="hidden" name="action" />
             	<div class="row">
                     <div class="col-xs-4">
                         <input class="border-right" placeholder='Activity' name="activity" />
@@ -114,6 +116,7 @@
                     </div>
                     <div class="col-xs-2">
                         <select name='currency'>
+                            <option value=""></option>
                             <option value="MYR">MYR</option>
                             <option value="JPY">JPY</option>
                         	<option value="USD">USD</option>
@@ -129,7 +132,7 @@
         </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="saveEditPlanLineForm();">Save</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
             </div>
         </div>
     </div>
@@ -202,6 +205,14 @@
 					}
 				}
 			}, 100);
+		});
+	<!-- END -->
+	
+	<!-- START: [fee] -->
+		$('#modal-edit-line-form input[name=fee]').on('blur', function() {
+			if($('#modal-edit-line-form input[name=fee]').val() == '' || $('#modal-edit-line-form input[name=fee]').val() == 0) {
+				$('#modal-edit-line-form select[name=currency]').val('');
+			}
 		});
 	<!-- END -->
 </script>

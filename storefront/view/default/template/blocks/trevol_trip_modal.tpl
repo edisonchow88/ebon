@@ -33,7 +33,23 @@
 		color:#000;
 	}
 	
-	#modal-edit-line-form input:focus, #modal-edit-line-form textarea:focus {
+	#modal-edit-line-form select {
+		width:100%;
+		height:40px;
+		padding-left:15px;
+		border:none;
+		border-radius:0;
+		border-bottom:solid thin #EEE;
+		background-color:#FFF;
+		color:#000;
+  		-webkit-appearance: none;
+		-webkit-border-radius: 0px;
+		background: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='24' height='24' viewBox='0 0 24 24'><path fill='#CCC' d='M7.406 7.828l4.594 4.594 4.594-4.594 1.406 1.406-6 6-6-6z'></path></svg>");
+		background-position: 100% 50%;
+		background-repeat: no-repeat;
+	}
+	
+	#modal-edit-line-form input:focus, #modal-edit-line-form textarea:focus, #modal-edit-line-form select:focus {
 		outline: none;
 	}
 	
@@ -63,14 +79,13 @@
             </div>
         <div class="modal-body nopadding">
             <form id="modal-edit-line-form">
-                <div class="row">
-                	<div class="col-xs-12">
-                    	<input placeholder='Location' name="location" />
-                    </div>
-                </div>
+            	<input type="hidden" name="line_id" />
             	<div class="row">
-                    <div class="col-xs-12">
-                        <input placeholder='Activity' name="activity" />
+                    <div class="col-xs-4">
+                        <input class="border-right" placeholder='Activity' name="activity" />
+                    </div>
+                	<div class="col-xs-8">
+                    	<input placeholder='Place' name="place" />
                     </div>
                 </div>
                 <div class="row">
@@ -94,20 +109,27 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-4">
-                        <input placeholder='Fee' name='fee'/>
+                    <div class="col-xs-2">
+                        <input class="text-right" placeholder='Fee' name='fee'/>
+                    </div>
+                    <div class="col-xs-2">
+                        <select name='currency'>
+                            <option value="MYR">MYR</option>
+                            <option value="JPY">JPY</option>
+                        	<option value="USD">USD</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">
                 	<div class="col-xs-12">
-                        <textarea placeholder='Comment' rows="10" name="comment"></textarea>
+                        <textarea placeholder='Note' rows="10" name="note"></textarea>
                     </div>
                 </div>
             </form>
         </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="saveLineData();">Save</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="saveEditPlanLineForm();">Save</button>
             </div>
         </div>
     </div>
@@ -140,9 +162,10 @@
 				}
 				else {
 					if($('#modal-edit-line-form input[name=hour]').val() == '' || $('#modal-edit-line-form input[name=hour]').val() == 0) {
-						if($('#modal-edit-line-form input[name=minute]').val() == '' || $('#modal-edit-line-form input[name=minute]').val() == 0) {
+						if($('#modal-edit-line-form input[name=minute]').val() == '' || $('#modal-edit-line-form input[name=minute]').val() == 0 || $('#modal-edit-line-form input[name=minute]').val() == '00') {
 							$('#modal-edit-line-form input[name=duration]').show();
 							$('#modal-edit-line-form-input-hourminute').hide();
+							$('#modal-edit-line-form input[name=duration]').val('');
 							$('#modal-edit-line-form input[name=hour]').val('');
 							$('#modal-edit-line-form input[name=minute]').val('');
 						}
@@ -163,10 +186,11 @@
 				if($(document.activeElement).attr('name') == 'hour') {
 				}
 				else {
-					if($('#modal-edit-line-form input[name=minute]').val() == '' || $('#modal-edit-line-form input[name=minute]').val() == 0) {
+					if($('#modal-edit-line-form input[name=minute]').val() == '' || $('#modal-edit-line-form input[name=minute]').val() == 0 || $('#modal-edit-line-form input[name=minute]').val() == '00') {
 						if($('#modal-edit-line-form input[name=hour]').val() == '' || $('#modal-edit-line-form input[name=hour]').val() == 0) {
 							$('#modal-edit-line-form input[name=duration]').show();
 							$('#modal-edit-line-form-input-hourminute').hide();
+							$('#modal-edit-line-form input[name=duration]').val('');
 							$('#modal-edit-line-form input[name=hour]').val('');
 							$('#modal-edit-line-form input[name=minute]').val('');
 						}

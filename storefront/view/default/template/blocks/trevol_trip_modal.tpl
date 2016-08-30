@@ -24,6 +24,10 @@
 		cursor:default;
 	}
 	
+	#modal-edit-line-form {
+		font-size:11px;
+	}
+	
 	#modal-edit-line-form input {
 		width:100%;
 		height:40px;
@@ -83,11 +87,23 @@
                 <input type="hidden" name="line_id" />
                 <input type="hidden" name="action" />
             	<div class="row">
-                    <div class="col-xs-4">
+                    <div class="col-xs-2">
                         <input class="border-right" placeholder='Activity' name="activity" />
                     </div>
-                	<div class="col-xs-8">
-                    	<input placeholder='Place' name="place" />
+                	<div class="col-xs-6" style="position:relative;">
+                    	<input class="border-right" placeholder='Place' name="place" id="modal-edit-line-form-input-type-id" />
+                        <input type="hidden" id="modal-edit-line-form-input-type-hidden" />
+                        <input type="hidden" id="modal-edit-line-form-input-type-id-hidden" />
+                        <input type="hidden" name="type" id="modal-edit-line-form-input-type-value"/>
+                        <input type="hidden" name="type_id" id="modal-edit-line-form-input-type-id-value" />
+                        <input type="hidden" name="keyword"/>
+                        <div id="modal-edit-line-form-input-type-id-suggestion" style="position:absolute; z-index:15000; width:100%; display:none;"></div>
+                    </div>
+                	<div class="col-xs-2">
+                    	<input class="border-right" placeholder='Latitude' name="lat" />
+                    </div>
+                    <div class="col-xs-2">
+                    	<input placeholder='Longitude' name="lng" />
                     </div>
                 </div>
                 <div class="row">
@@ -216,3 +232,198 @@
 		});
 	<!-- END -->
 </script>
+
+<!-- START: search -->
+	<script>
+        function update_search_input_event() {
+            var form_id = 'modal-edit-line-form';
+            var input_id = form_id + '-input-' + 'type-id';
+            var search_id = input_id + '-suggestion';
+			var inputbox = '#modal-edit-line-form input[name=place]';
+            
+            $(inputbox).off();
+            $(inputbox).on('keyup',function() {
+                auto_suggest(form_id, this.id, event);
+            });
+            $(inputbox).on('focus',function() {
+                show_suggestion(search_id);
+            });
+            $(inputbox).on('click',function() {
+                auto_suggest(form_id, this.id, event);
+            });
+            $(inputbox).on('blur',function() {
+                setTimeout(function() { hide_suggestion(search_id); }, 100);
+            });
+        }
+        
+        function auto_suggest(form_id, input_id, e) {
+            var suggestion_id = input_id + "-suggestion";
+            var hidden_id = input_id + "-hidden";
+            var value_id = input_id + "-value";
+            var keyword = $('#'+input_id).val();
+            
+			$('#'+form_id+' input[name=keyword]').val(keyword);
+            
+            show_suggestion(suggestion_id);
+			
+            var key_code;
+        
+            if(window.event) { // IE                    
+                key_code = e.keyCode;
+            } else if(e.which){ // Netscape/Firefox/Opera                   
+                key_code = e.which;
+            }
+            
+            if(key_code == 40) { //if press down arrow
+                if(document.getElementById(suggestion_id).innerHTML == '') { 
+                    search_destination(input_id, suggestion_id, keyword);
+                    show_suggestion(suggestion_id); 
+                }
+                select_next_suggestion(input_id);
+                return;
+            }
+            else if(key_code == 38) { //if press up arrow
+                if(document.getElementById(suggestion_id).innerHTML == '') { 
+                    search_destination(input_id, suggestion_id, keyword);
+                    show_suggestion(suggestion_id); 
+                }
+                select_previous_suggestion(input_id);
+                return;
+            }
+            else if(key_code == 13) { //if press enter
+                hide_suggestion(suggestion_id);
+                document.getElementById(hidden_id).value = this.suggestion[this.selected_suggestion].name;
+                return;
+            }
+            else if(key_code == 37 || key_code == 39) { //if press left or right arrow
+            }
+            else if(key_code != '' && key_code != 'undefined' && key_code != null) {
+                document.getElementById(value_id).value = '';
+                document.getElementById(suggestion_id).innerHTML = '';
+            }
+			
+			$('#'+hidden_id).val($('#'+input_id).val());
+            search_destination(input_id, suggestion_id, keyword);
+        }
+        
+        
+        function search_destination(input_id, suggestion_id, keyword) {
+            <!-- START: set data -->
+                var form = 'modal-edit-line-form';
+                var data = { action:'search_place',keyword:keyword }
+            <!-- END -->
+            <!-- START: send POST -->
+                $.post("<?php echo $ajax_itinerary; ?>", data, function(result) {
+                    auto_list(input_id, suggestion_id, keyword, result);
+                }, "json");
+            <!-- END -->
+        }
+        
+        function auto_list(input_id, suggestion_id, keyword, response) {
+            var result = response;
+            var output = '';
+            output += "<ul class='list-group' style='margin-top:-1px;'>";
+            for(i = 0; i < result.length; i++) {
+                output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion(\""+input_id+"\", \""+result[i].destination_id+"\", \""+result[i].name+"\")'>";
+                    output += "<div class='text-left' style='width:100%;'>";
+                        output += "<div class='text-left text-success' style='display:inline-block; width:50px;'><i class='fa fa-map-marker fa-fw fa-2x'></i></div>";
+                        output += "<div style='display:inline-block;'>";
+                            output += "<span class='text-left' style='display:block;'><b>";
+                                output += highlight_keyword_with_any_cases(result[i].name, keyword);
+                            output += "</b></span>";
+                            if(typeof result[i].parent != 'undefined') {
+                                output += "<span class='text-left small' style='display:block;'>";
+                                    output += result[i].parent.name;
+                                output += "</span>";
+                            }
+                        output += "</div>";
+                    output += "</div>";
+                output += "</a>";
+            }
+            output += "</ul>";
+            this.suggestion = result;
+            this.selected_suggestion = -1;
+            document.getElementById(suggestion_id).innerHTML = output;
+        }
+        
+        function reset_suggestion() {
+            for(i=0;i<this.suggestion.length;i++) {
+                document.getElementById('suggestion-'+i).style.backgroundColor = '';
+            }
+        }
+        
+        function select_next_suggestion(input_id) {
+            reset_suggestion();
+            
+            if(this.selected_suggestion < this.suggestion.length) {
+                this.selected_suggestion += 1;
+            }
+            else {
+                this.selected_suggestion = 0;
+            }
+            
+            highlight_suggestion(input_id);
+        }
+        
+        function select_previous_suggestion(input_id) {
+            reset_suggestion();
+            
+            if(this.selected_suggestion > 0) {
+                this.selected_suggestion -= 1;
+            }
+            else {
+                this.selected_suggestion = this.suggestion.length;
+            }
+            
+            highlight_suggestion(input_id);
+        }
+        
+        function highlight_suggestion(input_id) {
+            var hidden_id = input_id + '-hidden';
+            var value_id = input_id + '-value';
+            
+            if(this.selected_suggestion != this.suggestion.length) {
+                var suggestion_id = 'suggestion-'+this.selected_suggestion;
+                document.getElementById(suggestion_id).style.backgroundColor = '#EEEEEE';
+                document.getElementById(input_id).value = this.suggestion[this.selected_suggestion].name;
+                document.getElementById(value_id).value = this.suggestion[this.selected_suggestion].destination_id;
+            }
+            else {
+                document.getElementById(input_id).value = document.getElementById(hidden_id).value;
+                document.getElementById(value_id).value = '';
+            }
+        }
+        
+        function select_suggestion(input_id, destination_id, name) {
+            var hidden_id = input_id + '-hidden';
+            var value_id = input_id + '-value';
+            
+            document.getElementById(hidden_id).value = name;
+            document.getElementById(input_id).value = name;
+            document.getElementById(value_id).value = destination_id;
+        }
+        
+        function show_suggestion(suggestion_id) {
+            document.getElementById(suggestion_id).style.display = "block";
+        }
+        
+        function hide_suggestion(suggestion_id) {
+            document.getElementById(suggestion_id).style.display = "none";
+            document.getElementById(suggestion_id).innerHTML = '';
+        }
+        
+        RegExp.escape = function(str) 
+        {
+          var specials = /[.*+?|()\[\]{}\\$^]/g; // .*+?|()[]{}\$^
+          return str.replace(specials, "\\$&");
+        }
+        
+        function highlight_keyword_with_any_cases(text, keyword)
+        {
+          var regex = new RegExp("(" + RegExp.escape(keyword) + ")", "gi");
+          return text.replace(regex, "<span style='background-color:yellow;'>$1</span>");
+        }
+		
+		update_search_input_event();
+    </script>
+<!-- END -->

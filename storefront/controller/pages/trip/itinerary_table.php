@@ -124,6 +124,28 @@ class ControllerPagesTripItineraryTable extends AController {
 			$column[$i]['thAlign'] = 'left';
 			$column[$i]['visible'] = 'true';
 			
+			$i = 'lat';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['width'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'false';
+			
+			$i = 'lng';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['width'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'false';
+			
 			$i = 'fee';
 			$column[$i]['name'] = $i;
 			$column[$i]['id'] = str_replace("_","-",$i);

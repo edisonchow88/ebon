@@ -1,8 +1,3 @@
-<!-- START: [Bootstrap toggle button] -->
-    <link href="<?php echo $this->templateResource('/stylesheet/bootstrap-toggle.min.css'); ?>" rel="stylesheet">
-    <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/bootstrap-toggle.min.js'); ?>"></script>
-<!-- END -->
-  
 <style>
 	/* START: [section] */
 		#section-content-itinerary {
@@ -594,7 +589,7 @@
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-sort'>"
 							+ "<i class='fa fa-fw fa-arrows-v' aria-hidden='true'></i>"
 						+ "</a>"
-						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete'>"
+						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete' data-id='plan-day-" + day.day_id+"-tr'>"
 							+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
 						+ "</a>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-toggle-day'>"
@@ -692,7 +687,7 @@
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-sort'>"
 							+ "<i class='fa fa-fw fa-arrows-v' aria-hidden='true'></i>"
 						+ "</a>"
-						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete'>"
+						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete' data-id='plan-line-" + line.line_id+"-tr'>"
 							+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
 						+ "</a>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-edit' data-toggle='modal' data-target='#modal-edit-line'>"
@@ -828,7 +823,15 @@
 	<!-- START: [button function] -->
 		function updatePlanTableButtonEvent() {
 			$(".plan-day-form").off().on("click", toggleDay);
-			$('.plan-day-form').on('mousedown', function() {
+			// Function for delete Day & Line
+			deleteDayLine();
+			
+			$('.icon-edit').off().on('click', function() {
+				var line = $(this).closest('.plan-line-tr').attr('id');
+				editPlanLine(line);
+			});
+			
+			/*$('.plan-day-form').off().on('mousedown', function() {
 				clearTimeout(this.downTimer);
 				if (!$(this).children(".plan-day-content"). hasClass("hidden")){
 					this.downTimer = setTimeout(function() {
@@ -838,13 +841,21 @@
 				$(this).on('mouseup', function() {	
     					clearTimeout(this.downTimer);
 					});
-			});
+			});*/
 			$(".plan-btn-add-day").off().on("click", addPlanDay);
 			$(".plan-btn-add-line").off().on("click", openAddPlanLineModal);
 			$('.icon-edit').off().on('click', function() {
 				var line = $(this).closest('.plan-line-tr').attr('id');
 				openEditPlanLineModal(line);
 			});
+			
+			
+			//$(".plan-day").sortable("refreshPostions");	
+			
+			//THIS MAY MOVE TO ANOTHER FUNCTION : Refresh sortable to new day and activities
+			$(".plan-day").sortable();
+			$(".plan-day-line").sortable();
+			$(".plan-day-tr").droppable();
 		}
 		
 		function updateDateFormButtonEvent() {
@@ -1025,6 +1036,7 @@
 					}
 				},
 				start: function(e, ui) {
+					$(".plan-day").sortable("refreshPositions");
 					$(ui.helper).addClass("ui-draggable-helper");
 					$(ui.placeholder).addClass("ui-draggable-placeholder-day");		
 				},
@@ -1058,28 +1070,31 @@
 			var to_row_day_id;
 			var drop_id_to_sortable;
 			
-			$(".plan-day-tr").droppable({
-				accept: ".plan-line-tr",
-				hoverClass: "drophover",
-				over: function( event, ui ) {
-					var current_drag_id = $(ui.draggable).parent().attr("id");
-					var current_over_id = $(this).find(".plan-day-line").attr("id");
-					var current_drag_activities_text = $("#"+current_drag_id).find(".plan-col-activity").html();					
-					var current_over_day_text = $("#"+current_over_id).parent().parent().find(".plan-col-day").html();
-					// Remove hover when it is into same day.
-					if (current_over_id == current_drag_id) {
-						$(".drophover").not(".plan-line-tr").removeClass("drophover");
+			function initRefreshDroppable () {
+				$(".plan-day-tr").droppable({
+					accept: ".plan-line-tr",
+					hoverClass: "drophover",
+					over: function( event, ui ) {
+						var current_drag_id = $(ui.draggable).parent().attr("id");
+						var current_over_id = $(this).find(".plan-day-line").attr("id");
+						var current_drag_activities_text = $("#"+current_drag_id).find(".plan-col-activity").html();					
+						var current_over_day_text = $("#"+current_over_id).parent().parent().find(".plan-col-day").html();
+						// Remove hover when it is into same day.
+						if (current_over_id == current_drag_id) {
+							$(".drophover").not(".plan-line-tr").removeClass("drophover");
+						}
+						else {
+							$(ui.helper).html("Drop "+ current_drag_activities_text +" > " + current_over_day_text);
+						}
+					},
+					drop: function( event, ui ) {
+						var drop_id = $(this).find(".plan-day-line").attr("id");
+						drop_id_to_sortable = drop_id;	
+						$(".plan-day-tr").droppable("disable");
 					}
-					else {
-						$(ui.helper).html("Drop "+ current_drag_activities_text +" > " + current_over_day_text);
-					}
-				},
-				drop: function( event, ui ) {
-					var drop_id = $(this).find(".plan-day-line").attr("id");
-					drop_id_to_sortable = drop_id;	
-					$(".plan-day-tr").droppable("disable");
-				}
-			});
+				});
+			}
+			initRefreshDroppable ();
 								
 			$(".plan-day-line").sortable({
 				delay: 100,
@@ -1130,7 +1145,10 @@
 					updatePlanTableLineDayIdAndSortOrder();
 					updatePlanTableDuration();
 					updatePlanTableCookie();
-					initSortableLine()
+					
+					//$( ".plan-day-line").sortable("refreshPositions");
+					$( ".plan-day-tr" ).droppable( "destroy" );
+					initRefreshDroppable ();
 				}
 			}).disableSelection();
 		}
@@ -1277,6 +1295,28 @@
 		}
 	<!-- END -->
 	
+		function deleteDayLine(){
+			$('[data-toggle=confirmation-delete').confirmation({
+				container: "body",
+				singleton: true,
+				popout: true,
+				title: "Confirm DELETE?",
+				onConfirm: function (){
+					var selected_delete_id = $(this).attr('data-id');
+					if ($("#" + selected_delete_id).hasClass("plan-day-tr") && $(".plan-day-tr").length < 2) {
+						alert ("Need atleast a day in the trip.");
+					}
+					else {
+						$(this).confirmation('destroy');
+						$("#"+ selected_delete_id).remove();					
+					}
+					updatePlanTableDayDate();
+					updatePlanTableCookie();
+					updatePlanTableButtonEvent();
+				}
+			});	
+		}	
+	
 	<!-- START: [edit day] -->
 		function addPlanDay() {
 			<!-- START: set column -->
@@ -1284,7 +1324,15 @@
 			<!-- END -->
 			<!-- START: set data -->
 				var sort_order = parseInt($('.plan-day-tr').length) + 1;
-				var day_id = sort_order;
+				/// lokgot remove line >>>> var day_id = sort_order;
+				/// lokgot add line >>>
+				var day_id = 0;
+				var i = 1;
+				while (day_id < 1) {
+				var check_id = $("#plan-day-" + i + "-tr").length;
+				if (check_id < 1) day_id = i;
+				i ++;
+				} ;
 				var data = {'day_id':day_id,'sort_order':sort_order};
 			<!-- END -->
 			<!-- START: update hidden input -->
@@ -1294,7 +1342,7 @@
 			<!-- END -->
 			
 			printDay(column,data,data);
-			printButtonAddLine(column, "#plan-day-" + day_id + "-content");
+			printButtonAddLine(column, "#plan-day-" + data.day_id + "-content");
 			
 			<!-- START: init function -->
 				updatePlanTableCookie();
@@ -1545,7 +1593,6 @@
 	
 	$(document).ready(function() {
 		refreshPlanTable();
-		$('[data-toggle=confirmation]').confirmation();
 		$(".plan-day-form").first().trigger("click");
 	});
 </script>

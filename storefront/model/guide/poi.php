@@ -241,6 +241,41 @@ class ModelGuidePoi extends Model{
 			return $output;
 		}
 		
+		public function getAllByKeyword($keyword='') {
+			//START: Run SQL
+				$sql = "
+					(SELECT DISTINCT 'poi' as type, poi_id as type_id, name as name, '' as parent_id
+					FROM " . $this->db->table($this->table_alias) . " 
+					WHERE name LIKE '%".$keyword."%')
+					UNION
+					(SELECT DISTINCT 'destination' as type, t1.destination_id as type_id, t1.name as name, t2.parent_id 
+					FROM " . $this->db->table('destination_alias') . " t1
+					LEFT JOIN ".$this->db->table('destination_relation')." t2
+					ON t1.destination_id = t2.destination_id 
+					WHERE t1.name LIKE '%".$keyword."%') 
+					ORDER BY type asc, name asc
+					LIMIT 5
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				foreach($query->rows as $result) {
+					$output[$result['type'].$result['type_id']] = $result;
+					$output[$result['type'].$result['type_id']]['name'] = ucwords($result['name']);
+					if($result['type'] == 'poi') {
+						$destination = array_values($this->getPoiDestinationByPoiId($result['type_id']));
+						$output[$result['type'].$result['type_id']]['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($destination[0]['destination_id']);
+					}
+					else if($result['type'] == 'destination') {
+						$output[$result['type'].$result['type_id']]['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['parent_id']);
+					}
+				}
+			//END
+			
+			return $output;
+		}
+		
 		public function addPoi($data) {
 			//START: Run SQL
 				$fields = $this->getFields($this->db->table($this->table));

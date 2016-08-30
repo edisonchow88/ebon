@@ -468,7 +468,7 @@
 			<!-- START: init function -->
 				updatePlanTableButtonEvent();
 				updateDateFormButtonEvent();
-				initSortableDay(data_cooked);
+				initSortableDay();
 				initSortableLine();
 			<!-- END -->
 		}
@@ -827,7 +827,7 @@
 	
 	<!-- START: [button function] -->
 		function updatePlanTableButtonEvent() {
-			$(".plan-day-form").on("click", toggleDay);
+			$(".plan-day-form").off().on("click", toggleDay);
 			$('.plan-day-form').on('mousedown', function() {
 				clearTimeout(this.downTimer);
 				if (!$(this).children(".plan-day-content"). hasClass("hidden")){
@@ -839,20 +839,20 @@
     					clearTimeout(this.downTimer);
 					});
 			});
-			$(".plan-btn-add-day").on("click", addPlanDay);
-			$(".plan-btn-add-line").on("click", openAddPlanLineModal);
-			$('.icon-edit').on('click', function() {
+			$(".plan-btn-add-day").off().on("click", addPlanDay);
+			$(".plan-btn-add-line").off().on("click", openAddPlanLineModal);
+			$('.icon-edit').off().on('click', function() {
 				var line = $(this).closest('.plan-line-tr').attr('id');
 				openEditPlanLineModal(line);
 			});
 		}
 		
 		function updateDateFormButtonEvent() {
-			$(".btn-show-date-form").on("click", showDateForm);
-			$(".btn-save-date-form").on("click", saveDateForm);
-			$(".btn-cancel-date-form").on("click", cancelDateForm);
-			$("#plan-date-form input[name=travel_date]").on("change", updateDateForm);
-			$("#plan-date-form input[name=last_date]").on("change", updateDateForm);
+			$(".btn-show-date-form").off().on("click", showDateForm);
+			$(".btn-save-date-form").off().on("click", saveDateForm);
+			$(".btn-cancel-date-form").off().on("click", cancelDateForm);
+			$("#plan-date-form input[name=travel_date]").off().on("change", updateDateForm);
+			$("#plan-date-form input[name=last_date]").off().on("change", updateDateForm);
 		}
 		
 		<!-- START: [date form] -->
@@ -1002,7 +1002,7 @@
 			}
 		}
 		
-		function initSortableDay (data_cooked) {	
+		function initSortableDay () {	
 			$(".plan-day").sortable({	
 				delay: 100,
 				axis: "y",
@@ -1228,7 +1228,9 @@
 				day_duration = 0;
 				$(this).find('.plan-line-tr').each(function() {
 					line_duration = $(this).find(".plan-line-form-hidden").find('.plan-input-hidden[name=duration]').val();
-					day_duration += parseInt(line_duration);
+					if(typeof line_duration != 'undefined' && line_duration != null && line_duration != '') { 
+						day_duration += parseInt(line_duration);
+					}
 				});
 				$(this).find('.progress-bar').attr('value',day_duration);
 				percentage = day_duration / (60*12) * 100;
@@ -1290,9 +1292,20 @@
 				var new_num_of_day = old_num_of_day + 1;
 				$('#plan-date-form-hidden input[name=num_of_day]').val(new_num_of_day);
 			<!-- END -->
+			
 			printDay(column,data,data);
-			updatePlanTableDayDate();
-			updatePlanTableCookie(); 
+			printButtonAddLine(column, "#plan-day-" + day_id + "-content");
+			
+			<!-- START: init function -->
+				updatePlanTableCookie();
+				updatePlanTableButtonEvent();
+				updateDateFormButtonEvent();
+				updatePlanTableDayDate();
+				updatePlanTableDuration();
+				initSortableDay();
+				initSortableLine();
+			<!-- END -->
+			
 			<!-- START -->
 				if($('#section-content-guide').is(':visible')) {
 					minimizePlanTableColumn();
@@ -1450,10 +1463,10 @@
 			printLine(column,line,line_raw);
 			
 			<!-- START: init function -->
+				updatePlanTableCookie();
 				updatePlanTableButtonEvent();
 				updateDateFormButtonEvent();
 				updatePlanTableDuration();
-				initSortableDay(data_cooked);
 				initSortableLine();
 			<!-- END -->
 		}
@@ -1507,27 +1520,47 @@
 	$(document).ready(function() {
 		refreshPlanTable();
 		$('[data-toggle=confirmation]').confirmation();
+		$(".plan-day-form").first().trigger("click");
 	});
 </script>
 
 <!-- START: add function to search button -->
 	<script>
 		function minimizePlanTableColumn() {
+			$('.plan-thead').hide();
+			$('.plan-tbody').css('overflow-y','hidden');
 			$('.plan-col-datetime').hide();
 			$('.plan-col-date').hide();
 			$('.plan-col-time').hide();
 			$('.plan-col-place').hide();
 			$('.plan-col-activity').hide();
+			$('.plan-col-fee').hide();
+			$('.plan-col-currency').hide();
+			$('.plan-col-note').hide();
 			$('.plan-col-command').hide();
 			$('.plan-day-content').hide();
 			$('.plan-col-day').css('padding-left','15px');
 		}
 		
+		function maximizePlanTableColumn() {
+			$('.plan-thead').show();
+			$('.plan-tbody').css('overflow-y','scroll');
+			$('.plan-col-datetime').show();
+			$('.plan-col-date').show();
+			$('.plan-col-time').show();
+			$('.plan-col-place').show();
+			$('.plan-col-activity').show();
+			$('.plan-col-fee').show();
+			$('.plan-col-currency').show();
+			$('.plan-col-note').show();
+			$('.plan-col-command').show();
+			$('.plan-day-content').show();
+			$('.plan-col-day').css('padding-left','7px');
+		}
+		
         $('#btn-search').on('click', function() {
             toggle_section_content('guide');
             if($('#section-content-guide').is(':visible')) {
-                $('.plan-thead').hide();
-                $('.plan-tbody').css('overflow-y','hidden');
 				minimizePlanTableColumn();
                 <!-- START: modify itinerary header -->
                     $('.btn-show-date-form').hide();
@@ -1540,16 +1573,7 @@
                 <!-- END -->
             }
             else {
-                $('.plan-thead').show();
-                $('.plan-col-datetime').show();
-                $('.plan-col-date').show();
-                $('.plan-col-time').show();
-                $('.plan-col-place').show();
-                $('.plan-col-activity').show();
-                $('.plan-col-command').show();
-                $('.plan-day-content').show();
-                $('.plan-tbody').css('overflow-y','scroll');
-                $('.plan-col-day').css('padding-left','7px');
+				maximizePlanTableColumn();
                 <!-- START: modify itinerary header -->
                     $('.btn-show-date-form').show();
                     $('#btn-search').removeClass('btn-block');

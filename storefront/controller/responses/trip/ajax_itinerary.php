@@ -15,6 +15,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			
 			if($this->data['action'] == 'refresh_trip') { $this->refresh_trip(); return; }
 			else if($this->data['action'] == 'refresh_plan') { $this->refresh_plan(); return; }
+			else if($this->data['action'] == 'search_place') { $this->search_place(); return; }
 			else { 
 				//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 				$result['warning'][] = 'System Failure: Please contact Admin.'; 
@@ -53,6 +54,18 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		$result = $this->model_travel_trip->getPlanDetail($this->data['plan_id']);
 		*/
 		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function search_place() {
+		$this->loadModel('guide/poi');
+		$this->loadModel('guide/destination');
+		$this->loadModel('resource/tag');
+		$this->loadModel('resource/image');
+		
+		$keyword = $this->data['keyword'];
+		$execution = $this->model_guide_destination->getDestinationByKeyword($keyword);
+		$response = json_encode(array_values($execution));
 		echo $response;
 	}
 	

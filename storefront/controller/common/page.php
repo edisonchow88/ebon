@@ -57,7 +57,6 @@ class ControllerCommonPage extends AController {
 		));
 		$this->document->addScript($this->view->templateResource('/javascript/jquery-1.10.2.js'));
 		$this->document->addScript($this->view->templateResource('/javascript/jquery-ui.js'));
-		$this->document->addScript($this->view->templateResource('/javascript/bootstrap-confirmation.min.js'));
 		//EOC
 
         $this->addChild('common/head', 'head', 'common/head.tpl');

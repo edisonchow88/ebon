@@ -1070,28 +1070,31 @@
 			var to_row_day_id;
 			var drop_id_to_sortable;
 			
-			$(".plan-day-tr").droppable({
-				accept: ".plan-line-tr",
-				hoverClass: "drophover",
-				over: function( event, ui ) {
-					var current_drag_id = $(ui.draggable).parent().attr("id");
-					var current_over_id = $(this).find(".plan-day-line").attr("id");
-					var current_drag_activities_text = $("#"+current_drag_id).find(".plan-col-activity").html();					
-					var current_over_day_text = $("#"+current_over_id).parent().parent().find(".plan-col-day").html();
-					// Remove hover when it is into same day.
-					if (current_over_id == current_drag_id) {
-						$(".drophover").not(".plan-line-tr").removeClass("drophover");
+			function initRefreshDroppable () {
+				$(".plan-day-tr").droppable({
+					accept: ".plan-line-tr",
+					hoverClass: "drophover",
+					over: function( event, ui ) {
+						var current_drag_id = $(ui.draggable).parent().attr("id");
+						var current_over_id = $(this).find(".plan-day-line").attr("id");
+						var current_drag_activities_text = $("#"+current_drag_id).find(".plan-col-activity").html();					
+						var current_over_day_text = $("#"+current_over_id).parent().parent().find(".plan-col-day").html();
+						// Remove hover when it is into same day.
+						if (current_over_id == current_drag_id) {
+							$(".drophover").not(".plan-line-tr").removeClass("drophover");
+						}
+						else {
+							$(ui.helper).html("Drop "+ current_drag_activities_text +" > " + current_over_day_text);
+						}
+					},
+					drop: function( event, ui ) {
+						var drop_id = $(this).find(".plan-day-line").attr("id");
+						drop_id_to_sortable = drop_id;	
+						$(".plan-day-tr").droppable("disable");
 					}
-					else {
-						$(ui.helper).html("Drop "+ current_drag_activities_text +" > " + current_over_day_text);
-					}
-				},
-				drop: function( event, ui ) {
-					var drop_id = $(this).find(".plan-day-line").attr("id");
-					drop_id_to_sortable = drop_id;	
-					$(".plan-day-tr").droppable("disable");
-				}
-			});
+				});
+			}
+			initRefreshDroppable ();
 								
 			$(".plan-day-line").sortable({
 				delay: 100,
@@ -1142,7 +1145,10 @@
 					updatePlanTableLineDayIdAndSortOrder();
 					updatePlanTableDuration();
 					updatePlanTableCookie();
-					initSortableLine()
+					
+					//$( ".plan-day-line").sortable("refreshPositions");
+					$( ".plan-day-tr" ).droppable( "destroy" );
+					initRefreshDroppable ();
 				}
 			}).disableSelection();
 		}
@@ -1294,12 +1300,17 @@
 				popout: true,
 				title: "Confirm DELETE?",
 				onConfirm: function (){
-				var selected_delete_id = $(this).attr('data-id');
-				$(this).confirmation('destroy');
-				$("#"+ selected_delete_id).remove();
-				updatePlanTableDayDate();
-				updatePlanTableCookie();
-				updatePlanTableButtonEvent();
+					var selected_delete_id = $(this).attr('data-id');
+					if ($("#" + selected_delete_id).hasClass("plan-day-tr") && $(".plan-day-tr").length < 2) {
+						alert ("Need atleast a day in the trip.");
+					}
+					else {
+						$(this).confirmation('destroy');
+						$("#"+ selected_delete_id).remove();					
+					}
+					updatePlanTableDayDate();
+					updatePlanTableCookie();
+					updatePlanTableButtonEvent();
 				}
 			});	
 		}	

@@ -324,9 +324,16 @@
             var output = '';
             output += "<ul class='list-group' style='margin-top:-1px;'>";
             for(i = 0; i < result.length; i++) {
-                output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion(\""+input_id+"\", \""+result[i].destination_id+"\", \""+result[i].name+"\")'>";
+                output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion(\""+input_id+"\", \""+result[i].type_id+"\", \""+result[i].type+"\", \""+result[i].name+"\")')'>";
                     output += "<div class='text-left' style='width:100%;'>";
-                        output += "<div class='text-left text-success' style='display:inline-block; width:50px;'><i class='fa fa-map-marker fa-fw fa-2x'></i></div>";
+                        output += "<div class='text-left text-success' style='display:inline-block; width:50px;'>";
+						if(result[i].type == 'destination') {
+							output += "<i class='fa fa-map-marker fa-fw fa-2x'></i>";
+						}
+						else if(result[i].type == 'poi') {
+							output += "<i class='fa fa-camera-retro fa-fw fa-2x'></i>";
+						}
+						output += "</div>";
                         output += "<div style='display:inline-block;'>";
                             output += "<span class='text-left' style='display:block;'><b>";
                                 output += highlight_keyword_with_any_cases(result[i].name, keyword);
@@ -394,13 +401,13 @@
             }
         }
         
-        function select_suggestion(input_id, destination_id, name) {
+        function select_suggestion(input_id, type_id, type, name) {
             var hidden_id = input_id + '-hidden';
             var value_id = input_id + '-value';
             
             document.getElementById(hidden_id).value = name;
             document.getElementById(input_id).value = name;
-            document.getElementById(value_id).value = destination_id;
+            document.getElementById(value_id).value = type_id;
         }
         
         function show_suggestion(suggestion_id) {

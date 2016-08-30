@@ -65,7 +65,8 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		
 		$keyword = $this->data['keyword'];
 		$execution = $this->model_guide_destination->getDestinationByKeyword($keyword);
-		$response = json_encode(array_values($execution));
+		$execution2 = $this->model_guide_poi->getAllByKeyword($keyword);
+		$response = json_encode(array_values($execution2));
 		echo $response;
 	}
 	

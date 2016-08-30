@@ -278,7 +278,7 @@
 			
 			var body_height = 'calc(100vh - 48px - 2px - 40px)';
 			var height = 'calc(100vh - 48px - 2px - 30px - 40px)';
-			var content_height = 'calc(100vh - 48px - 2px - 30px - 70px - 40px)';
+			var content_height = 'calc(100vh - 48px - 2px - 30px - 49px - 40px)';
 			var itinerary_height = 'calc(100vh - 48px - 2px - 30px - 40px - 50px)';
 			document.getElementById('section-body').style.height = body_height;
 			document.getElementById('section-content').style.height = height;

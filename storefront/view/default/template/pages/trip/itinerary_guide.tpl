@@ -38,12 +38,17 @@
 		position:relative;
 		overflow-y:auto;
 		overflow-x:hidden;
-		height:calc(100vh - 48px - 2px - 30px - 70px - 40px);
+		height:calc(100vh - 48px - 2px - 30px - 49px - 40px);
+		direction:rtl;
+	}
+	
+	#section-content-guide-content div {
+		direction:ltr;
 	}
 	
 	#section-content-guide-image {
 		overflow:hidden;
-		max-height:160px;
+		max-height:220px;
 	}
 	
 	#section-content-guide-button-add {
@@ -51,7 +56,7 @@
 		top:118px;
 		right:0;
 		padding:15px;
-		z-index:10;
+		z-index:5;
 		text-align:center;
 		font-size:36px;
 	}
@@ -73,11 +78,12 @@
 	
 	#section-content-guide-button-add-text {
 		position:absolute;
-		top:193px;
+		top:194px;
 		right:7px;
 		width:68px;
 		color:#fff;
 		text-align:center;
+		z-index:5;
 	}
 	
 	#section-content-guide-button-add-text a {
@@ -85,8 +91,17 @@
 		text-decoration:none;
 	}
 	
+	#section-content-guide-top {
+		position:relative;
+		width:100%;
+	}
+	
 	#section-content-guide-title {
-		background-color:#e93578;
+		position:absolute;
+		bottom:0;
+		left:0;
+		width:100%;
+		background-color:rgba(0, 0, 0, 0.5);;
 		color:#FFF;
 	}
 	
@@ -203,9 +218,10 @@
         </div>
         -->
         <div class="row">
-            <div class="input-group pull-left inline col-xs-12 col-sm-12 col-md-12 col-lg-10">
+            <div class="input-group pull-left inline col-xs-12 col-sm-12 col-md-12 col-lg-5">
                 <input class="form-control" type="text" placeholder='Search ...'  />
             </div>
+            <!--
             <div class="inline pull-right col-md-12 col-lg-2">
                 <a 
                 	class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
@@ -216,7 +232,6 @@
                 >
                 	<i class="fa fa-fw" id="section-content-guide-header-close">&times;</i>
                 </a>
-                <!--
                 <a 
                 	class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
                 	onclick="open_section_content('guide');"
@@ -226,8 +241,8 @@
                 >
                 	<i class="fa fa-fw fa-arrows-alt"></i>
                 </a>
-                -->
             </div>
+            -->
         </div>
     </div>
     <div>
@@ -252,12 +267,14 @@
         </form>
     </div>
     <div id="section-content-guide-content">
-    	<div id="section-content-guide-button-add"><a>&#43;</a></div>
-        <div id="section-content-guide-button-add-text"><small><a>Add to Trip</a></small></div>
-        <div id="section-content-guide-image"></div>
-        <div id="section-content-guide-title">
-            <div id="section-content-guide-parent"><a><small><span id="section-content-guide-parent-text"></span></small></a></div>
-            <div id="section-content-guide-name"></div>
+        <div id="section-content-guide-top">
+        	<div id="section-content-guide-button-add"><a>&#43;</a></div>
+        	<div id="section-content-guide-button-add-text"><small><a>Add to Trip</a></small></div>
+            <div id="section-content-guide-image"></div>
+            <div id="section-content-guide-title">
+                <div id="section-content-guide-parent"><a><small><span id="section-content-guide-parent-text"></span></small></a></div>
+                <div id="section-content-guide-name"></div>
+            </div>
         </div>
         <div id="section-content-guide-tag"></div>
         <div id="section-content-guide-blurb"></div>

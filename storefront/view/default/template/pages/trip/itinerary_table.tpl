@@ -1352,6 +1352,8 @@
 			
 			var day_id = $('#'+line).find('.plan-line-form-hidden input[name=day_id]').val();
 			var line_id = $('#'+line).find('.plan-line-form-hidden input[name=line_id]').val();
+			var type_id = $('#'+line).find('.plan-line-form-hidden input[name=type_id]').val();
+			var type = $('#'+line).find('.plan-line-form-hidden input[name=type]').val();
 			var place = $('#'+line).find('.plan-line-form-hidden input[name=place]').val();
 			var lat = $('#'+line).find('.plan-line-form-hidden input[name=lat]').val();
 			var lng = $('#'+line).find('.plan-line-form-hidden input[name=lng]').val();
@@ -1418,6 +1420,8 @@
 			
 			<!-- START: get form data -->
 				var line_id = $('.plan-line-tr').length + 1;
+				var type_id = $('#modal-edit-line-form input[name=type_id]').val()||null;
+				var type = $('#modal-edit-line-form input[name=type]').val()||null;
 				var day_id = $('#modal-edit-line-form input[name=day_id]').val();
 				var sort_order = $('#plan-day-'+day_id+'-line .plan-line-tr').length + 1;
 				var time = $('#modal-edit-line-form input[name=time]').val()||null;
@@ -1439,6 +1443,8 @@
 				var line = 
 					{
 						line_id		:line_id,
+						type		:type,
+						type_id		:type_id,
 						day_id		:day_id,
 						sort_order	:sort_order,
 						time		:time,
@@ -1455,6 +1461,8 @@
 				var line_raw =
 					{
 						line_id		:line_id,
+						type		:type,
+						type_id		:type_id,
 						day_id		:day_id,
 						sort_order	:sort_order,
 						time		:time,
@@ -1483,6 +1491,8 @@
 		
 		function saveEditPlanLineForm() {
 			var line_id = $('#modal-edit-line-form input[name=line_id]').val();
+			var type_id = $('#modal-edit-line-form input[name=type_id]').val();
+			var type = $('#modal-edit-line-form input[name=type]').val();
 			var place = $('#modal-edit-line-form input[name=place]').val();
 			var lat = $('#modal-edit-line-form input[name=lat]').val()||null;
 			var lng = $('#modal-edit-line-form input[name=lng]').val()||null;
@@ -1495,6 +1505,8 @@
 			var currency = $('#modal-edit-line-form select[name=currency]').val()||null;
 			var note = $('#modal-edit-line-form textarea[name=note]').val()||null;
 			
+			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=type_id]').val(type_id);
+			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=type]').val(type);
 			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=place]').val(place);
 			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=lat]').val(lat);
 			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=lng]').val(lng);
@@ -1519,11 +1531,11 @@
 			
 			$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').attr('data-original-title',note);
 			
-			if(note != '') { 
-				$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').removeClass('hidden'); 
+			if(note == null || note == '') { 
+				$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').addClass('hidden'); 
 			}
 			else {
-				$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').addClass('hidden'); 
+				$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').removeClass('hidden'); 
 			}
 			
 			updatePlanTableCookie();

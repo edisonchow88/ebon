@@ -1,8 +1,3 @@
-<!-- START: [Bootstrap toggle button] -->
-    <link href="<?php echo $this->templateResource('/stylesheet/bootstrap-toggle.min.css'); ?>" rel="stylesheet">
-    <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/bootstrap-toggle.min.js'); ?>"></script>
-<!-- END -->
-  
 <style>
 	/* START: [section] */
 		#section-content-itinerary {
@@ -594,7 +589,7 @@
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-sort'>"
 							+ "<i class='fa fa-fw fa-arrows-v' aria-hidden='true'></i>"
 						+ "</a>"
-						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete'>"
+						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete' data-id='plan-day-" + day.day_id+"-tr'>"
 							+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
 						+ "</a>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-toggle-day'>"
@@ -692,7 +687,7 @@
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-sort'>"
 							+ "<i class='fa fa-fw fa-arrows-v' aria-hidden='true'></i>"
 						+ "</a>"
-						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete'>"
+						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete' data-id='plan-line-" + line.line_id+"-tr'>"
 							+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
 						+ "</a>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-edit' data-toggle='modal' data-target='#modal-edit-line'>"
@@ -827,8 +822,16 @@
 	
 	<!-- START: [button function] -->
 		function updatePlanTableButtonEvent() {
-			$(".plan-day-form").on("click", toggleDay);
-			$('.plan-day-form').on('mousedown', function() {
+			$(".plan-day-form").off().on("click", toggleDay);
+			// Function for delete Day & Line
+			 deleteDayLine ();
+			
+			$('.icon-edit').off().on('click', function() {
+				var line = $(this).closest('.plan-line-tr').attr('id');
+				editPlanLine(line);
+			});
+			
+			/*$('.plan-day-form').off().on('mousedown', function() {
 				clearTimeout(this.downTimer);
 				if (!$(this).children(".plan-day-content"). hasClass("hidden")){
 					this.downTimer = setTimeout(function() {
@@ -838,13 +841,21 @@
 				$(this).on('mouseup', function() {	
     					clearTimeout(this.downTimer);
 					});
-			});
-			$(".plan-btn-add-day").on("click", addPlanDay);
-			$(".plan-btn-add-line").on("click", openAddPlanLineModal);
+			});*/
+			$(".plan-btn-add-day").off().on("click", addPlanDay);
+			$(".plan-btn-add-line").off().on("click", openAddPlanLineModal);
 			$('.icon-edit').on('click', function() {
 				var line = $(this).closest('.plan-line-tr').attr('id');
 				openEditPlanLineModal(line);
 			});
+			
+			
+			//$(".plan-day").sortable("refreshPostions");	
+			
+			//THIS MAY MOVE TO ANOTHER FUNCTION : Refresh sortable to new day and activities
+			$(".plan-day").sortable();
+			$(".plan-day-line").sortable();
+			$(".plan-day-tr").droppable();
 		}
 		
 		function updateDateFormButtonEvent() {
@@ -1025,6 +1036,7 @@
 					}
 				},
 				start: function(e, ui) {
+					$(".plan-day").sortable("refreshPositions");
 					$(ui.helper).addClass("ui-draggable-helper");
 					$(ui.placeholder).addClass("ui-draggable-placeholder-day");		
 				},
@@ -1275,6 +1287,23 @@
 		}
 	<!-- END -->
 	
+		function deleteDayLine(){
+			$('[data-toggle=confirmation-delete').confirmation({
+				container: "body",
+				singleton: true,
+				popout: true,
+				title: "Confirm DELETE?",
+				onConfirm: function (){
+				var selected_delete_id = $(this).attr('data-id');
+				$(this).confirmation('destroy');
+				$("#"+ selected_delete_id).remove();
+				updatePlanTableDayDate();
+				updatePlanTableCookie();
+				updatePlanTableButtonEvent();
+				}
+			});	
+		}	
+	
 	<!-- START: [edit day] -->
 		function addPlanDay() {
 			<!-- START: set column -->
@@ -1282,7 +1311,15 @@
 			<!-- END -->
 			<!-- START: set data -->
 				var sort_order = parseInt($('.plan-day-tr').length) + 1;
-				var day_id = sort_order;
+				/// lokgot remove line >>>> var day_id = sort_order;
+				/// lokgot add line >>>
+				var day_id = 0;
+				var i = 1;
+				while (day_id < 1) {
+				var check_id = $("#plan-day-" + i + "-tr").length;
+				if (check_id < 1) day_id = i;
+				i ++;
+				} ;
 				var data = {'day_id':day_id,'sort_order':sort_order};
 			<!-- END -->
 			<!-- START: update hidden input -->
@@ -1291,8 +1328,10 @@
 				$('#plan-date-form-hidden input[name=num_of_day]').val(new_num_of_day);
 			<!-- END -->
 			printDay(column,data,data);
+			printButtonAddLine(column, "#plan-day-" + data.day_id + "-content");
 			updatePlanTableDayDate();
 			updatePlanTableCookie(); 
+			updatePlanTableButtonEvent();
 			<!-- START -->
 				if($('#section-content-guide').is(':visible')) {
 					minimizePlanTableColumn();
@@ -1506,7 +1545,6 @@
 	
 	$(document).ready(function() {
 		refreshPlanTable();
-		$('[data-toggle=confirmation]').confirmation();
 	});
 </script>
 

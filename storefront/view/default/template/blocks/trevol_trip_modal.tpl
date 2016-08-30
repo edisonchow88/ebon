@@ -91,13 +91,12 @@
                         <input class="border-right" placeholder='Activity' name="activity" />
                     </div>
                 	<div class="col-xs-6" style="position:relative;">
-                    	<input class="border-right" placeholder='Place' name="place" id="modal-edit-line-form-input-type-id" />
-                        <input type="hidden" id="modal-edit-line-form-input-type-hidden" />
-                        <input type="hidden" id="modal-edit-line-form-input-type-id-hidden" />
-                        <input type="hidden" name="type" id="modal-edit-line-form-input-type-value"/>
-                        <input type="hidden" name="type_id" id="modal-edit-line-form-input-type-id-value" />
+                    	<input class="border-right" placeholder='Place' name="place" id="modal-edit-line-form-input-name" />
                         <input type="hidden" name="keyword"/>
-                        <div id="modal-edit-line-form-input-type-id-suggestion" style="position:absolute; z-index:15000; width:100%; display:none;"></div>
+                        <input type="hidden" id="modal-edit-line-form-input-name-hidden" />
+                        <input type="hidden" name="type" id="modal-edit-line-form-input-type-hidden" />
+                        <input type="hidden" name="type_id" id="modal-edit-line-form-input-type-id-hidden" />
+                        <div id="modal-edit-line-form-input-name-suggestion" style="position:absolute; z-index:15000; width:100%; display:none;"></div>
                     </div>
                 	<div class="col-xs-2">
                     	<input class="border-right" placeholder='Latitude' name="lat" />
@@ -236,35 +235,36 @@
 <!-- START: search -->
 	<script>
         function update_search_input_event() {
-            var form_id = 'modal-edit-line-form';
-            var input_id = form_id + '-input-' + 'type-id';
-            var search_id = input_id + '-suggestion';
-			var inputbox = '#modal-edit-line-form input[name=place]';
+			var form = 'modal-edit-line-form';
+			var input = {
+				input		: form + '-input-name',
+				suggestion	: form + '-input-name-suggestion',
+				hidden		: form + '-input-name-hidden',
+				type		: form + '-input-type-hidden',
+				type_id		: form + '-input-type-id-hidden'
+			};
             
-            $(inputbox).off();
-            $(inputbox).on('keyup',function() {
-                auto_suggest(form_id, this.id, event);
+            $('#'+input.input).off();
+            $('#'+input.input).on('keyup',function() {
+                auto_suggest(form, input, event);
             });
-            $(inputbox).on('focus',function() {
-                show_suggestion(search_id);
+            $('#'+input.input).on('focus',function() {
+                show_suggestion(input.suggestion);
             });
-            $(inputbox).on('click',function() {
-                auto_suggest(form_id, this.id, event);
+            $('#'+input.input).on('click',function() {
+                auto_suggest(form, input, event);
             });
-            $(inputbox).on('blur',function() {
-                setTimeout(function() { hide_suggestion(search_id); }, 100);
+            $('#'+input.input).on('blur',function() {
+                setTimeout(function() { hide_suggestion(input.suggestion); }, 100);
             });
         }
         
-        function auto_suggest(form_id, input_id, e) {
-            var suggestion_id = input_id + "-suggestion";
-            var hidden_id = input_id + "-hidden";
-            var value_id = input_id + "-value";
-            var keyword = $('#'+input_id).val();
+        function auto_suggest(form, input, e) {
+			
+            var keyword = $('#'+input.input).val();
+			$('#'+form+' input[name=keyword]').val(keyword);
             
-			$('#'+form_id+' input[name=keyword]').val(keyword);
-            
-            show_suggestion(suggestion_id);
+            show_suggestion(input.suggestion);
 			
             var key_code;
         
@@ -275,56 +275,56 @@
             }
             
             if(key_code == 40) { //if press down arrow
-                if(document.getElementById(suggestion_id).innerHTML == '') { 
-                    search_destination(input_id, suggestion_id, keyword);
-                    show_suggestion(suggestion_id); 
+                if(document.getElementById(input.suggestion).innerHTML == '') { 
+                    search_all(input, keyword);
+                    show_suggestion(input.suggestion); 
                 }
-                select_next_suggestion(input_id);
+                select_next_suggestion();
                 return;
             }
             else if(key_code == 38) { //if press up arrow
-                if(document.getElementById(suggestion_id).innerHTML == '') { 
-                    search_destination(input_id, suggestion_id, keyword);
-                    show_suggestion(suggestion_id); 
+                if(document.getElementById(input.suggestion).innerHTML == '') { 
+                    search_all(input, keyword);
+                    show_suggestion(input.suggestion); 
                 }
-                select_previous_suggestion(input_id);
+                select_previous_suggestion();
                 return;
             }
             else if(key_code == 13) { //if press enter
-                hide_suggestion(suggestion_id);
-                document.getElementById(hidden_id).value = this.suggestion[this.selected_suggestion].name;
+                hide_suggestion(input.suggestion);
+				$('#'+input.hidden).val(this.suggestion[this.selected_suggestion].name);
                 return;
             }
             else if(key_code == 37 || key_code == 39) { //if press left or right arrow
             }
             else if(key_code != '' && key_code != 'undefined' && key_code != null) {
-                document.getElementById(value_id).value = '';
-                document.getElementById(suggestion_id).innerHTML = '';
+				$('#'+input.type).val('');
+				$('#'+input.type_id).val('');
+				$('#'+input.suggestion).html('');
             }
 			
-			$('#'+hidden_id).val($('#'+input_id).val());
-            search_destination(input_id, suggestion_id, keyword);
+			$('#'+input.hidden).val($('#'+input.input).val());
+            search_all(input, keyword);
         }
         
         
-        function search_destination(input_id, suggestion_id, keyword) {
+        function search_all(input, keyword) {
+			var suggestion_id = input.suggestion;
             <!-- START: set data -->
-                var form = 'modal-edit-line-form';
-                var data = { action:'search_place',keyword:keyword }
+                var data = { action:'search_all',keyword:keyword }
             <!-- END -->
             <!-- START: send POST -->
                 $.post("<?php echo $ajax_itinerary; ?>", data, function(result) {
-                    auto_list(input_id, suggestion_id, keyword, result);
+                    auto_list(suggestion_id, keyword, result);
                 }, "json");
             <!-- END -->
         }
         
-        function auto_list(input_id, suggestion_id, keyword, response) {
-            var result = response;
+        function auto_list(suggestion_id, keyword, result) {
             var output = '';
             output += "<ul class='list-group' style='margin-top:-1px;'>";
             for(i = 0; i < result.length; i++) {
-                output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion(\""+input_id+"\", \""+result[i].type_id+"\", \""+result[i].type+"\", \""+result[i].name+"\")')'>";
+                output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion(\""+result[i].type_id+"\", \""+result[i].type+"\", \""+result[i].name+"\")')'>";
                     output += "<div class='text-left' style='width:100%;'>";
                         output += "<div class='text-left text-success' style='display:inline-block; width:50px;'>";
 						if(result[i].type == 'destination') {
@@ -350,16 +350,16 @@
             output += "</ul>";
             this.suggestion = result;
             this.selected_suggestion = -1;
-            document.getElementById(suggestion_id).innerHTML = output;
+			$('#'+suggestion_id).html(output);
         }
         
         function reset_suggestion() {
             for(i=0;i<this.suggestion.length;i++) {
-                document.getElementById('suggestion-'+i).style.backgroundColor = '';
+				$('#suggestion-'+i).css('background-color','');
             }
         }
         
-        function select_next_suggestion(input_id) {
+        function select_next_suggestion() {
             reset_suggestion();
             
             if(this.selected_suggestion < this.suggestion.length) {
@@ -369,10 +369,10 @@
                 this.selected_suggestion = 0;
             }
             
-            highlight_suggestion(input_id);
+            highlight_suggestion();
         }
         
-        function select_previous_suggestion(input_id) {
+        function select_previous_suggestion() {
             reset_suggestion();
             
             if(this.selected_suggestion > 0) {
@@ -382,41 +382,52 @@
                 this.selected_suggestion = this.suggestion.length;
             }
             
-            highlight_suggestion(input_id);
+            highlight_suggestion();
         }
         
-        function highlight_suggestion(input_id) {
-            var hidden_id = input_id + '-hidden';
-            var value_id = input_id + '-value';
+        function highlight_suggestion() {
+			var form_id = 'modal-edit-line-form';
+			var input_id = form_id + '-input-name';
+			var hidden_id = form_id + '-input-name-hidden';
+			var type = form_id + '-input-type-hidden';
+			var type_id = form_id + '-input-type-id-hidden';
             
             if(this.selected_suggestion != this.suggestion.length) {
                 var suggestion_id = 'suggestion-'+this.selected_suggestion;
-                document.getElementById(suggestion_id).style.backgroundColor = '#EEEEEE';
-                document.getElementById(input_id).value = this.suggestion[this.selected_suggestion].name;
-                document.getElementById(value_id).value = this.suggestion[this.selected_suggestion].destination_id;
+				$('#'+suggestion_id).css('background-color','#EEEEEE');
+				$('#'+input_id).val(this.suggestion[this.selected_suggestion].name);
+				$('#'+type).val(this.suggestion[this.selected_suggestion].type);
+				$('#'+type_id).val(this.suggestion[this.selected_suggestion].type_id);
             }
             else {
-                document.getElementById(input_id).value = document.getElementById(hidden_id).value;
-                document.getElementById(value_id).value = '';
+				$('#'+input_id).val($('#'+hidden_id).val());
+				$('#'+type).val('');
+				$('#'+type_id).val('');
             }
         }
         
-        function select_suggestion(input_id, type_id, type, name) {
-            var hidden_id = input_id + '-hidden';
-            var value_id = input_id + '-value';
-            
-            document.getElementById(hidden_id).value = name;
-            document.getElementById(input_id).value = name;
-            document.getElementById(value_id).value = type_id;
+        function select_suggestion(type_id, type, name) {
+			var form = 'modal-edit-line-form';
+			var input = {
+				input		: form + '-input-name',
+				suggestion	: form + '-input-name-suggestion',
+				hidden		: form + '-input-name-hidden',
+				type		: form + '-input-type-hidden',
+				type_id		: form + '-input-type-id-hidden'
+			};
+			$('#'+input.input).val(name);
+			$('#'+input.hidden).val(name);
+			$('#'+input.type).val(type);
+			$('#'+input.type_id).val(type_id);
         }
         
         function show_suggestion(suggestion_id) {
-            document.getElementById(suggestion_id).style.display = "block";
+			$('#'+suggestion_id).show();
         }
         
         function hide_suggestion(suggestion_id) {
-            document.getElementById(suggestion_id).style.display = "none";
-            document.getElementById(suggestion_id).innerHTML = '';
+            $('#'+suggestion_id).hide();
+			$('#'+suggestion_id).html('');
         }
         
         RegExp.escape = function(str) 

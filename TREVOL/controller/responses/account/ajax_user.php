@@ -113,9 +113,8 @@ class ControllerResponsesAccountAjaxUser extends AController {
 		if($this->data['confirm_password'] == '') {
 			$result['warning'][] = '<b>Confirm Password</b> is missing';
 		}
-		
-		if($this->data['password'] != $this->data['confirm_password'] && $this->data['password'] != '' && $this->data['confirm_password'] != '') {
-			$result['warning'][] = '<b>Password</b> do not match <b>Confirm Password</b>';
+		else if($this->data['password'] != $this->data['confirm_password'] && $this->data['password'] != '' && $this->data['confirm_password'] != '') {
+			$result['warning'][] = '<b>Confirm Password</b> do not match <b>Password</b>';
 		}
 		
 		if(count($result['warning']) > 0) { 

@@ -283,7 +283,7 @@
 			color:#FFF;
 			padding: 5px;
 			display: none;
-
+			z-index: 10;
 		}
 	/* END */		
 </style>
@@ -755,6 +755,9 @@
 							+ "Add New Day"
 						+ "</a>"
 					+"</div>"
+					<!-- DIV for additional space below the table, better layout-->
+					+ "<div style='height:100px; bottom:0px;'></div>"        
+                
 				;
 			<!-- END -->
 			
@@ -844,33 +847,21 @@
 			// Function for delete Day & Line
 			deleteDayLine();
 			
-			$('.icon-edit').off().on('click', function() {
+			// Event Listener: Repeated????????
+			/*$('.icon-edit').off().on('click', function() {
 				var line = $(this).closest('.plan-line-tr').attr('id');
 				editPlanLine(line);
-			});
-			
-			/*$('.plan-day-form').off().on('mousedown', function() {
-				clearTimeout(this.downTimer);
-				if (!$(this).children(".plan-day-content"). hasClass("hidden")){
-					this.downTimer = setTimeout(function() {
-        				toggleDay();  
-    				}, 99); 
-				}
-				$(this).on('mouseup', function() {	
-    					clearTimeout(this.downTimer);
-					});
 			});*/
+			
+			// Event Listener: Add Day and Add/ Edit Line
 			$(".plan-btn-add-day").off().on("click", addPlanDay);
 			$(".plan-btn-add-line").off().on("click", openAddPlanLineModal);
 			$('.icon-edit').off().on('click', function() {
 				var line = $(this).closest('.plan-line-tr').attr('id');
 				openEditPlanLineModal(line);
 			});
-			
-			
-			//$(".plan-day").sortable("refreshPostions");	
-			
-			//THIS MAY MOVE TO ANOTHER FUNCTION : Refresh sortable to new day and activities
+						
+			//THIS MAY MOVE TO ANOTHER FUNCTION : Refresh sortable to new added day and activities
 			$(".plan-day").sortable();
 			$(".plan-day-line").sortable();
 			$(".plan-day-tr").droppable();
@@ -1039,6 +1030,8 @@
 				cancel: ">.plan-line-tr",
 				handle: ">.plan-day-form",
 				appendTo: "parent",	
+				containment: ".plan-table",
+				scrollSpeed: 10,
 				cursorAt: {
 					top: 15
 				},
@@ -1119,6 +1112,8 @@
 				axis: "y",
 				items: ">.plan-line-tr",
 				appendTo: "parent",
+				containment: ".plan-table",
+				scrollSpeed: 10,
 				cursorAt: { 
 					top: 15
 				},
@@ -1136,8 +1131,6 @@
 				start: function(e, ui) {
 					$(ui.helper).addClass("ui-draggable-helper");
 					$(ui.placeholder).addClass("ui-draggable-placeholder");
-					//hide add activities button when drag
-					//$(".plan-btn-add-line").hide();
 				},
 				over: function(e, ui) {
 					$(".plan-day-tr").droppable("disable");
@@ -1156,8 +1149,6 @@
 				stop: function( event, ui ) {
 					//drop activieties into the day.
 					$(ui.item).appendTo("#"+drop_id_to_sortable);
-					//show add activities button after drop.
-					//$(".plan-btn-add-line").show();
 					//ensure hoverclass is not active after drop.
 					$(".drophover").removeClass("drophover");
 					updatePlanTableLineDayIdAndSortOrder();
@@ -1315,7 +1306,7 @@
 	<!-- END -->
 		
 		function deleteDayLine(){
-			var selected_delete_id;
+			var selected_delete_id, content_text;
 			$('[data-toggle=confirmation-delete').confirmation({
 				container: "body",
 				singleton: true,
@@ -1324,25 +1315,40 @@
 				html: true,
 				content: function (){
 					selected_delete_id = $(this).attr('data-id');
-					//alert ($("#" + selected_delete_id +"").find(".plan-line-tr").length);
-					if ($("#" + selected_delete_id).find(".plan-line-tr").length > 0) {
-						return "<div class='alert alert-danger'>This day is not <strong>empty.</strong></div>";
+					content_text ="";
+					
+					if (selected_delete_id.includes("day")) {
+						day_number = $("#"+selected_delete_id).find(".plan-col-day").html().replace( /^\D+/g, '');
+						if ($("#" + selected_delete_id).find(".plan-line-tr").length > 0) {
+							content_text += "<div class='alert alert-danger'>Day "+ day_number 														
+							content_text += " is not <strong>empty.</strong></div>"
+						}
+						else content_text = "Day " + day_number;
 					}
-					else return;
+					
+					else {
+						line_name = $("#"+ selected_delete_id).find(".plan-col-place").html();
+						day_number = $("#"+selected_delete_id).parent().parent().parent().find(".plan-col-day").html().replace( /^\D+/g, '');
+						content_text = line_name + " in Day " + day_number;
 					}
-					,
+					return content_text;
+				},
 				onConfirm: function (){
+					
 					if ($("#" + selected_delete_id).hasClass("plan-day-tr") && $(".plan-day-tr").length < 2) {
-						showHint("delete-limit",0 );
+						content_text = "";
+						hint_action = "delete-limit";						
 					}
 					else {
-						$(this).confirmation('destroy');
+						$(this).confirmation('destroy');							
 						$("#"+ selected_delete_id).remove();
-						showHint("deleted",selected_delete_id );					
+						hint_action = "deleted";										
 					}
 					updatePlanTableDayDate();
 					updatePlanTableCookie();
 					updatePlanTableButtonEvent();
+					
+					showHint(hint_action, content_text);
 				}
 			});	
 		}	
@@ -1372,10 +1378,7 @@
 			<!-- END -->
 			printDay(column,data,data);
 			printButtonAddLine(column, "#plan-day-" + data.day_id + "-content");
-			
-			var added_id = "plan-day-" + data.day_id + "-tr";
-			showHint("add-day",added_id );
-			
+						
 			<!-- START: init function -->
 				updatePlanTableCookie();
 				updatePlanTableButtonEvent();
@@ -1384,6 +1387,9 @@
 				updatePlanTableDuration();
 				initSortableDay();
 				initSortableLine();
+				
+				var added_day = "Day " + new_num_of_day;
+				showHint("add-day",added_day);
 			<!-- END -->
 			
 			
@@ -1567,6 +1573,13 @@
 				updateDateFormButtonEvent();
 				updatePlanTableDuration();
 				initSortableLine();
+				
+				var added_line = "";
+				if (!place) added_line = "New Line";
+				else added_line = place;
+				added_line += "," + $("#plan-day-"+ day_id +"-tr").find(".plan-col-day").html().replace( /^\D+/g, '');
+				
+				showHint("add-line",added_line);
 			<!-- END -->
 		}
 		
@@ -1695,18 +1708,22 @@
 <!-- END -->
 
 <!-- Show popover hint (helper) -->
-	function showHint(action, id) {
-		var target;
-		var number = parseInt(id.replace( /^\D+/g, ''));
-		
-		if (id.includes("day")) target = "Day "+ number;		
-		else if (id.includes("line")) target = "Line "+ number;
-		
+	function showHint(action, hint_text) {
+		$("#hint-popover").hide();
 		switch(action){
-			case "deleted": text = target + " is removed."; break;
-			case "delete-limit": text = "Cannot remove. There must be atleast 1 day."; break;
-			case "add-day": text = target + " is added."; break;
-			case "add-line": text = target + " is added."; break;
+			case "deleted": 
+				text = hint_text + " is removed."; 
+				break;
+			case "delete-limit": 
+				text = "Cannot remove. There must be atleast 1 day."; 
+				break;
+			case "add-day": 
+				text = hint_text + " is added."; 
+				break;
+			case "add-line": 
+				var str = hint_text.split(",");
+				text = str[0] + " is added into Day " + str[1]; 
+				break;
 		}	
 
 		if (text) {	

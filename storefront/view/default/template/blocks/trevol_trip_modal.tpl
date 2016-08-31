@@ -301,6 +301,8 @@
 				$('#'+input.type).val('');
 				$('#'+input.type_id).val('');
 				$('#'+input.suggestion).html('');
+				$('#'+form+' input[name=lat]').val('');
+				$('#'+form+' input[name=lng]').val('');
             }
 			
 			$('#'+input.hidden).val($('#'+input.input).val());
@@ -324,7 +326,7 @@
             var output = '';
             output += "<ul class='list-group' style='margin-top:-1px;'>";
             for(i = 0; i < result.length; i++) {
-                output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion(\""+result[i].type_id+"\", \""+result[i].type+"\", \""+result[i].name+"\")')'>";
+                output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion(\""+result[i].type_id+"\", \""+result[i].type+"\", \""+result[i].name+"\", \""+result[i].lat+"\", \""+result[i].lng+"\")')'>";
                     output += "<div class='text-left' style='width:100%;'>";
                         output += "<div class='text-left text-success' style='display:inline-block; width:50px;'>";
 						if(result[i].type == 'destination') {
@@ -386,27 +388,34 @@
         }
         
         function highlight_suggestion() {
-			var form_id = 'modal-edit-line-form';
-			var input_id = form_id + '-input-name';
-			var hidden_id = form_id + '-input-name-hidden';
-			var type = form_id + '-input-type-hidden';
-			var type_id = form_id + '-input-type-id-hidden';
+			var form = 'modal-edit-line-form';
+			var input = {
+				input		: form + '-input-name',
+				suggestion	: form + '-input-name-suggestion',
+				hidden		: form + '-input-name-hidden',
+				type		: form + '-input-type-hidden',
+				type_id		: form + '-input-type-id-hidden'
+			};
             
             if(this.selected_suggestion != this.suggestion.length) {
                 var suggestion_id = 'suggestion-'+this.selected_suggestion;
 				$('#'+suggestion_id).css('background-color','#EEEEEE');
-				$('#'+input_id).val(this.suggestion[this.selected_suggestion].name);
-				$('#'+type).val(this.suggestion[this.selected_suggestion].type);
-				$('#'+type_id).val(this.suggestion[this.selected_suggestion].type_id);
+				$('#'+input.input).val(this.suggestion[this.selected_suggestion].name);
+				$('#'+input.type).val(this.suggestion[this.selected_suggestion].type);
+				$('#'+input.type_id).val(this.suggestion[this.selected_suggestion].type_id);
+				$('#'+form+' input[name=lat]').val(this.suggestion[this.selected_suggestion].lat);
+				$('#'+form+' input[name=lng]').val(this.suggestion[this.selected_suggestion].lng);
             }
             else {
-				$('#'+input_id).val($('#'+hidden_id).val());
-				$('#'+type).val('');
-				$('#'+type_id).val('');
+				$('#'+input.input).val($('#'+input.hidden).val());
+				$('#'+input.type).val('');
+				$('#'+input.type_id).val('');
+				$('#'+form+' input[name=lat]').val('');
+				$('#'+form+' input[name=lng]').val('');
             }
         }
         
-        function select_suggestion(type_id, type, name) {
+        function select_suggestion(type_id, type, name, lat, lng) {
 			var form = 'modal-edit-line-form';
 			var input = {
 				input		: form + '-input-name',
@@ -419,6 +428,8 @@
 			$('#'+input.hidden).val(name);
 			$('#'+input.type).val(type);
 			$('#'+input.type_id).val(type_id);
+			$('#'+form+' input[name=lat]').val(lat);
+			$('#'+form+' input[name=lng]').val(lng);
         }
         
         function show_suggestion(suggestion_id) {

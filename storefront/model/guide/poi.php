@@ -244,15 +244,19 @@ class ModelGuidePoi extends Model{
 		public function getAllByKeyword($keyword='') {
 			//START: Run SQL
 				$sql = "
-					(SELECT DISTINCT 'poi' as type, poi_id as type_id, name as name, '' as parent_id
-					FROM " . $this->db->table($this->table_alias) . " 
-					WHERE name LIKE '%".$keyword."%')
+					(SELECT DISTINCT 'poi' as type, p1.poi_id as type_id, p2.name as name, '' as parent_id, p1.lat as lat, p1.lng as lng
+					FROM " . $this->db->table($this->table) . " p1
+					LEFT JOIN " . $this->db->table($this->table_alias) . " p2
+					ON p1.poi_id = p2.poi_id
+					WHERE p2.name LIKE '%".$keyword."%')
 					UNION
-					(SELECT DISTINCT 'destination' as type, t1.destination_id as type_id, t1.name as name, t2.parent_id 
-					FROM " . $this->db->table('destination_alias') . " t1
-					LEFT JOIN ".$this->db->table('destination_relation')." t2
+					(SELECT DISTINCT 'destination' as type, t1.destination_id as type_id, t2.name as name, t3.parent_id , t1.lat as lat, t1.lng as lng
+					FROM " . $this->db->table('destination') . " t1
+					LEFT JOIN ".$this->db->table('destination_alias')." t2
 					ON t1.destination_id = t2.destination_id 
-					WHERE t1.name LIKE '%".$keyword."%') 
+					LEFT JOIN ".$this->db->table('destination_relation')." t3
+					ON t1.destination_id = t3.destination_id 
+					WHERE t2.name LIKE '%".$keyword."%') 
 					ORDER BY type asc, name asc
 					LIMIT 5
 				";

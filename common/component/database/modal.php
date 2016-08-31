@@ -191,7 +191,8 @@
 			
 			//START: [form]
 				$content .= '<form id="'.$id.'" ';
-				if($setting['autocomplete'] == true) { $content .= 'autocomplete="true" '; }
+				if($setting['autocomplete'] == true) { $content .= 'autocomplete="on" '; }
+				else if($setting['autocomplete'] == false) { $content .= 'autocomplete="off" '; }
 				$content .= '>';
 					if($action != '') { $content .= '<input type="hidden" name="action" value="'.$action.'"/>'; }
 					$content .= '<div class="tab-content">';

@@ -66,6 +66,42 @@
 				return $output;
 			}
 			
+			public function addUser($data) {
+				//START: Run SQL
+					$fields = $this->getFields($this->db->table($this->table));
+					
+					$update = array();
+					
+					if(isset($data['password'])) { $data['password'] = AEncryption::getHash($data['password']); }
+					
+					foreach($fields as $f){
+						if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+					
+					$update['role_id'] = "role_id = '2'";
+					if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+					
+					
+					$sql = "
+						INSERT INTO `" . $this->db->table($this->table) . "` 
+						SET " . implode(',', $update) . "
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+				$user_id = $this->db->getLastId();
+				
+				//START: Run Chain Reaction
+				//END
+				
+				$this->cache->delete('user');
+				
+				return $user_id;
+			}
+			
 			public function verify($email, $password){
 				//START: run SQL
 					$sql = "
@@ -122,6 +158,29 @@
 					$output['name'] = ucwords($result['name']);
                     $output['description'] = ucfirst($result['description']);
 				}
+				//END
+				
+				return $output;
+			}
+		//END
+		
+		//START: [Extra]
+			public function verifyEmail($email) {
+				$sql = "
+					SELECT COUNT(*) as count
+					FROM " . $this->db->table($this->table) . " 
+					WHERE email = '" . $this->db->escape($email) . "' 
+				";
+				$query = $this->db->query($sql);
+				
+				//START: Set Output
+					$result = $query->row;
+					if($result['count'] == 0) { 
+						$output = true;
+					}
+					else {
+						$output = false;
+					}
 				//END
 				
 				return $output;

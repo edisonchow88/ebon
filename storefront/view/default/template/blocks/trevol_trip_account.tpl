@@ -24,7 +24,7 @@
             	<!-- START: if not logged -->
                     <ul>
                         <li>
-                            <a>
+                            <a data-toggle='modal' data-target='#modal-account-signup' onclick="hide_wrapper_account();">
                                 Sign Up
                             </a>
                         </li>
@@ -41,6 +41,7 @@
 </div>
 
 <!-- START: [modal] -->
+    <?php echo $modal_account_signup; ?>
     <?php echo $modal_account_login; ?>
     <?php echo $modal_account_logout; ?>
     <?php echo $modal_account_detail; ?>

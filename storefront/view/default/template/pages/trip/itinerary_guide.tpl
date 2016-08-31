@@ -30,6 +30,18 @@
 		line-height:14px;
 	}
 	
+	#section-content-guide-search-form input{
+		border-radius:0 !important;
+	}
+	
+	#section-content-guide-search-form-suggestion {
+		display:none;
+		width:100%;
+		position:absolute;
+		top:35px;
+		z-index:15000;
+	}
+	
 	#section-content-guide-form {
 		display:none;
 	}
@@ -94,6 +106,7 @@
 	#section-content-guide-top {
 		position:relative;
 		width:100%;
+		background-color:#666;
 	}
 	
 	#section-content-guide-title {
@@ -208,18 +221,6 @@
 		padding:30px 7px;
 		text-align:center;
 		font-weight:bold;
-	}
-	
-	#section-content-guide-search-form input{
-		border-radius:0 !important;
-	}
-	
-	#section-content-guide-search-form-suggestion {
-		display:none;
-		width:100%;
-		position:absolute;
-		top:35px;
-		z-index:15000;
 	}
 </style>
 <div id="section-content-guide">
@@ -510,12 +511,18 @@
 		document.getElementById('section-content-guide-form-input-destination-id').value = destination_id;
 		document.getElementById('section-content-guide-form-input-poi-id').value = '';
 		window.location.hash = '#destination_id-'+destination_id;
+		<!-- START: reset search -->
+			$('#section-content-guide-search-form').trigger('reset');
+		<!-- END -->
 	}
 	
 	function navigate_guide_by_poi_id(poi_id) {
 		document.getElementById('section-content-guide-form-input-destination-id').value = '';
 		document.getElementById('section-content-guide-form-input-poi-id').value = poi_id;
 		window.location.hash = '#poi_id-'+poi_id;
+		<!-- START: reset search -->
+			$('#section-content-guide-search-form').trigger('reset');
+		<!-- END -->
 	}
 	
 	function reset_guide() {

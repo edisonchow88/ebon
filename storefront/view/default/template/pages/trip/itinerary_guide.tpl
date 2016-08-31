@@ -284,12 +284,17 @@
                 name="action"
                 value="view" 
             />
+            <input type="hidden" name="type_id"/>
+            <input type="hidden" name="type"/>
+            <input type="hidden" name="name"/>
+            <input type="hidden" name="lat"/>
+            <input type="hidden" name="lng"/>
         </form>
     </div>
     <div id="section-content-guide-content">
         <div id="section-content-guide-top">
-        	<div id="section-content-guide-button-add"><a>&#43;</a></div>
-        	<div id="section-content-guide-button-add-text"><small><a>Add to Trip</a></small></div>
+        	<div id="section-content-guide-button-add" onclick="addActivityFromGuide();"><a>&#43;</a></div>
+        	<div id="section-content-guide-button-add-text" onclick="addActivityFromGuide();"><small><a>Add to Trip</a></small></div>
             <div id="section-content-guide-image"></div>
             <div id="section-content-guide-title">
                 <div id="section-content-guide-parent"><a><small><span id="section-content-guide-parent-text"></span></small></a></div>
@@ -359,6 +364,20 @@
 				}
 				else if(typeof json.success != 'undefined') {
 					<!-- START: if success -->
+						<!-- START: set form -->
+							$('#section-content-guide-form input[name=name]').val(json.current.name);
+							if($('#section-content-guide-form-input-destination-id').val() != '') {
+								$('#section-content-guide-form input[name=type]').val('destination');
+								$('#section-content-guide-form input[name=type_id]').val(json.current.destination_id);
+							}
+							else if($('#section-content-guide-form-input-poi-id').val() != '') {
+								$('#section-content-guide-form input[name=type]').val('poi');
+								$('#section-content-guide-form input[name=type_id]').val(json.current.poi_id);
+							}
+							$('#section-content-guide-form input[name=lat]').val(json.current.lat);
+							$('#section-content-guide-form input[name=lng]').val(json.current.lng);
+						<!-- END -->
+						
 						<!-- START: set parent -->
 							if(typeof json.current.parent != 'undefined') {
 								document.getElementById('section-content-guide-parent-text').innerHTML = json.current.parent.name+' >';

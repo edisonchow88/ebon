@@ -1573,7 +1573,9 @@
 				updateDateFormButtonEvent();
 				updatePlanTableDuration();
 				initSortableLine();
-				
+			<!-- END -->
+			
+			<!-- START: show hint -->
 				var added_line = "";
 				if (!place) added_line = "New Line";
 				else added_line = place;
@@ -1634,6 +1636,87 @@
 			
 			updatePlanTableCookie();
 			updatePlanTableDuration();
+		}
+	<!-- END -->
+	
+	<!-- START: add activity from guide -->
+		function addActivityFromGuide() {
+			<!-- START: get form data -->
+				var line_id = $('.plan-line-tr').length + 1;
+				var type_id = $('#section-content-guide-form input[name=type_id]').val();
+				var type = $('#section-content-guide-form input[name=type]').val();
+				var day_id = $('.plan-day-tr.selected .plan-day-form-hidden input[name=day_id]').val();
+				var sort_order = $('#plan-day-'+day_id+'-line .plan-line-tr').length + 1;
+				var time = null;
+				var duration  = 60;
+				var formatted_duration = convertLineDurationFormat(duration);
+				var activity = 'Visit';
+				var place = $('#section-content-guide-form input[name=name]').val();
+				var lat = $('#section-content-guide-form input[name=lat]').val()||null;
+				var lng = $('#section-content-guide-form input[name=lng]').val()||null;
+				var fee = null;
+				var currency = null;
+				var note = null;
+			<!-- END -->
+			
+			<!-- START: set print data -->
+				var column = <?php echo $column_json; ?>;
+				var line = 
+					{
+						line_id		:line_id,
+						type		:type,
+						type_id		:type_id,
+						day_id		:day_id,
+						sort_order	:sort_order,
+						time		:time,
+						duration	:formatted_duration,
+						activity	:activity,
+						place		:place,
+						lat			:lat,
+						lng			:lng,
+						fee			:fee,
+						currency	:currency,
+						note		:note
+					}
+				;
+				var line_raw =
+					{
+						line_id		:line_id,
+						type		:type,
+						type_id		:type_id,
+						day_id		:day_id,
+						sort_order	:sort_order,
+						time		:time,
+						duration	:duration,
+						activity	:activity,
+						place		:place,
+						lat			:lat,
+						lng			:lng,
+						fee			:fee,
+						currency	:currency,
+						note		:note
+					}
+				;
+			<!-- END -->
+			
+			printLine(column,line,line_raw);
+			
+			<!-- START: init function -->
+				updatePlanTableCookie();
+				updatePlanTableButtonEvent();
+				updateDateFormButtonEvent();
+				updatePlanTableDuration();
+				initSortableLine();
+			<!-- END -->
+			
+			<!-- START: show hint -->
+				var added_line = "";
+				if (!place) added_line = "New Line";
+				else added_line = place;
+				added_line += "," + $("#plan-day-"+ day_id +"-tr").find(".plan-col-day").html().replace( /^\D+/g, '');
+				
+				showHint("add-line",added_line);
+			<!-- END -->
 		}
 	<!-- END -->
 	

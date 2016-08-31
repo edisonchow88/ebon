@@ -209,6 +209,18 @@
 		text-align:center;
 		font-weight:bold;
 	}
+	
+	#section-content-guide-search-form input{
+		border-radius:0 !important;
+	}
+	
+	#section-content-guide-search-form-suggestion {
+		display:none;
+		width:100%;
+		position:absolute;
+		top:35px;
+		z-index:15000;
+	}
 </style>
 <div id="section-content-guide">
     <div id="section-content-guide-header">
@@ -218,8 +230,15 @@
         </div>
         -->
         <div class="row">
-            <div class="input-group pull-left inline col-xs-12 col-sm-12 col-md-12 col-lg-5">
-                <input class="form-control" type="text" placeholder='Search ...'  />
+            <div class="input-group pull-left inline col-xs-12 col-sm-12 col-md-12 col-lg-8" style="position:relative;">
+            	<form id="section-content-guide-search-form">
+                	<input class="form-control" type="text" name="input" placeholder='Search ...'  />
+                    <input type="hidden" name="keyword" />
+                    <input type="hidden" name="type_id"/>
+                    <input type="hidden" name="type"/>
+                    <input type="hidden" name="name"/>
+                </form>
+                <div id="section-content-guide-search-form-suggestion"></div>
             </div>
             <!--
             <div class="inline pull-right col-md-12 col-lg-2">
@@ -555,3 +574,248 @@
 		}
 	<!-- END -->
 </script>
+
+<!-- START: search -->
+	<script>
+        function update_section_content_guide_search_input_event() {
+			var form = 'section-content-guide-search-form';
+			var input = {
+				suggestion	: form + '-suggestion',
+				input		: form + ' input[name=input]',
+				hidden		: form + ' input[name=name]',
+				type		: form + ' input[name=type]',
+				type_id		: form + ' input[name=type_id]'
+			};
+            
+            $('#'+input.input).off();
+            $('#'+input.input).on('click',function() {
+				auto_suggest_section_content_guide_search(form, input, event);
+            });
+            $('#'+input.input).on('keyup',function() {
+                auto_suggest_section_content_guide_search(form, input, event);
+            });
+            $('#'+input.input).on('focus',function() {
+                show_suggestion_section_content_guide_search(input.suggestion);
+            });
+            $('#'+input.input).on('blur',function() {
+                setTimeout(function() { hide_suggestion_section_content_guide_search(input.suggestion); }, 100);
+            });
+        }
+        
+        function auto_suggest_section_content_guide_search(form, input, e) {
+			
+            var keyword = $('#'+input.input).val();
+			$('#'+form+' input[name=keyword]').val(keyword);
+            
+            show_suggestion_section_content_guide_search(input.suggestion);
+			
+            var key_code;
+        
+            if(window.event) { // IE                    
+                key_code = e.keyCode;
+            } else if(e.which){ // Netscape/Firefox/Opera                   
+                key_code = e.which;
+            }
+            
+            if(key_code == 40) { //if press down arrow
+                if(document.getElementById(input.suggestion).innerHTML == '') { 
+                    search_all_section_content_guide_search(input, keyword);
+                    show_suggestion_section_content_guide_search(input.suggestion); 
+                }
+                select_next_suggestion_section_content_guide_search();
+                return;
+            }
+            else if(key_code == 38) { //if press up arrow
+                if(document.getElementById(input.suggestion).innerHTML == '') { 
+                    search_all_section_content_guide_search(input, keyword);
+                    show_suggestion_section_content_guide_search(input.suggestion); 
+                }
+                select_previous_suggestion_section_content_guide_search();
+                return;
+            }
+            else if(key_code == 13) { //if press enter
+                hide_suggestion_section_content_guide_search(input.suggestion);
+				$('#'+input.hidden).val(this.suggestion[this.selected_suggestion].name);
+				
+				
+				<!-- START: navigate guide -->
+					if(this.suggestion[this.selected_suggestion].type == 'destination') {
+						navigate_guide_by_destination_id(this.suggestion[this.selected_suggestion].type_id);
+					}
+					else if(this.suggestion[this.selected_suggestion].type == 'poi') {
+						navigate_guide_by_poi_id(this.suggestion[this.selected_suggestion].type_id);
+					}
+				<!-- END -->
+				
+                return;
+            }
+            else if(key_code == 37 || key_code == 39) { //if press left or right arrow
+            }
+            else if(key_code != '' && key_code != 'undefined' && key_code != null) {
+				$('#'+input.type).val('');
+				$('#'+input.type_id).val('');
+				$('#'+input.suggestion).html('');
+            }
+			
+			$('#'+input.hidden).val($('#'+input.input).val());
+            search_all_section_content_guide_search(input, keyword);
+        }
+        
+        
+        function search_all_section_content_guide_search(input, keyword) {
+			var suggestion_id = input.suggestion;
+            <!-- START: set data -->
+                var data = { action:'search',keyword:keyword }
+            <!-- END -->
+            <!-- START: send POST -->
+                $.post("<?php echo $ajax['trip/ajax_guide']; ?>", data, function(result) {
+                    auto_list_section_content_guide_search(suggestion_id, keyword, result);
+                }, "json");
+            <!-- END -->
+        }
+        
+        function auto_list_section_content_guide_search(suggestion_id, keyword, result) {
+            var output = '';
+            output += "<ul class='list-group' style='margin-top:-1px;'>";
+            for(i = 0; i < result.length; i++) {
+                output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion_section_content_guide_search(\""+result[i].type_id+"\", \""+result[i].type+"\", \""+result[i].name+"\")')'>";
+                    output += "<div class='text-left' style='width:100%;'>";
+                        output += "<div class='text-left text-success' style='display:inline-block; width:50px;'>";
+						if(result[i].type == 'destination') {
+							output += "<i class='fa fa-map-marker fa-fw fa-2x'></i>";
+						}
+						else if(result[i].type == 'poi') {
+							output += "<i class='fa fa-camera-retro fa-fw fa-2x'></i>";
+						}
+						output += "</div>";
+                        output += "<div style='display:inline-block;'>";
+                            output += "<span class='text-left' style='display:block;'><b>";
+                                output += highlight_keyword_with_any_cases(result[i].name, keyword);
+                            output += "</b></span>";
+                            if(typeof result[i].parent != 'undefined') {
+                                output += "<span class='text-left small' style='display:block;'>";
+                                    output += result[i].parent.name;
+                                output += "</span>";
+                            }
+                        output += "</div>";
+                    output += "</div>";
+                output += "</a>";
+            }
+            output += "</ul>";
+            this.suggestion = result;
+            this.selected_suggestion = -1;
+			$('#'+suggestion_id).html(output);
+        }
+		
+        function reset_suggestion_section_content_guide_search() {
+            for(i=0;i<this.suggestion.length;i++) {
+				$('#suggestion-'+i).css('background-color','');
+            }
+        }
+        
+        function select_next_suggestion_section_content_guide_search() {
+            reset_suggestion_section_content_guide_search();
+            
+            if(this.selected_suggestion < this.suggestion.length) {
+                this.selected_suggestion += 1;
+            }
+            else {
+                this.selected_suggestion = 0;
+            }
+            
+            highlight_suggestion_section_content_guide_search();
+        }
+        
+        function select_previous_suggestion_section_content_guide_search() {
+            reset_suggestion_section_content_guide_search();
+            
+            if(this.selected_suggestion > 0) {
+                this.selected_suggestion -= 1;
+            }
+            else {
+                this.selected_suggestion = this.suggestion.length;
+            }
+            
+            highlight_suggestion_section_content_guide_search();
+        }
+        
+        function highlight_suggestion_section_content_guide_search() {
+			var form = 'section-content-guide-search-form';
+			var input = {
+				suggestion	: form + '-suggestion',
+				input		: form + ' input[name=input]',
+				hidden		: form + ' input[name=name]',
+				type		: form + ' input[name=type]',
+				type_id		: form + ' input[name=type_id]'
+			};
+            
+            if(this.selected_suggestion != this.suggestion.length) {
+                var suggestion_id = 'suggestion-'+this.selected_suggestion;
+				$('#'+suggestion_id).css('background-color','#EEEEEE');
+				$('#'+input.input).val(this.suggestion[this.selected_suggestion].name);
+				$('#'+input.type).val(this.suggestion[this.selected_suggestion].type);
+				$('#'+input.type_id).val(this.suggestion[this.selected_suggestion].type_id);
+            }
+            else {
+				$('#'+input.input).val($('#'+input.hidden).val());
+				$('#'+input.type).val('');
+				$('#'+input.type_id).val('');
+            }
+        }
+        
+        function select_suggestion_section_content_guide_search(type_id, type, name) {
+			var form = 'section-content-guide-search-form';
+			var input = {
+				suggestion	: form + '-suggestion',
+				input		: form + ' input[name=input]',
+				hidden		: form + ' input[name=name]',
+				type		: form + ' input[name=type]',
+				type_id		: form + ' input[name=type_id]'
+			};
+			$('#'+input.input).val(name);
+			$('#'+input.hidden).val(name);
+			$('#'+input.type).val(type);
+			$('#'+input.type_id).val(type_id);
+			
+			<!-- START: navigate guide -->
+				if(type == 'destination') {
+					navigate_guide_by_destination_id(type_id);
+				}
+				else if(type == 'poi') {
+					navigate_guide_by_poi_id(type_id);
+				}
+			<!-- END -->
+        }
+        
+        function show_suggestion_section_content_guide_search(suggestion_id) {
+			$('#'+suggestion_id).show();
+        }
+        
+        function hide_suggestion_section_content_guide_search(suggestion_id) {
+            $('#'+suggestion_id).hide();
+			$('#'+suggestion_id).html('');
+        }
+        
+        RegExp.escape = function(str) 
+        {
+          var specials = /[.*+?|()\[\]{}\\$^]/g; // .*+?|()[]{}\$^
+          return str.replace(specials, "\\$&");
+        }
+        
+        function highlight_keyword_with_any_cases(text, keyword)
+        {
+          var regex = new RegExp("(" + RegExp.escape(keyword) + ")", "gi");
+          return text.replace(regex, "<span style='background-color:yellow;'>$1</span>");
+        }
+		
+		$('#section-content-guide-search-form').on('keyup keypress', function(e) {
+			var keyCode = e.keyCode || e.which;
+			if (keyCode === 13) { 
+				e.preventDefault();
+				return false;
+			}
+		});
+		
+		update_section_content_guide_search_input_event();
+    </script>
+<!-- END -->

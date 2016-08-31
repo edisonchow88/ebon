@@ -24,6 +24,7 @@ class ControllerResponsesTripAjaxGuide extends AController {
 		unset($this->data['action']);
 		
 		if($action == 'view') { $this->view(); return; }
+		if($action == 'search') { $this->search(); return; }
 		else { 
 		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 			$result['warning'][] = 'System Failure: Please contact Admin.'; 
@@ -104,6 +105,13 @@ class ControllerResponsesTripAjaxGuide extends AController {
 		$result['success'][] = 'Page is loaded'; 
 		 
 		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function search() {
+		$keyword = $this->data['keyword'];
+		$execution = $this->model_guide_poi->getAllByKeyword($keyword);
+		$response = json_encode(array_values($execution));
 		echo $response;
 	}
 }

@@ -24,14 +24,28 @@
 		cursor:default;
 	}
 	
-	#modal-edit-line-form {
+	#modal-edit-line .modal-body {
 		font-size:11px;
+	}
+	
+	#modal-edit-line-form label {
+		margin:0;
+		width:100%;
+		height:40px;
+		line-height:39px;
+		padding-left:15px;
+		padding-right:15px;
+		border:none;
+		border-bottom:solid thin #EEE;
+		color:#000;
+		font-weight:normal;
 	}
 	
 	#modal-edit-line-form input {
 		width:100%;
 		height:40px;
 		padding-left:15px;
+		padding-right:15px;
 		border:none;
 		border-bottom:solid thin #EEE;
 		color:#000;
@@ -41,6 +55,7 @@
 		width:100%;
 		height:40px;
 		padding-left:15px;
+		padding-right:15px;
 		border:none;
 		border-radius:0;
 		border-bottom:solid thin #EEE;
@@ -58,19 +73,63 @@
 	}
 	
 	#modal-edit-line-form textarea {
+		display:block;
 		width:100%;
-		padding-left:15px;
-		padding-top:10px;
+		padding:10px 15px;
 		text-align:left;
 		border:none;
 		border-bottom:solid thin #EEE;
 		resize:none;
-		margin-bottom:-6px;
 		color:#000;
 	}
 	
 	#modal-edit-line-form input.border-right {
 		border-right:solid thin #EEE;
+	}
+	
+	#modal-edit-line-form select.border-right {
+		border-right:solid thin #EEE;
+	}
+	
+	#modal-edit-line .modal-footer {
+		border-top:solid thin rgb(204, 204, 204);
+	}
+	
+	#modal-edit-line .modal-body-top {
+		background-color:#EEE;
+		border-bottom:solid thin rgb(204, 204, 204);
+	}
+	
+	#modal-edit-line .nav {
+		border-bottom:none;
+		padding:0 7px;
+	}
+	
+	#modal-edit-line .nav > li {
+		margin-bottom:-1px;
+	}
+	
+	#modal-edit-line .nav > li.active > a {
+		border:solid thin rgb(204, 204, 204);
+		border-bottom:solid thin #FFF;
+	}
+	
+	#modal-edit-line .nav > li:not(.active) > a:hover {
+		border:solid thin rgb(204, 204, 204);
+		background-color:#FFF;
+		color:#000;
+	}
+	
+	#modal-edit-line .nav > li > a {
+		margin:0;
+	}
+	
+	#modal-edit-line .tab-content {
+		padding:0;
+	}
+	
+	.noborderbottom {
+		border-bottom:none !important;
 	}
 </style>
 
@@ -82,65 +141,128 @@
             <h4 class="modal-title noselect">Edit Activity</h4>
             </div>
         <div class="modal-body nopadding">
+        	<div class="modal-body-top">
+            	<div style="padding:7px; position:relative;">
+                    <form id="modal-edit-line-form-search">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="keyword" placeholder="Search ..."/>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                	<i class="fa fa-fw fa-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                    <div id="modal-edit-line-form-search-input-keyword-suggestion" style="position:absolute; z-index:15000; width:calc(100% - 14px); display:none;"></div>
+                </div>
+                <div>
+                    <ul role="tablist" class="nav nav-tabs noselect">
+                        <li role="presentation" class="active">
+                        	<a href="#modal-edit-line-form-general" role="tab" data-toggle="tab">General</a>
+                        </li>
+                        <li role="presentation">
+                        	<a href="#modal-edit-line-form-details" role="tab" data-toggle="tab">Details</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
             <form id="modal-edit-line-form">
             	<input type="hidden" name="day_id" />
                 <input type="hidden" name="line_id" />
                 <input type="hidden" name="action" />
-            	<div class="row">
-                    <div class="col-xs-2">
-                        <input class="border-right" placeholder='Activity' name="activity" />
-                    </div>
-                	<div class="col-xs-6" style="position:relative;">
-                    	<input class="border-right" placeholder='Place' name="place" id="modal-edit-line-form-input-name" />
-                        <input type="hidden" name="keyword"/>
-                        <input type="hidden" id="modal-edit-line-form-input-name-hidden" />
-                        <input type="hidden" name="type" id="modal-edit-line-form-input-type-hidden" />
-                        <input type="hidden" name="type_id" id="modal-edit-line-form-input-type-id-hidden" />
-                        <div id="modal-edit-line-form-input-name-suggestion" style="position:absolute; z-index:15000; width:100%; display:none;"></div>
-                    </div>
-                	<div class="col-xs-2">
-                    	<input class="border-right" placeholder='Latitude' name="lat" />
-                    </div>
-                    <div class="col-xs-2">
-                    	<input placeholder='Longitude' name="lng" />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-4">
-                        <input class="border-right" placeholder='Start Time' name='time' type="time"/>
-                    </div>
-                    <div class="col-xs-4">
-                        <input class="border-right" placeholder='Duration' name='duration'/>
-                        <div id="modal-edit-line-form-input-hourminute" class="row">
-                            <div class="col-xs-3">
-                                <input class="text-right" name='hour' placeholder='0'/>
+                <div class="tab-content">
+                	<div id="modal-edit-line-form-general" role="tabpanel" class="tab-pane active">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <input placeholder='Title' name="title"/>
                             </div>
-                            <div class="col-xs-3">
-                            	<input placeholder='h' disabled/>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <textarea placeholder='Description' rows="10" name="description"></textarea>
                             </div>
-                            <div class="col-xs-3">
-                                <input class="text-right" name='minute' placeholder='00'/>
-                            </div>
-                            <div class="col-xs-3">
-                            	<input class="border-right" placeholder='m' disabled/>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <textarea class="noborderbottom" placeholder='Note (only viewable by planner)' rows="5" name="note"></textarea>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-2">
-                        <input class="text-right" placeholder='Fee' name='fee'/>
-                    </div>
-                    <div class="col-xs-2">
-                        <select name='currency'>
-                            <option value=""></option>
-                            <option value="MYR">MYR</option>
-                            <option value="JPY">JPY</option>
-                        	<option value="USD">USD</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                	<div class="col-xs-12">
-                        <textarea placeholder='Note' rows="10" name="note"></textarea>
+                    <div id="modal-edit-line-form-details" role="tabpanel" class="tab-pane">
+                    	<div class="row">
+                        	<div class="col-xs-2">
+                            	<label>Activity</label>
+                            </div>
+                            <div class="col-xs-10">
+                                <select class="border-right" name='activity' placeholader='Activity'>
+                                    <option value="visit">Visit</option>
+                                    <option value="eat">Eat</option>
+                                    <option value="join">Join</option>
+                                    <option value="stay">Stay</option>
+                                    <option value="shopping">Shopping</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                        	<div class="col-xs-2">
+                            	<label>Place</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <input class="border-right" placeholder='Place Name' name="place" id="modal-edit-line-form-input-name" />
+                                <input type="hidden" name="keyword"/>
+                                <input type="hidden" id="modal-edit-line-form-input-name-hidden" />
+                                <input type="hidden" name="type" id="modal-edit-line-form-input-type-hidden" />
+                                <input type="hidden" name="type_id" id="modal-edit-line-form-input-type-id-hidden" />
+                                
+                            </div>
+                            <div class="col-xs-2">
+                                <input class="border-right" placeholder='Latitude' name="lat" />
+                            </div>
+                            <div class="col-xs-2">
+                                <input placeholder='Longitude' name="lng" />
+                            </div>
+                        </div>
+                        <div class="row">
+                        	<div class="col-xs-2">
+                            	<label>Time</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <input class="border-right" placeholder='Start Time' name='time' type="time"/>
+                            </div>
+                            <div class="col-xs-4">
+                                <input class="border-right" placeholder='Duration' name='duration'/>
+                                <div id="modal-edit-line-form-input-hourminute" class="row">
+                                    <div class="col-xs-3">
+                                        <input class="text-right" name='hour' placeholder='0'/>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <input placeholder='h' disabled/>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <input class="text-right" name='minute' placeholder='00'/>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <input class="border-right" placeholder='m' disabled/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                        	<div class="col-xs-2">
+                            	<label class="noborderbottom">Fee</label>
+                            </div>
+                            <div class="col-xs-6">
+                                <input class="border-right noborderbottom" placeholder='Total Fee' name='fee'/>
+                            </div>
+                            <div class="col-xs-4">
+                                <select class="noborderbottom" name='currency'>
+                                    <option value="">Currency</option>
+                                    <option value="MYR">MYR</option>
+                                    <option value="JPY">JPY</option>
+                                    <option value="USD">USD</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -153,6 +275,13 @@
     </div>
 </div>
 
+<script>
+	<!-- START: [tab] -->
+		$("#modal-edit-line").on( "hidden.bs.modal", function() { 
+			$('#modal-edit-line .nav-tabs a[href="#modal-edit-line-form-general"]').tab('show');
+		});
+	<!-- END -->
+</script>
 <script>
 	<!-- START: [time] -->
 		$('#modal-edit-line-form input[name=time]').on('focus', function() {
@@ -230,6 +359,25 @@
 			}
 		});
 	<!-- END -->
+	
+	<!-- START: [currency] -->
+		function update_modal_edit_line_form_input_currency_color() {
+			if($('#modal-edit-line-form select[name=currency]').val() == '') {
+				$('#modal-edit-line-form select[name=currency]').css('color','#96979d');
+			}
+			else {
+				$('#modal-edit-line-form select[name=currency]').css('color','#000');
+			}
+		}
+		
+		$('#modal-edit-line-form select[name=currency]').on('change', function() {
+			update_modal_edit_line_form_input_currency_color();
+		});
+		
+		$("#modal-edit-line").on( "show.bs.modal", function() { 
+			update_modal_edit_line_form_input_currency_color();
+		});
+	<!-- END -->
 </script>
 
 <!-- START: search -->
@@ -237,8 +385,8 @@
         function update_search_input_event() {
 			var form = 'modal-edit-line-form';
 			var input = {
-				input		: form + '-input-name',
-				suggestion	: form + '-input-name-suggestion',
+				input		: form + '-search input[name=keyword]',
+				suggestion	: form + '-search-input-keyword-suggestion',
 				hidden		: form + '-input-name-hidden',
 				type		: form + '-input-type-hidden',
 				type_id		: form + '-input-type-id-hidden'
@@ -300,7 +448,7 @@
             else if(key_code != '' && key_code != 'undefined' && key_code != null) {
 				$('#'+input.type).val('');
 				$('#'+input.type_id).val('');
-				$('#'+input.suggestion).html('');
+				$('#'+form+' input[name=place]').val('');
 				$('#'+form+' input[name=lat]').val('');
 				$('#'+form+' input[name=lng]').val('');
             }
@@ -323,36 +471,41 @@
         }
         
         function auto_list(suggestion_id, keyword, result) {
-            var output = '';
-            output += "<ul class='list-group' style='margin-top:-1px;'>";
-            for(i = 0; i < result.length; i++) {
-                output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion(\""+result[i].type_id+"\", \""+result[i].type+"\", \""+result[i].name+"\", \""+result[i].lat+"\", \""+result[i].lng+"\")')'>";
-                    output += "<div class='text-left' style='width:100%;'>";
-                        output += "<div class='text-left text-success' style='display:inline-block; width:50px;'>";
-						if(result[i].type == 'destination') {
-							output += "<i class='fa fa-map-marker fa-fw fa-2x'></i>";
-						}
-						else if(result[i].type == 'poi') {
-							output += "<i class='fa fa-camera-retro fa-fw fa-2x'></i>";
-						}
+			if(typeof result != 'undefined' && result != null) {
+				var output = '';
+				output += "<ul class='list-group' style='margin-top:-1px;'>";
+				for(i = 0; i < result.length; i++) {
+					output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion(\""+result[i].type_id+"\", \""+result[i].type+"\", \""+result[i].name+"\", \""+result[i].lat+"\", \""+result[i].lng+"\")')'>";
+						output += "<div class='text-left' style='width:100%;'>";
+							output += "<div class='text-left text-success' style='display:inline-block; width:50px;'>";
+							if(result[i].type == 'destination') {
+								output += "<i class='fa fa-map-marker fa-fw fa-2x'></i>";
+							}
+							else if(result[i].type == 'poi') {
+								output += "<i class='fa fa-camera-retro fa-fw fa-2x'></i>";
+							}
+							output += "</div>";
+							output += "<div style='display:inline-block;'>";
+								output += "<span class='text-left' style='display:block;'><b>";
+									output += highlight_keyword_with_any_cases(result[i].name, keyword);
+								output += "</b></span>";
+								if(typeof result[i].parent != 'undefined') {
+									output += "<span class='text-left small' style='display:block;'>";
+										output += result[i].parent.name;
+									output += "</span>";
+								}
+							output += "</div>";
 						output += "</div>";
-                        output += "<div style='display:inline-block;'>";
-                            output += "<span class='text-left' style='display:block;'><b>";
-                                output += highlight_keyword_with_any_cases(result[i].name, keyword);
-                            output += "</b></span>";
-                            if(typeof result[i].parent != 'undefined') {
-                                output += "<span class='text-left small' style='display:block;'>";
-                                    output += result[i].parent.name;
-                                output += "</span>";
-                            }
-                        output += "</div>";
-                    output += "</div>";
-                output += "</a>";
-            }
-            output += "</ul>";
-            this.suggestion = result;
-            this.selected_suggestion = -1;
-			$('#'+suggestion_id).html(output);
+					output += "</a>";
+				}
+				output += "</ul>";
+				this.suggestion = result;
+				this.selected_suggestion = -1;
+				$('#'+suggestion_id).html(output);
+			}
+			else {
+				$('#'+suggestion_id).html('');
+			}
         }
         
         function reset_suggestion() {
@@ -390,8 +543,8 @@
         function highlight_suggestion() {
 			var form = 'modal-edit-line-form';
 			var input = {
-				input		: form + '-input-name',
-				suggestion	: form + '-input-name-suggestion',
+				input		: form + '-search input[name=keyword]',
+				suggestion	: form + '-search-input-keyword-suggestion',
 				hidden		: form + '-input-name-hidden',
 				type		: form + '-input-type-hidden',
 				type_id		: form + '-input-type-id-hidden'
@@ -403,6 +556,8 @@
 				$('#'+input.input).val(this.suggestion[this.selected_suggestion].name);
 				$('#'+input.type).val(this.suggestion[this.selected_suggestion].type);
 				$('#'+input.type_id).val(this.suggestion[this.selected_suggestion].type_id);
+				$('#'+form+' input[name=title]').val(toTitleCase($('#'+form+' select[name=activity]').val()) + ' ' + this.suggestion[this.selected_suggestion].name);
+				$('#'+form+' input[name=place]').val(this.suggestion[this.selected_suggestion].name);
 				$('#'+form+' input[name=lat]').val(this.suggestion[this.selected_suggestion].lat);
 				$('#'+form+' input[name=lng]').val(this.suggestion[this.selected_suggestion].lng);
             }
@@ -418,8 +573,8 @@
         function select_suggestion(type_id, type, name, lat, lng) {
 			var form = 'modal-edit-line-form';
 			var input = {
-				input		: form + '-input-name',
-				suggestion	: form + '-input-name-suggestion',
+				input		: form + '-search input[name=keyword]',
+				suggestion	: form + '-search-input-keyword-suggestion',
 				hidden		: form + '-input-name-hidden',
 				type		: form + '-input-type-hidden',
 				type_id		: form + '-input-type-id-hidden'
@@ -428,6 +583,8 @@
 			$('#'+input.hidden).val(name);
 			$('#'+input.type).val(type);
 			$('#'+input.type_id).val(type_id);
+			$('#'+form+' input[name=title]').val(toTitleCase($('#'+form+' select[name=activity]').val()) + ' ' + name);
+			$('#'+form+' input[name=place]').val(name);
 			$('#'+form+' input[name=lat]').val(lat);
 			$('#'+form+' input[name=lng]').val(lng);
         }
@@ -447,11 +604,24 @@
           return str.replace(specials, "\\$&");
         }
         
+		function toTitleCase(str)
+		{
+			return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+		}
+		
         function highlight_keyword_with_any_cases(text, keyword)
         {
           var regex = new RegExp("(" + RegExp.escape(keyword) + ")", "gi");
           return text.replace(regex, "<span style='background-color:yellow;'>$1</span>");
         }
+		
+		$('#modal-edit-line-form-search').on('keyup keypress', function(e) {
+			var keyCode = e.keyCode || e.which;
+			if (keyCode === 13) { 
+				e.preventDefault();
+				return false;
+			}
+		});
 		
 		update_search_input_event();
     </script>

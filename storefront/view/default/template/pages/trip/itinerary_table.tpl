@@ -383,6 +383,8 @@
 												sort_order:1,
 												time:"10:00",
 												duration:30,
+												title:"Visit Tokyo Tower",
+												description:"Go up to top",
 												activity:"Visit",
 												place:"Tokyo Tower",
 												fee:500,
@@ -395,6 +397,8 @@
 												sort_order:2,
 												time:"11:00",
 												duration:60,
+												title:"Visit Osaka Tower",
+												description:null,
 												activity:"Visit",
 												place:"Osaka Tower",
 												fee:600,
@@ -407,6 +411,8 @@
 												sort_order:3,
 												time:null,
 												duration:null,
+												title:"Visit Kyoto Tower",
+												description:null,
 												activity:"Visit",
 												place:"Kyoto Tower",
 												fee:null,
@@ -652,7 +658,15 @@
 						html_plan_form += ">";
 					<!-- END -->
 					<!-- START: set <td> text -->
-						if(col.name == 'note') {
+						if(col.name == 'description') {
+							if(typeof line[col.name] != 'undefined' && line[col.name] != null && line[col.name] != '') {
+								html_plan_form += '<i class="fa fa-fw fa-ellipsis-h" data-toggle="tooltip" data-placement="bottom" title="'+line[col.name]+'"></i>';
+							}
+							else {
+								html_plan_form += '<i class="fa fa-fw fa-ellipsis-h hidden" data-toggle="tooltip" data-placement="bottom"></i>';
+							}
+						}
+						else if(col.name == 'note') {
 							if(typeof line[col.name] != 'undefined' && line[col.name] != null && line[col.name] != '') {
 								html_plan_form += '<i class="fa fa-fw fa-sticky-note" data-toggle="tooltip" data-placement="bottom" title="'+line[col.name]+'"></i>';
 							}
@@ -724,7 +738,8 @@
 				$("#plan-line-" + line.line_id + "-col-command").append(output_command);
 			<!-- END -->
 			
-			<!-- START: initiate tooltip for note -->
+			<!-- START: initiate tooltip -->
+				$('.fa-ellipsis-h').tooltip();
 				$('.fa-sticky-note').tooltip();
 			<!-- END -->
 		}
@@ -1102,7 +1117,7 @@
 				},
 				over: function(e, ui) {
 					$(".plan-day-tr").droppable("disable");
-					$(ui.helper).html(ui.item.find(".plan-col-activity").html());
+					$(ui.helper).html(ui.item.find(".plan-col-title").html());
 					$(".drophover").removeClass("drophover");
 				},
 				out: function(e, ui) {
@@ -1356,6 +1371,7 @@
 	
 	<!-- START: [edit line] -->
 		function openAddPlanLineModal() {
+			$('#modal-edit-line-form-search').trigger("reset");
 			$('#modal-edit-line-form').trigger("reset");
 			
 			<!-- START: [modal] -->
@@ -1382,6 +1398,7 @@
 		}
 		
 		function openEditPlanLineModal(line) {
+			$('#modal-edit-line-form-search').trigger("reset");
 			$('#modal-edit-line-form').trigger("reset");
 			
 			<!-- START: [modal] -->
@@ -1405,6 +1422,8 @@
 			minute = ("0" + minute).slice(-2);
 			var fee = $('#'+line).find('.plan-line-form-hidden input[name=fee]').val();
 			var currency = $('#'+line).find('.plan-line-form-hidden input[name=currency]').val();
+			var title = $('#'+line).find('.plan-line-form-hidden input[name=title]').val();
+			var description = $('#'+line).find('.plan-line-form-hidden input[name=description]').val();
 			var note = $('#'+line).find('.plan-line-form-hidden input[name=note]').val();
 			
 			$('#modal-edit-line-form input[name=line_id]').val(line_id);
@@ -1434,6 +1453,8 @@
 			}
 			if(typeof fee != 'undefined' && fee != '' && fee != null) {  $('#modal-edit-line-form input[name=fee]').val(fee); }
 			if(typeof currency != 'undefined' && currency != '' && currency != null) {  $('#modal-edit-line-form select[name=currency]').val(currency); }
+			if(typeof title != 'undefined' && title != '' && title != null) { $('#modal-edit-line-form input[name=title]').val(title); }
+			if(typeof description != 'undefined' && description != '' && description != null) { $('#modal-edit-line-form textarea[name=description]').val(description); }
 			if(typeof note != 'undefined' && note != '' && note != null) { $('#modal-edit-line-form textarea[name=note]').val(note); }
 		}
 		
@@ -1457,7 +1478,6 @@
 		}
 		
 		function saveAddPlanLineForm() {
-			
 			<!-- START: get form data -->
 				var line_id = $('.plan-line-tr').length + 1;
 				var type_id = $('#modal-edit-line-form input[name=type_id]').val()||null;
@@ -1475,6 +1495,8 @@
 				var lng = $('#modal-edit-line-form input[name=lng]').val()||null;
 				var fee = $('#modal-edit-line-form input[name=fee]').val()||null;
 				var currency = $('#modal-edit-line-form select[name=currency]').val()||null;
+				var title = $('#modal-edit-line-form input[name=title]').val()||null;
+				var description = $('#modal-edit-line-form textarea[name=description]').val()||null;
 				var note = $('#modal-edit-line-form textarea[name=note]').val()||null;
 			<!-- END -->
 			
@@ -1495,6 +1517,8 @@
 						lng			:lng,
 						fee			:fee,
 						currency	:currency,
+						title		:title,
+						description	:description,
 						note		:note
 					}
 				;
@@ -1513,6 +1537,8 @@
 						lng			:lng,
 						fee			:fee,
 						currency	:currency,
+						title		:title,
+						description	:description,
 						note		:note
 					}
 				;
@@ -1539,53 +1565,80 @@
 		}
 		
 		function saveEditPlanLineForm() {
-			var line_id = $('#modal-edit-line-form input[name=line_id]').val();
-			var type_id = $('#modal-edit-line-form input[name=type_id]').val();
-			var type = $('#modal-edit-line-form input[name=type]').val();
-			var place = $('#modal-edit-line-form input[name=place]').val();
-			var lat = $('#modal-edit-line-form input[name=lat]').val()||null;
-			var lng = $('#modal-edit-line-form input[name=lng]').val()||null;
-			var activity = $('#modal-edit-line-form input[name=activity]').val()||null;
-			var time = $('#modal-edit-line-form input[name=time]').val()||null;
-			var hour = $('#modal-edit-line-form input[name=hour]').val()||null;
-			var minute = $('#modal-edit-line-form input[name=minute]').val()||null;
-			var duration = (parseInt(hour) * 60 + parseInt(minute))||null;
-			var fee = $('#modal-edit-line-form input[name=fee]').val()||null;
-			var currency = $('#modal-edit-line-form select[name=currency]').val()||null;
-			var note = $('#modal-edit-line-form textarea[name=note]').val()||null;
-			
-			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=type_id]').val(type_id);
-			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=type]').val(type);
-			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=place]').val(place);
-			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=lat]').val(lat);
-			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=lng]').val(lng);
-			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=activity]').val(activity);
-			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=time]').val(time);
-			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=duration]').val(duration);
-			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=fee]').val(fee);
-			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=currency]').val(currency);
-			$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=note]').val(note);
-			
-			$('#plan-line-'+line_id+'-tr').find('.plan-col-place').html(place);
-			$('#plan-line-'+line_id+'-tr').find('.plan-col-activity').html(activity);
-			$('#plan-line-'+line_id+'-tr').find('.plan-col-time').html(time);
-			if(duration == null) { 
-				$('#plan-line-'+line_id+'-tr').find('.plan-col-duration').html('');
-			}
-			else {
-				$('#plan-line-'+line_id+'-tr').find('.plan-col-duration').html(hour+'h '+minute+'m');
-			}
-			$('#plan-line-'+line_id+'-tr').find('.plan-col-fee').html(fee);
-			$('#plan-line-'+line_id+'-tr').find('.plan-col-currency').html(currency);
-			
-			$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').attr('data-original-title',note);
-			
-			if(note == null || note == '') { 
-				$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').addClass('hidden'); 
-			}
-			else {
-				$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').removeClass('hidden'); 
-			}
+			<!-- START: get value -->
+				var line_id = $('#modal-edit-line-form input[name=line_id]').val();
+				var type_id = $('#modal-edit-line-form input[name=type_id]').val();
+				var type = $('#modal-edit-line-form input[name=type]').val();
+				var place = $('#modal-edit-line-form input[name=place]').val();
+				var lat = $('#modal-edit-line-form input[name=lat]').val()||null;
+				var lng = $('#modal-edit-line-form input[name=lng]').val()||null;
+				var activity = $('#modal-edit-line-form input[name=activity]').val()||null;
+				var time = $('#modal-edit-line-form input[name=time]').val()||null;
+				var hour = $('#modal-edit-line-form input[name=hour]').val()||null;
+				var minute = $('#modal-edit-line-form input[name=minute]').val()||null;
+				var duration = (parseInt(hour) * 60 + parseInt(minute))||null;
+				var fee = $('#modal-edit-line-form input[name=fee]').val()||null;
+				var currency = $('#modal-edit-line-form select[name=currency]').val()||null;
+				var title = $('#modal-edit-line-form input[name=title]').val()||null;
+				var description = $('#modal-edit-line-form textarea[name=description]').val()||null;
+				var note = $('#modal-edit-line-form textarea[name=note]').val()||null;
+			<!-- END -->
+			<!-- START: update hidden value -->
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=type_id]').val(type_id);
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=type]').val(type);
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=place]').val(place);
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=lat]').val(lat);
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=lng]').val(lng);
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=activity]').val(activity);
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=time]').val(time);
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=duration]').val(duration);
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=fee]').val(fee);
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=currency]').val(currency);
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=title]').val(title);
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=description]').val(description);
+				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=note]').val(note);
+			<!-- END -->
+			<!-- START: update html -->
+				$('#plan-line-'+line_id+'-tr').find('.plan-col-place').html(place);
+				$('#plan-line-'+line_id+'-tr').find('.plan-col-activity').html(activity);
+				$('#plan-line-'+line_id+'-tr').find('.plan-col-time').html(time);
+				<!-- START: [duration] -->
+					if(duration == null) { 
+						$('#plan-line-'+line_id+'-tr').find('.plan-col-duration').html('');
+					}
+					else {
+						var formatted_duration = convertLineDurationFormat(duration);
+						$('#plan-line-'+line_id+'-tr').find('.plan-col-duration').html(formatted_duration);
+					}
+				<!-- END -->
+				<!-- START: [fee] -->
+					$('#plan-line-'+line_id+'-tr').find('.plan-col-fee').html(fee);
+				<!-- END -->
+				<!-- START: [currency] -->
+					$('#plan-line-'+line_id+'-tr').find('.plan-col-currency').html(currency);
+				<!-- END -->
+				<!-- START: [title] -->
+					$('#plan-line-'+line_id+'-tr').find('.plan-col-title').html(title);
+				<!-- END -->
+				<!-- START: [description] -->
+					$('#plan-line-'+line_id+'-tr').find('.plan-col-description').find('.fa').attr('data-original-title',description);
+					if(description == null || description == '') { 
+						$('#plan-line-'+line_id+'-tr').find('.plan-col-description').find('.fa').addClass('hidden'); 
+					}
+					else {
+						$('#plan-line-'+line_id+'-tr').find('.plan-col-description').find('.fa').removeClass('hidden'); 
+					}
+				<!-- END -->
+				<!-- START: [note] -->
+					$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').attr('data-original-title',note);
+					if(note == null || note == '') { 
+						$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').addClass('hidden'); 
+					}
+					else {
+						$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').removeClass('hidden'); 
+					}
+				<!-- END -->
+			<!-- END -->
 			
 			updatePlanTableCookie();
 			updatePlanTableDayDuration();
@@ -1609,6 +1662,8 @@
 				var lng = $('#section-content-guide-form input[name=lng]').val()||null;
 				var fee = null;
 				var currency = null;
+				var title = activity + '&nbsp;' + place;
+				var description = null;
 				var note = null;
 			<!-- END -->
 			
@@ -1629,6 +1684,8 @@
 						lng			:lng,
 						fee			:fee,
 						currency	:currency,
+						title		:title,
+						description	:description,
 						note		:note
 					}
 				;
@@ -1647,6 +1704,8 @@
 						lng			:lng,
 						fee			:fee,
 						currency	:currency,
+						title		:title,
+						description	:description,
 						note		:note
 					}
 				;
@@ -1742,6 +1801,8 @@
 			$('.plan-col-activity').hide();
 			$('.plan-col-fee').hide();
 			$('.plan-col-currency').hide();
+			$('.plan-col-title').hide();
+			$('.plan-col-description').hide();
 			$('.plan-col-note').hide();
 			$('.plan-col-command').hide();
 			$('.plan-day-content').hide();
@@ -1758,6 +1819,8 @@
 			$('.plan-col-activity').show();
 			$('.plan-col-fee').show();
 			$('.plan-col-currency').show();
+			$('.plan-col-title').show();
+			$('.plan-col-description').show();
 			$('.plan-col-note').show();
 			$('.plan-col-command').show();
 			$('.plan-day-content').show();

@@ -526,6 +526,25 @@
 		xmlhttp.send(form_data);
 	}
 	
+	function navigate_guide(type, type_id) {
+		if(type == 'destination') {
+			document.getElementById('section-content-guide-form-input-destination-id').value = type_id;
+			document.getElementById('section-content-guide-form-input-poi-id').value = '';
+			window.location.hash = '#destination_id-'+type_id;
+			<!-- START: reset search -->
+				$('#section-content-guide-search-form').trigger('reset');
+			<!-- END -->
+		}
+		else if(type == 'poi') {
+			document.getElementById('section-content-guide-form-input-destination-id').value = '';
+			document.getElementById('section-content-guide-form-input-poi-id').value = type_id;
+			window.location.hash = '#poi_id-'+type_id;
+			<!-- START: reset search -->
+				$('#section-content-guide-search-form').trigger('reset');
+			<!-- END -->
+		}
+	}
+	
 	function navigate_guide_by_destination_id(destination_id) {
 		document.getElementById('section-content-guide-form-input-destination-id').value = destination_id;
 		document.getElementById('section-content-guide-form-input-poi-id').value = '';

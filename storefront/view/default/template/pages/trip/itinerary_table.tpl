@@ -1390,6 +1390,7 @@
 		function openAddPlanLineModal() {
 			$('#modal-edit-line-form-search').trigger("reset");
 			$('#modal-edit-line-form').trigger("reset");
+			$('#modal-edit-line-form input[type=hidden]').val(''); //reset hidden input
 			
 			<!-- START: [modal] -->
 				$('#modal-edit-line .modal-title').html('Add Activity');
@@ -1417,6 +1418,7 @@
 		function openEditPlanLineModal(line) {
 			$('#modal-edit-line-form-search').trigger("reset");
 			$('#modal-edit-line-form').trigger("reset");
+			$('#modal-edit-line-form input[type=hidden]').val(''); //reset hidden input
 			
 			<!-- START: [modal] -->
 				$('#modal-edit-line .modal-title').html('Edit Activity');
@@ -1653,6 +1655,14 @@
 					}
 					else {
 						$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').removeClass('hidden'); 
+					}
+				<!-- END -->
+				<!-- START: [info] -->
+					if(type == null || type == '') { 
+						$('#plan-line-'+line_id+'-tr').find('.plan-col-command').find('.fa-info-circle').addClass('hidden'); 
+					}
+					else {
+						$('#plan-line-'+line_id+'-tr').find('.plan-col-command').find('.fa-info-circle').removeClass('hidden'); 
 					}
 				<!-- END -->
 			<!-- END -->

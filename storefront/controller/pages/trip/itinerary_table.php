@@ -124,27 +124,38 @@ class ControllerPagesTripItineraryTable extends AController {
 			$column[$i]['visible'] = 'true';
 			$column[$i]['type'] = 'progress';
 			
+			$i = 'title';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['width'] = '250px';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'true';
+			
 			$i = 'activity';
 			$column[$i]['name'] = $i;
 			$column[$i]['id'] = str_replace("_","-",$i);
 			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['width'] = '80px';
+			$column[$i]['width'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['thAlign'] = 'left';
-			$column[$i]['visible'] = 'true';
+			$column[$i]['visible'] = 'false';
 			
 			$i = 'place';
 			$column[$i]['name'] = $i;
 			$column[$i]['id'] = str_replace("_","-",$i);
 			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['width'] = '200px';
+			$column[$i]['width'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['thAlign'] = 'left';
-			$column[$i]['visible'] = 'true';
+			$column[$i]['visible'] = 'false';
 			
 			$i = 'lat';
 			$column[$i]['name'] = $i;
@@ -185,6 +196,17 @@ class ControllerPagesTripItineraryTable extends AController {
 			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
 			$column[$i]['title'] = '';
 			$column[$i]['width'] = '40px';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'true';
+			
+			$i = 'description';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = '';
+			$column[$i]['width'] = '30px';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['thAlign'] = 'left';

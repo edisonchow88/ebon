@@ -680,7 +680,6 @@
             else if(key_code != '' && key_code != 'undefined' && key_code != null) {
 				$('#'+input.type).val('');
 				$('#'+input.type_id).val('');
-				$('#'+input.suggestion).html('');
             }
 			
 			$('#'+input.hidden).val($('#'+input.input).val());
@@ -701,36 +700,41 @@
         }
         
         function auto_list_section_content_guide_search(suggestion_id, keyword, result) {
-            var output = '';
-            output += "<ul class='list-group' style='margin-top:-1px;'>";
-            for(i = 0; i < result.length; i++) {
-                output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion_section_content_guide_search(\""+result[i].type_id+"\", \""+result[i].type+"\", \""+result[i].name+"\")')'>";
-                    output += "<div class='text-left' style='width:100%;'>";
-                        output += "<div class='text-left text-success' style='display:inline-block; width:50px;'>";
-						if(result[i].type == 'destination') {
-							output += "<i class='fa fa-map-marker fa-fw fa-2x'></i>";
-						}
-						else if(result[i].type == 'poi') {
-							output += "<i class='fa fa-camera-retro fa-fw fa-2x'></i>";
-						}
+			if(typeof result != 'undefined' && result != null) {
+				var output = '';
+				output += "<ul class='list-group' style='margin-top:-1px;'>";
+				for(i = 0; i < result.length; i++) {
+					output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion_section_content_guide_search(\""+result[i].type_id+"\", \""+result[i].type+"\", \""+result[i].name+"\")')'>";
+						output += "<div class='text-left' style='width:100%;'>";
+							output += "<div class='text-left text-success' style='display:inline-block; width:50px;'>";
+							if(result[i].type == 'destination') {
+								output += "<i class='fa fa-map-marker fa-fw fa-2x'></i>";
+							}
+							else if(result[i].type == 'poi') {
+								output += "<i class='fa fa-camera-retro fa-fw fa-2x'></i>";
+							}
+							output += "</div>";
+							output += "<div style='display:inline-block;'>";
+								output += "<span class='text-left' style='display:block;'><b>";
+									output += highlight_keyword_with_any_cases(result[i].name, keyword);
+								output += "</b></span>";
+								if(typeof result[i].parent != 'undefined') {
+									output += "<span class='text-left small' style='display:block;'>";
+										output += result[i].parent.name;
+									output += "</span>";
+								}
+							output += "</div>";
 						output += "</div>";
-                        output += "<div style='display:inline-block;'>";
-                            output += "<span class='text-left' style='display:block;'><b>";
-                                output += highlight_keyword_with_any_cases(result[i].name, keyword);
-                            output += "</b></span>";
-                            if(typeof result[i].parent != 'undefined') {
-                                output += "<span class='text-left small' style='display:block;'>";
-                                    output += result[i].parent.name;
-                                output += "</span>";
-                            }
-                        output += "</div>";
-                    output += "</div>";
-                output += "</a>";
-            }
-            output += "</ul>";
-            this.suggestion = result;
-            this.selected_suggestion = -1;
-			$('#'+suggestion_id).html(output);
+					output += "</a>";
+				}
+				output += "</ul>";
+				this.suggestion = result;
+				this.selected_suggestion = -1;
+				$('#'+suggestion_id).html(output);
+			}
+			else {
+				$('#'+suggestion_id).html('');
+			}
         }
 		
         function reset_suggestion_section_content_guide_search() {

@@ -259,7 +259,7 @@
 			height: 40px;
 			background-color: white;
 			opacity: 0.5;
-			font-size: 1.5em;
+			font-size: 11px;
 			text-align:center;
 			border: medium dotted #666;
 		}
@@ -714,6 +714,21 @@
 			<!-- END -->
 			
 			<!-- START: set output for command -->
+				var info_btn;
+				var navigation = '';
+				
+				navigation = 'var type = $(\'#plan-line-'+line['line_id']+'-form-hidden input[name=type]\').val();';
+				navigation += 'var type_id = $(\'#plan-line-'+line['line_id']+'-form-hidden input[name=type_id]\').val();';
+				navigation += 'navigate_guide(type, type_id);';
+				navigation += 'setTimeout(function() { $(\'#btn-search\').trigger(\'click\'); }, 100);';
+				
+				if(typeof line['type'] != 'undefined' && line['type'] != null && line['type'] != '') {
+					info_btn = '<a class="plan-btn btn btn-simple" onclick="'+navigation+'"><i class="fa fa-fw fa-info-circle"></i></a>';
+				}
+				else {
+					info_btn = '<a class="plan-btn btn btn-simple hidden"><i class="fa fa-fw fa-info-circle"></i></a>';
+				}
+				
 				var output_command = ""
 					+ "<div>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-sort'>"
@@ -725,6 +740,7 @@
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-edit' data-toggle='modal' data-target='#modal-edit-line'>"
 							+ "<i class='fa fa-fw fa-pencil' aria-hidden='true'></i>"
 						+ "</a>"
+						+ info_btn
 					+ "</div>"
 				;
 			<!-- END -->
@@ -741,6 +757,7 @@
 			<!-- START: initiate tooltip -->
 				$('.fa-ellipsis-h').tooltip();
 				$('.fa-sticky-note').tooltip();
+				$('.fa-info-circle').tooltip();
 			<!-- END -->
 		}
 		

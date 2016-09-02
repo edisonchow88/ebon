@@ -129,7 +129,7 @@ class ControllerPagesTripItineraryTable extends AController {
 			$column[$i]['id'] = str_replace("_","-",$i);
 			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['width'] = '250px';
+			$column[$i]['width'] = '210px';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['thAlign'] = 'left';
@@ -239,6 +239,7 @@ class ControllerPagesTripItineraryTable extends AController {
 		//END
 		
 		//START: set link
+			$link['guide'] = $this->html->getSEOURL('trip/itinerary');
 		//END
 		
 		//START: set ajax
@@ -249,6 +250,7 @@ class ControllerPagesTripItineraryTable extends AController {
 			$this->view->batchAssign($this->data);
 			$this->view->assign('column',$column);
 			$this->view->assign('column_json',json_encode(array_values($column)));
+			$this->view->assign('link',$link);
 			$this->view->assign('ajax_itinerary',$ajax_itinerary);
 		//END
 		

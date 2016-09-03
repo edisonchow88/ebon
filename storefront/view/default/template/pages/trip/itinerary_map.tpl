@@ -83,14 +83,18 @@
         </div>
     </div>
     <div id="section-content-map-content">
+    	<button onclick="initMap()"></button>
     	<div id="map"></div>
     </div>
 </div>
 
 
 <script>
+
+	
 	var map;
 	function initMap() {
+		var myLatLng = {lat: -25.363, lng: 131.044};
 		map = new google.maps.Map(document.getElementById('map'), {
 			center: {lat: 0, lng: 0},
 			zoom: 1,
@@ -98,6 +102,9 @@
 			disableDefaultUI: true
 		});
 		
+		//$(window).load(updateMap());
+		updateMap();
+				
 		/* START: set max world boundary */
 			google.maps.event.addListener(map, 'center_changed', function() {
 				checkBounds(map);
@@ -129,17 +136,83 @@
 			}
 		/* END */
 	}
-	
+		
+	function updateMap() {
+				
+		var selected_day_id = $(".selected").closest(".plan-day-tr").attr("id");
+		// temporary for 1st load.
+		if (!selected_day_id) selected_day_id = "plan-day-1-tr";
+		//get all selected day activities
+			var bounds = new google.maps.LatLngBounds();
+			var lat, lng, position, marker,title;
+			var infowindow = new google.maps.InfoWindow();
+			var markers = [];
+			var positions =[];
+			$("#"+selected_day_id + " .plan-line-tr").each(function(i) {
+				lat = $(this).find('.plan-line-form-hidden input[name=lat]').val();
+				lng = $(this).find('.plan-line-form-hidden input[name=lng]').val();	
+				title =	$(this).find('.plan-line-form-hidden input[name=place]').val();
+				if(lat && lng) {
+					position = new google.maps.LatLng(lat, lng); 
+					bounds.extend(position);
+					marker = new google.maps.Marker({
+						position: position,
+						map: map,
+						title: title
+						})
+					 markers.push(marker);
+					 positions.push(position);
+				}
+			});
+		
+		var route = new google.maps.Polyline({
+			path: positions,
+			geodesic: true,
+			strokeColor: '#FF0000',
+			strokeOpacity: 1.0,
+			strokeWeight: 2
+  		});	
+		
+		route.setMap(map);
+		//alert ("run " + selected_day_id + title);	
+		map.fitBounds(bounds);
+	}
 </script>
 
 <!-- START: refresh map if map is shown [IMPORTANT] -->
 	<script>
-        var observer = new MutationObserver(function(mutations) {
+    	
+		$(".plan-table").ready(function() {
+ 			var observer = new MutationObserver(function(mutations) {
             initMap();
-        });
-        
-        var target = document.getElementById('section-center');
-        observer.observe(target, { attributes : true, attributeFilter : ['style'] });
+			});
+		
+			//$("#plan-table").on("update-map",initMap);
+			//OBSERVE CONDITIONS : ALWAYS RUNNING, except when sorting
+			//var target = document.getElementById('section-center');
+			var target = document.getElementById('plan-table');
+			var config = { childList:true,subtree: true, attributes : true, attributeFilter : ['style'] };
+			observer.observe(target, config);
+			
+			//close when sort, open back when stop
+			$(".plan-day").on( "sortstart", function( event, ui ) {
+				observer.disconnect();
+				} )
+			$(".plan-day").on( "sortstop", function( event, ui ) {
+				observer.observe(target, config);
+				initMap();
+				} )
+
+ 
+		});
+	   
+		//$(document).ready(function() {
+		//initMap();
+		//})
+		
+		
+		
+	
     </script>
 <!-- END -->
 

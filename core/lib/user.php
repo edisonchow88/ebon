@@ -172,6 +172,8 @@ final class AUser{
 	public function logout() {
 		//START: [session]
 			unset($this->session->data['user_id']);
+			unset($this->session->data['trip_id']);
+			unset($this->session->data['plan_id']);
 		//END
 		
 		//START: [data]

@@ -1,10 +1,30 @@
+<style>
+	#wrapper-title-input:disabled {
+		background-color:#FFF;
+		border:none;
+		cursor:default;
+	}
+	
+	#wrapper-title-input:hover:disabled {
+		border:none;
+	}
+</style>
+
 <div id="wrapper-header" class="box-shadow">
 	<div id="wrapper-menu-icon" data-toggle='tooltip' data-placement='bottom' title='Open Menu'>
     	<a class="btn btn-primary" onclick="toggle_wrapper_menu(); hide_wrapper_account();"><i class="fa fa-fw fa-bars fa-lg"></i></a>
     </div>
-    <div id="wrapper-title" data-toggle='tooltip' data-placement='bottom' title='Rename Trip'>
-        <input id="wrapper-title-input" class="form-control" type="text" value="Trip 1"></input>
-    </div>
+    <!-- START: [trip name] -->
+    	<?php if($this->user->isLogged() != false) { ?>
+        	<div id="wrapper-title" data-toggle='tooltip' data-placement='bottom' title='Rename Trip'>
+        		<input id="wrapper-title-input" class="form-control" type="text"></input>
+            </div>
+        <?php } else { ?>
+            <div id="wrapper-title">
+                <input id="wrapper-title-input" class="form-control" type="text" disabled></input>
+            </div>
+        <?php } ?>
+    <!-- END -->
     <!-- START: float right -->
         <div id="wrapper-account-icon" class="dropdown" data-toggle='tooltip' data-placement='bottom' title='Open Account Menu'>
         	<a onclick="toggle_wrapper_account(); hide_wrapper_menu();">
@@ -21,10 +41,18 @@
                 <?php } ?>
             </a>
         </div>
-        <div id="wrapper-button" class="hidden-xs hidden-sm">
-            <a class="btn btn-default">Share</a>
-            <a class="btn btn-primary">Save</a>
-        </div>
+        <!-- START: [button] -->
+        	<?php if($this->trip->getTripId() != '' && $this->user->isLogged() == false) { ?>
+                <div id="wrapper-button" class="hidden-xs hidden-sm">
+                    <a class="btn btn-default disabled" style="width:120px !important;"><i class="fa fa-fw fa-eye"></i> View Only</a>
+                </div>
+            <?php } else { ?>
+                <div id="wrapper-button" class="hidden-xs hidden-sm">
+                    <a class="btn btn-default">Share</a>
+                    <a class="btn btn-primary">Save</a>
+                </div>
+            <?php } ?>
+        <!-- END -->
         <div id="wrapper-alert">
         	<!-- [SAMPLE]
             <div class="alert alert-success alert-dismissible" role="alert">
@@ -62,10 +90,11 @@
 
 <script>
 	function refreshTrip() {
-		<?php if($this->user->isLogged() != '') { ?>
+		<?php if(isset($trip_id)) { ?>
 			<!-- START: set POST data -->
 				var data = {
-					"action":"refresh_trip"
+					"action":"refresh_trip",
+					"trip_id":"<?php echo $trip_id; ?>"
 				};
 			<!-- END -->
 			

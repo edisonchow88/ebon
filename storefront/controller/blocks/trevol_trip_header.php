@@ -20,6 +20,10 @@ class ControllerBlocksTrevolTripHeader extends AController {
 			$this->data['logged'] = $this->user->isLogged();
 		//END
 		
+		//STARt: get trip_id
+			$this->data['trip_id'] = $this->trip->getTripId();
+		//END
+		
 		//START: set ajax
 			$ajax_itinerary = $this->html->getSEOURL('trip/ajax_itinerary');
 		//END

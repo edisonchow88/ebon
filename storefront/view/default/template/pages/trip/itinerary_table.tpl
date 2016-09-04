@@ -349,12 +349,13 @@
 <script>
 	<!-- START: script for manage display -->
 		function refreshPlanTable() {
-			<?php if($this->user->isLogged() != '') { ?>
+			<?php if(isset($trip_id)) { ?>
 				<!-- START: [logged] -->
 					<!-- START: set data -->
 						var data = {
 							"action":"refresh_plan",
-							"plan_id":"4",
+							"trip_id":"<?php echo $trip_id; ?>",
+							"plan_id":"<?php echo $plan_id; ?>"
 						};
 					<!-- END -->
 				

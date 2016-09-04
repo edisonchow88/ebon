@@ -15,9 +15,23 @@ class ControllerPagesTripItinerary extends AController {
 		
 		
 		//START: set modal
+			$this->loadModel('travel/trip');
 		//END
 		
 		//START: set data
+			$this->data['trip_id'] = $this->trip->getTripId();
+			$this->data['plan_id'] = $this->trip->getPlanId();
+		//END
+		
+		//START: verify
+			$this->data['trip'] = $this->model_travel_trip->getTrip($data['trip_id']);
+			$this->data['plan'] = $this->model_travel_trip->getPlan(3);
+			if($this->data['trip'] == false) {
+				$this->data['error'] = '<b>Trip cannot be found.</b><br/>It may have been deleted.';
+			}
+			else if($this->data['plan'] == false) {
+				$this->data['error'] = '<b>Plan cannot be found.</b><br/>It may have been deleted.';
+			}
 		//END
 		
 		//START: set result
@@ -34,7 +48,7 @@ class ControllerPagesTripItinerary extends AController {
 		//END
 		
 		//START: set variable
-			$this->view->batchAssign( $this->data);
+			$this->view->batchAssign($this->data);
 		//END
 		
 		//START: set template 

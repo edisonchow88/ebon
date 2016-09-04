@@ -46,7 +46,7 @@
 				}
 				else if(typeof json.success != 'undefined') {
 					<!-- if success -->
-					window.location.reload(true);
+					window.location = "<?php echo $modal_link['home']; ?>";
 				}
 				document.getElementById('modal-account-logout-form-alert').innerHTML = alert_text;
 			} else {

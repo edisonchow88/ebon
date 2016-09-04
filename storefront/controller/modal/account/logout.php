@@ -21,11 +21,16 @@ class ControllerModalAccountLogout extends AController {
 			$modal_component['form'] = $this->component_database_modal->writeForm($id,$action,$input);
 		//END
 		
+		//START: set link
+			$modal_link['home'] = $this->html->getSecureURL('trip/itinerary');
+		//END
+		
 		//START: set ajax
 			$modal_ajax = $this->html->getSecureURL('account/ajax_user');
 		//END
 		
 		//START: set variable
+			$this->view->assign('modal_link', $modal_link);
 			$this->view->assign('modal_ajax', $modal_ajax);
 			$this->view->assign('modal_component', $modal_component);
 		//END

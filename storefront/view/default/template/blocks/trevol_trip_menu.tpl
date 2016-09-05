@@ -54,6 +54,10 @@
     </div>
 </div>
 
+<!-- START: [modal] -->
+	<?php echo $modal_trip_save; ?>
+<!-- END -->
+
 <script>
 	function toggle_wrapper_menu() {
 		if(document.getElementById('wrapper-menu-modal-background').style.display == 'block') {

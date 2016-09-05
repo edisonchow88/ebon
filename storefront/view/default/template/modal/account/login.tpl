@@ -9,10 +9,23 @@
             <div class="modal-body">
                 <div id="modal-account-login-form-alert"></div>
                 <?php echo $modal_component['form']; ?>
+                <div class="modal-body-footnote">
+                	<span>Don't have an account? </span>
+                    <a data-dismiss="modal" data-toggle='modal' data-target="#modal-account-signup" >Sign up now</a>
+                </div>
             </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="login();">Log In</button>
+                	<div class="row">
+                        <div class="col-xs-12 col-sm-3 col-md-2 pull-right">
+                            <button type="button" class="btn btn-block btn-primary" onclick="login();">Log In</button>
+                        </div>
+                        <div class="pull-right line-spacer">
+                        	<i class="fa fa-fw"></i>
+                        </div>
+                        <div class="col-xs-12 col-sm-3 col-md-2 pull-right">
+                            <button type="button" class="btn btn-block btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,5 +69,11 @@
 		xmlhttp.open("POST", query, true);
 		xmlhttp.send(form_data);
 	}
+	
+	<!-- START: clear alert when closed -->
+		$("#modal-account-login").on( "hidden.bs.modal", function() { 
+			$('#modal-account-login-form-alert').html('');
+		});
+	<!-- END -->
 </script>
 <!-- END -->

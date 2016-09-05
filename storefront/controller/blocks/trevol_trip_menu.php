@@ -20,6 +20,10 @@ class ControllerBlocksTrevolTripMenu extends AController {
 			$this->view->batchAssign($this->data);
 		//END
 		
+		//START: set modal
+			$this->addChild('modal/trip/save', 'modal_trip_save', 'modal/trip/save.tpl');
+		//END
+		
 		//START: set template
 			$this->processTemplate();
 		//END

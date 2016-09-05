@@ -15,7 +15,7 @@
     	<a class="btn btn-primary" onclick="toggle_wrapper_menu(); hide_wrapper_account();"><i class="fa fa-fw fa-bars fa-lg"></i></a>
     </div>
     <!-- START: [trip name] -->
-    	<?php if($this->user->isLogged() != false) { ?>
+    	<?php if($this->session->data['mode'] == 'edit') { ?>
         	<div id="wrapper-title" data-toggle='tooltip' data-placement='bottom' title='Rename Trip'>
         		<input id="wrapper-title-input" class="form-control" type="text"></input>
             </div>
@@ -42,7 +42,7 @@
             </a>
         </div>
         <!-- START: [button] -->
-        	<?php if($this->trip->getTripId() != '' && $this->user->isLogged() == false) { ?>
+        	<?php if($this->session->data['mode'] == 'view') { ?>
                 <div id="wrapper-button" class="hidden-xs hidden-sm">
                     <a class="btn btn-default disabled" style="width:120px !important;"><i class="fa fa-fw fa-eye"></i> View Only</a>
                 </div>

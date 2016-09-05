@@ -56,6 +56,18 @@ final class ATrip{
 				unset($this->data['plan_id']);
 			}
 		//END
+		
+		//START: set owner_id
+			$sql = '
+				SELECT user_id
+				FROM '.$this->db->table('trip').'
+				WHERE trip_id = "' . (int)$this->data['trip_id'] . '" 
+				LIMIT 1
+			';
+			$query = $this->db->query($sql);
+			$result = $query->row;
+			$this->data['owner_id'] = $result['user_id'];
+		//END
 	}
 	
 	public function getTripId() {
@@ -64,6 +76,10 @@ final class ATrip{
 	
 	public function getPlanId() {
 		return $this->data['plan_id'];
+	}
+	
+	public function getOwnerId() {
+		return $this->data['owner_id'];
 	}
 	
 	public function hasTrip() {

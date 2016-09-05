@@ -42,6 +42,20 @@ class ControllerPagesTripItinerary extends AController {
 			}
 		//END
 		
+		//START: set mode
+			if($this->trip->hasTrip()) {
+				if($this->user->getUserId() == $this->trip->getOwnerId()) {
+					$this->session->data['mode'] = 'edit';
+				}
+				else if($this->user->getUserId() != $this->trip->getOwnerId()) {
+					$this->session->data['mode'] = 'view';
+				}
+			}
+			else {
+				$this->session->data['mode'] = 'edit';
+			}
+		//END
+		
 		//START: set result
 		//END
 		

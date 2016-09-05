@@ -56,6 +56,8 @@ if (!defined('IS_ADMIN') || !IS_ADMIN ) { // storefront load
 // Currency
 $registry->set('currency', new ACurrency($registry));
 
+// Trip
+$registry->set('trip', new ATrip($registry));
 
 //Route to request process
 $router = new ARouter($registry);

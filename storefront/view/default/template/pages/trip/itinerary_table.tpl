@@ -287,12 +287,31 @@
 		}
 	/* END */		
 </style>
+
+<!-- START: [not edit mode] -->
+    <?php if($this->session->data['mode'] != 'edit') { ?>
+        <style>
+            .icon-edit,
+			.icon-delete,
+			.icon-sort,
+			.plan-btn-tr,
+			#section-content-guide-button-add,
+			#section-content-guide-button-add-text
+			{
+                display:none !important;
+            }
+        </style>
+    <?php } ?>
+<!-- END -->
+
 <div id="section-content-itinerary">
 	<div id="section-content-itinerary-header">
     	<div id="section-content-itinerary-header-content">
             <div id="section-content-itinerary-header-button">
             	<a id='btn-search' class="btn btn-primary pull-left noselect"><i class="fa fa-fw fa-search"></i> Discover</a>
-                <a class="btn-show-date-form pull-right noselect">Set Date</a>
+                <?php if($this->session->data['mode'] == 'edit') { ?>
+                	<a class="btn-show-date-form pull-right noselect">Set Date</a>
+                <?php } ?>
             </div>
             <div id="section-content-itinerary-header-set-date" class="text-left hidden">
             	<form id="plan-date-form">
@@ -349,12 +368,13 @@
 <script>
 	<!-- START: script for manage display -->
 		function refreshPlanTable() {
-			<?php if($this->user->isLogged() != '') { ?>
+			<?php if(isset($trip_id)) { ?>
 				<!-- START: [logged] -->
 					<!-- START: set data -->
 						var data = {
 							"action":"refresh_plan",
-							"plan_id":"4",
+							"trip_id":"<?php echo $trip_id; ?>",
+							"plan_id":"<?php echo $plan_id; ?>"
 						};
 					<!-- END -->
 				
@@ -1021,57 +1041,61 @@
 		}
 		
 		function initSortableDay () {	
-			$(".plan-day").sortable({	
-				delay: 100,
-				axis: "y",
-				items: ">.plan-day-tr", 
-				cancel: ">.plan-line-tr",
-				handle: ">.plan-day-form",
-				appendTo: "parent",	
-				containment: ".plan-table",
-				scrollSpeed: 10,
-				cursorAt: {
-					top: 15
-				},
-				helper: function(event, ui) {
-					return $('<div style="white-space:nowrap; height:40px;"></div>');
-				},
-				placeholder: {
-					element: function(currentItem) {
-						return $("<div></div>");
+				$(".plan-day").sortable({	
+					delay: 100,
+					axis: "y",
+					items: ">.plan-day-tr", 
+					cancel: ">.plan-line-tr",
+					handle: ">.plan-day-form",
+					appendTo: "parent",	
+					containment: ".plan-table",
+					scrollSpeed: 10,
+					cursorAt: {
+						top: 15
 					},
-					update: function(container, p) {
-						return;
+					helper: function(event, ui) {
+						return $('<div style="white-space:nowrap; height:40px;"></div>');
+					},
+					placeholder: {
+						element: function(currentItem) {
+							return $("<div></div>");
+						},
+						update: function(container, p) {
+							return;
+						}
+					},
+					start: function(e, ui) {
+						$(".plan-day").sortable("refreshPositions");
+						$(ui.helper).addClass("ui-draggable-helper");
+						$(ui.placeholder).addClass("ui-draggable-placeholder-day");		
+					},
+					sort: function(event, ui) {
+						var to_day_text;
+						var from_index = $(ui.item).index();
+						var to_index = $(ui.placeholder).index();
+						$(ui.helper).html(ui.item.find(".plan-col-day").html());
+						if ( from_index > to_index) { 
+							to_day_text = $(ui.placeholder).next(".plan-day-tr").find(".plan-col-day").html();
+							$(ui.placeholder).html("Reschedule to " + to_day_text);	
+						}
+						else {
+							to_day_text = $(ui.placeholder).prev(".plan-day-tr").find(".plan-col-day").html();
+							$(ui.placeholder).html("Reschedule to " + to_day_text);	
+						}					
+					},
+					receive: function( event, ui ) {
+						var sender_id = ui.sender.attr("id");
+						alert(ui.position[0].top);
+					},
+					stop: function( event, ui ) {
+						updatePlanTableDayDate();
+						updatePlanTableCookie();
 					}
-				},
-				start: function(e, ui) {
-					$(".plan-day").sortable("refreshPositions");
-					$(ui.helper).addClass("ui-draggable-helper");
-					$(ui.placeholder).addClass("ui-draggable-placeholder-day");		
-				},
-				sort: function(event, ui) {
-					var to_day_text;
-					var from_index = $(ui.item).index();
-					var to_index = $(ui.placeholder).index();
-					$(ui.helper).html(ui.item.find(".plan-col-day").html());
-					if ( from_index > to_index) { 
-						to_day_text = $(ui.placeholder).next(".plan-day-tr").find(".plan-col-day").html();
-						$(ui.placeholder).html("Reschedule to " + to_day_text);	
-					}
-					else {
-						to_day_text = $(ui.placeholder).prev(".plan-day-tr").find(".plan-col-day").html();
-						$(ui.placeholder).html("Reschedule to " + to_day_text);	
-					}					
-				},
-				receive: function( event, ui ) {
-					var sender_id = ui.sender.attr("id");
-					alert(ui.position[0].top);
-				},
-				stop: function( event, ui ) {
-					updatePlanTableDayDate();
-					updatePlanTableCookie();
-				}
-			}).disableSelection();
+				}).disableSelection();
+			
+			<?php if($this->session->data['mode'] != 'edit') { ?>
+				$('.plan-day').sortable("destroy");
+			<?php } ?>
 		}
 		
 		function initSortableLine() {
@@ -1159,46 +1183,52 @@
 					initSortableLine();
 				}
 			}).disableSelection();
+			
+			<?php if($this->session->data['mode'] != 'edit') { ?>
+				$('.plan-day-tr').droppable("destroy");
+				$('.plan-day-line').sortable("destroy");
+			<?php } ?>
 		}
 	<!-- END -->
 	
 	<!-- START: [update data] -->
 		function updatePlanTableCookie() {
-			var serial = '';
-			serial += '{';
-				serial += '"name":"Plan 1"';
-				serial += ',';
-				serial += '"travel_date":"'+$('#plan-date-form-hidden input[name=travel_date]').val()+'"';
-				serial += ',';
-				serial += '"day":';
-				serial += '[';
-				<!-- START: [day] -->
-					$.each($('.plan-day-form-hidden'), function(i, val) {
-						var day_id = $(this).find($('.plan-input-hidden[name=day_id]')).val();
-						serial += JSON.stringify($('#plan-day-'+day_id+'-form-hidden').find('.plan-input-hidden').not('[value="undefined"]').serializeObject());
+			<?php if($this->session->data['mode'] == 'edit') { ?>
+				var serial = '';
+				serial += '{';
+					serial += '"name":"Plan 1"';
+					serial += ',';
+					serial += '"travel_date":"'+$('#plan-date-form-hidden input[name=travel_date]').val()+'"';
+					serial += ',';
+					serial += '"day":';
+					serial += '[';
+					<!-- START: [day] -->
+						$.each($('.plan-day-form-hidden'), function(i, val) {
+							var day_id = $(this).find($('.plan-input-hidden[name=day_id]')).val();
+							serial += JSON.stringify($('#plan-day-'+day_id+'-form-hidden').find('.plan-input-hidden').not('[value="undefined"]').serializeObject());
+							serial = serial.slice(0,-1);
+							<!-- START: [line] -->
+								if($('#plan-day-'+day_id+'-line .plan-line-form-hidden').length > 0) {
+									serial += ',';
+									serial += '"line":';
+									serial += '[';
+										$.each($('#plan-day-'+day_id+'-line').find($('.plan-line-form-hidden')), function(j, val) {
+											var line_id = $(this).find($('.plan-input-hidden[name=line_id]')).val();
+											serial += JSON.stringify($('#plan-line-'+line_id+'-form-hidden').find('.plan-input-hidden').not('[value="undefined"]').serializeObject());
+											serial += ',';
+										});
+										serial = serial.slice(0,-1);
+									serial += ']';
+								}
+							<!-- END -->
+							serial += '},';
+						});
 						serial = serial.slice(0,-1);
-						<!-- START: [line] -->
-							if($('#plan-day-'+day_id+'-line .plan-line-form-hidden').length > 0) {
-								serial += ',';
-								serial += '"line":';
-								serial += '[';
-									$.each($('#plan-day-'+day_id+'-line').find($('.plan-line-form-hidden')), function(j, val) {
-										var line_id = $(this).find($('.plan-input-hidden[name=line_id]')).val();
-										serial += JSON.stringify($('#plan-line-'+line_id+'-form-hidden').find('.plan-input-hidden').not('[value="undefined"]').serializeObject());
-										serial += ',';
-									});
-									serial = serial.slice(0,-1);
-								serial += ']';
-							}
-						<!-- END -->
-						serial += '},';
-					});
-					serial = serial.slice(0,-1);
-				<!-- END -->
-				serial += ']';
-			serial += '}';
-			setCookie('plan',serial,1);
-			
+					<!-- END -->
+					serial += ']';
+				serial += '}';
+				setCookie('plan',serial,1);
+			<?php } ?>
 			//initMap();
 		}
 		
@@ -1916,5 +1946,4 @@
 		}
 	}
 <!-- END -->
-
-   </script>
+	</script>

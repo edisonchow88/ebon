@@ -18,6 +18,8 @@ class ControllerPagesTripItineraryTable extends AController {
 		//END
 		
 		//START: set data
+			$this->data['trip_id'] = $this->trip->getTripId();
+			$this->data['plan_id'] = $this->trip->getPlanId();
 		//END
 		
 		//START: set result

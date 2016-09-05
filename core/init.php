@@ -262,6 +262,7 @@ try {
 	//[DISABLED BY TREVOL]require_once(DIR_CORE . 'lib/cart.php');
 	require_once(DIR_CORE . 'lib/admin.php');
 	require_once(DIR_CORE . 'lib/user.php');
+	require_once(DIR_CORE . 'lib/trip.php');
 	require_once(DIR_CORE . 'lib/dataset.php');
 	require_once(DIR_CORE . 'lib/encryption.php');
 	require_once(DIR_CORE . 'lib/menu_control.php');

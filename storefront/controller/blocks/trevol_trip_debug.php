@@ -25,6 +25,9 @@ class ControllerBlocksTrevolTripDebug extends AController {
 			$this->data['role_id'] = $this->user->getRoleId();
 			$role = $this->model_account_user->getRole($this->data['role_id']);
 			$this->data['role'] = $role['name'];
+			$this->data['trip_id'] = $this->trip->getTripId();
+			$this->data['plan_id'] = $this->trip->getPlanId();
+			$this->data['owner_id'] = $this->trip->getOwnerId();
 		//END
 		
 		//START: load component	
@@ -72,7 +75,15 @@ class ControllerBlocksTrevolTripDebug extends AController {
 				$input[$i]['id'] = str_replace("_","-",$i);
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = false;
-				$input[$i]['value'] = $this->data['trip_id'];
+				$input[$i]['value'] = $this->data['plan_id'];
+				$input[$i]['type'] = 'disabled';
+				
+				$i ='owner_id';
+				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = $this->data['owner_id'];
 				$input[$i]['type'] = 'disabled';
 				
 				$i ='day_id';

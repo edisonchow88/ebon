@@ -11,7 +11,9 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//START: testing script
 			foreach($_POST as $key => $value) {
 				$this->data[$key] = $value;
-			}	
+			}
+			
+			$this->loadModel('travel/trip');	
 			
 			if($this->data['action'] == 'refresh_trip') { $this->refresh_trip(); return; }
 			else if($this->data['action'] == 'refresh_plan') { $this->refresh_plan(); return; }
@@ -28,31 +30,29 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	}
 	
 	public function refresh_trip() {
-		$trip['name'] = 'My Trip Yeah Yeah';
-		$result = $trip;
+		$result = $this->model_travel_trip->getTrip($this->data['trip_id']);
 		$response = json_encode($result);
 		echo $response;
 	}
 	
 	public function refresh_plan() {
+		/*
 		$day = array();
 		$line = array();
 		$line[] = array('line_id' => 1, 'day_id' => 1, 'type' => 'poi', 'id' => 1, 'time' => '10:00', 'duration' => '30', 'sort_order' => 1, 'title' => 'Kiyomizu Temple');
 		$line[] = array('line_id' => 2, 'day_id' => 1, 'type' => 'poi', 'id' => 2, 'time' => '12:00', 'duration' => '150', 'sort_order' => 2, 'title' => 'Tokyo Temple');
 		$line[] = array('line_id' => 3, 'day_id' => 1, 'type' => 'poi', 'id' => 3, 'time' => NULL, 'duration' => NULL, 'sort_order' => 3, 'title' => 'Osaka Temple');
-		$day[] = array('day_id' => 1, 'day' => 'D1', 'sort_order' => 1, 'duration' => '180', 'line' => $line);
+		$day[] = array('day_id' => 1, 'sort_order' => 1, 'line' => $line);
 		$line = array();
 		$line[] = array('line_id' => 4, 'day_id' => 2, 'type' => 'poi', 'id' => 1, 'time' => '10:00', 'duration' => '30', 'sort_order' => 1, 'title' => 'Kiyomizu Temple');
 		$line[] = array('line_id' => 5, 'day_id' => 2, 'type' => 'poi', 'id' => 2, 'time' => '12:00', 'duration' => '150', 'sort_order' => 2, 'title' => 'Tokyo Temple');
 		$line[] = array('line_id' => 6, 'day_id' => 2, 'type' => 'poi', 'id' => 3, 'time' => NULL, 'duration' => NULL, 'sort_order' => 3, 'title' => 'Osaka Temple');
 		$line[] = array('line_id' => 7, 'day_id' => 2, 'type' => 'poi', 'id' => 3, 'time' => NULL, 'duration' => NULL, 'sort_order' => 3, 'title' => 'Osaka Temple');
-		$day[] = array('day_id' => 2, 'day' => 'D2', 'sort_order' => 2, 'duration' => '210', 'line' => $line);
+		$day[] = array('day_id' => 2, 'sort_order' => 2, 'line' => $line);
 		$result = array('travel_date'=>'2016-08-30','day'=>$day);
-		
-		/*
-		$this->loadModel('travel/trip');
-		$result = $this->model_travel_trip->getPlanDetail($this->data['plan_id']);
 		*/
+		
+		$result = $this->model_travel_trip->getPlanDetail($this->data['plan_id']);
 		$response = json_encode($result);
 		echo $response;
 	}

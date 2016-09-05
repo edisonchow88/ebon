@@ -509,6 +509,7 @@
 				updateDateFormButtonEvent();
 				initSortableDay();
 				initSortableLine();
+				updateSectionLimiter();
 			<!-- END -->
 		}
 	<!-- END -->
@@ -1228,6 +1229,7 @@
 					serial += ']';
 				serial += '}';
 				setCookie('plan',serial,1);
+				updateSectionLimiter();
 			<?php } ?>
 			//initMap();
 		}

@@ -65,4 +65,22 @@ final class ATrip{
 	public function getPlanId() {
 		return $this->data['plan_id'];
 	}
+	
+	public function hasTrip() {
+		if(isset($this->data['trip_id'])) {
+			return $this->data['trip_id'];
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public function hasPlan() {
+		if(isset($this->data['plan_id'])) {
+			return $this->data['plan_id'];
+		}
+		else {
+			return false;
+		}
+	}
 }

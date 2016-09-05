@@ -13,13 +13,6 @@
 	}
 </style>
 
-<?php
-	echo($plan);
-	if(isset($error)) { 
-		echo $error;
-    }
-    else {
-?>
 <div id="section-body">
 	<div id="section-view-xs" class="hidden-md hidden-lg">
     	<ul>
@@ -95,7 +88,6 @@
 <div id="section-footer box-shadow" class="hidden-xs hidden-sm">
 	<?php echo $content_section_footer; ?>
 </div>
-<?php } ?>
 
 <script>
 	function convert_to_title_case(str) {

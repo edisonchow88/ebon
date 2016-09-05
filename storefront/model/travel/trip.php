@@ -56,7 +56,7 @@ class ModelTravelTrip extends Model{
 			//END
 			
 			//START: set output
-				if($query->num_of_rows > 0) {
+				if($query->num_rows > 0) {
 					if($trip_id == '') {
 						foreach($query->rows as $result){
 							$output[$result['trip_id']] = $result;
@@ -681,7 +681,7 @@ class ModelTravelTrip extends Model{
 			//END
 			
 			//START: set output
-				if($query->num_of_rows > 0) {
+				if($query->num_rows > 0) {
 					if($plan_id == '') {
 						foreach($query->rows as $result){
 							$output[$result['plan_id']] = $result;

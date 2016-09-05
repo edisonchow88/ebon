@@ -24,13 +24,21 @@ class ControllerPagesTripItinerary extends AController {
 		//END
 		
 		//START: verify
-			$this->data['trip'] = $this->model_travel_trip->getTrip($data['trip_id']);
-			$this->data['plan'] = $this->model_travel_trip->getPlan(3);
-			if($this->data['trip'] == false) {
-				$this->data['error'] = '<b>Trip cannot be found.</b><br/>It may have been deleted.';
+			if($this->trip->hasTrip()) {
+				$this->data['trip'] = $this->model_travel_trip->getTrip($this->data['trip_id']);
+				$this->data['plan'] = $this->model_travel_trip->getPlan($this->data['plan_id']);
+				if($this->data['trip'] == false) {
+					$this->session->data['error'] = 'trip_not_found';
+					$this->redirect($this->html->getSecureURL('error/trip'));
+				}
+				else if($this->data['plan'] == false) {
+					$this->session->data['error'] = 'plan_not_found';
+					$this->redirect($this->html->getSecureURL('error/trip'));
+				}
 			}
-			else if($this->data['plan'] == false) {
-				$this->data['error'] = '<b>Plan cannot be found.</b><br/>It may have been deleted.';
+			else if($this->trip->hasPlan()) {
+				$this->session->data['error'] = 'trip_not_found';
+				$this->redirect($this->html->getSecureURL('error/trip'));
 			}
 		//END
 		

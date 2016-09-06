@@ -14,6 +14,7 @@ class ControllerModalAccountDetail extends AController {
 		//END
 		
 		//START: get data
+			$this->data['plan'] = $this->user->getRole();
 			$this->data['email'] = $this->user->getEmail();
 		//END
 		
@@ -26,12 +27,23 @@ class ControllerModalAccountDetail extends AController {
 			$action = 'edit';
 			$input = array();
 			//START: set input [ORDER IS IMPORTANT]
+				$i ='plan';
+				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = $this->data['plan'];
+				$input[$i]['type'] = 'hidden';
+				$input[$i]['text'] = $this->data['plan'];
+				
 				$i ='email';
 				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 				$input[$i]['id'] = str_replace("_","-",$i);
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = false;
 				$input[$i]['value'] = $this->data['email'];
+				$input[$i]['type'] = 'hidden';
+				$input[$i]['text'] = $this->data['email'];
 			//END
 			$modal_component['form'] = $this->component_database_modal->writeForm($id,$action,$input);
 		//END

@@ -302,7 +302,15 @@
 												$content .= '<a href="'.$i['text'].'" target="_blank">Link</a>';
 											}
 											else {
-												$content .= $i['text'];
+												$content .= '
+													<input 
+														type="text" 
+														class="form-control"
+														value="'.$i['text'].'"
+														style="background-color:#FFF; border:none; box-shadow:none; cursor:default;"
+														disabled
+													/>
+												';
 											}
 										}
 										$content .= '</span>';

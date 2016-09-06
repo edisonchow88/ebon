@@ -46,7 +46,7 @@ class ControllerModalAccountUserRoleEditRole extends AController {
 						$input[$i]['name'] = $i;
 						$input[$i]['required'] = false;
 						
-						$i ='active_trip';
+						$i ='max_active_trip';
 						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 						$input[$i]['id'] = str_replace("_","-",$i);
 						$input[$i]['name'] = $i;

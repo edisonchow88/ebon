@@ -65,6 +65,7 @@ final class AUser{
 			$this->data['user_id'] = '';
 			$this->data['role_id'] = '';
 			$this->data['role'] = '';
+			$this->data['max_active_trip'] = '';
 			$this->data['email'] = '';
 		//END
 		
@@ -216,6 +217,10 @@ final class AUser{
 	
 	public function getRole(){
 		return $this->data['role'];
+	}
+	
+	public function getMaxActiveTrip(){
+		return $this->data['max_active_trip'];
 	}
 	
 	public function getEmail(){

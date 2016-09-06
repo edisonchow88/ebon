@@ -49,7 +49,7 @@
             <?php } else { ?>
                 <div id="wrapper-button" class="hidden-xs hidden-sm">
                     <a class="btn btn-default" data-toggle="modal" data-target="#modal-trip-share">Share</a>
-                    <a class="btn btn-primary" onclick="verify_save_condition();">Save</a>
+                    <a class="btn btn-primary" onclick="verify_save_trip_condition();">Save</a>
                 </div>
             <?php } ?>
         <!-- END -->

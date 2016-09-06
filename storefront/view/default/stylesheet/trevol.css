@@ -309,7 +309,7 @@ ul {
 		padding:5px 15px;
 		display:block;
 		width:100%;
-		color:#96979d;
+		color:#777;
 	}
 	
 	#wrapper-menu li.active a {
@@ -380,7 +380,7 @@ ul {
 		padding:5px 15px;
 		display:block;
 		width:100%;
-		color:#96979d;
+		color:#777;
 	}
 	
 	#wrapper-account li.active a {
@@ -787,15 +787,37 @@ ul {
 /* START: modal */
 	.modal-header {
 		padding:15px 30px;
+		background-color:rgb(224, 224, 226);
+		border-top-left-radius:6px;
+		border-top-right-radius:6px;
+		border-bottom:solid thin rgba(0,0,0,.05);
+	}
+	.modal-header button {
+		margin-top:0 !important;
+		opacity:.5;
+	}
+	.modal-header button:hover {
+		opacity:.8;
+	}
+	.modal-title {
+		font-weight:bold;
+		font-size:14px;
+		color:#333;
 	}
 	.modal-body-footnote {
 		padding:15px;
 	}
 	.modal-footer {
-		padding:15px 30px;
+		padding:7px 30px;
 	}
 	.modal-footer .line-spacer {
 		line-height:7px;
 		max-height:7px;
+	}
+/* END */
+/* START: form */
+	.control-label {
+		font-weight:normal;
+		color:#888;
 	}
 /* END */

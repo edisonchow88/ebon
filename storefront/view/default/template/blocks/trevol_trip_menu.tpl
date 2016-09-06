@@ -7,31 +7,38 @@
     	<div id="wrapper-menu-modal-content">
             <ul>
             	<li>
-                	<a>
+                	<a data-toggle="modal" data-target="#modal-trip-new" onclick="hide_wrapper_menu();">
                     	<i class="fa fa-fw fa-file"></i>
                         <i class="fa fa-fw"></i>
                         New Trip
                     </a>
                 </li>
                 <li>
-                	<a>
+                	<a data-toggle="modal" data-target="#modal-trip-load" onclick="hide_wrapper_menu();">
                     	<i class="fa fa-fw fa-folder-open"></i>
                         <i class="fa fa-fw"></i>
                         Open
                     </a>
                 </li>
                 <li>
-                	<a>
+                	<a onclick="hide_wrapper_menu(); verify_save_trip_condition();">
                     	<i class="fa fa-fw fa-floppy-o"></i>
                         <i class="fa fa-fw"></i>
                         Save
                     </a>
                 </li>
                 <li>
-                	<a>
+                	<a data-toggle="modal" data-target="#modal-trip-share" onclick="hide_wrapper_menu();">
                     	<i class="fa fa-fw fa-share-alt"></i>
                         <i class="fa fa-fw"></i>
                         Share
+                    </a>
+                </li>
+                <li>
+                	<a data-toggle="modal" data-target="#modal-trip-delete" onclick="hide_wrapper_menu();">
+                    	<i class="fa fa-fw fa-trash"></i>
+                        <i class="fa fa-fw"></i>
+                        Delete
                     </a>
                 </li>
                 <hr />
@@ -55,7 +62,11 @@
 </div>
 
 <!-- START: [modal] -->
-	<?php echo $modal_trip_save; ?>
+	<?php echo $modal_trip_new; ?>
+    <?php echo $modal_trip_load; ?>
+    <?php echo $modal_trip_save; ?>
+    <?php echo $modal_trip_delete; ?>
+    <?php echo $modal_trip_share; ?>
 <!-- END -->
 
 <script>

@@ -14,7 +14,7 @@
                     </a>
                 </li>
                 <li>
-                	<a data-toggle="modal" data-target="#modal-trip-load" onclick="hide_wrapper_menu();">
+                	<a onclick="hide_wrapper_menu(); verify_load_trip_condition();">
                     	<i class="fa fa-fw fa-folder-open"></i>
                         <i class="fa fa-fw"></i>
                         Open

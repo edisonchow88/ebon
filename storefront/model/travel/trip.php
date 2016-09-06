@@ -1178,6 +1178,35 @@ class ModelTravelTrip extends Model{
 			$plan['day'] = $day;
 			return $plan;
 		}
+		
+		public function getTripByUserId($user_id) {
+			$trip = array();
+			
+			//START: run sql
+				$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table) . " 
+						WHERE user_id = '" . (int)$user_id . "' 
+						ORDER BY status_id DESC
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				if($query->num_rows > 0) {
+					foreach($query->rows as $result){
+						$output[$result['trip_id']] = $result;
+						$output[$result['trip_id']]['name'] = ucwords($result['name']);
+						$output[$result['trip_id']]['status'] = $this->getStatus($result['status_id']);
+					}
+				}
+				else {
+					return false;
+				}
+			//END
+			
+			return $output;
+		}
 	//END
 }
 

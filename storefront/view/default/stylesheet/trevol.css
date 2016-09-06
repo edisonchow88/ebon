@@ -804,6 +804,9 @@ ul {
 		font-size:14px;
 		color:#333;
 	}
+	.modal-body {
+		color:#777;
+	}
 	.modal-body-footnote {
 		padding:15px;
 	}
@@ -818,6 +821,6 @@ ul {
 /* START: form */
 	.control-label {
 		font-weight:normal;
-		color:#888;
+		color:#777;
 	}
 /* END */

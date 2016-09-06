@@ -2655,14 +2655,14 @@ form .help-block {
 	background: #e93578;
 	*background: #e93578;
 	box-shadow: none;
-	border-color: #bb285c; 
+	border-color: #c9386b; 
 }
 
 .btn-orange:hover, .btn-orange:active, .btn-orange.active, .btn-orange.disabled, .btn-orange[disabled],
 .btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
 	color: #ffffff;
 	background-color: #bb285c;
-	border-color: #bb285c; 	
+	border-color: #c9386b; 	
 }
 
 .btn-orange:active, .btn-orange.active,

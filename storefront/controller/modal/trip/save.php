@@ -27,25 +27,25 @@ class ControllerModalTripSave extends AController {
 				$input[$i]['value'] = '';
 				
 				$i ='user_id';
-				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 				$input[$i]['id'] = str_replace("_","-",$i);
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = false;
 				$input[$i]['value'] = $this->user->getUserId();
+				$input[$i]['type'] = 'hidden';
 				
 				$i ='language_id';
-				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 				$input[$i]['id'] = str_replace("_","-",$i);
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = false;
 				$input[$i]['value'] = $this->language->getLanguageId();
+				$input[$i]['type'] = 'hidden';
 				
 				$i ='plan';
-				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 				$input[$i]['id'] = str_replace("_","-",$i);
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = false;
 				$input[$i]['value'] = '';
+				$input[$i]['type'] = 'hidden';
 			//END
 			$setting['autocomplete'] = false;
 			$modal_component['form'] = $this->component_database_modal->writeForm($id,$action,$input,$setting);

@@ -494,10 +494,12 @@
 			<!-- START: print table -->
 				$.each(data_cooked.day, function(i) {
 					printDay(column, this, data_raw.day[i]);
-					if(typeof this.line != 'undefined' && this.line.length > 0) {
-						$.each(this.line, function(j) {
-							printLine(column, this, data_raw.day[i].line[j]);
-						});
+					if(typeof this.line != 'undefined' && this.line != null && this.line != '') {
+						if(this.line.length > 0) {
+							$.each(this.line, function(j) {
+								printLine(column, this, data_raw.day[i].line[j]);
+							});
+						}
 					}
 					printButtonAddLine(column, "#plan-day-" + this.day_id + "-content");
 				});
@@ -522,24 +524,26 @@
 			var month;
 			var num_of_day;
 			
-			date = new Date(data.travel_date);
-			num_of_day = data.day.length; 
-			
-			travel_date = date;
-			day = ("0" + travel_date.getDate()).slice(-2);
-			month = ("0" + (travel_date.getMonth() + 1)).slice(-2);
-			travel_date = travel_date.getFullYear() + "-" + (month) + "-" + (day) ;
-			
-			last_date = new Date(date.setDate(date.getDate() + num_of_day - 1));
-			day = ("0" + last_date.getDate()).slice(-2);
-			month = ("0" + (last_date.getMonth() + 1)).slice(-2);
-			last_date = last_date.getFullYear() + "-" + (month) + "-" + (day) ;
-			
-			$('#plan-date-form input[name=travel_date]').val(travel_date);
-			$('#plan-date-form input[name=last_date]').val(last_date);
-			$('#plan-date-form-hidden input[name=travel_date]').val(travel_date);
-			$('#plan-date-form-hidden input[name=last_date]').val(last_date);
-			$('#plan-date-form-hidden input[name=num_of_day]').val(data.day.length);
+			if(typeof data.travel_date != 'undefined' && data.travel_date != null && data.travel_date != '') {
+				date = new Date(data.travel_date);
+				num_of_day = data.day.length; 
+				
+				travel_date = date;
+				day = ("0" + travel_date.getDate()).slice(-2);
+				month = ("0" + (travel_date.getMonth() + 1)).slice(-2);
+				travel_date = travel_date.getFullYear() + "-" + (month) + "-" + (day) ;
+				
+				last_date = new Date(date.setDate(date.getDate() + num_of_day - 1));
+				day = ("0" + last_date.getDate()).slice(-2);
+				month = ("0" + (last_date.getMonth() + 1)).slice(-2);
+				last_date = last_date.getFullYear() + "-" + (month) + "-" + (day) ;
+				
+				$('#plan-date-form input[name=travel_date]').val(travel_date);
+				$('#plan-date-form input[name=last_date]').val(last_date);
+				$('#plan-date-form-hidden input[name=travel_date]').val(travel_date);
+				$('#plan-date-form-hidden input[name=last_date]').val(last_date);
+				$('#plan-date-form-hidden input[name=num_of_day]').val(data.day.length);
+			}
 		}
 		
 		function printDay(column, day, day_raw) {
@@ -829,7 +833,7 @@
 		}
 		
 		function setPlanTableDataFormatForDayDate(plan) {	
-			if(plan.travel_date != '') {
+			if(typeof plan.travel_date != 'undefined' && plan.travel_date != null && plan.travel_date != '') {
 				var first_date = new Date(plan.travel_date);
 				first_date.setDate(first_date.getDate() - 1);
 				var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -852,7 +856,7 @@
 		
 		function setPlanTableDataFormatForDayDuration(plan) {
 			for(i=0; i<plan.day.length; i++) {
-				if(typeof plan.day[i].line != 'undefined' &&  plan.day[i].line.length > 0) {
+				if(typeof plan.day[i].line != 'undefined' && plan.day[i].line != null && plan.day[i].line != '' &&  plan.day[i].line.length > 0) {
 					plan.day[i].duration = 0;
 					for(j=0; j<plan.day[i].line.length; j++) {
 						var duration = plan.day[i].line[j].duration;
@@ -870,7 +874,7 @@
 		
 		function setPlanTableDataFormatForLineDuration(plan) {
 			for(i=0; i<plan.day.length; i++) {
-				if(typeof plan.day[i].line != 'undefined' &&  plan.day[i].line.length > 0) {
+				if(typeof plan.day[i].line != 'undefined' && plan.day[i].line != null && plan.day[i].line != '' &&  plan.day[i].line.length > 0) {
 					for(j=0; j<plan.day[i].line.length; j++) {
 						var duration = plan.day[i].line[j].duration;
 						if(typeof duration != 'undefined' && duration != null && duration != '') {
@@ -1240,7 +1244,7 @@
 			var day = new Array();
 			var date;
 			
-			if(travel_date != '') {
+			if(typeof travel_date != 'undefined' && travel_date != null && travel_date != '') {
 				var first_date = new Date(travel_date);
 				first_date.setDate(first_date.getDate() - 1);
 				var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -1257,6 +1261,11 @@
 					var myWeekday = weekday[myDate.getDay()];
 					date = ("0" + myDate.getDate()).slice(-2) + "&nbsp;" + monthNames[(myDate.getMonth())] + "&nbsp;&nbsp;&nbsp;(" + myWeekday + ")";
 					day.push(date);
+				}
+			}
+			else {
+				for (i=0; i<num_of_day; i++) {
+					day.push('');
 				}
 			}
 			

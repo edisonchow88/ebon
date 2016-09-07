@@ -21,7 +21,12 @@ class ControllerModalTripLoad extends AController {
 		//START: set data
 			$this->data['trip'] = $this->model_travel_trip->getTripByUserId($this->user->getUserId());
 			$this->data['max_active_trip'] = $this->user->getMaxActiveTrip();
-			$this->data['num_of_active_trip'] = count($this->data['trip']);
+			if($this->data['trip'] != false) {
+				$this->data['num_of_active_trip'] = count($this->data['trip']);
+			}
+			else {
+				$this->data['num_of_active_trip'] = 0;
+			}
 			$this->data['usage'] = $this->data['num_of_active_trip'] / $this->data['max_active_trip'] * 100;
 		//END
 		
@@ -32,7 +37,7 @@ class ControllerModalTripLoad extends AController {
 					$user = $this->model_account_user->getUser($trip['user_id']);
 					$username = substr($user['email'], 0, strpos($user['email'], "@"));
 					$this->data['result'][$trip_id]['username'] = $username;
-					$this->data['result'][$trip_id]['url'] = $this->html->getSecureURL('trip/itinerary','&trip_id='.$trip['trip_id']);
+					$this->data['result'][$trip_id]['url'] = $this->html->getSecureURL('trip/itinerary','&trip='.$trip['code']);
 				}
 			}
 		//END

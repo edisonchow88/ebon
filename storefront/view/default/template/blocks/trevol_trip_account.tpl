@@ -45,6 +45,7 @@
     <?php echo $modal_account_login; ?>
     <?php echo $modal_account_logout; ?>
     <?php echo $modal_account_detail; ?>
+    <?php echo $modal_account_upgrade; ?>
 <!-- END -->
 
 <!-- START: [script] -->

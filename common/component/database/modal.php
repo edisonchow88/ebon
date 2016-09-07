@@ -195,7 +195,8 @@
 				else if($setting['autocomplete'] == false) { $content .= 'autocomplete="off" '; }
 				$content .= '>';
 					if($action != '') { $content .= '<input type="hidden" name="action" value="'.$action.'"/>'; }
-					$content .= '<div class="tab-content">';
+					if(isset($i['tab'])) { $class = 'tab-content'; } else { $class = ''; }
+					$content .= '<div class="'.$class.'">';
 						$tab = 0;
 						foreach($input as $i) {
 							if(isset($i['tab'])) {
@@ -218,7 +219,8 @@
 								$content .= '</section>';
 							}
 							else {
-								$content .= '<div class="form-group row">';
+								if($i['type'] == 'hidden' && !(isset($i['label']))) { $hidden = 'hidden'; } else { $hidden = ''; };
+								$content .= '<div class="form-group row '.$hidden.'">';
 								if($i['label'] != '') {
 									$content .= '<label class="control-label col-sm-4 col-xs-10">';
 									$content .= $i['label'];

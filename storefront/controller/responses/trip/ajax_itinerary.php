@@ -97,6 +97,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$plan = json_decode(html_entity_decode($this->data['plan']),true);
 			$plan_data['name'] = $plan['name'];
 			$plan_data['travel_date'] = $plan['travel_date'];
+			if($plan_data['travel_date'] == '') { $plan_data['travel_date'] = 'NULL'; }
 			$execution = $this->model_travel_trip->editPlan($plan_id, $plan_data);
 			
 			foreach($plan['day'] as $day) {
@@ -126,12 +127,12 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	}
 	
 	public function verify_new_trip() {
-		$num_of_active_trip = $this->model_travel_trip->getTripByUserId($data->user_id);
-		$role = $this->model_account_user->getRole($data->role_id);
-		$max_active_trip = $role['max_active_trip'];
+		$trip = $this->model_travel_trip->getTripByUserId($this->data['user_id']);
+		$role = $this->model_account_user->getRole($this->data['role_id']);
+		$max_active_trip = (int)$role['max_active_trip'];
 		
-		if($num_of_active_trip >= $max_active_trip) {
-			$result['exceeded_quota'] = true;
+		if(count($trip) >= $max_active_trip) {
+			$result['exceeded_quota'] = $role;
 			$response = json_encode($result);
 			echo $response;	
 			return 'failed';
@@ -145,12 +146,12 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	}
 	
 	public function verify_save_trip() {
-		$num_of_active_trip = $this->model_travel_trip->getTripByUserId($data->user_id);
-		$role = $this->model_account_user->getRole($data->role_id);
-		$max_active_trip = $role['max_active_trip'];
+		$trip = $this->model_travel_trip->getTripByUserId($this->data['user_id']);
+		$role = $this->model_account_user->getRole($this->data['role_id']);
+		$max_active_trip = (int)$role['max_active_trip'];
 		
-		if($num_of_active_trip >= $max_active_trip) {
-			$result['exceeded_quota'] = true;
+		if(count($trip) >= $max_active_trip) {
+			$result['exceeded_quota'] = $role;
 			$response = json_encode($result);
 			echo $response;	
 			return 'failed';

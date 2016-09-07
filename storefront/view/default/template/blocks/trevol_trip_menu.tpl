@@ -7,7 +7,7 @@
     	<div id="wrapper-menu-modal-content">
             <ul>
             	<li>
-                	<a data-toggle="modal" data-target="#modal-trip-new" onclick="hide_wrapper_menu();">
+                	<a onclick="hide_wrapper_menu(); verify_new_trip_condition();">
                     	<i class="fa fa-fw fa-file"></i>
                         <i class="fa fa-fw"></i>
                         New Trip

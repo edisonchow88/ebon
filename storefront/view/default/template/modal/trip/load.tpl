@@ -117,7 +117,7 @@
                                     &nbsp;Trips
                                 </span>
                             </li>
-                            <li><div class="btn-nav small"><a class="btn btn-sm btn-block btn-success">Upgrade Plan</a></div></li>
+                            <li><div class="btn-nav small"><a class="btn btn-sm btn-block btn-success" data-dismiss="modal" data-toggle="modal" data-target="#modal-account-upgrade">Upgrade Account</a></div></li>
                         </ul>
                     </div>
                     <div class="col-xs-6 col-md-8" id="modal-trip-load-right-panel">
@@ -125,7 +125,7 @@
                         	<div id="trip_all" class="tab-pane active trip-list">
                             	<div class="row">
                                 	<div class="col-xs-6 tab-title"><b>All Trips</b></div>
-                                    <div class="col-xs-6 text-right"><a class="btn btn-primary">Create New Trip</a></div>
+                                    <div class="col-xs-6 text-right"><a class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#modal-trip-new">Create New Trip</a></div>
                                 </div>
                                 <?php 
                                 	foreach($result as $t) { 

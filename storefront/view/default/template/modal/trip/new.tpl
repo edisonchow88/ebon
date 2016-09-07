@@ -60,7 +60,9 @@
 				}
 				else if(typeof json.success != 'undefined') {
 					<!-- if success -->
-					window.location.reload(true);
+					setCookie('trip','',0);
+					setCookie('plan','',0);
+					window.location = json.redirect;
 				}
 				document.getElementById('modal-trip-new-form-alert').innerHTML = alert_text;
 			} else {
@@ -78,30 +80,45 @@
 	}
 	
 	function verify_new_trip_condition() {
-		<?php if($this->user->isLogged() == false) { ?>
-			$('#modal-trip-new').modal('show');
-		<?php } else { ?>
-			$('#modal-trip-new').modal('show');
-		<?php } ?>
-	}
-	
-	<?php if($this->user->isLogged() == false) { ?>
-		$('#modal-trip-new .btn-primary').off().on('click',function() {
-			newTripViaCookie();
-		});
-	<?php } else { ?>
-		$('#modal-trip-new .btn-primary').off().on('click',function() {
-			newTrip();
-		});
-	<?php } ?>
-	
-	$("#modal-trip-new").on( "show.bs.modal", function() { 
 		var cookie = getCookie('plan');
 		var trip_name = $('#wrapper-title-input').val();
-		if(typeof cookie != 'undefined' && cookie != null && cookie != '') {
-			$('#modal-trip-new-form-alert').html("<div class='alert alert-warning'><b>NOTE: "+trip_name+" is not saved.</b><br/>It will be deleted permanently. Do you like to proceed?</div>");
-		}
-	});
+		
+		<?php if($this->user->isLogged() == false) { ?>
+			<!-- START: [not logged] -->
+				if(typeof cookie != 'undefined' && cookie != null && cookie != '') {
+					<!-- START: [has cookie] -->
+						$('#modal-trip-new').modal('show');
+						$('#modal-trip-new-form-alert').html("<div class='alert alert-warning'><b>NOTE: "+trip_name+" is not saved.</b><br/>It will be deleted permanently. Do you like to proceed?</div>");
+						$('#modal-trip-new .btn-primary').off().on('click',function() {
+							newTripViaCookie();
+						});
+					<!-- END -->
+				}
+				else {
+					<!-- START: [no cookie] -->
+						newTripViaCookie();
+					<!-- END -->
+				}
+			<!-- END -->
+		<?php } else { ?>
+			<!-- START: [logged] -->
+				if(typeof cookie != 'undefined' && cookie != null && cookie != '') {
+					<!-- START: [has cookie] -->
+						$('#modal-trip-new').modal('show');
+						$('#modal-trip-new-form-alert').html("<div class='alert alert-warning'><b>NOTE: "+trip_name+" is not saved.</b><br/>It will be deleted permanently. Do you like to proceed?</div>");
+						$('#modal-trip-new .btn-primary').off().on('click',function() {
+							newTrip();
+						});
+					<!-- END -->
+				}
+				else {
+					<!-- START: [no cookie] -->
+						newTrip();
+					<!-- END -->
+				}
+			<!-- END -->
+		<?php } ?>
+	}
 	
 	$("#modal-trip-new").on( "hidden.bs.modal", function() { 
 		$('#modal-trip-new-form-alert').html('');

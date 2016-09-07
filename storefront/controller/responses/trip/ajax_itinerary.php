@@ -61,6 +61,23 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			if($this->verify_new_trip() == 'failed') { return; }
 		//END
 		
+		//START: create trip & get trip_id
+			$trip_data['user_id'] = $this->data['user_id'];
+			$trip_data['status_id'] = 1;
+			$trip_data['language_id'] = $this->data['language_id'];
+			$trip_data['name'] = 'Untitled Trip';
+			$trip_id = $this->model_travel_trip->addTrip($trip_data);
+		//END
+		
+		//START: get code
+			$trip = $this->model_travel_trip->getTrip($trip_id);
+			$code = $trip['code'];
+		//END
+		
+		//START: set redirect
+			$result['redirect'] = $this->html->getSecureURL('trip/itinerary','&trip='.$code);
+		//END
+		
 		//START: response
 			$result['success'][] = 'Trip created'; 
 			$response = json_encode($result);
@@ -120,10 +137,20 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$code = $trip['code'];
 		//END
 		
-		$result['redirect'] = $this->html->getSecureURL('trip/itinerary','&trip='.$code);
-		$result['success'][] = 'Trip saved'; 
-		$response = json_encode($result);
-		echo $response;	
+		//START: get code
+			$trip = $this->model_travel_trip->getTrip($trip_id);
+			$code = $trip['code'];
+		//END
+		
+		//START: set redirect
+			$result['redirect'] = $this->html->getSecureURL('trip/itinerary','&trip='.$code);
+		//END
+		
+		//START: response
+			$result['success'][] = 'Trip saved'; 
+			$response = json_encode($result);
+			echo $response;
+		//END
 	}
 	
 	public function verify_new_trip() {

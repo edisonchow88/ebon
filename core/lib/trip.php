@@ -100,7 +100,6 @@ final class ATrip{
 				}
 				else {
 					//START: [invalid code]
-						unset($this->data['code']);
 						unset($this->data['trip_id']);
 						unset($this->data['plan_id']);
 						unset($this->data['owner_id']);
@@ -131,9 +130,18 @@ final class ATrip{
 		return $this->data['owner_id'];
 	}
 	
-	public function hasTrip() {
+	public function hasCode() {
 		if(isset($this->data['code'])) {
 			return $this->data['code'];
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public function hasTrip() {
+		if(isset($this->data['trip_id'])) {
+			return $this->data['trip_id'];
 		}
 		else {
 			return false;

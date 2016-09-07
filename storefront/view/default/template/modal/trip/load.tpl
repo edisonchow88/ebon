@@ -1,9 +1,10 @@
 <style>
 	#modal-trip-load-left-panel {
-		border-right:thin solid rgb(229, 229, 229);
 		padding-right:15px;
 	}
 	#modal-trip-load-right-panel {
+		min-height:350px;
+		border-left:thin solid rgb(229, 229, 229);
 		padding-left:15px;
 	}
 	
@@ -125,7 +126,7 @@
                         	<div id="trip_all" class="tab-pane active trip-list">
                             	<div class="row">
                                 	<div class="col-xs-6 tab-title"><b>All Trips</b></div>
-                                    <div class="col-xs-6 text-right"><a class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#modal-trip-new">Create New Trip</a></div>
+                                    <div class="col-xs-6 text-right"><a class="btn btn-primary" data-dismiss="modal" data-toggle="modal" onclick="verify_new_trip_condition();">Create New Trip</a></div>
                                 </div>
                                 <?php 
                                 	foreach($result as $t) { 

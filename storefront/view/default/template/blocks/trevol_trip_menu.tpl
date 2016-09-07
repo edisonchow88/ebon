@@ -67,6 +67,7 @@
     <?php echo $modal_trip_save; ?>
     <?php echo $modal_trip_delete; ?>
     <?php echo $modal_trip_share; ?>
+    <?php echo $modal_trip_quota; ?>
 <!-- END -->
 
 <script>

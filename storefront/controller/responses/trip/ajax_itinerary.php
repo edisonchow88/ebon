@@ -13,15 +13,17 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 				$this->data[$key] = $value;
 			}
 			
+			$this->loadModel('account/user');	
 			$this->loadModel('travel/trip');	
 			
 			if($this->data['action'] == 'refresh_trip') { $this->refresh_trip(); return; }
 			else if($this->data['action'] == 'refresh_plan') { $this->refresh_plan(); return; }
 			else if($this->data['action'] == 'search_all') { $this->search_all(); return; }
-			else if($this->data['action'] == 'save') { $this->save(); return; }
+			else if($this->data['action'] == 'save_trip') { $this->save_trip(); return; }
+			else if($this->data['action'] == 'new_trip') { $this->new_trip(); return; }
 			else { 
 				//IMPORTANT: Return responseText in order for xmlhttp to function properly 
-				$result['warning'][] = 'System Failure: Please contact Admin.'; 
+				$result['warning'][] = '<b>ERROR: Invalid action</b><br/>Please contact Admin.'; 
 				$response = json_encode($result);
 				echo $response;	
 				return;
@@ -54,9 +56,21 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		echo $response;
 	}
 	
-	public function save() {
-		//START: verify signup
-			if($this->verify_save() == 'failed') { return; }
+	public function new_trip() {
+		//START: run verification
+			if($this->verify_new_trip() == 'failed') { return; }
+		//END
+		
+		//START: response
+			$result['success'][] = 'Trip created'; 
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function save_trip() {
+		//START: run verification
+			if($this->verify_save_trip() == 'failed') { return; }
 		//END
 		
 		//START: create trip & get trip_id
@@ -111,7 +125,37 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		echo $response;	
 	}
 	
-	public function verify_save() {
+	public function verify_new_trip() {
+		$num_of_active_trip = $this->model_travel_trip->getTripByUserId($data->user_id);
+		$role = $this->model_account_user->getRole($data->role_id);
+		$max_active_trip = $role['max_active_trip'];
+		
+		if($num_of_active_trip >= $max_active_trip) {
+			$result['exceeded_quota'] = true;
+			$response = json_encode($result);
+			echo $response;	
+			return 'failed';
+		}
+		
+		if(count($result['warning']) > 0) { 
+			$response = json_encode($result);
+			echo $response;	
+			return 'failed';
+		}
+	}
+	
+	public function verify_save_trip() {
+		$num_of_active_trip = $this->model_travel_trip->getTripByUserId($data->user_id);
+		$role = $this->model_account_user->getRole($data->role_id);
+		$max_active_trip = $role['max_active_trip'];
+		
+		if($num_of_active_trip >= $max_active_trip) {
+			$result['exceeded_quota'] = true;
+			$response = json_encode($result);
+			echo $response;	
+			return 'failed';
+		}
+		
 		if($this->data['name'] == '') {
 			$result['warning'][] = '<b>Trip Name</b> is missing.';
 		}

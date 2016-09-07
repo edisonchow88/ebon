@@ -43,7 +43,12 @@
 				<!-- if connection success -->
 				var json = JSON.parse(xmlhttp.responseText);
 				
-				if(typeof json.warning != 'undefined') {
+				if(typeof json.exceeded_quota != 'undefined') {
+					$('#modal-trip-quota-alert-text').html('New trip cannot be created.');
+					$('#modal-trip-quota').modal('show');
+					$('#modal-trip-new').modal('hide');
+				}
+				else if(typeof json.warning != 'undefined') {
 					<!-- if error -->
 					var content;
 					content = "<div class='alert alert-danger'><ul>";
@@ -94,7 +99,7 @@
 		var cookie = getCookie('plan');
 		var trip_name = $('#wrapper-title-input').val();
 		if(typeof cookie != 'undefined' && cookie != null && cookie != '') {
-			$('#modal-trip-new-form-alert').html("<div class='alert alert-warning'><b>"+trip_name+" is not saved.</b><br/>It will be deleted permanently. Do you like to proceed?</div>");
+			$('#modal-trip-new-form-alert').html("<div class='alert alert-warning'><b>NOTE: "+trip_name+" is not saved.</b><br/>It will be deleted permanently. Do you like to proceed?</div>");
 		}
 	});
 	

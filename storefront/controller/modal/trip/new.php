@@ -25,13 +25,34 @@ class ControllerModalTripNew extends AController {
 				$input[$i]['required'] = false;
 				$input[$i]['value'] = '';
 				$input[$i]['type'] = 'hidden';
+				
+				$i ='user_id';
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = $this->user->getUserId();
+				$input[$i]['type'] = 'hidden';
+				
+				$i ='role_id';
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = $this->user->getRoleId();
+				$input[$i]['type'] = 'hidden';
+				
+				$i ='language_id';
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = $this->language->getLanguageId();
+				$input[$i]['type'] = 'hidden';
 			//END
 			$setting['autocomplete'] = true;
 			$modal_component['form'] = $this->component_database_modal->writeForm($id,$action,$input,$setting);
 		//END
 		
 		//START: set ajax
-			$modal_ajax = $this->html->getSecureURL('account/ajax_user');
+			$modal_ajax = $this->html->getSecureURL('trip/ajax_itinerary');
 		//END
 		
 		//START: set variable

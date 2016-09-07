@@ -16,7 +16,7 @@ class ControllerModalTripSave extends AController {
 		
 		//START: set form
 			$id = 'modal-trip-save-form';
-			$action = 'save';
+			$action = 'save_trip';
 			$input = array();
 			//START: set input [ORDER IS IMPORTANT]
 				$i ='name';
@@ -31,6 +31,13 @@ class ControllerModalTripSave extends AController {
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = false;
 				$input[$i]['value'] = $this->user->getUserId();
+				$input[$i]['type'] = 'hidden';
+				
+				$i ='role_id';
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = $this->user->getRoleId();
 				$input[$i]['type'] = 'hidden';
 				
 				$i ='language_id';

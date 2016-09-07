@@ -43,7 +43,12 @@
 				<!-- if connection success -->
 				var json = JSON.parse(xmlhttp.responseText);
 				
-				if(typeof json.warning != 'undefined') {
+				if(typeof json.exceeded_quota != 'undefined') {
+					$('#modal-trip-quota-alert-text').html('Trip cannot be saved.');
+					$('#modal-trip-quota').modal('show');
+					$('#modal-trip-save').modal('hide');
+				}
+				else if(typeof json.warning != 'undefined') {
 					<!-- if error -->
 					var content;
 					content = "<div class='alert alert-danger'><ul>";

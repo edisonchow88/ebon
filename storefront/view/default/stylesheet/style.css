@@ -2671,6 +2671,13 @@ form .help-block {
 	border-color: #9c1f4d !important; 	
 }
 
+.btn-orange:focus, .btn-orange.focus,
+.btn-primary:focus, .btn-primary.focus {
+	background-color: #9c1f4d !important;
+	border-color: #9c1f4d !important; 	
+	outline:none;
+}
+
 .btn-wht {
 	color: #e93578;
 	text-shadow: none;

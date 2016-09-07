@@ -44,6 +44,7 @@ class ControllerPagesTravelTrip extends AController {
 					
 					//NOTE: sequence is important
 					$result[$trip_id]['trip_id'] = $row['trip_id'];
+					$result[$trip_id]['code'] = $row['code'];
 					$result[$trip_id]['user_id'] = $row['user_id'];
 					$result[$trip_id]['status'] = json_encode($row['status']);
 					$result[$trip_id]['language'] = $row['language']['name'];
@@ -85,6 +86,18 @@ class ControllerPagesTravelTrip extends AController {
 			$column[$i]['width'] = '80px';
 			$column[$i]['order'] = '';
 			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'true';
+			
+			$i = 'code';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'false';
 			$column[$i]['searchable'] = 'true';
 			
 			$i = 'user_id';

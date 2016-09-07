@@ -25,6 +25,7 @@ class ControllerBlocksTrevolTripDebug extends AController {
 			$this->data['role_id'] = $this->user->getRoleId();
 			$role = $this->model_account_user->getRole($this->data['role_id']);
 			$this->data['role'] = $role['name'];
+			$this->data['code'] = $this->trip->getCode();
 			$this->data['trip_id'] = $this->trip->getTripId();
 			$this->data['plan_id'] = $this->trip->getPlanId();
 			$this->data['owner_id'] = $this->trip->getOwnerId();
@@ -62,6 +63,14 @@ class ControllerBlocksTrevolTripDebug extends AController {
 				$input[$i]['value'] = $this->data['role'];
 				$input[$i]['type'] = 'disabled';
 				
+				$i ='code';
+				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = $this->data['code'];
+				$input[$i]['type'] = 'disabled';
+				
 				$i ='trip_id';
 				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 				$input[$i]['id'] = str_replace("_","-",$i);
@@ -84,14 +93,6 @@ class ControllerBlocksTrevolTripDebug extends AController {
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = false;
 				$input[$i]['value'] = $this->data['owner_id'];
-				$input[$i]['type'] = 'disabled';
-				
-				$i ='day_id';
-				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
-				$input[$i]['id'] = str_replace("_","-",$i);
-				$input[$i]['name'] = $i;
-				$input[$i]['required'] = false;
-				$input[$i]['value'] = $this->data['day_id'];
 				$input[$i]['type'] = 'disabled';
 				
 				$i ='send';

@@ -20,16 +20,19 @@ final class AUser{
 	
 	//START: set common table
 		private $table = "user";
-		private $table_group = "user_role";
+		private $table_role = "user_role";
 	//END
 	
 	private function getUser($user_id) {
 		//START: run SQL
 			$sql = "
-				SELECT *
-				FROM " . $this->db->table($this->table) . " 
+				SELECT *, t1.role_id
+				FROM " . $this->db->table($this->table) . " t1
+				LEFT JOIN " . $this->db->table($this->table_role) . " t2
+				ON t1.role_id = t2.role_id
 				WHERE user_id = '" . (int)$user_id . "' 
-				AND status = '1'
+				AND t1.status = '1'
+				LIMIT 1
 			";
 			$query = $this->db->query($sql);
 		//END
@@ -38,6 +41,7 @@ final class AUser{
 			$result = $query->row;
 			$output = $query->row;
 			$output['fullname'] = ucwords($result['fullname']);
+			$output['role'] = ucwords($result['name']);
 		//END
 		
 		//START: verify output
@@ -60,6 +64,8 @@ final class AUser{
 		//START: set data
 			$this->data['user_id'] = '';
 			$this->data['role_id'] = '';
+			$this->data['role'] = '';
+			$this->data['max_active_trip'] = '';
 			$this->data['email'] = '';
 		//END
 		
@@ -119,11 +125,14 @@ final class AUser{
 	public function login($email, $password){
 		//START: run SQL
 			$sql = "
-				SELECT *
-				FROM " . $this->db->table($this->table) . " 
-				WHERE email = '" . $this->db->escape($email) . "'
-				AND password = '" . $this->db->escape(AEncryption::getHash($password)) . "' 
-				AND status = '1'
+				SELECT *, t1.role_id
+				FROM " . $this->db->table($this->table) . " t1
+				LEFT JOIN " . $this->db->table($this->table_role) . " t2
+				ON t1.role_id = t2.role_id
+				WHERE t1.email = '" . $this->db->escape($email) . "'
+				AND t1.password = '" . $this->db->escape(AEncryption::getHash($password)) . "' 
+				AND t1.status = '1'
+				LIMIT 1
 			";
 			$query = $this->db->query($sql);
 		//END
@@ -132,6 +141,7 @@ final class AUser{
 			$result = $query->row;
 			$output = $query->row;
 			$output['fullname'] = ucwords($result['fullname']);
+			$output['role'] = ucwords($result['name']);
 		//END
 		
 		//START: verify output
@@ -203,6 +213,14 @@ final class AUser{
 	
 	public function getRoleId(){
 		return $this->data['role_id'];
+	}
+	
+	public function getRole(){
+		return $this->data['role'];
+	}
+	
+	public function getMaxActiveTrip(){
+		return $this->data['max_active_trip'];
 	}
 	
 	public function getEmail(){

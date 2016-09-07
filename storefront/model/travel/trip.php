@@ -112,6 +112,43 @@ class ModelTravelTrip extends Model{
 				$trip_id = $this->db->getLastId();
 			//END
 			
+			//START: generate code
+				$id = str_pad($trip_id, 4, '0', STR_PAD_LEFT);
+				$index[0] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				$index[1] = 'abcdefghijklmnopqrstuvwxyz';
+				$index[2] = '987654321';
+				$index['a'] = $index[0].$index[1].$index[0].$index[1];
+				$index['b'] = $index[0].$index[2].$index[1].$index[0].$index[2].$index[1];
+				$index['c'] = $index[1].$index[0].$index[2].$index[1].$index[0].$index[2];
+				$index['d'] = $index[1].$index[2].$index[0].$index[1].$index[2].$index[0];
+				$index['e'] = $index[2].$index[0].$index[1].$index[2].$index[0].$index[1];
+				$index['f'] = $index[2].$index[1].$index[0].$index[2].$index[1].$index[0];
+				$year = gmdate('y');
+				$month = gmdate('m');
+				$day = gmdate('d');
+				$minute = gmdate('i');
+				$second = gmdate('s');
+				$id1 = substr($id,-1,1);
+				$id2 = substr($id,-2,1);
+				$id3 = substr($id,-3,1);
+				$code = '';
+				$code .= substr($index['a'],$second,1);
+				$code .= substr($index['c'],$day,1);
+				$code .= substr($index['e'],$id1,1);
+				$code .= substr($index['b'],$month,1);
+				$code .= substr($index['d'],$id3,1);
+				$code .= substr($index['f'],$year,1);
+				$code .= substr($index['a'],$id2,1);
+				$code .= substr($index['d'],$minute,1);
+				
+				$sql = "
+					UPDATE " . $this->db->table($this->table) . " 
+					SET code = '" . $code . "'
+					WHERE trip_id = '" . (int)$trip_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
 			//START: run chain reaction
 				//START: set data
 					$plan['trip_id'] = $trip_id;
@@ -1089,6 +1126,9 @@ class ModelTravelTrip extends Model{
 					}
 				}
 			}
+			if(isset($update['title'])) { $update['title'] = "title = '" . $this->db->escape($data['title']) . "'"; }
+			if(isset($update['description'])) { $update['description'] = "description = '" . $this->db->escape($data['description']) . "'"; }
+			if(isset($update['note'])) { $update['note'] = "note = '" . $this->db->escape($data['note']) . "'"; }
 			if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			
@@ -1177,6 +1217,35 @@ class ModelTravelTrip extends Model{
 			$day = array_values($day);
 			$plan['day'] = $day;
 			return $plan;
+		}
+		
+		public function getTripByUserId($user_id) {
+			$trip = array();
+			
+			//START: run sql
+				$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table) . " 
+						WHERE user_id = '" . (int)$user_id . "' 
+						ORDER BY status_id DESC
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				if($query->num_rows > 0) {
+					foreach($query->rows as $result){
+						$output[$result['trip_id']] = $result;
+						$output[$result['trip_id']]['name'] = ucwords($result['name']);
+						$output[$result['trip_id']]['status'] = $this->getStatus($result['status_id']);
+					}
+				}
+				else {
+					return false;
+				}
+			//END
+			
+			return $output;
 		}
 	//END
 }

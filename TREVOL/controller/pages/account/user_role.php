@@ -43,6 +43,7 @@ class ControllerPagesAccountUserRole extends AController {
 					$result[$role_id]['role_id'] = $row['role_id'];
 					$result[$role_id]['name'] = $row['name'];
 					$result[$role_id]['description'] = $row['description'];
+					$result[$role_id]['max_active_trip'] = $row['max_active_trip'];
 					$count = $this->model_account_user->countUserByRoleId($row['role_id']);
 					$result[$role_id]['count'] = $count;
 				}
@@ -86,6 +87,18 @@ class ControllerPagesAccountUserRole extends AController {
 			$column[$i]['searchable'] = 'true';
 			
 			$i = 'description';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'false';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'max_active_trip';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';

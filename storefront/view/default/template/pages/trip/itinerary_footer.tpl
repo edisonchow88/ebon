@@ -42,7 +42,7 @@
             </div>
         </li>
         <li>
-            <a class="nomargin btn btn-sm" style="color:#e93578;">Get free unlimited memory</a>
+            <a class="nomargin btn btn-sm" style="color:#e93578;" onclick="getFreeUnlimitedMemory();">Get free unlimited memory</a>
         </li>
     <?php } else {?>
 <!--
@@ -90,5 +90,16 @@
 		$('#section-limiter-memory').html(current_memory_text);
 		$('#section-limiter .progress-bar').attr('aria-valuenow',percentage);
 		$('#section-limiter .progress-bar').css('width',percentage+'%');
+	}
+	
+	function getFreeUnlimitedMemory() {
+		var alert_text = '<div class="alert alert-info">Enjoy free unlimited memory per trip by saving it in our server.</div>';
+		<?php if($this->user->isLogged() == false) { ?>
+			$('#modal-account-login').modal('show');
+			$('#modal-account-login-form-alert').html(alert_text);
+		<?php } else { ?>
+			verify_save_trip_condition();
+			$('#modal-trip-save-form-alert').html(alert_text);
+		<?php } ?>
 	}
 </script>

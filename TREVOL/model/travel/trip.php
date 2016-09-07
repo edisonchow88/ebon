@@ -107,6 +107,43 @@ class ModelTravelTrip extends Model{
 				$trip_id = $this->db->getLastId();
 			//END
 			
+			//START: generate code
+				$id = str_pad($trip_id, 4, '0', STR_PAD_LEFT);
+				$index[0] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				$index[1] = 'abcdefghijklmnopqrstuvwxyz';
+				$index[2] = '987654321';
+				$index['a'] = $index[0].$index[1].$index[0].$index[1];
+				$index['b'] = $index[0].$index[2].$index[1].$index[0].$index[2].$index[1];
+				$index['c'] = $index[1].$index[0].$index[2].$index[1].$index[0].$index[2];
+				$index['d'] = $index[1].$index[2].$index[0].$index[1].$index[2].$index[0];
+				$index['e'] = $index[2].$index[0].$index[1].$index[2].$index[0].$index[1];
+				$index['f'] = $index[2].$index[1].$index[0].$index[2].$index[1].$index[0];
+				$year = gmdate('y');
+				$month = gmdate('m');
+				$day = gmdate('d');
+				$minute = gmdate('i');
+				$second = gmdate('s');
+				$id1 = substr($id,-1,1);
+				$id2 = substr($id,-2,1);
+				$id3 = substr($id,-3,1);
+				$code = '';
+				$code .= substr($index['a'],$second,1);
+				$code .= substr($index['c'],$day,1);
+				$code .= substr($index['e'],$id1,1);
+				$code .= substr($index['b'],$month,1);
+				$code .= substr($index['d'],$id3,1);
+				$code .= substr($index['f'],$year,1);
+				$code .= substr($index['a'],$id2,1);
+				$code .= substr($index['d'],$minute,1);
+				
+				$sql = "
+					UPDATE " . $this->db->table($this->table) . " 
+					SET code = '" . $code . "'
+					WHERE trip_id = '" . (int)$trip_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
 			//START: run chain reaction
 				//START: set data
 					$plan['trip_id'] = $trip_id;

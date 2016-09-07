@@ -3,19 +3,11 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerModalAccountDetail extends AController {
-	//START: declare common variable
-		public $data = array();
-	//END
-	
+class ControllerModalTripNew extends AController {
+
   	public function main() {
         //START: init controller data
         	$this->extensions->hk_InitData($this,__FUNCTION__);
-		//END
-		
-		//START: get data
-			$this->data['plan'] = $this->user->getRole();
-			$this->data['email'] = $this->user->getEmail();
 		//END
 		
 		//START: load component	
@@ -23,43 +15,53 @@ class ControllerModalAccountDetail extends AController {
 		//END
 		
 		//START: set form
-			$id = 'modal-account-detail-form';
-			$action = 'edit';
+			$id = 'modal-trip-new-form';
+			$action = 'new_trip';
 			$input = array();
 			//START: set input [ORDER IS IMPORTANT]
-				$i ='plan';
-				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$i ='name';
 				$input[$i]['id'] = str_replace("_","-",$i);
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = false;
-				$input[$i]['value'] = $this->data['plan'];
+				$input[$i]['value'] = '';
 				$input[$i]['type'] = 'hidden';
-				$input[$i]['text'] = $this->data['plan'];
 				
-				$i ='email';
-				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$i ='user_id';
 				$input[$i]['id'] = str_replace("_","-",$i);
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = false;
-				$input[$i]['value'] = $this->data['email'];
+				$input[$i]['value'] = $this->user->getUserId();
 				$input[$i]['type'] = 'hidden';
-				$input[$i]['text'] = $this->data['email'];
+				
+				$i ='role_id';
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = $this->user->getRoleId();
+				$input[$i]['type'] = 'hidden';
+				
+				$i ='language_id';
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = $this->language->getLanguageId();
+				$input[$i]['type'] = 'hidden';
 			//END
-			$modal_component['form'] = $this->component_database_modal->writeForm($id,$action,$input);
+			$setting['autocomplete'] = true;
+			$modal_component['form'] = $this->component_database_modal->writeForm($id,$action,$input,$setting);
 		//END
 		
 		//START: set ajax
-			$modal_ajax = $this->html->getSecureURL('account/ajax_user');
+			$modal_ajax = $this->html->getSecureURL('trip/ajax_itinerary');
 		//END
 		
 		//START: set variable
 			$this->view->assign('modal_ajax', $modal_ajax);
 			$this->view->assign('modal_component', $modal_component);
-			$this->view->batchAssign($this->data);
 		//END
 		
 		//START: set template
-			$this->processTemplate('modal/account/detail.tpl' );
+			$this->processTemplate('modal/trip/new.tpl' );
 		//END
 
         //START: update controller data

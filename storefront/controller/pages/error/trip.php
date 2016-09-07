@@ -21,7 +21,7 @@ class ControllerPagesErrorTrip extends AController {
 			switch($this->session->data['error']) {
 				case 'trip_not_found':
 					$this->data['error_title'] = 'Trip cannot be found';
-					$this->data['error_description'] = 'It may have been deleted.';
+					$this->data['error_description'] = 'It may have been removed or deleted.';
 					$this->data['error_icon'] = 'fa-exclamation-triangle';
 					$this->data['error_button'][] = array(
 						'title' => 'Back to Home', 

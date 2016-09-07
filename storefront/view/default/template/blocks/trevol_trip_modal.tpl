@@ -5,6 +5,10 @@
 		border-radius:4px 4px 0 0;
 	}
 	
+	#modal-edit-line .modal-title {
+		color:#FFF;
+	}
+	
 	#modal-edit-line .modal-header > button {
 		color:#FFF;
 		opacity:0.5;
@@ -268,8 +272,17 @@
             </form>
         </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Save</button>
+            	<div class="row">
+                    <div class="col-xs-12 col-sm-3 col-md-2 pull-right">
+                        <button type="button" class="btn btn-block btn-primary" data-dismiss="modal">Save</button>
+                    </div>
+                    <div class="pull-right line-spacer">
+                        <i class="fa fa-fw"></i>
+                    </div>
+                    <div class="col-xs-12 col-sm-3 col-md-2 pull-right">
+                        <button type="button" class="btn btn-block btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

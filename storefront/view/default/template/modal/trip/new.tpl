@@ -13,7 +13,7 @@
                 <div class="modal-footer">
                 	<div class="row">
                         <div class="col-xs-12 col-sm-3 col-md-2 pull-right">
-                            <button type="button" class="btn btn-block btn-primary" onclick="newTrip();">Create</button>
+                            <button type="button" class="btn btn-block btn-primary">Create</button>
                         </div>
                         <div class="pull-right line-spacer">
                         	<i class="fa fa-fw"></i>
@@ -65,5 +65,41 @@
 		xmlhttp.open("POST", query, true);
 		xmlhttp.send(form_data);
 	}
+	
+	function newTripViaCookie() {
+		setCookie('trip','{"name":"Untitled Trip"}',7);
+		setCookie('plan','{"name":"Plan 1","travel_date":"","day":[{"day_id":1,"sort_order":1}]}',7);
+		window.location.reload();
+	}
+	
+	function verify_new_trip_condition() {
+		<?php if($this->user->isLogged() == false) { ?>
+			$('#modal-trip-new').modal('show');
+		<?php } else { ?>
+			$('#modal-trip-new').modal('show');
+		<?php } ?>
+	}
+	
+	<?php if($this->user->isLogged() == false) { ?>
+		$('#modal-trip-new .btn-primary').off().on('click',function() {
+			newTripViaCookie();
+		});
+	<?php } else { ?>
+		$('#modal-trip-new .btn-primary').off().on('click',function() {
+			newTrip();
+		});
+	<?php } ?>
+	
+	$("#modal-trip-new").on( "show.bs.modal", function() { 
+		var cookie = getCookie('plan');
+		var trip_name = $('#wrapper-title-input').val();
+		if(typeof cookie != 'undefined' && cookie != null && cookie != '') {
+			$('#modal-trip-new-form-alert').html("<div class='alert alert-warning'><b>"+trip_name+" is not saved.</b><br/>It will be deleted permanently. Do you like to proceed?</div>");
+		}
+	});
+	
+	$("#modal-trip-new").on( "hidden.bs.modal", function() { 
+		$('#modal-trip-new-form-alert').html('');
+	});
 </script>
 <!-- END -->

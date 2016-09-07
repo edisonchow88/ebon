@@ -16,15 +16,15 @@ class ControllerModalTripNew extends AController {
 		
 		//START: set form
 			$id = 'modal-trip-new-form';
-			$action = 'new';
+			$action = 'new_trip';
 			$input = array();
 			//START: set input [ORDER IS IMPORTANT]
 				$i ='name';
-				$input[$i]['label'] = 'Trip Name';
 				$input[$i]['id'] = str_replace("_","-",$i);
 				$input[$i]['name'] = $i;
-				$input[$i]['required'] = true;
+				$input[$i]['required'] = false;
 				$input[$i]['value'] = '';
+				$input[$i]['type'] = 'hidden';
 			//END
 			$setting['autocomplete'] = true;
 			$modal_component['form'] = $this->component_database_modal->writeForm($id,$action,$input,$setting);

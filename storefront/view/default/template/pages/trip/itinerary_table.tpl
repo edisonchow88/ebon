@@ -1219,7 +1219,7 @@
 									serial += '[';
 										$.each($('#plan-day-'+day_id+'-line').find($('.plan-line-form-hidden')), function(j, val) {
 											var line_id = $(this).find($('.plan-input-hidden[name=line_id]')).val();
-											serial += JSON.stringify($('#plan-line-'+line_id+'-form-hidden').find('.plan-input-hidden').not('[value="undefined"]').serializeObject());
+											serial += JSON.stringify($('#plan-line-'+line_id+'-form-hidden').find('.plan-input-hidden').not('[value="undefined"]').not('[value=""]').serializeObject());
 											serial += ',';
 										});
 										serial = serial.slice(0,-1);

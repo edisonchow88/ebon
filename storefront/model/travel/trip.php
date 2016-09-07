@@ -1126,6 +1126,9 @@ class ModelTravelTrip extends Model{
 					}
 				}
 			}
+			if(isset($update['title'])) { $update['title'] = "title = '" . $this->db->escape($data['title']) . "'"; }
+			if(isset($update['description'])) { $update['description'] = "description = '" . $this->db->escape($data['description']) . "'"; }
+			if(isset($update['note'])) { $update['note'] = "note = '" . $this->db->escape($data['note']) . "'"; }
 			if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			

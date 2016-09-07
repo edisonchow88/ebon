@@ -55,7 +55,23 @@
 				}
 				else if(typeof json.success != 'undefined') {
 					<!-- if success -->
-					window.location.reload(true);
+					setCookie('trip','',0);
+					setCookie('plan','',0);
+					
+					var content;
+					content = "<div class='alert alert-success'><ul>";
+					content += "<li><b>Success! Your trip has been saved.</b></li>";
+					content += "</ul></div>";
+					alert_text = content;
+					
+					button = ''
+						+'<div class="col-xs-12 col-sm-3 col-md-2 pull-right">'
+						+'<button type="button" class="btn btn-default" data-dismiss="modal">Continue</button>'
+						+'</div>'
+					;
+					$('#modal-trip-save-form').hide();
+					$('#modal-trip-save .modal-footer .row').html(button);
+					$("#modal-trip-save").on( "hidden.bs.modal", function() { window.location = json.redirect; } );
 				}
 				document.getElementById('modal-trip-save-form-alert').innerHTML = alert_text;
 			} else {
@@ -75,5 +91,13 @@
 			$('#modal-trip-save-form input[name=name]').val($('#wrapper-title-input').val());
 		<?php } ?>
 	}
+	
+	$("#modal-trip-save").on( "show.bs.modal", function() { 
+		$('#modal-trip-save-form input[name=plan]').val(getCookie('plan'));
+	});
+	
+	$("#modal-trip-save").on( "hidden.bs.modal", function() { 
+		$('#modal-trip-save-form-alert').html('');
+	});
 </script>
 <!-- END -->

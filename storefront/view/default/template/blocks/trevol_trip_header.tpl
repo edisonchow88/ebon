@@ -42,14 +42,19 @@
             </a>
         </div>
         <!-- START: [button] -->
-        	<?php if($this->session->data['mode'] == 'view') { ?>
+            <?php if($this->session->data['mode'] == 'view') { ?>
                 <div id="wrapper-button" class="hidden-xs hidden-sm">
                     <a class="btn btn-default disabled" style="width:120px !important;"><i class="fa fa-fw fa-eye"></i> View Only</a>
                 </div>
             <?php } else { ?>
                 <div id="wrapper-button" class="hidden-xs hidden-sm">
+                    <?php if($this->session->data['memory'] == 'server') { ?>
+                        <span class="label label-success">Auto Saved</span>
+                    <?php } ?>
                     <a class="btn btn-default" data-toggle="modal" data-target="#modal-trip-share">Share</a>
-                    <a class="btn btn-primary" onclick="verify_save_trip_condition();">Save</a>
+                    <?php if($this->session->data['memory'] == 'cookie') { ?>
+                    	<a class="btn btn-primary" onclick="verify_save_trip_condition();">Save</a>
+                    <?php } ?>
                 </div>
             <?php } ?>
         <!-- END -->

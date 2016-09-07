@@ -149,6 +149,9 @@
                                                 </div>
                                             </div>
                                        	'; 
+                                    }
+                                    if(count($result) == 0) {
+                                    	echo '<div class="trip row">No existing trip</div>';
                                     } 
                                 ?>
                             </div>

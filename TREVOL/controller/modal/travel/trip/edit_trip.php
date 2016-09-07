@@ -63,6 +63,14 @@ class ControllerModalTravelTripEditTrip extends AController {
 						$input[$i]['required'] = false;
 						$input[$i]['json'] = $i;
 						
+						$i ='code';
+						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+						$input[$i]['id'] = str_replace("_","-",$i);
+						$input[$i]['name'] = $i;
+						$input[$i]['type'] = 'hidden';
+						$input[$i]['required'] = false;
+						$input[$i]['json'] = $i;
+						
 						$i ='user_id';
 						$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 						$input[$i]['id'] = str_replace("_","-",$i);

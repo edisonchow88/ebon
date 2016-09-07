@@ -11,13 +11,13 @@
                     <b>WARNING: <span id="modal-trip-quota-alert-text">New trip cannot be created.</span></b>
                 </div>
                 <div style="padding:10px 15px;">
-                    <span>You have reached the maximum number of trips for the current account. Please consider to upgrade your account or remove some of the <a data-dismiss="modal" data-toggle="modal" data-target="#modal-trip-load">trips</a>.</span>
+                    <span>You have reached the maximum number of trips for the current account. Please consider to upgrade your account or <a data-dismiss="modal" data-toggle="modal" data-target="#modal-trip-load">remove some of the trips</a>.</span>
                 </div>
             </div>
                 <div class="modal-footer">
                 	<div class="row">
                         <div class="col-xs-12 col-sm-4 col-md-3 pull-right">
-                            <button type="button" class="btn btn-block btn-primary" data-dismiss="modal">Upgrade Account</button>
+                            <button type="button" class="btn btn-block btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#modal-account-upgrade">Upgrade Account</button>
                         </div>
                         <div class="pull-right line-spacer">
                         	<i class="fa fa-fw"></i>

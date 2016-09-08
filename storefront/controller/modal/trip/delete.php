@@ -16,7 +16,7 @@ class ControllerModalTripDelete extends AController {
 		
 		//START: set form
 			$id = 'modal-trip-delete-form';
-			$action = 'delete';
+			$action = 'delete_trip';
 			$input = array();
 			//START: set input [ORDER IS IMPORTANT]
 			//END
@@ -25,7 +25,7 @@ class ControllerModalTripDelete extends AController {
 		//END
 		
 		//START: set ajax
-			$modal_ajax = $this->html->getSecureURL('account/ajax_user');
+			$modal_ajax = $this->html->getSecureURL('trip/ajax_itinerary');
 		//END
 		
 		//START: set variable

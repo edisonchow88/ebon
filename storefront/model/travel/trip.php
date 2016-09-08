@@ -1247,6 +1247,104 @@ class ModelTravelTrip extends Model{
 			
 			return $output;
 		}
+		
+		public function getActiveTripByUserId($user_id) {
+			$trip = array();
+			
+			//START: run sql
+				$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table) . " 
+						WHERE user_id = '" . (int)$user_id . "' 
+						AND removed = 0
+						ORDER BY status_id DESC
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				if($query->num_rows > 0) {
+					foreach($query->rows as $result){
+						$output[$result['trip_id']] = $result;
+						$output[$result['trip_id']]['name'] = ucwords($result['name']);
+						$output[$result['trip_id']]['status'] = $this->getStatus($result['status_id']);
+					}
+				}
+				else {
+					return false;
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getRemovedTripByUserId($user_id) {
+			$trip = array();
+			
+			//START: run sql
+				$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table) . " 
+						WHERE user_id = '" . (int)$user_id . "' 
+						AND removed = 1
+						ORDER BY status_id DESC
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				if($query->num_rows > 0) {
+					foreach($query->rows as $result){
+						$output[$result['trip_id']] = $result;
+						$output[$result['trip_id']]['name'] = ucwords($result['name']);
+						$output[$result['trip_id']]['status'] = $this->getStatus($result['status_id']);
+					}
+				}
+				else {
+					return false;
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function removeTrip($trip_id) {
+			//START: run sql
+				$sql = "
+					UPDATE " . $this->db->table($this->table) . " 
+					SET removed = '1'
+					WHERE trip_id = '" . (int)$trip_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('trip');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+		
+		public function restoreTrip($trip_id) {
+			//START: run sql
+				$sql = "
+					UPDATE " . $this->db->table($this->table) . " 
+					SET removed = '0'
+					WHERE trip_id = '" . (int)$trip_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('trip');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
 	//END
 }
 

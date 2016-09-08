@@ -11,7 +11,7 @@
                     <b>WARNING: <span id="modal-trip-quota-alert-text">New trip cannot be created.</span></b>
                 </div>
                 <div style="padding:10px 15px;">
-                    <span>You have reached the maximum number of trips for the current account. Please consider to upgrade your account or <a data-dismiss="modal" data-toggle="modal" data-target="#modal-trip-load">remove some of the trips</a>.</span>
+                    <span>You have reached the maximum number of trips for the current account. Please consider to upgrade your account or <a data-dismiss="modal" onclick="verify_load_trip_condition();">remove some of the trips</a>.</span>
                 </div>
             </div>
                 <div class="modal-footer">

@@ -3,19 +3,11 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerModalTripLoad extends AController {
-	//START: set common variable
-		public $data = array();
-	//END
-	
+class ControllerModalTripRemove extends AController {
+
   	public function main() {
         //START: init controller data
         	$this->extensions->hk_InitData($this,__FUNCTION__);
-		//END
-		
-		//START: load model
-			$this->loadModel('account/user');
-			$this->loadModel('travel/trip');
 		//END
 		
 		//START: load component	
@@ -23,8 +15,8 @@ class ControllerModalTripLoad extends AController {
 		//END
 		
 		//START: set form
-			$id = 'modal-trip-load-form';
-			$action = 'load_trip';
+			$id = 'modal-trip-remove-form';
+			$action = 'remove_trip';
 			$input = array();
 			//START: set input [ORDER IS IMPORTANT]
 				$i ='user_id';
@@ -40,6 +32,20 @@ class ControllerModalTripLoad extends AController {
 				$input[$i]['required'] = false;
 				$input[$i]['value'] = $this->user->getRoleId();
 				$input[$i]['type'] = 'hidden';
+				
+				$i ='trip_id';
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = $this->trip->getTripId();
+				$input[$i]['type'] = 'hidden';
+				
+				$i ='owner_id';
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = $i;
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = $this->trip->getOwnerId();
+				$input[$i]['type'] = 'hidden';
 			//END
 			$setting['autocomplete'] = false;
 			$modal_component['form'] = $this->component_database_modal->writeForm($id,$action,$input,$setting);
@@ -52,11 +58,10 @@ class ControllerModalTripLoad extends AController {
 		//START: set variable
 			$this->view->assign('modal_ajax', $modal_ajax);
 			$this->view->assign('modal_component', $modal_component);
-			$this->view->batchAssign($this->data);
 		//END
 		
 		//START: set template
-			$this->processTemplate('modal/trip/load.tpl' );
+			$this->processTemplate('modal/trip/remove.tpl' );
 		//END
 
         //START: update controller data

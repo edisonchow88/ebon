@@ -29,6 +29,16 @@ class ControllerPagesErrorTrip extends AController {
 						'class' => 'btn-default'
 					);
 					break;
+				case 'trip_removed':
+					$this->data['error_title'] = 'Trip cannot be accessed';
+					$this->data['error_description'] = 'It has been moved to archive. You may access it only if the owner restores it.';
+					$this->data['error_icon'] = 'fa-exclamation-triangle';
+					$this->data['error_button'][] = array(
+						'title' => 'Back to Home', 
+						'url' => $this->html->getSecureURL('index/home'),
+						'class' => 'btn-default'
+					);
+					break;
 				case 'plan_not_found':
 					$this->data['error_title'] = 'Plan cannot be found';
 					$this->data['error_description'] = 'It may have been deleted.';

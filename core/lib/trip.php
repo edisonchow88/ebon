@@ -33,6 +33,7 @@ final class ATrip{
 			$this->data['trip_id'] = '';
 			$this->data['plan_id'] = '';
 			$this->data['owner_id'] = '';
+			$this->data['removed'] = '';
 		//END
 		
 		//START: set code
@@ -62,7 +63,7 @@ final class ATrip{
 		//START: get data
 			if(isset($this->data['code'])) {
 				$sql = '
-					SELECT trip_id, user_id
+					SELECT trip_id, user_id, removed
 					FROM '.$this->db->table('trip').'
 					WHERE code = "' . $this->data['code'] . '" 
 					LIMIT 1
@@ -74,6 +75,7 @@ final class ATrip{
 						$result = $query->row;
 						$this->data['trip_id'] = $result['trip_id'];
 						$this->data['owner_id'] = $result['user_id'];
+						$this->data['removed'] = $result['removed'];
 						
 						//START: verify plan_id
 							$sql = '
@@ -103,6 +105,7 @@ final class ATrip{
 						unset($this->data['trip_id']);
 						unset($this->data['plan_id']);
 						unset($this->data['owner_id']);
+						unset($this->data['removed']);
 					//END
 				}
 			}
@@ -110,6 +113,7 @@ final class ATrip{
 				unset($this->data['trip_id']);
 				unset($this->data['plan_id']);
 				unset($this->data['owner_id']);
+				unset($this->data['removed']);
 			}
 		//END
 	}
@@ -151,6 +155,15 @@ final class ATrip{
 	public function hasPlan() {
 		if(isset($this->data['plan_id'])) {
 			return $this->data['plan_id'];
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public function isRemoved() {
+		if($this->data['removed'] == 1) {
+			return true;
 		}
 		else {
 			return false;

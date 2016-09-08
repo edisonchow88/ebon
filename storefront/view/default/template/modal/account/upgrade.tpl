@@ -51,7 +51,7 @@
                 	<thead>
                         <th>Plan</th>
                         <th>Trips</th>
-                        <th>Members</th>
+                        <th>Archive</th>
                         <th>Privacy</th>
                         <th>Price</th>
                         <th></th>
@@ -60,7 +60,7 @@
                     	<?php if($role_id == 2) { echo '<tr class="selected">'; } else { echo '<tr>'; } ?>
                         	<td>Free</td>
                             <td>3</td>
-                            <td>Unlimited</td>
+                            <td>10</td>
                             <td><i class="fa fa-fw fa-unlock-alt text-danger" data-toggle="tooltip" data-placement="top" title="No private setting"></i></td>
                             <td>$0 / mo</td>
                             <td>
@@ -76,7 +76,7 @@
                         <?php if($role_id == 3) { echo '<tr class="selected">'; } else { echo '<tr>'; } ?>
                         	<td>Standard</td>
                             <td>10</td>
-                            <td>Unlimited</td>
+                            <td>50</td>
                             <td><i class="fa fa-fw fa-lock text-success" data-toggle="tooltip" data-placement="top" title="Enable private setting"></i></td>
                             <td>$19 / mo</td>
                             <td>
@@ -92,7 +92,7 @@
                         <?php if($role_id == 4) { echo '<tr class="selected">'; } else { echo '<tr>'; } ?>
                         	<td>Premium</td>
                             <td>50</td>
-                            <td>Unlimited</td>
+                            <td>200</td>
                             <td><i class="fa fa-fw fa-lock text-success" data-toggle="tooltip" data-placement="top" title="Enable private setting"></i></td>
                             <td>$29 / mo</td>
                             <td>
@@ -107,7 +107,7 @@
                         </tr>
                         <?php if($role_id == 5) { echo '<tr class="selected">'; } else { echo '<tr>'; } ?>
                         	<td>Business</td>
-                            <td>Unlimited</td>
+                            <td>200</td>
                             <td>Unlimited</td>
                             <td><i class="fa fa-fw fa-lock text-success" data-toggle="tooltip" data-placement="top" title="Enable private setting"></i></td>
                             <td>$49 / mo</td>

@@ -1,3 +1,15 @@
+<style>
+	#wrapper-menu-modal-content a.disabled {
+		pointer-events: none;
+		cursor: default;
+		color:#AAA;
+	}
+	
+	#wrapper-menu-modal-content a.disabled:hover {
+		background-color:transparent;
+	}
+</style>
+
 <div id="wrapper-menu">
 	<div id="wrapper-menu-modal-background" onclick="hide_wrapper_menu();">
     </div>
@@ -27,18 +39,28 @@
                         Save
                     </a>
                 </li>
-                <li>
-                	<a data-toggle="modal" data-target="#modal-trip-share" onclick="hide_wrapper_menu();">
+                <li class="hidden">
+                	<?php
+                    	if($this->session->data['memory'] == 'cookie') {
+                        	$disabled = 'disabled';
+                        }
+                        echo '<a class="'.$disabled.'" data-toggle="modal" data-target="#modal-trip-share" onclick="hide_wrapper_menu();">';
+                    ?>
                     	<i class="fa fa-fw fa-share-alt"></i>
                         <i class="fa fa-fw"></i>
                         Share
                     </a>
                 </li>
                 <li>
-                	<a data-toggle="modal" data-target="#modal-trip-delete" onclick="hide_wrapper_menu();">
-                    	<i class="fa fa-fw fa-trash"></i>
+                	<?php
+                    	if($this->session->data['memory'] == 'cookie') {
+                        	$disabled = 'disabled';
+                        }
+                        echo '<a class="'.$disabled.'" onclick="hide_wrapper_menu(); verify_remove_trip_condition();">';
+                    ?>
+                    	<i class="fa fa-fw fa-archive"></i>
                         <i class="fa fa-fw"></i>
-                        Delete
+                        Remove to Archive
                     </a>
                 </li>
                 <hr />
@@ -49,7 +71,7 @@
                         Itinerary
                     </a>
                 </li>
-                <li>
+                <li class="hidden">
                 	<a>
                     	<i class="fa fa-fw fa-user"></i>
                         <i class="fa fa-fw"></i>
@@ -66,6 +88,7 @@
     <?php echo $modal_trip_load; ?>
     <?php echo $modal_trip_save; ?>
     <?php echo $modal_trip_delete; ?>
+    <?php echo $modal_trip_remove; ?>
     <?php echo $modal_trip_share; ?>
     <?php echo $modal_trip_quota; ?>
 <!-- END -->

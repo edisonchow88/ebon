@@ -28,6 +28,10 @@ class ControllerPagesTripItinerary extends AController {
 				if($this->trip->hasTrip()) {
 					$this->data['trip'] = $this->model_travel_trip->getTrip($this->data['trip_id']);
 					$this->data['plan'] = $this->model_travel_trip->getPlan($this->data['plan_id']);
+					if($this->trip->isRemoved()) {
+						$this->session->data['error'] = 'trip_removed';
+						$this->redirect($this->html->getSecureURL('error/trip'));
+					}
 				}
 				else {
 					$this->session->data['error'] = 'trip_not_found';

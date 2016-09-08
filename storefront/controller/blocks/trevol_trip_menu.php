@@ -25,6 +25,7 @@ class ControllerBlocksTrevolTripMenu extends AController {
 			$this->addChild('modal/trip/load', 'modal_trip_load', 'modal/trip/load.tpl');
 			$this->addChild('modal/trip/save', 'modal_trip_save', 'modal/trip/save.tpl');
 			$this->addChild('modal/trip/delete', 'modal_trip_delete', 'modal/trip/delete.tpl');
+			$this->addChild('modal/trip/remove', 'modal_trip_remove', 'modal/trip/remove.tpl');
 			$this->addChild('modal/trip/share', 'modal_trip_share', 'modal/trip/share.tpl');
 			$this->addChild('modal/trip/quota', 'modal_trip_quota', 'modal/trip/quota.tpl');
 		//END

@@ -51,7 +51,7 @@
                     <?php if($this->session->data['memory'] == 'server') { ?>
                         <span class="label label-success">Auto Saved</span>
                     <?php } ?>
-                    <a class="btn btn-default" data-toggle="modal" data-target="#modal-trip-share">Share</a>
+                    <a class="btn btn-default hidden" data-toggle="modal" data-target="#modal-trip-share">Share</a>
                     <?php if($this->session->data['memory'] == 'cookie') { ?>
                     	<a class="btn btn-primary" onclick="verify_save_trip_condition();">Save</a>
                     <?php } ?>

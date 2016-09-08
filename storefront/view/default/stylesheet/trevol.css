@@ -824,3 +824,12 @@ ul {
 		color:#777;
 	}
 /* END */
+/* START: progress */
+	.progress .progress-bar {
+		-webkit-transition: none;
+		-moz-transition: none;
+		-ms-transition: none;
+		-o-transition: none;
+		transition: none;
+	}
+/* END */

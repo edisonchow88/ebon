@@ -13,6 +13,8 @@
 	}
 </style>
 
+<?php echo $modal_home_splash; ?>
+
 <div id="section-body">
 	<div id="section-view-xs" class="hidden-md hidden-lg">
     	<ul>
@@ -21,7 +23,7 @@
             <li id="section-view-xs-list-map"><a onclick="open_section_content('map');">Map</a></li>
         </ul>
     </div>
-    <div id="section-view-md" class="box-shadow hidden-xs hidden-sm hidden-lg">
+    <div id="section-view-md" class="box-shadow hidden-xs hidden-sm hidden-md hidden-lg">
         <div class="input-group">
             <span class="input-group-addon"><i class="fa fa-fw fa-eye"></i></span>
             <select id='section-view-md-select' class="form-control" onchange="change_section_content(this.value);">
@@ -93,8 +95,6 @@
 	function convert_to_title_case(str) {
 		return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 	}
-	
-
 </script>
 
 <script>
@@ -156,6 +156,7 @@
 			section_content_window_itinerary = false;
 			section_content_window_map = true;
 		}
+		/*
 		else if(view == 'guide+itinerary') {
 			section_content_window_guide = true;
 			section_content_window_itinerary = true;
@@ -171,6 +172,7 @@
 			section_content_window_itinerary = true;
 			section_content_window_map = true;
 		}
+		*/
 		update_section_content();
 	}
 	
@@ -235,7 +237,7 @@
 		else {
 			hide_section_content('right','map'); 
 		}
-		update_section_view_md_select();
+		//update_section_view_md_select();
 	}
 	
 	function update_max_section_content_window() {
@@ -244,19 +246,56 @@
 			max_section_content_window = 1;
 			document.getElementById('section-content').style.width = '100%';
 			
-			var body_height = 'calc(100vh - 48px - 2px)';
-			var height = 'calc(100vh - 48px - 2px - 30px)';
-			var content_height = 'calc(100vh - 48px - 2px - 40px - 49px)';
-			var itinerary_height = 'calc(100vh - 48px - 2px - 40px - 49px + 70px)';
+			$('#section-body').css('overflow-x','hidden');
+			$('#section-content').css('margin-top','40px');
+			
+			var body_height = 'calc(100vh - 48px - 3px)';
+			var section_height = 'calc(100vh - 48px - 3px - 40px)';
+			var guide_height = 'calc(100vh - 48px - 3px - 40px - 49px)';
+			var itinerary_height = 'calc(100vh - 48px - 3px - 32px)';
+			var map_height = 'calc(100vh - 48px - 3px - 40px)';
 			document.getElementById('section-body').style.height = body_height;
-			document.getElementById('section-content').style.height = height;
-			document.getElementById('section-left').style.height = height;
-			document.getElementById('section-center').style.height = height;
-			document.getElementById('section-right').style.height = height;
-			document.getElementById('section-content-guide-content').style.height = content_height;
+			document.getElementById('section-content').style.height = section_height;
+			document.getElementById('section-left').style.height = section_height;
+			document.getElementById('section-center').style.height = section_height;
+			document.getElementById('section-right').style.height = section_height;
+			document.getElementById('section-content-guide-content').style.height = guide_height;
 			document.getElementById('section-content-itinerary-content').style.height = itinerary_height;
-			document.getElementById('section-content-map-content').style.height = content_height;
+			document.getElementById('section-content-map-content').style.height = map_height;
+			$('.plan-tbody').css('height',itinerary_height);
+			$('#map').css('height',map_height);
+			
+			swithMobileMode();
 		}
+		else if(w < 960) {
+			max_section_content_window = 3;
+			$('#section-body').css('overflow-x','scroll');
+			$('#section-content').css('width','960px');
+			$('#section-content').css('margin-top','0');
+			
+			var body_height = 'calc(100vh - 48px - 3px - 40px)';
+			var section_height = 'calc(100vh - 48px - 3px - 15px - 40px)';
+			var guide_height = 'calc(100vh - 48px - 3px - 49px - 15px - 40px)';
+			var itinerary_height = section_height;
+			var map_height = section_height;
+			
+			$('#section-body').css('height',body_height);
+			$('#section-content').css('height',section_height);
+			$('#section-left').css('height',section_height);
+			$('#section-center').css('height',section_height);
+			$('#section-right').css('height',section_height);
+			$('#section-content-guide-content').css('height',guide_height);
+			$('#section-content-itinerary-content').css('height',itinerary_height);
+			$('#section-content-map-content').css('height',map_height);
+			$('.plan-tbody').css('height',itinerary_height);
+			$('#map').css('height',map_height);
+			
+			section_content_window_itinerary = true;
+			section_content_window_map = true;
+			
+			swithDesktopMode();
+		}
+		/*
 		else if(w < 960) {
 			max_section_content_window = 2;
 			document.getElementById('section-content').style.width = '640px';
@@ -274,14 +313,17 @@
 			document.getElementById('section-content-itinerary-content').style.height = itinerary_height;
 			document.getElementById('section-content-map-content').style.height =height;
 		}
+		*/
 		else {
 			max_section_content_window = 3;
-			document.getElementById('section-content').style.width = '960px';
+			$('#section-body').css('overflow-x','auto');
+			$('#section-content').css('width','960px');
+			$('#section-content').css('margin-top','30px');
 			
-			var body_height = 'calc(100vh - 48px - 2px - 40px)';
-			var height = 'calc(100vh - 48px - 2px - 30px - 40px)';
-			var content_height = 'calc(100vh - 48px - 2px - 30px - 49px - 40px)';
-			var itinerary_height = 'calc(100vh - 48px - 2px - 30px - 40px - 50px)';
+			var body_height = 'calc(100vh - 48px - 3px - 40px)';
+			var height = 'calc(100vh - 48px - 3px - 30px - 40px)';
+			var content_height = 'calc(100vh - 48px - 3px - 30px - 49px - 40px)';
+			var itinerary_height = 'calc(100vh - 48px - 3px - 30px - 40px - 50px)';
 			document.getElementById('section-body').style.height = body_height;
 			document.getElementById('section-content').style.height = height;
 			document.getElementById('section-left').style.height = height;
@@ -293,6 +335,8 @@
 			
 			section_content_window_itinerary = true;
 			section_content_window_map = true;
+			
+			swithDesktopMode();
 		}
 	}
 	
@@ -361,7 +405,7 @@
 		show_section_view_button(view);
 		
 		var text = convert_to_title_case(view);
-		update_section_view_button_tooltip(view, 'Close '+text);
+		//update_section_view_button_tooltip(view, 'Close '+text);
 	}
 	
 	function hide_section_content(position,view) {
@@ -369,7 +413,7 @@
 		hide_section_view_button(view);
 		
 		var text = convert_to_title_case(view);
-		update_section_view_button_tooltip(view, 'Open '+text);
+		//update_section_view_button_tooltip(view, 'Open '+text);
 	}
 	
 	function show_section_content_window(position) {
@@ -390,6 +434,7 @@
 		document.getElementById('section-view-list-'+view).className = '';
 	}
 	
+	/*
 	function update_section_view_button_tooltip(view,text) {
 		var button = document.getElementById('section-view-'+view+'-button');
 		if(typeof $('#'+button.id).attr('aria-describedby') != 'undefined') {
@@ -398,7 +443,9 @@
 		}
 		$('#'+button.id).attr('data-original-title',text);
 	}
+	*/
 	
+	/*
 	function update_section_view_md_select() {
 		if(section_content_window_guide == true && section_content_window_itinerary == true) {
 			document.getElementById('section-view-md-select').value = 'guide+itinerary';
@@ -419,8 +466,7 @@
 			document.getElementById('section-view-md-select').value = 'map';
 		}
 	}
-	
-	update_section_content();
+	*/
 	
 var testing_map= "testlo";	
 </script>

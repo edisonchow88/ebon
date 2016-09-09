@@ -26,6 +26,15 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'restore_trip') { $this->restore_trip(); return; }
 			else if($this->data['action'] == 'delete_trip') { $this->delete_trip(); return; }
 			else if($this->data['action'] == 'clean_archive') { $this->clean_archive(); return; }
+			else if($this->data['action'] == 'edit_trip_name') { $this->edit_trip_name(); return; }
+			else if($this->data['action'] == 'edit_plan_date') { $this->edit_plan_date(); return; }
+			else if($this->data['action'] == 'add_day') { $this->add_day(); return; }
+			else if($this->data['action'] == 'delete_day') { $this->delete_day(); return; }
+			else if($this->data['action'] == 'sort_day') { $this->sort_day(); return; }
+			else if($this->data['action'] == 'add_line') { $this->add_line(); return; }
+			else if($this->data['action'] == 'edit_line') { $this->edit_line(); return; }
+			else if($this->data['action'] == 'delete_line') { $this->delete_line(); return; }
+			else if($this->data['action'] == 'sort_line') { $this->sort_line(); return; }
 			else { 
 				//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 				$result['warning'][] = '<b>ERROR: Invalid action</b><br/>Please contact Admin.'; 
@@ -45,6 +54,14 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	
 	public function refresh_plan() {
 		$result = $this->model_travel_trip->getPlanDetail($this->data['plan_id']);
+		foreach($result['day'] as $day_id => $day) {
+			foreach($day['line'] as $line_id => $line) {
+				$time = $result['day'][$day_id]['line'][$line_id]['time'];
+				if($time != 'NULL' && $time != '') {
+					$result['day'][$day_id]['line'][$line_id]['time'] = substr($time,0,-3);
+				}
+			}
+		}
 		$response = json_encode($result);
 		echo $response;
 	}
@@ -83,7 +100,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$result['redirect'] = $this->html->getSecureURL('trip/itinerary','&trip='.$code);
 		//END
 		
-		//START: response
+		//START: set response
 			$result['success'][] = 'Trip created'; 
 			$response = json_encode($result);
 			echo $response;
@@ -151,7 +168,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$result['redirect'] = $this->html->getSecureURL('trip/itinerary','&trip='.$code);
 		//END
 		
-		//START: response
+		//START: set response
 			$result['success'][] = 'Trip saved'; 
 			$response = json_encode($result);
 			echo $response;
@@ -213,7 +230,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$result['removed_trip'] = array_values($result['removed_trip']);
 		//END
 		
-		//START: response 
+		//START: set response 
 			$result['success'][] = 'Trips loaded'; 
 			$response = json_encode($result);
 			echo $response;
@@ -233,7 +250,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$result['redirect'] = $this->html->getSecureURL('trip/itinerary');
 		//END
 		
-		//START: response
+		//START: set response
 			if($execution == true) {
 				$result['success'][] = 'Trip removed';
 			}
@@ -254,7 +271,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$execution = $this->model_travel_trip->restoreTrip($this->data['trip_id']);
 		//END
 		
-		//START: response
+		//START: set response
 			if($execution == true) {
 				$result['success'][] = 'Trip restored';
 			}
@@ -275,7 +292,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$execution = $this->model_travel_trip->deleteTrip($this->data['trip_id']);
 		//END
 		
-		//START: response
+		//START: set response
 			if($execution == true) {
 				$result['success'][] = 'Trip deleted';
 			}
@@ -300,7 +317,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			}
 		//END
 		
-		//START: response
+		//START: set response
 			if($execution == true) {
 				$result['success'][] = 'Archive cleaned';
 			}
@@ -450,6 +467,230 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			echo $response;	
 			return 'failed';
 		}
+	}
+	
+	public function edit_trip_name() {
+		//START: set data
+			$trip_id = $this->data['trip_id'];
+			$data['name'] = $this->data['name'];
+		//END
+		
+		//START: execute function
+			$execution = $this->model_travel_trip->editTrip($trip_id, $data);
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'][] = 'Title updated';
+			}
+			else {
+				$result['warning'][] = '<b>SYSTEM ERROR: Title cannot be updated.</b><br/>Please contact admin.'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function edit_plan_date() {
+		//START: set data
+			$plan_id = $this->data['plan_id'];
+			$data['travel_date'] = $this->data['travel_date'];
+			if($data['travel_date'] == '') { $data['travel_date'] = 'NULL'; }
+		//END
+		
+		//START: execute function
+			$execution = $this->model_travel_trip->editPlan($plan_id, $data);
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'] = 'Date updated';
+			}
+			else {
+				$result['warning'] = 'ERROR: Fail to update Date'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function add_day() {
+		//START: set data
+			$data['plan_id'] = $this->data['plan_id'];
+			$data['sort_order'] = $this->data['sort_order'];
+		//END
+		
+		//START: execute function
+			$result['day_id'] = $this->model_travel_trip->addDay($data);
+		//END
+		
+		//START: set response
+			if($result['day_id'] != '') {
+				$result['success'] = 'Day added';
+			}
+			else {
+				$result['warning'] = 'ERROR: Fail to add Day'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function delete_day() {
+		//START: set data
+			$day_id = $this->data['day_id'];
+		//END
+		
+		//START: execute function
+			$execution = $this->model_travel_trip->deleteDay($day_id);
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'] = 'Day deleted';
+			}
+			else {
+				$result['warning'] = 'ERROR: Fail to delete Day'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function sort_day() {
+		//START: set data
+			$order = $this->data['order'];
+		//END
+		
+		//START: process order
+			$order = json_decode(html_entity_decode($order), true);
+		//END
+		
+		//START: execute function
+			foreach($order as $o) {
+				$day_id = $o['day_id'];
+				$data['day_id'] = $o['day_id'];
+				$data['sort_order'] = $o['sort_order'];
+				$execution = $this->model_travel_trip->editDay($day_id, $data);
+			}
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'] = 'Day sorted';
+			}
+			else {
+				$result['warning'] = 'ERROR: Fail to sort Day'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function add_line() {
+		//START: set data
+			$data = $this->data['line'];
+			$day_id = $data['day_id'];
+			unset($data['line_id']);
+			foreach($data as $key => $value) {
+				if($value == '') {
+					$data[$key] = 'NULL';
+				}
+			}
+		//END
+		
+		//START: execute function
+			$result['line_id'] = $this->model_travel_trip->addLine($data);
+		//END
+		
+		//START: set response
+			if($result['line_id'] != '') {
+				$result['success'] = 'Activity added';
+			}
+			else {
+				$result['warning'] = 'ERROR: Fail to add Activity'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function edit_line() {
+		//START: set data
+			$data = $this->data['line'];
+			foreach($data as $key => $value) {
+				if($value == '') {
+					$data[$key] = 'NULL';
+				}
+			}
+		//END
+		
+		//START: execute function
+			$execution = $this->model_travel_trip->editLine($data['line_id'],$data);
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'] = 'Activity updated';
+			}
+			else {
+				$result['warning'] = 'ERROR: Fail to update Activity'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function delete_line() {
+		//START: set data
+			$line_id = $this->data['line_id'];
+		//END
+		
+		//START: execute function
+			$execution = $this->model_travel_trip->deleteLine($line_id);
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'] = 'Line deleted';
+			}
+			else {
+				$result['warning'] = 'ERROR: Fail to delete Line'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function sort_line() {
+		//START: set data
+			$order = $this->data['order'];
+		//END
+		
+		//START: process order
+			$order = json_decode(html_entity_decode($order), true);
+		//END
+		
+		//START: execute function
+			foreach($order as $o) {
+				$line_id = $o['line_id'];
+				$data['line_id'] = $o['line_id'];
+				$data['day_id'] = $o['day_id'];
+				$data['sort_order'] = $o['sort_order'];
+				$execution = $this->model_travel_trip->editLine($line_id, $data);
+			}
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'] = 'Activity sorted';
+			}
+			else {
+				$result['warning'] = 'ERROR: Fail to sort Activity'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
 	}
 	
 	/*

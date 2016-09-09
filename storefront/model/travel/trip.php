@@ -60,7 +60,6 @@ class ModelTravelTrip extends Model{
 					if($trip_id == '') {
 						foreach($query->rows as $result){
 							$output[$result['trip_id']] = $result;
-							$output[$result['trip_id']]['name'] = ucwords($result['name']);
 							$output[$result['trip_id']]['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 							$output[$result['trip_id']]['status'] = $this->getStatus($result['status_id']);
 						}
@@ -68,7 +67,6 @@ class ModelTravelTrip extends Model{
 					else {
 						$result = $query->row;
 						$output = $query->row;
-						$output['name'] = ucwords($result['name']);
 						$output['language'] = $this->language->getLanguageDetailsByID($result['language_id']);
 						$output['status'] = $this->getStatus($result['status_id']);
 					}
@@ -92,7 +90,7 @@ class ModelTravelTrip extends Model{
 							$update[$f] = $f . " = NULL";
 						}
 						else {
-							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
 						}
 					}
 				}
@@ -181,7 +179,7 @@ class ModelTravelTrip extends Model{
 							$update[$f] = $f . " = NULL";
 						}
 						else {
-							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
 						}
 					}
 				}
@@ -1126,9 +1124,18 @@ class ModelTravelTrip extends Model{
 					}
 				}
 			}
-			if(isset($update['title'])) { $update['title'] = "title = '" . $this->db->escape($data['title']) . "'"; }
-			if(isset($update['description'])) { $update['description'] = "description = '" . $this->db->escape($data['description']) . "'"; }
-			if(isset($update['note'])) { $update['note'] = "note = '" . $this->db->escape($data['note']) . "'"; }
+			if(isset($update['currency']) && $data['currency'] != 'NULL') { 
+				$update['currency'] = "currency = '" . $this->db->escape(strtoupper($data['currency'])) . "'"; 
+			}
+			if(isset($update['title']) && $data['title'] != 'NULL') { 
+				$update['title'] = "title = '" . $this->db->escape($data['title']) . "'"; 
+			}
+			if(isset($update['description']) && $data['description'] != 'NULL') { 
+				$update['description'] = "description = '" . $this->db->escape($data['description']) . "'"; 
+			}
+			if(isset($update['note']) && $data['note'] != 'NULL') { 
+				$update['note'] = "note = '" . $this->db->escape($data['note']) . "'"; 
+			}
 			if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			
@@ -1160,6 +1167,18 @@ class ModelTravelTrip extends Model{
 						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
 					}
 				}
+			}
+			if(isset($update['currency']) && $data['currency'] != 'NULL') { 
+				$update['currency'] = "currency = '" . $this->db->escape(strtoupper($data['currency'])) . "'"; 
+			}
+			if(isset($update['title']) && $data['title'] != 'NULL') { 
+				$update['title'] = "title = '" . $this->db->escape($data['title']) . "'"; 
+			}
+			if(isset($update['description']) && $data['description'] != 'NULL') { 
+				$update['description'] = "description = '" . $this->db->escape($data['description']) . "'"; 
+			}
+			if(isset($update['note']) && $data['note'] != 'NULL') { 
+				$update['note'] = "note = '" . $this->db->escape($data['note']) . "'"; 
 			}
 			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
 			
@@ -1236,7 +1255,6 @@ class ModelTravelTrip extends Model{
 				if($query->num_rows > 0) {
 					foreach($query->rows as $result){
 						$output[$result['trip_id']] = $result;
-						$output[$result['trip_id']]['name'] = ucwords($result['name']);
 						$output[$result['trip_id']]['status'] = $this->getStatus($result['status_id']);
 					}
 				}
@@ -1266,7 +1284,6 @@ class ModelTravelTrip extends Model{
 				if($query->num_rows > 0) {
 					foreach($query->rows as $result){
 						$output[$result['trip_id']] = $result;
-						$output[$result['trip_id']]['name'] = ucwords($result['name']);
 						$output[$result['trip_id']]['status'] = $this->getStatus($result['status_id']);
 					}
 				}
@@ -1296,7 +1313,6 @@ class ModelTravelTrip extends Model{
 				if($query->num_rows > 0) {
 					foreach($query->rows as $result){
 						$output[$result['trip_id']] = $result;
-						$output[$result['trip_id']]['name'] = ucwords($result['name']);
 						$output[$result['trip_id']]['status'] = $this->getStatus($result['status_id']);
 					}
 				}

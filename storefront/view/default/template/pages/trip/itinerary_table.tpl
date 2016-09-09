@@ -638,7 +638,7 @@
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-sort'>"
 							+ "<i class='fa fa-fw fa-arrows-v' aria-hidden='true'></i>"
 						+ "</a>"
-						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete' data-id='plan-day-" + day.day_id+"-tr'>"
+						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete-day' data-id='plan-day-" + day.day_id+"-tr'>"
 							+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
 						+ "</a>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-toggle-day'>"
@@ -759,7 +759,7 @@
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-sort'>"
 							+ "<i class='fa fa-fw fa-arrows-v' aria-hidden='true'></i>"
 						+ "</a>"
-						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete' data-id='plan-line-" + line.line_id+"-tr'>"
+						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete-line' data-id='plan-line-" + line.line_id+"-tr'>"
 							+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
 						+ "</a>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-edit' data-toggle='modal' data-target='#modal-edit-line'>"
@@ -833,7 +833,7 @@
 		}
 		
 		function setPlanTableDataFormatForDayDate(plan) {	
-			if(typeof plan.travel_date != 'undefined' && plan.travel_date != null && plan.travel_date != '') {
+			if(typeof plan.travel_date != 'undefined' && plan.travel_date != null && plan.travel_date != '' && plan.travel_date != '0000-00-00') {
 				var first_date = new Date(plan.travel_date);
 				first_date.setDate(first_date.getDate() - 1);
 				var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -849,6 +849,11 @@
 					myDate = new Date(first_date.setDate(first_date.getDate() + 1));
 					var myWeekday = weekday[myDate.getDay()];
 					plan.day[i].date = ("0" + myDate.getDate()).slice(-2) + "&nbsp;" + monthNames[(myDate.getMonth())] + "&nbsp;&nbsp;&nbsp;(" + myWeekday + ")";
+				}
+			}
+			else {
+				for (i=0; i<plan.day.length; i++) {
+					plan.day[i].date = '';
 				}
 			}
 			return plan;
@@ -904,7 +909,7 @@
 				$("#section-content-itinerary-header-set-date").removeClass("hidden");
 				$("#section-content-itinerary-content-modal-background").removeClass("hidden");
 				$('#plan-date-form-hidden input[name=num_of_day]').val($('.plan-day-tr').length);
-				updateDateForm();
+				refreshDateForm();
 				//$("#section-content-itinerary-content-modal-background").off().on("click", cancelDateForm);
 			}
 			
@@ -916,18 +921,49 @@
 			}
 			
 			function saveDateForm() {
+				var updated = false;
+				if($('#plan-date-form-hidden input[name=travel_date]').val != $('#plan-date-form input[name=travel_date]').val()) {
+					updated = true;
+				}
+				
 				$('#plan-date-form-hidden input[name=travel_date]').val($('#plan-date-form input[name=travel_date]').val());
 				$('#plan-date-form-hidden input[name=last_date]').val($('#plan-date-form input[name=last_date]').val());
 				var day_difference = parseInt($('#plan-date-form-hidden input[name=num_of_day]').val()  - $('.plan-day-tr').length);
 				if(day_difference > 0) {
+					updated = true;
 					for(i=0;i<day_difference;i++) {
 						setTimeout(function() {
 							addPlanDay();
 						}, 10);
 					}
 				}
-				savePlanTravelDate();
-				updatePlanTableDayDate();
+				
+				if(updated == true) {
+					updatePlanTableDayDate();
+					<?php if($this->session->data['memory'] == 'cookie') { ?>
+						updatePlanTableCookie();
+						showHint('Date updated');
+					<?php } else { ?>
+						<!-- START: set data -->
+							var data = {
+								"action":"edit_plan_date",
+								"plan_id":"<?php echo $plan_id; ?>",
+								"travel_date":$('#plan-date-form-hidden input[name=travel_date]').val()
+							};
+						<!-- END -->
+					
+						<!-- START: send POST -->
+							$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+								if(typeof json.warning != 'undefined') {
+									showHint(json.warning);
+								}
+								else if(typeof json.success != 'undefined') {
+									showHint(json.success);
+								}
+							}, "json");
+						<!-- END -->
+					<?php } ?>
+				}
 				hideDateForm();
 			}
 			
@@ -935,6 +971,51 @@
 				$('#plan-date-form input[name=travel_date]').val($('#plan-date-form-hidden input[name=travel_date]').val());
 				$('#plan-date-form input[name=last_date]').val($('#plan-date-form-hidden input[name=last_date]').val());
 				hideDateForm();
+			}
+			
+			function refreshDateForm() {
+				<!-- START: get variable -->
+					var first_date = $('#plan-date-form-hidden input[name=travel_date]').val();
+					var num_of_day = $('.plan-day-tr').length;
+					var last_date = calculateNewLastDate(num_of_day);
+				<!-- END -->
+				<!-- START: set unit -->
+					if(num_of_day > 1) { 
+						day_unit = 'days'; 
+					}
+					else { 
+						day_unit = 'day'; 
+					}
+				<!-- END -->
+				<!-- START: print alert -->
+					$('#plan-date-form input[name=travel_date]').val(first_date);
+					$('#plan-date-form input[name=last_date]').val(last_date);
+					$('#plan-date-form-hidden input[name=last_date]').val(last_date);
+					$('#plan-date-form-alert').html('Total ' + num_of_day + '&nbsp;' + day_unit);	
+					$('#plan-date-form-hidden input[name=num_of_day]').val(num_of_day);
+				<!-- END -->
+				<!-- START: set max and min for input -->
+					var today = new Date();
+					var dd = today.getDate();
+					var mm = today.getMonth()+1;
+					var yyyy = today.getFullYear();
+					if(dd<10){
+						dd='0'+dd
+					} 
+					if(mm<10){
+						mm='0'+mm
+					}
+					today = yyyy+'-'+mm+'-'+dd;
+					
+					date = new Date($('#plan-date-form input[name=travel_date]').val());
+					min_last_date = new Date(date.setDate(date.getDate() + $('.plan-day-tr').length - 1));
+					day = ("0" + min_last_date.getDate()).slice(-2);
+					month = ("0" + (min_last_date.getMonth() + 1)).slice(-2);
+					min_last_date = min_last_date.getFullYear() + "-" + (month) + "-" + (day);
+					
+					$('#plan-date-form input[name=travel_date]').attr('min',today);
+					$('#plan-date-form input[name=last_date]').attr('min',min_last_date);
+				<!-- END -->
 			}
 			
 			function updateDateForm() {
@@ -978,7 +1059,6 @@
 				else if(first_date > last_date) {
 					new_last_date = calculateNewLastDate(num_of_day);
 					$('#plan-date-form input[name=last_date]').val(new_last_date);
-					
 				}
 				else {
 					var one_day = 24*60*60*1000;
@@ -1094,7 +1174,39 @@
 					},
 					stop: function( event, ui ) {
 						updatePlanTableDayDate();
-						updatePlanTableCookie();
+						<?php if($this->session->data['memory'] == 'cookie') { ?>
+							updatePlanTableCookie();
+							showHint('Day sorted');
+						<?php } else { ?>
+							var day = new Array();
+							var day_id;
+							var sort_order;
+							var order;
+							
+							$('.plan-day-form-hidden').each(function() {
+								day_id = $(this).find('input[name=day_id]').val();
+								sort_order = $(this).find('input[name=sort_order]').val();
+								day.push({"day_id":day_id,"sort_order":sort_order});
+							});
+							order = JSON.stringify(day);
+							<!-- START: set data -->
+								var data = {
+									"action":"sort_day",
+									"order":order
+								};
+							<!-- END -->
+						
+							<!-- START: send POST -->
+								$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+									if(typeof json.warning != 'undefined') {
+										showHint(json.warning);
+									}
+									else if(typeof json.success != 'undefined') {
+										showHint('Day sorted');
+									}
+								}, "json");
+							<!-- END -->
+						<?php } ?>
 					}
 				}).disableSelection();
 			
@@ -1132,7 +1244,7 @@
 					}
 				});
 			}
-			initRefreshDroppable ();
+			initRefreshDroppable();
 								
 			$(".plan-day-line").sortable({
 				delay: 100,
@@ -1180,12 +1292,47 @@
 					$(".drophover").removeClass("drophover");
 					updatePlanTableLineDayIdAndSortOrder();
 					updatePlanTableDayDuration();
-					updatePlanTableCookie();
 					
 					//$( ".plan-day-line").sortable("refreshPositions");
 					$( ".plan-day-tr" ).droppable( "destroy" );
 					//initRefreshDroppable ();
 					initSortableLine();
+					
+					<?php if($this->session->data['memory'] == 'cookie') { ?>
+						updatePlanTableCookie();
+						showHint('Activity sorted');
+					<?php } else { ?>
+						var line = new Array();
+						var line_id;
+						var sort_order;
+						var order;
+						
+						$('.plan-line-form-hidden').each(function() {
+							line_id = $(this).find('input[name=line_id]').val();
+							day_id = $(this).find('input[name=day_id]').val();
+							sort_order = $(this).find('input[name=sort_order]').val();
+							line.push({"line_id":line_id,"day_id":day_id,"sort_order":sort_order});
+						});
+						order = JSON.stringify(line);
+						
+						<!-- START: set data -->
+							var data = {
+								"action":"sort_line",
+								"order":order
+							};
+						<!-- END -->
+					
+						<!-- START: send POST -->
+							$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+								if(typeof json.warning != 'undefined') {
+									showHint(json.warning);
+								}
+								else if(typeof json.success != 'undefined') {
+									showHint('Activity sorted');
+								}
+							}, "json");
+						<!-- END -->
+					<?php } ?>
 				}
 			}).disableSelection();
 			
@@ -1324,7 +1471,8 @@
 		function updatePlanTableButtonEvent() {
 			$(".plan-day-form").off().on("click", toggleDay);
 			// Function for delete Day & Line
-			deletePlanDayOrLine();
+			deletePlanDay();
+			deletePlanLine();
 			
 			// Event Listener: Add Day and Add/ Edit Line
 			$(".plan-btn-add-day").off().on("click", addPlanDay);
@@ -1366,57 +1514,172 @@
 			return o;
 		};
 	<!-- END -->
-	
-	<!-- START: [edit plan] -->
-		function savePlanTravelDate() {
-			updatePlanTableCookie(); 
-		}
-	<!-- END -->
 
 	<!-- START: [edit day] -->
 		function addPlanDay() {
-			<!-- START: set column -->
+			<!-- START: set common data -->
+				var sort_order = parseInt($('.plan-day-tr').length) + 1;
+			<!-- END -->
+			<!-- START: save -->
+				<?php if($this->session->data['memory'] == 'cookie') { ?>
+					var day_id = 0;
+					var i = 1;
+					while(day_id < 1) {
+						var check_id = $("#plan-day-" + i + "-tr").length;
+						if (check_id < 1) { day_id = i; }
+						i ++;
+					};
+					var data = {'day_id':day_id,'sort_order':sort_order};
+					runAddPlanDay(data);
+				<?php } else { ?>
+					<!-- START: set data -->
+						var data = {
+							"action":"add_day",
+							"plan_id":"<?php echo $plan_id; ?>",
+							"sort_order":sort_order
+						};
+					<!-- END -->
+				
+					<!-- START: send POST -->
+						$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+							if(typeof json.warning != 'undefined') {
+								showHint(json.warning);
+							}
+							else if(typeof json.success != 'undefined') {
+								var day_id = json.day_id;
+								var data = {'day_id':day_id,'sort_order':sort_order};
+								runAddPlanDay(data);
+							}
+						}, "json");
+					<!-- END -->
+				<?php } ?>
+			<!-- END -->
+		}
+		
+		function deletePlanDay(){
+			var selected_delete_id, hint_text, day_id, sort_order;
+			$('[data-toggle=confirmation-delete-day').confirmation({
+				container: "body",
+				singleton: true,
+				popout: true,
+				title: "Confirm DELETE?",
+				html: true,
+				content: function (){
+					selected_delete_id = $(this).attr('data-id');
+					content_text ="";
+					
+					day_id = $('#'+selected_delete_id+' .plan-day-form-hidden input[name=day_id]').val();
+					sort_order = $('#'+selected_delete_id+' .plan-day-form-hidden input[name=sort_order]').val();
+					
+					if ($("#" + selected_delete_id).find(".plan-line-tr").length > 0) {
+						content_text += "<div class='alert alert-danger'>Day "+ sort_order 														
+						content_text += " is not <strong>empty.</strong></div>"
+					}
+					else {
+						content_text = "Day " + sort_order;
+					}
+					
+					return content_text;
+				},
+				onConfirm: function () {
+					if ($("#" + selected_delete_id).hasClass("plan-day-tr") && $(".plan-day-tr").length < 2) {
+						content_text = "";
+						showHint("Cannot be deleted. There must be at least one day.");
+					}
+					else {
+						<?php if($this->session->data['memory'] == 'cookie') { ?>
+							var data = { "day_id":day_id ,"sort_order":sort_order };
+							$(this).confirmation('destroy');							
+							$("#"+ selected_delete_id).remove();
+							runDeletePlanDay(data);
+						<?php } else { ?>
+							<!-- START: set data -->
+								var data = {
+									"action":"delete_day",
+									"day_id":day_id,
+									"sort_order":sort_order
+								};
+							<!-- END -->
+						
+							<!-- START: send POST -->
+								$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+									if(typeof json.warning != 'undefined') {
+										showHint(json.warning);
+									}
+									else if(typeof json.success != 'undefined') {
+										$(this).confirmation('destroy');							
+										$("#"+ selected_delete_id).remove();
+										runDeletePlanDay(data);
+									}
+								}, "json");
+							<!-- END -->
+						<?php } ?>
+					}
+				}
+			});	
+		}
+		
+		function runAddPlanDay(data) {
+			<!-- START: set variable -->
 				var column = <?php echo $column_json; ?>;
 			<!-- END -->
-			<!-- START: set data -->
-				var sort_order = parseInt($('.plan-day-tr').length) + 1;
-				/// lokgot remove line >>>> var day_id = sort_order;
-				/// lokgot add line >>>
-				var day_id = 0;
-				var i = 1;
-				while (day_id < 1) {
-				var check_id = $("#plan-day-" + i + "-tr").length;
-				if (check_id < 1) day_id = i;
-				i ++;
-				} ;
-				var data = {'day_id':day_id,'sort_order':sort_order};
-			<!-- END -->
+			
 			<!-- START: update hidden input -->
-				var old_num_of_day = parseInt($('#plan-date-form-hidden input[name=num_of_day]').val());
-				var new_num_of_day = old_num_of_day + 1;
-				$('#plan-date-form-hidden input[name=num_of_day]').val(new_num_of_day);
+				$('#plan-date-form-hidden input[name=num_of_day]').val(data.sort_order);
 			<!-- END -->
-			printDay(column,data,data);
-			printButtonAddLine(column, "#plan-day-" + data.day_id + "-content");
-						
-			<!-- START: init function -->
+				
+			<!-- START: print -->
+				printDay(column,data,data);
+				printButtonAddLine(column, "#plan-day-" + data.day_id + "-content");
+			<!-- END -->
+			
+			<?php if($this->session->data['memory'] == 'cookie') { ?>
 				updatePlanTableCookie();
-				updatePlanTableButtonEvent();
+			<?php } ?>
+			
+			<!-- START: init function -->
+				refreshDateForm();
 				updateDateFormButtonEvent();
+				updatePlanTableButtonEvent();
 				updatePlanTableDayDate();
 				updatePlanTableDayDuration();
 				initSortableDay();
 				initSortableLine();
-				
-				var added_day = "Day " + new_num_of_day;
-				showHint("add-day",added_day);
 			<!-- END -->
-			
 			
 			<!-- START -->
 				if($('#section-content-guide').is(':visible')) {
 					minimizePlanTableColumn();
 				}
+			<!-- END -->
+			
+			<!-- START: hint -->
+				showHint('Day '+data.sort_order+' added');
+			<!-- END -->
+		}
+		
+		function runDeletePlanDay(data) {
+			<!-- START: update hidden input -->
+				$('#plan-date-form-hidden input[name=num_of_day]').val(data.sort_order);
+			<!-- END -->
+			
+			<?php if($this->session->data['memory'] == 'cookie') { ?>
+				updatePlanTableCookie();
+			<?php } ?>
+			
+			<!-- START: init function -->
+				refreshDateForm();
+				updateDateFormButtonEvent();
+				updatePlanTableButtonEvent();
+				updatePlanTableDayDate();
+				updatePlanTableDayDuration();
+				updatePlanTableLineDayIdAndSortOrder();
+				initSortableDay();
+				initSortableLine();
+			<!-- END -->
+			
+			<!-- START: hint -->
+				showHint('Day '+data.sort_order+' deleted');
 			<!-- END -->
 		}
 	<!-- END -->
@@ -1533,16 +1796,6 @@
 		
 		function saveAddPlanLineForm() {
 			<!-- START: get form data -->
-				/// lokgot remove line >>>var line_id = $('.plan-line-tr').length + 1;
-					/// lokgot add line >>>
-					var line_id = 0;
-					var i = 1;
-					while (line_id < 1) {
-					var check_id = $("#plan-line-" + i + "-tr").length;
-					if (check_id < 1) line_id = i;
-					i ++;
-					} ;
-				
 				var type_id = $('#modal-edit-line-form input[name=type_id]').val()||null;
 				var type = $('#modal-edit-line-form input[name=type]').val()||null;
 				var day_id = $('#modal-edit-line-form input[name=day_id]').val();
@@ -1563,8 +1816,17 @@
 				var note = $('#modal-edit-line-form textarea[name=note]').val()||null;
 			<!-- END -->
 			
+			<!-- START: set line_id for cookie -->
+				var line_id = 0;
+				var i = 1;
+				while (line_id < 1) {
+					var check_id = $("#plan-line-" + i + "-tr").length;
+					if (check_id < 1) line_id = i;
+					i ++;
+				} ;
+			<!-- END -->
+			
 			<!-- START: set print data -->
-				var column = <?php echo $column_json; ?>;
 				var line = 
 					{
 						line_id		:line_id,
@@ -1607,10 +1869,45 @@
 				;
 			<!-- END -->
 			
-			printLine(column,line,line_raw);
+			<?php if($this->session->data['memory'] == 'cookie') { ?>
+				runAddPlanLine(line,line_raw);
+			<?php } else { ?>
+				<!-- START: set data -->
+					var data = {
+						"action":"add_line",
+						"line":line_raw
+					};
+				<!-- END -->
+			
+				<!-- START: send POST -->
+					$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+						if(typeof json.warning != 'undefined') {
+							showHint(json.warning);
+						}
+						else if(typeof json.success != 'undefined') {
+							line.line_id = json.line_id;
+							line_raw.line_id = json.line_id;
+							runAddPlanLine(line,line_raw);
+						}
+					}, "json");
+				<!-- END -->
+			<?php } ?>
+		}
+		
+		function runAddPlanLine(line,line_raw) {
+			<!-- START: set variable -->
+				var column = <?php echo $column_json; ?>;
+			<!-- END -->
+			
+			<!-- START: print -->
+				printLine(column,line,line_raw);
+			<!-- END -->
+			
+			<?php if($this->session->data['memory'] == 'cookie') { ?>
+				updatePlanTableCookie();
+			<?php } ?>
 			
 			<!-- START: init function -->
-				updatePlanTableCookie();
 				updatePlanTableButtonEvent();
 				updateDateFormButtonEvent();
 				updatePlanTableDayDuration();
@@ -1618,102 +1915,227 @@
 			<!-- END -->
 			
 			<!-- START: show hint -->
+				var place = line.place;
 				var added_line = "";
-				if (!place) added_line = "New Line";
-				else added_line = place;
-				added_line += "," + $("#plan-day-"+ day_id +"-tr").find(".plan-col-day").html().replace( /^\D+/g, '');
+				if(typeof place != 'undefined' && place != null && place != '') { added_line = place; } else { added_line = "New Activity"; }
+				var day = $("#plan-day-"+ day_id +"-tr").find(".plan-day-form-hidden input[name=sort_order]").val();
 				
-				showHint("add-line",added_line);
+				var hint = added_line + " added to Day " + day;
+				showHint(hint);
 			<!-- END -->
 		}
 		
 		function saveEditPlanLineForm() {
 			<!-- START: get value -->
 				var line_id = $('#modal-edit-line-form input[name=line_id]').val();
-				var type_id = $('#modal-edit-line-form input[name=type_id]').val();
 				var type = $('#modal-edit-line-form input[name=type]').val();
-				var place = $('#modal-edit-line-form input[name=place]').val();
-				var lat = $('#modal-edit-line-form input[name=lat]').val()||null;
-				var lng = $('#modal-edit-line-form input[name=lng]').val()||null;
-				var activity = $('#modal-edit-line-form input[name=activity]').val()||null;
+				var type_id = $('#modal-edit-line-form input[name=type_id]').val();
 				var time = $('#modal-edit-line-form input[name=time]').val()||null;
 				var hour = $('#modal-edit-line-form input[name=hour]').val()||null;
 				var minute = $('#modal-edit-line-form input[name=minute]').val()||null;
 				var duration = (parseInt(hour) * 60 + parseInt(minute))||null;
+				var activity = $('#modal-edit-line-form input[name=activity]').val()||null;
+				var place = $('#modal-edit-line-form input[name=place]').val();
+				var lat = $('#modal-edit-line-form input[name=lat]').val()||null;
+				var lng = $('#modal-edit-line-form input[name=lng]').val()||null;
 				var fee = $('#modal-edit-line-form input[name=fee]').val()||null;
 				var currency = $('#modal-edit-line-form select[name=currency]').val()||null;
 				var title = $('#modal-edit-line-form input[name=title]').val()||null;
 				var description = $('#modal-edit-line-form textarea[name=description]').val()||null;
 				var note = $('#modal-edit-line-form textarea[name=note]').val()||null;
 			<!-- END -->
-			<!-- START: update hidden value -->
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=type_id]').val(type_id);
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=type]').val(type);
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=place]').val(place);
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=lat]').val(lat);
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=lng]').val(lng);
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=activity]').val(activity);
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=time]').val(time);
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=duration]').val(duration);
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=fee]').val(fee);
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=currency]').val(currency);
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=title]').val(title);
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=description]').val(description);
-				$('#plan-line-'+line_id+'-tr').find('.plan-line-form-hidden input[name=note]').val(note);
+			
+			<!-- START: set print data -->
+				var line = 
+					{
+						line_id		:line_id,
+						type		:type,
+						type_id		:type_id,
+						time		:time,
+						duration	:duration,
+						activity	:activity,
+						place		:place,
+						lat			:lat,
+						lng			:lng,
+						fee			:fee,
+						currency	:currency,
+						title		:title,
+						description	:description,
+						note		:note
+					}
+				;
 			<!-- END -->
+			
+			<?php if($this->session->data['memory'] == 'cookie') { ?>
+				runEditPlanLine(line);
+			<?php } else { ?>
+				<!-- START: set data -->
+					var data = {
+						"action":"edit_line",
+						"line":line
+					};
+				<!-- END -->
+			
+				<!-- START: send POST -->
+					$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+						if(typeof json.warning != 'undefined') {
+							showHint(json.warning);
+						}
+						else if(typeof json.success != 'undefined') {
+							runEditPlanLine(line);
+						}
+					}, "json");
+				<!-- END -->
+			<?php } ?>
+		}
+		
+		function runEditPlanLine(line) {
+			<!-- START: update hidden value -->
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=type_id]').val(line.type_id);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=type]').val(line.type);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=place]').val(line.place);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=lat]').val(line.lat);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=lng]').val(line.lng);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=activity]').val(line.activity);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=time]').val(line.time);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=duration]').val(line.duration);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=fee]').val(line.fee);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=currency]').val(line.currency);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=title]').val(line.title);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=description]').val(line.description);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-line-form-hidden input[name=note]').val(line.note);
+			<!-- END -->
+			
 			<!-- START: update html -->
-				$('#plan-line-'+line_id+'-tr').find('.plan-col-place').html(place);
-				$('#plan-line-'+line_id+'-tr').find('.plan-col-activity').html(activity);
-				$('#plan-line-'+line_id+'-tr').find('.plan-col-time').html(time);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-col-place').html(line.place);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-col-activity').html(line.activity);
+				$('#plan-line-'+line.line_id+'-tr').find('.plan-col-time').html(line.time);
 				<!-- START: [duration] -->
-					if(duration == null) { 
-						$('#plan-line-'+line_id+'-tr').find('.plan-col-duration').html('');
+					if(line.duration == null) { 
+						$('#plan-line-'+line.line_id+'-tr').find('.plan-col-duration').html('');
 					}
 					else {
-						var formatted_duration = convertLineDurationFormat(duration);
-						$('#plan-line-'+line_id+'-tr').find('.plan-col-duration').html(formatted_duration);
+						var formatted_duration = convertLineDurationFormat(line.duration);
+						$('#plan-line-'+line.line_id+'-tr').find('.plan-col-duration').html(formatted_duration);
 					}
 				<!-- END -->
 				<!-- START: [fee] -->
-					$('#plan-line-'+line_id+'-tr').find('.plan-col-fee').html(fee);
+					$('#plan-line-'+line.line_id+'-tr').find('.plan-col-fee').html(line.fee);
 				<!-- END -->
 				<!-- START: [currency] -->
-					$('#plan-line-'+line_id+'-tr').find('.plan-col-currency').html(currency);
+					$('#plan-line-'+line.line_id+'-tr').find('.plan-col-currency').html(line.currency);
 				<!-- END -->
 				<!-- START: [title] -->
-					$('#plan-line-'+line_id+'-tr').find('.plan-col-title').html(title);
+					$('#plan-line-'+line.line_id+'-tr').find('.plan-col-title').html(line.title);
 				<!-- END -->
 				<!-- START: [description] -->
-					$('#plan-line-'+line_id+'-tr').find('.plan-col-description').find('.fa').attr('data-original-title',description);
-					if(description == null || description == '') { 
-						$('#plan-line-'+line_id+'-tr').find('.plan-col-description').find('.fa').addClass('hidden'); 
+					$('#plan-line-'+line.line_id+'-tr').find('.plan-col-description').find('.fa').attr('data-original-title',line.description);
+					if(line.description == null || line.description == '') { 
+						$('#plan-line-'+line.line_id+'-tr').find('.plan-col-description').find('.fa').addClass('hidden'); 
 					}
 					else {
-						$('#plan-line-'+line_id+'-tr').find('.plan-col-description').find('.fa').removeClass('hidden'); 
+						$('#plan-line-'+line.line_id+'-tr').find('.plan-col-description').find('.fa').removeClass('hidden'); 
 					}
 				<!-- END -->
 				<!-- START: [note] -->
-					$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').attr('data-original-title',note);
-					if(note == null || note == '') { 
-						$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').addClass('hidden'); 
+					$('#plan-line-'+line.line_id+'-tr').find('.plan-col-note').find('.fa').attr('data-original-title',line.note);
+					if(line.note == null || line.note == '') { 
+						$('#plan-line-'+line.line_id+'-tr').find('.plan-col-note').find('.fa').addClass('hidden'); 
 					}
 					else {
-						$('#plan-line-'+line_id+'-tr').find('.plan-col-note').find('.fa').removeClass('hidden'); 
+						$('#plan-line-'+line.line_id+'-tr').find('.plan-col-note').find('.fa').removeClass('hidden'); 
 					}
 				<!-- END -->
 				<!-- START: [info] -->
-					if(type == null || type == '') { 
-						$('#plan-line-'+line_id+'-tr').find('.plan-col-command').find('.fa-info-circle').addClass('hidden'); 
+					if(line.type == null || line.type == '') { 
+						$('#plan-line-'+line.line_id+'-tr').find('.plan-col-command').find('.fa-info-circle').addClass('hidden'); 
 					}
 					else {
-						$('#plan-line-'+line_id+'-tr').find('.plan-col-command').find('.fa-info-circle').removeClass('hidden'); 
+						$('#plan-line-'+line.line_id+'-tr').find('.plan-col-command').find('.fa-info-circle').removeClass('hidden'); 
 					}
 				<!-- END -->
 			<!-- END -->
 			
-			updatePlanTableCookie();
-			updatePlanTableDayDuration();
+			<?php if($this->session->data['memory'] == 'cookie') { ?>
+				updatePlanTableCookie();
+			<?php } ?>
+			
+			<!-- START: init function -->
+				updatePlanTableDayDuration();
+			<!-- END -->
+			
+			<!-- START: show hint -->
+				showHint("Activity updated");
+			<!-- END -->
 		}
+		
+		function deletePlanLine(){
+			var selected_delete_id, hint_text;
+			$('[data-toggle=confirmation-delete-line').confirmation({
+				container: "body",
+				singleton: true,
+				popout: true,
+				title: "Confirm DELETE?",
+				html: true,
+				content: function (){
+					selected_delete_id = $(this).attr('data-id');
+					content_text ="";
+					
+					line_id = $('#'+selected_delete_id+' .plan-line-form-hidden input[name=line_id]').val();
+					place = $('#'+selected_delete_id+' .plan-line-form-hidden input[name=place]').val();
+					if(place == '') { place = 'Activity'; }
+					day = $("#"+selected_delete_id).parent().parent().parent().find(".plan-col-day").html().replace( /^\D+/g, '');
+					content_text = place + " in Day " + day;
+					
+					if (!hint_text) hint_text  = content_text;
+					return content_text;
+				},
+				onConfirm: function () {
+					<?php if($this->session->data['memory'] == 'cookie') { ?>
+						$(this).confirmation('destroy');							
+						$("#"+ selected_delete_id).remove();
+						runDeletePlanLine();
+					<?php } else { ?>
+						<!-- START: set data -->
+							var data = {
+								"action":"delete_line",
+								"line_id":line_id
+							};
+						<!-- END -->
+					
+						<!-- START: send POST -->
+							$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+								if(typeof json.warning != 'undefined') {
+									showHint(json.warning);
+								}
+								else if(typeof json.success != 'undefined') {
+									$(this).confirmation('destroy');							
+									$("#"+ selected_delete_id).remove();
+									runDeletePlanLine();
+								}
+							}, "json");
+						<!-- END -->
+					<?php } ?>
+				}
+			});	
+		}
+		
+		function runDeletePlanLine(data) {
+			<?php if($this->session->data['memory'] == 'cookie') { ?>
+				updatePlanTableCookie();
+			<?php } ?>
+			
+			<!-- START: init function -->
+				updatePlanTableCookie();
+				updatePlanTableDayDuration();
+				updatePlanTableLineDayIdAndSortOrder();
+				updatePlanTableButtonEvent();
+			<!-- END -->
+			
+			<!-- START: hint -->
+				showHint('Activity deleted');
+			<!-- END -->
+		}	
 	<!-- END -->
 	
 	<!-- START: add activity from guide -->
@@ -1733,13 +2155,12 @@
 				var lng = $('#section-content-guide-form input[name=lng]').val()||null;
 				var fee = null;
 				var currency = null;
-				var title = activity + '&nbsp;' + place;
+				var title = activity + ' ' + place;
 				var description = null;
 				var note = null;
 			<!-- END -->
 			
 			<!-- START: set print data -->
-				var column = <?php echo $column_json; ?>;
 				var line = 
 					{
 						line_id		:line_id,
@@ -1782,79 +2203,31 @@
 				;
 			<!-- END -->
 			
-			printLine(column,line,line_raw);
+			<?php if($this->session->data['memory'] == 'cookie') { ?>
+				runAddPlanLine(line,line_raw);
+			<?php } else { ?>
+				<!-- START: set data -->
+					var data = {
+						"action":"add_line",
+						"line":line_raw
+					};
+				<!-- END -->
 			
-			<!-- START: init function -->
-				updatePlanTableCookie();
-				updatePlanTableButtonEvent();
-				updateDateFormButtonEvent();
-				updatePlanTableDayDuration();
-				initSortableLine();
-			<!-- END -->
-			
-			<!-- START: show hint -->
-				var added_line = "";
-				if (!place) added_line = "New Line";
-				else added_line = place;
-				added_line += "," + $("#plan-day-"+ day_id +"-tr").find(".plan-col-day").html().replace( /^\D+/g, '');
-				
-				showHint("add-line",added_line);
-			<!-- END -->
+				<!-- START: send POST -->
+					$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+						if(typeof json.warning != 'undefined') {
+							showHint(json.warning);
+						}
+						else if(typeof json.success != 'undefined') {
+							line.line_id = json.line_id;
+							line_raw.line_id = json.line_id;
+							runAddPlanLine(line,line_raw);
+						}
+					}, "json");
+				<!-- END -->
+			<?php } ?>
 		}
 	<!-- END -->
-	
-		function deletePlanDayOrLine(){
-			var selected_delete_id, hint_text;
-			$('[data-toggle=confirmation-delete').confirmation({
-				container: "body",
-				singleton: true,
-				popout: true,
-				title: "Confirm DELETE?",
-				html: true,
-				content: function (){
-					selected_delete_id = $(this).attr('data-id');
-					content_text ="";
-					
-					if (selected_delete_id.includes("day")) {
-						day_number = $("#"+selected_delete_id).find(".plan-col-day").html().replace( /^\D+/g, '');
-						if ($("#" + selected_delete_id).find(".plan-line-tr").length > 0) {
-							content_text += "<div class='alert alert-danger'>Day "+ day_number 														
-							content_text += " is not <strong>empty.</strong></div>"
-							hint_text = "Day " + day_number;
-						}
-						else content_text = "Day " + day_number;
-					}
-					
-					else {
-						line_name = $("#"+ selected_delete_id).find(".plan-col-place").html();
-						day_number = $("#"+selected_delete_id).parent().parent().parent().find(".plan-col-day").html().replace( /^\D+/g, '');
-						content_text = line_name + " in Day " + day_number;
-					}
-					if (!hint_text) hint_text  = content_text;
-					return content_text;
-				},
-				onConfirm: function (){
-					
-					if ($("#" + selected_delete_id).hasClass("plan-day-tr") && $(".plan-day-tr").length < 2) {
-						content_text = "";
-						hint_action = "delete-limit";						
-					}
-					else {
-						$(this).confirmation('destroy');							
-						$("#"+ selected_delete_id).remove();
-						hint_action = "deleted";
-					}
-					
-					updatePlanTableCookie();
-					updatePlanTableDayDate();
-					updatePlanTableDayDuration();
-					updatePlanTableLineDayIdAndSortOrder();
-					updatePlanTableButtonEvent();
-					
-					showHint(hint_action, hint_text);
-				}
-			});	
-		}	
 	
 	$(document).ready(function() {
 		refreshPlanTable();
@@ -1933,28 +2306,10 @@
 <!-- END -->
 
 <!-- Show popover hint (helper) -->
-	function showHint(action, hint_text) {
+	function showHint(hint) {
 		$("#hint-popover").hide();
-		switch(action){
-			case "deleted": 
-				text = hint_text + " is removed."; 
-				break;
-			case "delete-limit": 
-				text = "Cannot remove. There must be at least 1 day."; 
-				break;
-			case "add-day": 
-				text = hint_text + " is added."; 
-				break;
-			case "add-line": 
-				var str = hint_text.split(",");
-				text = str[0] + " is added into Day " + str[1]; 
-				break;
-		}	
-
-		if (text) {	
-			$("#hint-popover").html(text).fadeIn(600);
-			setTimeout(function() { $("#hint-popover").delay(1000).fadeOut(300); }, 2000);
-		}
+		$("#hint-popover").html(hint).fadeIn(100);
+		setTimeout(function() { $("#hint-popover").delay(1000).fadeOut(300); }, 2000);
 	}
 <!-- END -->
 	</script>

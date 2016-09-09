@@ -127,24 +127,27 @@
 	}
 	
 	$("#wrapper-title-input").change(function() {
-		<?php if($this->user->isLogged() != '') { ?>
-			<!-- START: set POST data -->
-				var data = {
-					"action":"edit_trip_name",
-					"name":$("#wrapper-title-input").val()
-				};
-			<!-- END -->
-			
-			<!-- START: send POST -->
-				$.post("<?php echo $ajax_itinerary; ?>", data, function(trip) {
-				}, "json");
-			<!-- END -->
-		<?php } else { ?>
+		<?php if($this->user->isLogged() == false) { ?>
 			var trip = {
 				name:$("#wrapper-title-input").val()
 			};
 			trip = JSON.stringify(trip);
 			setCookie('trip',trip,1);
+			showHint('Title updated');
+		<?php } else { ?>
+			<!-- START: set POST data -->
+				var data = {
+					"action"	: "edit_trip_name",
+					"trip_id"	: "<?php echo $this->trip->getTripId(); ?>",
+					"name"		: $("#wrapper-title-input").val()
+				};
+			<!-- END -->
+			
+			<!-- START: send POST -->
+				$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+					showHint('Title updated');
+				}, "json");
+			<!-- END -->
 		<?php } ?>
 	});
 	

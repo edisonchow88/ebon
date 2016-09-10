@@ -141,6 +141,7 @@
 	}
 	
 	#section-content-guide-description {
+		margin-top:12px;
 		padding:7px 7px 0 7px;
 		display:none;
 	}
@@ -303,8 +304,8 @@
         </div>
         <div id="section-content-guide-tag"></div>
         <div id="section-content-guide-blurb"></div>
-        <div id="section-content-guide-description" class="hidden"></div>
-        <div id="section-content-guide-button-read" class="hidden"><a class="btn btn-default btn-block" onclick="toggle_guide_description();"><span id="section-content-guide-button-read-text">Read More</span></a></div>
+        <div id="section-content-guide-description"></div>
+        <div id="section-content-guide-button-read"><a class="btn btn-default btn-block" onclick="toggle_guide_description();"><span id="section-content-guide-button-read-text">Read More</span></a></div>
         <div id="section-content-guide-result-summary" class="hidden">Total <span id="section-content-guide-result-count"><?php echo $result['count']; ?></span> results</div>
         <div id="section-content-guide-result-list">
         </div>
@@ -405,8 +406,15 @@
 							document.getElementById('section-content-guide-blurb').innerHTML = json.current.blurb;
 						}
 						
-						if(typeof json.current.description != 'undefined') {
-							document.getElementById('section-content-guide-description').innerHTML = json.current.description;
+						if(typeof json.current.description != 'undefined' && json.current.description != null && json.current.description != '') {
+							$('#section-content-guide-description').css('display','none');
+							$('#section-content-guide-button-read').css('display','block');
+							$('#section-content-guide-button-read-text').html('Read More');
+							document.getElementById('section-content-guide-description').innerHTML = json.current.description.replace(/\n/g, '<br />');
+						}
+						else {
+							$('#section-content-guide-description').css('display','none');
+							$('#section-content-guide-button-read').css('display','none');
 						}
 					
 						<!-- START: set image -->

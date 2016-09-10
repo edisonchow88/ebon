@@ -2170,7 +2170,7 @@
 				var lng = $('#section-content-guide-form input[name=lng]').val()||null;
 				var fee = null;
 				var currency = null;
-				var title = activity + ' ' + place;
+				var title = place;
 				var description = null;
 				var note = null;
 			<!-- END -->

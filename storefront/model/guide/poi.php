@@ -25,7 +25,7 @@ class ModelGuidePoi extends Model{
 	
 	//START: set image size
 		private $image_parent_width = '574px';
-		private $image_child_width = '100px';
+		private $image_child_width = '120px';
 		private $image_row_width = '30px';
 	//END
 	

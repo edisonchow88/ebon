@@ -18,7 +18,7 @@ class ModelGuideDestination extends Model{
 	
 	//START: set image size
 		private $image_parent_width = '574px';
-		private $image_child_width = '100px';
+		private $image_child_width = '120px';
 		private $image_row_width = '30px';
 	//END
 	
@@ -1554,7 +1554,7 @@ class ModelGuideDestination extends Model{
 					WHERE t1.parent_id = '" . (int)$destination_id . "' 
 					AND t6.status = '1'
 					GROUP BY t1.destination_id 
-					ORDER BY t2.name asc 
+					ORDER BY t6.popularity desc, t2.name asc 
 				";
 				if($limit != '') {
 					$sql .= "LIMIT ".$limit." ";
@@ -1582,7 +1582,7 @@ class ModelGuideDestination extends Model{
 							}
 						}
 						if(isset($result['image_id'])) { 
-							$output[$result['destination_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],$image_child_width);
+							$output[$result['destination_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],$this->image_child_width);
 						}
 						else { 
 							$google_image = $this->getDestinationGoogleImageByDestinationId($result['destination_id']);

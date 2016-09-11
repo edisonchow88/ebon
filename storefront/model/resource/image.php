@@ -8,7 +8,7 @@ class ModelResourceImage extends Model{
 	private $table = "image";
 	private $table_tag = "image_tag";
 	private $path = "resources/image/cropped/";
-	private $default_width = "100px";
+	private $default_width = "120px";
 	
 	public function getImage($image_id='',$width='') {
 		if($image_id == '0') { return; } //avoid return an array

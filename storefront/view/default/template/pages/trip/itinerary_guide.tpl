@@ -260,10 +260,27 @@
 		bottom: 15px;
 	}
 	
+	.result-child-button-add {
+		position:absolute;
+		bottom:15px;
+		right:0;
+	}
+	
+	.result-child-button-add a {
+		margin-left:15px;
+		color:#999;
+	}
+	
+	.result-child-button-add a:hover {
+		margin-left:15px;
+		color:#333;
+	}
+	
 	.result-button {
+		height:120px;
 		display:block;
 		float:right;
-		padding:30px 7px;
+		padding-top:50px;
 		text-align:center;
 		font-weight:bold;
 	}
@@ -524,6 +541,10 @@
 														content += '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
 													}
 												}
+											content += '</div>';
+											content += '<div class="result-child-button-add hidden-xs pull-right">';
+												content += '<a class="small">Add to Itinerary</a>';
+												content += '<a class="small">Read More</a>';
 											content += '</div>';
 										content += '</div>';
 										content += '<div class="result-button">';

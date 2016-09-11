@@ -1759,6 +1759,8 @@
 			var note = $('#'+line).find('.plan-line-form-hidden input[name=note]').val();
 			
 			$('#modal-edit-line-form input[name=line_id]').val(line_id);
+			$('#modal-edit-line-form input[name=type_id]').val(type_id);
+			$('#modal-edit-line-form input[name=type]').val(type);
 			if(typeof place != 'undefined') { $('#modal-edit-line-form input[name=place]').val(place); }
 			if(typeof lat != 'undefined') { $('#modal-edit-line-form input[name=lat]').val(lat); }
 			if(typeof lng != 'undefined') { $('#modal-edit-line-form input[name=lng]').val(lng); }
@@ -2307,7 +2309,7 @@
 		}
 		
 		function swithMobileMode() {
-			if($('#wrapper-mobile-icon').hasClass('hidden')) {
+			if($('#wrapper-mobile-icon').hasClass('hidden') || $('.plan-thead').is(":visible") == true) {
 				maximizePlanTableColumn();
 				<!-- START: [header] -->
 				$('#wrapper-header').addClass('view-mode');

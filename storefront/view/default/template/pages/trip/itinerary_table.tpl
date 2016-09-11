@@ -1155,7 +1155,8 @@
 					start: function(e, ui) {
 						$(".plan-day").sortable("refreshPositions");
 						$(ui.helper).addClass("ui-draggable-helper");
-						$(ui.placeholder).addClass("ui-draggable-placeholder-day");		
+						$(ui.placeholder).addClass("ui-draggable-placeholder-day");	
+						$(document).trigger("sortStart");	
 					},
 					sort: function(event, ui) {
 						var to_day_text;
@@ -1210,6 +1211,7 @@
 								}, "json");
 							<!-- END -->
 						<?php } ?>
+						$(document).trigger("sortStop");
 					}
 				}).disableSelection();
 			

@@ -87,14 +87,13 @@
     </div>
     -->
     <div id="section-content-map-content">
-<<<<<<< HEAD
+
     	<button onclick="initMap()"></button>
         <div class="btn-group" role="group" aria-label="...">
   			<button type="button" class="btn btn-default map-option map-selected" value="day">Day</button>
   			<button type="button" class="btn btn-default map-option" value="all">All</button>
 		</div>
-=======
->>>>>>> origin/master
+
     	<div id="map"></div>
     </div>
 </div>

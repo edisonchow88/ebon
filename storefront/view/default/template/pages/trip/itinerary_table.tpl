@@ -1042,6 +1042,9 @@
 				$("#" + selected_day).toggleClass("selected");
 				$("#" + selected_day + " .plan-day-content").toggleClass("hidden");
 				$("#" + selected_day + " .fa-chevron-circle-down").toggleClass("fa-flip-vertical");
+				// Map refresh trigger
+				$(".plan-day-tr").trigger('selectedDayChanged');
+				
 			}
 		}
 		
@@ -1108,31 +1111,31 @@
 			var to_row_day_id;
 			var drop_id_to_sortable;
 			
-			function initRefreshDroppable () {
-				$(".plan-day-tr").droppable({
-					accept: ".plan-line-tr",
-					hoverClass: "drophover",
-					over: function( event, ui ) {
-						var current_drag_id = $(ui.draggable).parent().attr("id");
-						var current_over_id = $(this).find(".plan-day-line").attr("id");
-						var current_drag_activities_text = $("#"+current_drag_id).find(".plan-col-activity").html();					
-						var current_over_day_text = $("#"+current_over_id).parent().parent().find(".plan-col-day").html();
-						// Remove hover when it is into same day.
-						if (current_over_id == current_drag_id) {
-							$(".drophover").not(".plan-line-tr").removeClass("drophover");
-						}
-						else {
-							$(ui.helper).html("Drop "+ current_drag_activities_text +" > " + current_over_day_text);
-						}
-					},
-					drop: function( event, ui ) {
-						var drop_id = $(this).find(".plan-day-line").attr("id");
-						drop_id_to_sortable = drop_id;	
-						$(".plan-day-tr").droppable("disable");
+			
+			$(".plan-day-tr").droppable({
+				accept: ".plan-line-tr",
+				hoverClass: "drophover",
+				over: function( event, ui ) {
+					var current_drag_id = $(ui.draggable).parent().attr("id");
+					var current_over_id = $(this).find(".plan-day-line").attr("id");
+					var current_drag_activities_text = $("#"+current_drag_id).find(".plan-col-activity").html();					
+					var current_over_day_text = $("#"+current_over_id).parent().parent().find(".plan-col-day").html();
+					// Remove hover when it is into same day.
+					if (current_over_id == current_drag_id) {
+						$(".drophover").not(".plan-line-tr").removeClass("drophover");
 					}
-				});
-			}
-			initRefreshDroppable ();
+					else {
+						$(ui.helper).html("Drop "+ current_drag_activities_text +" > " + current_over_day_text);
+					}
+				},
+				drop: function( event, ui ) {
+					var drop_id = $(this).find(".plan-day-line").attr("id");
+					drop_id_to_sortable = drop_id;	
+					$(".plan-day-tr").droppable("disable");
+				}
+			});
+
+
 								
 			$(".plan-day-line").sortable({
 				delay: 100,
@@ -1158,6 +1161,8 @@
 				start: function(e, ui) {
 					$(ui.helper).addClass("ui-draggable-helper");
 					$(ui.placeholder).addClass("ui-draggable-placeholder");
+					//map trigger sortstart
+					$(document).trigger("sortStart");
 				},
 				over: function(e, ui) {
 					$(".plan-day-tr").droppable("disable");
@@ -1182,10 +1187,10 @@
 					updatePlanTableDayDuration();
 					updatePlanTableCookie();
 					
-					//$( ".plan-day-line").sortable("refreshPositions");
 					$( ".plan-day-tr" ).droppable( "destroy" );
-					//initRefreshDroppable ();
 					initSortableLine();
+					
+					$(document).trigger("sortStop");
 				}
 			}).disableSelection();
 			
@@ -1235,7 +1240,6 @@
 				setCookie('plan',serial,1);
 				updateSectionLimiter();
 			<?php } ?>
-			//initMap();
 		}
 		
 		function updatePlanTableDayDate() {
@@ -1852,6 +1856,7 @@
 					updatePlanTableButtonEvent();
 					
 					showHint(hint_action, hint_text);
+					hint_text = null;
 				}
 			});	
 		}	
@@ -1934,6 +1939,7 @@
 
 <!-- Show popover hint (helper) -->
 	function showHint(action, hint_text) {
+		var text ="";
 		$("#hint-popover").hide();
 		switch(action){
 			case "deleted": 

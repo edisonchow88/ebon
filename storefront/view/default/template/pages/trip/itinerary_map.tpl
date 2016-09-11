@@ -50,6 +50,7 @@
         </div>
     </div>
     -->
+    <!--
     <div id="section-content-map-header" class="hidden-sm hidden-md hidden-lg">
         <div class="row">
             <div class="spacer-bar hidden-xs hidden-sm col-md-12 col-lg-12"></div>
@@ -58,7 +59,6 @@
             <div class="input-group pull-left inline col-xs-12">
                 <input class="form-control" type="text" placeholder='Search ...'  />
             </div>
-            <!--
             <div class="inline pull-right col-md-12 col-lg-3">
                 <a 
                 	class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
@@ -79,11 +79,10 @@
                 	<i class="fa fa-fw fa-arrows-alt"></i>
                 </a>
             </div>
-            -->
         </div>
     </div>
+    -->
     <div id="section-content-map-content">
-    	<button onclick="initMap()"></button>
     	<div id="map"></div>
     </div>
 </div>

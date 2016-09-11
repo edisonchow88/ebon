@@ -189,6 +189,14 @@
 		.plan-btn-tr:hover {
 			background-color:#EEE;
 		}
+		
+		.plan-mobile-tr {
+			background-color:#FFF !important;
+		}
+		
+		.plan-mobile-tr .plan-form:hover {
+			background-color:#FFF !important;
+		}
 	/* END */
 	
 	/* START: itinerary table row */
@@ -513,6 +521,12 @@
 				initSortableLine();
 				updateSectionLimiter();
 			<!-- END -->
+			
+			<!-- START: end loading -->
+				initMap();
+				update_section_content();
+				$('#wrapper-splash').fadeOut();
+			<!-- END -->
 		}
 	<!-- END -->
 	
@@ -746,6 +760,7 @@
 				navigation += 'var type_id = $(\'#plan-line-'+line['line_id']+'-form-hidden input[name=type_id]\').val();';
 				navigation += 'navigate_guide(type, type_id);';
 				navigation += 'setTimeout(function() { $(\'#btn-search\').trigger(\'click\'); }, 100);';
+				navigation += 'setTimeout(function() { $(\'#section-view-xs-list-guide a\').trigger(\'click\'); }, 100);';
 				
 				if(typeof line['type'] != 'undefined' && line['type'] != null && line['type'] != '') {
 					info_btn = '<a class="plan-btn btn btn-simple" onclick="'+navigation+'"><i class="fa fa-fw fa-info-circle"></i></a>';
@@ -2155,7 +2170,7 @@
 				var lng = $('#section-content-guide-form input[name=lng]').val()||null;
 				var fee = null;
 				var currency = null;
-				var title = activity + ' ' + place;
+				var title = place;
 				var description = null;
 				var note = null;
 			<!-- END -->
@@ -2241,12 +2256,10 @@
 	<script>
 		function minimizePlanTableColumn() {
 			$('.plan-thead').hide();
-			$('.plan-tbody').css('overflow-y','hidden');
+			$('.plan-tbody').addClass('noscrollbar');
 			$('.plan-col-datetime').hide();
 			$('.plan-col-date').hide();
 			$('.plan-col-time').hide();
-			$('.plan-col-place').hide();
-			$('.plan-col-activity').hide();
 			$('.plan-col-fee').hide();
 			$('.plan-col-currency').hide();
 			$('.plan-col-title').hide();
@@ -2255,16 +2268,24 @@
 			$('.plan-col-command').hide();
 			$('.plan-day-content').hide();
 			$('.plan-col-day').css('padding-left','15px');
+			
+			<!-- START: modify itinerary header -->
+				$('.btn-show-date-form').hide();
+				$('#btn-search').addClass('btn-block');
+				$('#btn-search').removeClass('pull-left');
+				$('#btn-search').removeClass('btn');
+				$('#btn-search').removeClass('btn-primary');
+				$('#btn-search').html('View Itinerary');
+				$('#section-content-itinerary-header').css('overflow-y','hidden');
+			<!-- END -->
 		}
 		
 		function maximizePlanTableColumn() {
 			$('.plan-thead').show();
-			$('.plan-tbody').css('overflow-y','scroll');
+			$('.plan-tbody').removeClass('noscrollbar');
 			$('.plan-col-datetime').show();
 			$('.plan-col-date').show();
 			$('.plan-col-time').show();
-			$('.plan-col-place').show();
-			$('.plan-col-activity').show();
 			$('.plan-col-fee').show();
 			$('.plan-col-currency').show();
 			$('.plan-col-title').show();
@@ -2273,33 +2294,122 @@
 			$('.plan-col-command').show();
 			$('.plan-day-content').show();
 			$('.plan-col-day').css('padding-left','7px');
+			
+			<!-- START: modify itinerary header -->
+				$('.btn-show-date-form').show();
+				$('#btn-search').removeClass('btn-block');
+				$('#btn-search').addClass('pull-left');
+				$('#btn-search').addClass('btn');
+				$('#btn-search').addClass('btn-primary');
+				$('#btn-search').html('<i class="fa fa-fw fa-search"></i> Discover');
+				$('#section-content-itinerary-header').css('overflow-y','scroll');
+			<!-- END -->
+		}
+		
+		function swithMobileMode() {
+			if($('#wrapper-mobile-icon').hasClass('hidden')) {
+				maximizePlanTableColumn();
+				<!-- START: [header] -->
+				$('#wrapper-header').addClass('view-mode');
+				$('#wrapper-title').tooltip('disable');
+				$('#wrapper-title-input').attr("disabled", true);
+				$('#wrapper-account-icon').hide();
+				$('#wrapper-mobile-icon').removeClass('hidden');
+				<!-- END -->
+				<!-- START: [menu] -->
+				$('#wrapper-menu .menu-itinerary-list').hide();
+				$('#wrapper-menu .menu-account-list').show();
+				<!-- END -->
+				<!-- START: [guide] -->
+				$('#section-content-guide-content').addClass('noscrollbar');
+				$('#section-content-guide-button-add').hide();
+				$('#section-content-guide-button-add-text').hide();
+				<!-- END -->
+				<!-- START: [itinerary] -->
+				$('#section-content-itinerary-header').hide();
+				$('.plan-thead').hide();
+				$('.plan-tbody').addClass('noscrollbar');
+				$('.plan-col-duration').hide();
+				$('.plan-col-fee').hide();
+				$('.plan-col-currency').hide();
+				$('.plan-col-description').hide();
+				$('.plan-col-note').hide();
+				$('.icon-toggle-day').hide();
+				$('.icon-sort').hide();
+				$('.icon-delete').hide();
+				$('.icon-edit').hide();
+				$('.plan-btn-tr').hide();
+				//[event]
+				$(".plan-day-tr").css('pointer-events','none');
+				$('.plan-btn').css('pointer-events','auto');
+				//[line]
+				setTimeout(function() {$('.plan-day-content').removeClass('hidden');}, 100);
+				$('.plan-day-tr').addClass('plan-mobile-tr');
+				$('.plan-line-tr').addClass('plan-mobile-tr');
+				<!-- END -->
+			}
+		}
+		
+		function swithDesktopMode() {
+			if($('#wrapper-mobile-icon').hasClass('hidden')) {
+			}
+			else {
+				<!-- START: [header] -->
+				$('#wrapper-header').removeClass('view-mode');
+				$('#wrapper-title').tooltip('enable');
+				$('#wrapper-title-input').attr("disabled", false);
+				$('#wrapper-account-icon').show();
+				$('#wrapper-mobile-icon').addClass('hidden');
+				<!-- END -->
+				<!-- START: [menu] -->
+				$('#wrapper-menu .menu-itinerary-list').show();
+				$('#wrapper-menu .menu-account-list').hide();
+				<!-- END -->
+				<!-- START: [guide] -->
+				$('#section-content-guide-content').removeClass('noscrollbar');
+				$('#section-content-guide-button-add').show();
+				$('#section-content-guide-button-add-text').show();
+				<!-- END -->
+				<!-- START: [itinerary] -->
+				//[event]
+				$(".plan-day-tr").css('pointer-events','auto');
+				toggleDay();
+				//[column]
+				$('#section-content-itinerary-header').show();
+				$('.plan-thead').show();
+				$('.plan-tbody').removeClass('noscrollbar');
+				$('.plan-col-duration').show();
+				$('.plan-col-fee').show();
+				$('.plan-col-currency').show();
+				$('.plan-col-description').show();
+				$('.plan-col-note').show();
+				$('.icon-toggle-day').show();
+				$('.icon-sort').show();
+				$('.icon-delete').show();
+				$('.icon-edit').show();
+				$('.plan-btn-tr').show();
+				//[line]
+				$('.plan-day-tr').removeClass('plan-mobile-tr');
+				$('.plan-line-tr').removeClass('plan-mobile-tr');
+				<!-- END -->
+				setTimeout(function() {
+					if($('#section-content-guide').is(':visible')) {
+						minimizePlanTableColumn();
+					}
+					else {
+						maximizePlanTableColumn();
+					}
+				}, 100);
+			}
 		}
 		
         $('#btn-search').on('click', function() {
             toggle_section_content('guide');
             if($('#section-content-guide').is(':visible')) {
 				minimizePlanTableColumn();
-                <!-- START: modify itinerary header -->
-                    $('.btn-show-date-form').hide();
-                    $('#btn-search').addClass('btn-block');
-                    $('#btn-search').removeClass('pull-left');
-                    $('#btn-search').removeClass('btn');
-                    $('#btn-search').removeClass('btn-primary');
-                    $('#btn-search').html('View Itinerary');
-                    $('#section-content-itinerary-header').css('overflow-y','hidden');
-                <!-- END -->
             }
             else {
 				maximizePlanTableColumn();
-                <!-- START: modify itinerary header -->
-                    $('.btn-show-date-form').show();
-                    $('#btn-search').removeClass('btn-block');
-                    $('#btn-search').addClass('pull-left');
-                    $('#btn-search').addClass('btn');
-                    $('#btn-search').addClass('btn-primary');
-                    $('#btn-search').html('<i class="fa fa-fw fa-search"></i> Discover');
-                    $('#section-content-itinerary-header').css('overflow-y','scroll');
-                <!-- END -->
             }
         });
  

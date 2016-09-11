@@ -569,7 +569,7 @@
 				$('#'+input.input).val(this.suggestion[this.selected_suggestion].name);
 				$('#'+input.type).val(this.suggestion[this.selected_suggestion].type);
 				$('#'+input.type_id).val(this.suggestion[this.selected_suggestion].type_id);
-				$('#'+form+' input[name=title]').val(toTitleCase($('#'+form+' select[name=activity]').val()) + ' ' + this.suggestion[this.selected_suggestion].name);
+				$('#'+form+' input[name=title]').val(this.suggestion[this.selected_suggestion].name);
 				$('#'+form+' input[name=place]').val(this.suggestion[this.selected_suggestion].name);
 				$('#'+form+' input[name=lat]').val(this.suggestion[this.selected_suggestion].lat);
 				$('#'+form+' input[name=lng]').val(this.suggestion[this.selected_suggestion].lng);
@@ -596,7 +596,7 @@
 			$('#'+input.hidden).val(name);
 			$('#'+input.type).val(type);
 			$('#'+input.type_id).val(type_id);
-			$('#'+form+' input[name=title]').val(toTitleCase($('#'+form+' select[name=activity]').val()) + ' ' + name);
+			$('#'+form+' input[name=title]').val(name);
 			$('#'+form+' input[name=place]').val(name);
 			$('#'+form+' input[name=lat]').val(lat);
 			$('#'+form+' input[name=lng]').val(lng);

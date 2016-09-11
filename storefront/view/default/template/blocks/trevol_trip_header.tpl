@@ -8,6 +8,16 @@
 	#wrapper-title-input:hover:disabled {
 		border:none;
 	}
+	
+	#wrapper-header.view-mode {
+		background-color:#e93578;
+		color:#FFF;
+	}
+	
+	#wrapper-header.view-mode #wrapper-title-input {
+		background-color:#e93578;
+		color:#FFF;
+	}
 </style>
 
 <div id="wrapper-header" class="box-shadow">
@@ -40,6 +50,9 @@
                 	</span>
                 <?php } ?>
             </a>
+        </div>
+        <div id="wrapper-mobile-icon" class="hidden">
+        	<span class="label label-default"><i class="fa fa-fw fa-mobile"></i> Mobile View</span>
         </div>
         <!-- START: [button] -->
             <?php if($this->session->data['mode'] == 'view') { ?>

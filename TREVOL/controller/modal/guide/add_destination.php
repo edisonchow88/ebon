@@ -91,6 +91,13 @@ class ControllerModalGuideAddDestination extends AController {
 		$i = 'section_general';
 		$modal_input[$i]['section'] = 'General';
 		
+		$i = 'popularity';
+		$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+		$modal_input[$i]['id'] = str_replace("_","-",$i);
+		$modal_input[$i]['name'] = $i;
+		$modal_input[$i]['type'] = 'text';
+		$modal_input[$i]['required'] = false;
+		
 		$i = 'lat';
 		$modal_input[$i]['label'] = 'Latitude';
 		$modal_input[$i]['id'] = 'lat';

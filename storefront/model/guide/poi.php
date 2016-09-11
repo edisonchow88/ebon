@@ -24,8 +24,8 @@ class ModelGuidePoi extends Model{
 	//END
 	
 	//START: set image size
-		private $image_parent_width = '320px';
-		private $image_child_width = '100px';
+		private $image_parent_width = '574px';
+		private $image_child_width = '120px';
 		private $image_row_width = '30px';
 	//END
 	
@@ -181,8 +181,7 @@ class ModelGuidePoi extends Model{
 								}
 							}
 						}
-						else { 
-							$output[$result['poi_id']]['image'] = array();
+						else {
 							$google_image = $this->getPoiGoogleImageByPoiId($result['poi_id']);
 							$image['path'] = $google_image[0]['url'];
 							$image['name'] = ucwords($result['name']);

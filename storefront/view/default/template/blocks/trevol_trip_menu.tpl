@@ -18,66 +18,105 @@
         </div>
     	<div id="wrapper-menu-modal-content">
             <ul>
-            	<li>
-                	<a onclick="hide_wrapper_menu(); verify_new_trip_condition();">
-                    	<i class="fa fa-fw fa-file"></i>
-                        <i class="fa fa-fw"></i>
-                        New Trip
-                    </a>
-                </li>
-                <li>
-                	<a onclick="hide_wrapper_menu(); verify_load_trip_condition();">
-                    	<i class="fa fa-fw fa-folder-open"></i>
-                        <i class="fa fa-fw"></i>
-                        Open
-                    </a>
-                </li>
-                <li>
-                	<a onclick="hide_wrapper_menu(); verify_save_trip_condition();">
-                    	<i class="fa fa-fw fa-floppy-o"></i>
-                        <i class="fa fa-fw"></i>
-                        Save
-                    </a>
-                </li>
-                <li class="hidden">
-                	<?php
-                    	if($this->session->data['memory'] == 'cookie') {
-                        	$disabled = 'disabled';
-                        }
-                        echo '<a class="'.$disabled.'" data-toggle="modal" data-target="#modal-trip-share" onclick="hide_wrapper_menu();">';
-                    ?>
-                    	<i class="fa fa-fw fa-share-alt"></i>
-                        <i class="fa fa-fw"></i>
-                        Share
-                    </a>
-                </li>
-                <li>
-                	<?php
-                    	if($this->session->data['memory'] == 'cookie') {
-                        	$disabled = 'disabled';
-                        }
-                        echo '<a class="'.$disabled.'" onclick="hide_wrapper_menu(); verify_remove_trip_condition();">';
-                    ?>
-                    	<i class="fa fa-fw fa-archive"></i>
-                        <i class="fa fa-fw"></i>
-                        Remove to Archive
-                    </a>
-                </li>
-                <hr />
-                <li class="active">
-                	<a>
-                    	<i class="fa fa-fw fa-file-text"></i>
-                        <i class="fa fa-fw"></i>
-                        Itinerary
-                    </a>
-                </li>
-                <li class="hidden">
-                	<a>
-                    	<i class="fa fa-fw fa-user"></i>
-                        <i class="fa fa-fw"></i>
-                        Member
-                    </a>
-                </li>
+            	<!-- START: [desktop view] -->
+                    <li class="menu-itinerary-list">
+                        <a onclick="hide_wrapper_menu(); verify_new_trip_condition();">
+                            <i class="fa fa-fw fa-file"></i>
+                            <i class="fa fa-fw"></i>
+                            New Trip
+                        </a>
+                    </li>
+                    <li class="menu-itinerary-list">
+                        <a onclick="hide_wrapper_menu(); verify_load_trip_condition();">
+                            <i class="fa fa-fw fa-folder-open"></i>
+                            <i class="fa fa-fw"></i>
+                            Open
+                        </a>
+                    </li>
+                    <li class="menu-itinerary-list">
+                        <a onclick="hide_wrapper_menu(); verify_save_trip_condition();">
+                            <i class="fa fa-fw fa-floppy-o"></i>
+                            <i class="fa fa-fw"></i>
+                            Save
+                        </a>
+                    </li>
+                    <li class="menu-itinerary-list hidden">
+                        <?php
+                            if($this->session->data['memory'] == 'cookie') {
+                                $disabled = 'disabled';
+                            }
+                            echo '<a class="'.$disabled.'" data-toggle="modal" data-target="#modal-trip-share" onclick="hide_wrapper_menu();">';
+                        ?>
+                            <i class="fa fa-fw fa-share-alt"></i>
+                            <i class="fa fa-fw"></i>
+                            Share
+                        </a>
+                    </li>
+                    <li class="menu-itinerary-list">
+                        <?php
+                            if($this->session->data['memory'] == 'cookie') {
+                                $disabled = 'disabled';
+                            }
+                            echo '<a class="'.$disabled.'" onclick="hide_wrapper_menu(); verify_remove_trip_condition();">';
+                        ?>
+                            <i class="fa fa-fw fa-archive"></i>
+                            <i class="fa fa-fw"></i>
+                            Remove to Archive
+                        </a>
+                    </li>
+                    <hr class="menu-itinerary-list"/>
+                    <li class="menu-itinerary-list active">
+                        <a>
+                            <i class="fa fa-fw fa-file-text"></i>
+                            <i class="fa fa-fw"></i>
+                            Itinerary
+                        </a>
+                    </li>
+                    <li class="menu-itinerary-list hidden">
+                        <a>
+                            <i class="fa fa-fw fa-user"></i>
+                            <i class="fa fa-fw"></i>
+                            Member
+                        </a>
+                    </li>
+                <!-- END -->
+                <!-- START: [mobile view] -->
+                    <?php if($this->user->isLogged() == false) { ?>
+                        <!-- START: [not logged] -->
+                            <li class="menu-account-list">
+                                <a data-toggle='modal' data-target='#modal-account-signup' onclick="hide_wrapper_account();">
+                                    <i class="fa fa-fw fa-pencil-square-o"></i>
+                                    <i class="fa fa-fw"></i>
+                                    Sign Up
+                                </a>
+                            </li>
+                            <li class="menu-account-list">
+                                <a data-toggle='modal' data-target='#modal-account-login' onclick="hide_wrapper_account();">
+                                    <i class="fa fa-fw fa-sign-in"></i>
+                                    <i class="fa fa-fw"></i>
+                                    Log In
+                                </a>
+                            </li>
+                        <!-- END -->
+                    <?php } else { ?>
+                        <!-- START: [logged] -->
+                            <li class="menu-account-list">
+                                <a data-toggle='modal' data-target='#modal-account-detail' onclick="hide_wrapper_account();">
+                                    <i class="fa fa-fw fa-user"></i>
+                                    <i class="fa fa-fw"></i>
+                                    My Account
+                                </a>
+                            </li>
+                            <li class="menu-account-list">
+                                <a onclick="logout();">
+                                    <i class="fa fa-fw fa-sign-out"></i>
+                                    <i class="fa fa-fw"></i>
+                                    Log Out
+                                </a>
+                            </li>
+                        <!-- END -->
+                    <?php } ?>
+                <!-- END -->
             </ul>
         </div>
     </div>

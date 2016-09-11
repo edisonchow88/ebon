@@ -16,6 +16,12 @@ class ModelGuideDestination extends Model{
 		private $table_wikipedia = "destination_wikipedia";
 	//END
 	
+	//START: set image size
+		private $image_parent_width = '574px';
+		private $image_child_width = '120px';
+		private $image_row_width = '30px';
+	//END
+	
 	//START: Set Common Function
 		public function getFields($table) {
 			$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
@@ -133,6 +139,7 @@ class ModelGuideDestination extends Model{
 							$image['path'] = $google_image[0]['url'];
 							$image['name'] = ucwords($result['name']);
 							$image['width'] = '100%';
+							$image['image'] = '<img src="'.$image['path'].'" title="'.$image['name'].'" width="'.$image['width'].'" height="'.$image['width'].'"/>';
 							$output[$result['destination_id']]['image'] = $image;
 						}
 						if(isset($result['parent_id'])) { 
@@ -162,7 +169,7 @@ class ModelGuideDestination extends Model{
 						if(count($images) > 0) { 
 							$output['image'] = array();
 							foreach($images as $image) {
-								$output['image'][] = $this->model_resource_image->getImage($image,'100%');
+								$output['image'][] = $this->model_resource_image->getImage($image,$this->image_parent_width);
 							}
 						}
 					}
@@ -170,9 +177,12 @@ class ModelGuideDestination extends Model{
 						$google_image = $this->getDestinationGoogleImageByDestinationId($result['destination_id']);
 						$image['path'] = $google_image[0]['url'];
 						$image['name'] = ucwords($result['name']);
-						$image['width'] = '100%';
-						$output['image'] = $image;
+						$image['width'] = $this->image_parent_width;
+						$image['image'] = '<img src="'.$image['path'].'" title="'.$image['name'].'" width="'.$image['width'].'" height="'.$image['width'].'"/>';
+						$output['image'][] = $image;
 					}
+					
+					
 					if(isset($result['parent_id'])) { 
 						$output['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['parent_id']); 
 					}
@@ -1544,7 +1554,7 @@ class ModelGuideDestination extends Model{
 					WHERE t1.parent_id = '" . (int)$destination_id . "' 
 					AND t6.status = '1'
 					GROUP BY t1.destination_id 
-					ORDER BY t2.name asc 
+					ORDER BY t6.popularity desc, t2.name asc 
 				";
 				if($limit != '') {
 					$sql .= "LIMIT ".$limit." ";
@@ -1572,13 +1582,14 @@ class ModelGuideDestination extends Model{
 							}
 						}
 						if(isset($result['image_id'])) { 
-							$output[$result['destination_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],'100%');
+							$output[$result['destination_id']]['image'] = $this->model_resource_image->getImage($result['image_id'],$this->image_child_width);
 						}
 						else { 
 							$google_image = $this->getDestinationGoogleImageByDestinationId($result['destination_id']);
 							$image['path'] = $google_image[0]['url'];
 							$image['name'] = ucwords($result['name']);
 							$image['width'] = '100%';
+							$image['image'] = '<img src="'.$image['path'].'" title="'.$image['name'].'" width="'.$image['width'].'" height="'.$image['width'].'"/>';
 							$output[$result['destination_id']]['image'] = $image;
 						}
 						if(isset($result['parent_id'])) { 

@@ -24,6 +24,10 @@ ul {
 	display:inline-block !important;
 }
 
+.noscrollbar::-webkit-scrollbar { 
+    display: none; 
+}
+
 .nomargin {
 	margin:0 !important;
 }
@@ -165,7 +169,7 @@ ul {
 		#wrapper-title input {
 			box-shadow:none;
 			border:solid thin #FFF;
-			min-width:270px;
+			min-width:220px;
 		}
 		
 		#wrapper-title input:hover {
@@ -201,6 +205,15 @@ ul {
 		#wrapper-button a {
 			width:80px;
 			margin-left:5px;
+		}
+	/* END */
+	
+	/* START: wrapper-mobile-icon */
+		#wrapper-mobile-icon {
+			display:inline-block;
+			float:right;
+			padding-right:10px;
+			margin-top:7px;
 		}
 	/* END */
 	

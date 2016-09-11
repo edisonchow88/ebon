@@ -58,9 +58,14 @@
 		direction:ltr;
 	}
 	
-	#section-content-guide-image {
+	#section-content-guide-image-wrapper {
 		overflow:hidden;
-		max-height:220px;
+		background-color:#333;
+		height:220px;
+	}
+	
+	#section-content-guide-image {
+		margin-top:-150px;
 	}
 	
 	#section-content-guide-button-add {
@@ -138,12 +143,15 @@
 	
 	#section-content-guide-blurb {
 		padding:7px 7px 0 7px;
+		color:#333;
 	}
 	
 	#section-content-guide-description {
 		margin-top:12px;
+		margin-bottom:15px;
 		padding:7px 7px 0 7px;
 		display:none;
+		color:#333;
 	}
 	
 	#section-content-guide-button-read {
@@ -164,7 +172,7 @@
 	.result {
 		display:block;
 		width:100%;
-		height:100px;
+		height:120px;
 		padding-right:7px;
 		border-bottom:solid thin #EEE;
 		cursor:pointer;
@@ -174,30 +182,61 @@
 		background-color:#EEE;
 	}
 	
+	.result-image-wrapper {
+		position:relative;
+	}
+	
 	.result-image {
 		display:block;
 		float:left;
-		width:100px;
+		width:120px;
+		height:120px;
+	}
+	
+	.result-ranking {
+		position:absolute;
+		top:5px;
+		left:5px;
+		width:20px;
+		height:20px;
+		border-radius:3px;
+		background-color:#000;
+		color:#FFF;
+		text-align:center;
+		padding:0;
+		opacity:.7;
 	}
 	
 	.result-description {
+		position:relative;
+		height:120px;
 		display:block;
 		float:left;
 		padding-top:7px;
 		padding-left:7px;
-		width:calc(100% - 100px - 7px - 10px - 7px);
+		width:calc(100% - 120px - 7px - 10px - 7px);
+		color:#333;
 	}
 	
 	.result-name {
-		color:#333;
+		color:#e93578;
+		font-weight:bold;
 		height:20px;
 		overflow:hidden;
+		margin-bottom:7px;
 	}
+	
+	.result-rating {
+		color:#000;
+		margin-bottom:7px;
+	}
+	
 	
 	.result-blurb {
 		width:100%;
 		height:34px;
 		overflow:hidden;
+		margin-bottom:7px;
 	}
 	
 	.line-clamp-1 {
@@ -214,6 +253,11 @@
 	
 	.result-tag {
 		padding: 3px 0;
+	}
+	
+	.tag {
+		position:absolute;
+		bottom: 15px;
 	}
 	
 	.result-button {
@@ -296,7 +340,7 @@
         <div id="section-content-guide-top">
         	<div id="section-content-guide-button-add" onclick="addActivityFromGuide();"><a>&#43;</a></div>
         	<div id="section-content-guide-button-add-text" onclick="addActivityFromGuide();"><small><a>Add to Trip</a></small></div>
-            <div id="section-content-guide-image"></div>
+            <div id="section-content-guide-image-wrapper"><div id="section-content-guide-image"></div></div>
             <div id="section-content-guide-title">
                 <div id="section-content-guide-parent"><a><small><span id="section-content-guide-parent-text"></span></small></a></div>
                 <div id="section-content-guide-name"></div>
@@ -410,7 +454,8 @@
 							$('#section-content-guide-description').css('display','none');
 							$('#section-content-guide-button-read').css('display','block');
 							$('#section-content-guide-button-read-text').html('Read More');
-							document.getElementById('section-content-guide-description').innerHTML = json.current.description.replace(/\n/g, '<br />');
+							var text = decodeHtml(json.current.description);
+							document.getElementById('section-content-guide-description').innerHTML = text.replace(/\n/g, '<br />');
 						}
 						else {
 							$('#section-content-guide-description').css('display','none');
@@ -446,17 +491,23 @@
 							document.getElementById('section-content-guide-result-list').innerHTML = '';
 						<!-- END -->
 						
-						<!-- START: set result -->
+						<!-- START: set result of destination child -->
 							if(typeof json.child != 'undefined') {
 								count = parseFloat(count) + parseFloat(json.count.destination);
 								document.getElementById('section-content-guide-result-count').innerHTML = count;
 								for(i=0;i<json.count.destination;i++) {
+									var ranking = i+1;
 									content = '';
 									content += '<div class="result row" ';
 									content += 'onclick="navigate_guide_by_destination_id('+json.child[i].destination_id+')"';
 									content += '>';
-										content += '<div class="result-image">';
-											content += json.child[i].image;
+										content += '<div class="result-image-wrapper">';
+											content += '<div class="result-image">';
+												content += json.child[i].image;
+											content += '</div>';
+											content += '<div class="result-ranking">';
+												content += ranking;
+											content += '</div>';
 										content += '</div>';
 										content += '<div class="result-description">';
 											content += '<div class="result-name line-clamp-1">';
@@ -484,7 +535,7 @@
 							}
 						<!-- END -->
 						
-						<!-- START: set result -->
+						<!-- START: set result of poi child -->
 							if(typeof json.poi != 'undefined') {
 								count = parseFloat(count) + parseFloat(json.count.poi);
 								document.getElementById('section-content-guide-result-count').innerHTML = count;
@@ -500,6 +551,7 @@
 											content += '<div class="result-name line-clamp-1">';
 												content += json.poi[i].name;
 											content += '</div>';
+											content += '<div class="result-rating"><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star-o"></i></div>';
 											content += '<small><div class="result-blurb line-clamp-2">';
 												content += json.poi[i].blurb;
 											content += '</div></small>';
@@ -872,6 +924,12 @@
 				return false;
 			}
 		});
+		
+		function decodeHtml(html) {
+			var txt = document.createElement("textarea");
+			txt.innerHTML = html;
+			return txt.value;
+		}
 		
 		update_section_content_guide_search_input_event();
     </script>

@@ -463,71 +463,7 @@
 					var plan = getCookie('plan');
 					if(plan == '') {
 						<!-- START: [first time] -->
-							var plan = {
-								name:"Plan 1",
-								travel_date:new Date("2016-02-09"),
-								day:[
-									{
-										day_id:1,
-										sort_order:1,
-										line:[
-											{
-												line_id:1,
-												day_id:1,
-												sort_order:1,
-												time:"10:00",
-												duration:30,
-												title:"Tokyo Tower",
-												description:"Go up to top",
-												activity:"Visit",
-												place:"Tokyo Tower",
-												fee:500,
-												currency:'JPY',
-												note:"Check out One Piece",
-												image_id:226
-											},
-											{
-												line_id:2,
-												day_id:1,
-												sort_order:2,
-												time:"11:00",
-												duration:60,
-												title:"Osaka Tower",
-												description:null,
-												activity:"Visit",
-												place:"Osaka Tower",
-												fee:600,
-												currency:'JPY',
-												note:'',
-												image_id:217
-											},
-											{
-												line_id:3,
-												day_id:1,
-												sort_order:3,
-												time:null,
-												duration:null,
-												title:"Kyoto Tower",
-												description:null,
-												activity:"Visit",
-												place:"Kyoto Tower",
-												fee:null,
-												currency:null,
-												note:null,
-												image_id:224
-											}
-										]
-									},
-									{
-										"day_id":2,
-										"sort_order":2,
-									},
-									{
-										"day_id":3,
-										"sort_order":3,
-									}
-								]
-							};
+							var plan = {"name":"Plan 1","travel_date":"2016-02-09","day":[{"day_id":"1","sort_order":"1","line":[{"day_id":"1","line_id":"1","type":"destination","type_id":"26","time":"10:00","sort_order":"1","image_id":"236","title":"New Chitose Airport","duration":"60","activity":"Visit","place":"New Chitose Airport","lat":"42.792595","lng":"141.670486"},{"day_id":"1","line_id":"2","type":"destination","type_id":"9","time":"11:00","sort_order":"2","image_id":"226","title":"Sapporo","duration":"60","activity":"Visit","place":"Sapporo","lat":"43.062096","lng":"141.354370"}]},{"day_id":"2","sort_order":"2","line":[{"day_id":"2","line_id":"6","type":"destination","type_id":"9","sort_order":"1","image_id":"226","title":"Sapporo","duration":"60","activity":"Visit","place":"Sapporo","lat":"43.062096","lng":"141.354370"},{"day_id":"2","line_id":"7","type":"destination","type_id":"13","sort_order":"2","image_id":"217","title":"Furano","duration":"60","activity":"Visit","place":"Furano","lat":"43.342140","lng":"142.383224"},{"day_id":"2","line_id":"8","type":"destination","type_id":"16","sort_order":"3","image_id":"220","title":"Biei","duration":"60","activity":"Visit","place":"Biei","lat":"43.588188","lng":"142.466965"}]},{"day_id":"3","sort_order":"3"},{"day_id":"4","sort_order":"4"}]};
 							plan = JSON.stringify(plan);
 							setCookie('plan',plan,7);
 							plan = JSON.parse(plan);
@@ -702,7 +638,7 @@
 			<!-- START: set output for day -->
 				var output_day = ""
 					+ "<div class='plan-day-tr plan-tr' id='plan-day-" + day.day_id + "-tr'>"
-						+ "<form class='plan-day-form plan-form'  id='plan-day-" + day.day_id + "-form'>"
+						+ "<form class='plan-day-form plan-form'  id='plan-day-" + day.day_id + "-form' onclick='selectDay("+day.day_id+");'>"
 							+ html_plan_form
 						+ "</form>"
 						+ "<form class='plan-day-form-hidden plan-form-hidden' id='plan-day-" + day.day_id + "-form-hidden'>"
@@ -719,7 +655,7 @@
 			<!-- START: set output for command -->
 				var output_command = ""
 					+ "<div>"
-						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-select' onclick='selectDay("+day.day_id+");'>"
+						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-select'>"
 							+ "Select"
 						+ "</a>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-sort'>"
@@ -2259,7 +2195,8 @@
 				var line_id = $('.plan-line-tr').length + 1;
 				var type_id = $('#section-content-guide-form input[name=type_id]').val();
 				var type = $('#section-content-guide-form input[name=type]').val();
-				var day_id = $('.plan-day-tr.selected .plan-day-form-hidden input[name=day_id]').val();
+				var day_id = $('#section-day-bar-form input[name=day_id]').val();
+				var image_id = $('#section-content-guide-form input[name=image_id]').val()||null;
 				var sort_order = $('#plan-day-'+day_id+'-line .plan-line-tr').length + 1;
 				var time = null;
 				var duration  = 60;
@@ -2282,6 +2219,7 @@
 						type		:type,
 						type_id		:type_id,
 						day_id		:day_id,
+						image_id	:image_id,
 						sort_order	:sort_order,
 						time		:time,
 						duration	:formatted_duration,
@@ -2302,6 +2240,7 @@
 						type		:type,
 						type_id		:type_id,
 						day_id		:day_id,
+						image_id	:image_id,
 						sort_order	:sort_order,
 						time		:time,
 						duration	:duration,
@@ -2319,8 +2258,8 @@
 			<!-- END -->
 			
 			<?php if($this->session->data['memory'] == 'cookie') { ?>
+				updateGuideCurrentAddButton(true);
 				runAddPlanLine(line,line_raw);
-				updateGuideCurrentAddButton();
 			<?php } else { ?>
 				<!-- START: set data -->
 					var data = {
@@ -2337,8 +2276,8 @@
 						else if(typeof json.success != 'undefined') {
 							line.line_id = json.line_id;
 							line_raw.line_id = json.line_id;
+							updateGuideCurrentAddButton(true);
 							runAddPlanLine(line,line_raw);
-							updateGuideCurrentAddButton();
 						}
 					}, "json");
 				<!-- END -->

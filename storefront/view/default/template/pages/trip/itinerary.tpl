@@ -1,472 +1,443 @@
 <style>
-	#section-view-button {
-		position:absolute;
-		top:10px;
-		right:-1px;
-	}
-	
-	#section-view-button > .btn {
-		font-size:9px;
-		padding:10px;
-		border:solid thin #EEE;
-		border-radius:5px 0 0 5px;
-	}
+	/* START: wrapper-body */
+		#section-body {
+			width:100%;
+			position:relative;
+			overflow:hidden;
+			height:calc(100vh - 48px - 3px);
+			color:#333;
+		}
+		
+		/* START: section-tab */
+			#section-tab {
+				width:100%;
+				height:40px;
+			}
+			
+			#section-tab li {
+				float:left;
+				width:33.33%;
+				box-sizing: border-box; /* set inner border instead of edge border*/
+				-moz-box-sizing: border-box;
+				-webkit-box-sizing: border-box;
+				border-left:solid thin #BBB;
+			}
+			
+			#section-tab li:first-child {
+				border:none;
+			}
+			
+			#section-tab li.active a {
+				box-shadow:0 -5px 0 -1px #e93578 inset;
+			}
+			
+			#section-tab a {
+				display:block;
+				width:100%;
+				padding:10px 10px;
+				background-color:#CCC;
+				color:#333;
+				-webkit-touch-callout: none; /* iOS Safari */
+				-webkit-user-select: none;   /* Chrome/Safari/Opera */
+				-khtml-user-select: none;    /* Konqueror */
+				-moz-user-select: none;      /* Firefox */
+				-ms-user-select: none;       /* Internet Explorer/Edge */
+				user-select: none;           /* Non-prefixed version, currently not supported by any browser */
+			}
+			
+			#section-tab a:hover {
+				background-color:#BBB;
+				color:#222;
+			}
+			
+			#section-tab li.active a {
+				background-color:#AAA;
+				color:#111;
+				cursor:default;
+			}
+			
+			#section-tab-button {
+				position:absolute;
+				top:10px;
+				right:-1px;
+			}
+			
+			#section-tab-button > .btn {
+				font-size:9px;
+				padding:10px;
+				border:solid thin #EEE;
+				border-radius:5px 0 0 5px;
+			}
+		/* END */
+		
+		/* START: section-day-bar */
+			#section-day-bar {
+				width:100%;
+			}
+			
+			#section-day-bar a.btn {
+				height:40px;
+				width:100%;
+				line-height:20px;
+				padding:5px 15px;
+				border:none;
+				border-bottom:solid thin #DDD;
+			}
+			
+			#section-day-bar a.btn:hover {
+				background-color:#FFF;
+				color:#e93578;
+			}
+			
+			#section-day-bar .disabled {
+				opacity:1;
+				pointer-events:none;
+			}
+			
+			#section-day-bar .disabled a {
+				color:#EEE;
+			}
+			
+			#section-day-bar .disabled:hover a {
+				color:#EEE;
+			}
+			
+			#section-day-bar i.fa {
+				line-height:20px;
+				padding:5px
+			}
+			
+			#section-day-bar-title {
+				line-height:30px;
+				padding:5px
+			}
+			
+			#section-day-bar-button-add-day a.btn {
+				line-height:30px;
+				padding:5px 0px;
+				color:#e93578;
+			}
+			
+			#section-day-bar-button-add-day a.btn:hover {
+				color:#000;
+			}
+			
+			#section-day-bar-button-all-day.disabled a {
+				color:#000;
+			}
+			
+			#section-day-bar-button-all-day.disabled:hover a {
+				color:#000;
+			}
+		/* END */
+		
+		/* START: section-hint */
+			#section-hint {
+				width:100%;
+				height:70px;
+				padding:10px 15px;
+				line-height:20px;
+				background-color:#FFF;
+				border-bottom:solid thin #DDD;
+			}
+		/* END */
+		
+		/* START: section-content */
+			#section-content {
+				width:100%;
+				height:calc(100vh - 48px - 3px - 40px - 40px);
+				overflow:auto;
+				background-color:#FFF;
+			}
+			
+			#section-guide {
+				width:100%;
+				float:left;
+				background-color:#EEE;
+				padding-bottom:15px;
+			}
+			
+			#section-plan {
+				width:100%;
+				float:left;
+				background-color:#EEE;
+				padding-bottom:15px;
+			}
+			
+			#section-map {
+				width:100%;
+				float:left;
+				height:calc(100vh - 48px - 3px - 40px);
+				background-color:#F00;
+			}
+		/* END */
+	/* END */	
 </style>
 
 <?php echo $modal_home_splash; ?>
 
 <div id="section-body">
-	<div id="section-view-xs" class="hidden-md hidden-lg">
+	<div id="section-tab">
     	<ul>
-        	<li id="section-view-xs-list-guide" class="active"><a onclick="open_section_content('guide');">Guide</a></li>
-            <li id="section-view-xs-list-itinerary"><a onclick="open_section_content('itinerary');">Itinerary</a></li>
-            <li id="section-view-xs-list-map"><a onclick="open_section_content('map');">Map</a></li>
+        	<li id="section-tab-guide" class="section-tab-button active"><a onclick="showTab('guide');">Guide</a></li>
+            <li id="section-tab-plan" class="section-tab-button"><a onclick="showTab('plan');">Plan</a></li>
+            <li id="section-tab-map" class="section-tab-button"><a onclick="showTab('map');">Map</a></li>
         </ul>
     </div>
-    <div id="section-view-md" class="box-shadow hidden-xs hidden-sm hidden-md hidden-lg">
-        <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-fw fa-eye"></i></span>
-            <select id='section-view-md-select' class="form-control" onchange="change_section_content(this.value);">
-                <option value="guide">Guide</option>
-                <option value="itinerary">Itinerary</option>
-                <option value="map">Map</option>
-                <option disabled>──────────</option>
-                <option value="guide+itinerary">Guide + Itinerary</option>
-                <option value="guide+map">Guide + Map</option>
-                <option value="itinerary+map">Itinerary + Map</option>
-            </select>
+    <div id="section-day-bar" class="row">
+    	<div class="col-xs-3" id="section-day-bar-button-empty"><a class="btn btn-default disabled"></a></div>
+        <div class="col-xs-3" id="section-day-bar-button-previous-day"><a class="btn btn-default"><i class="fa fa-fw fa-chevron-left"></i></a></div>
+        <div class="col-xs-6" id="section-day-bar-button-all-day">
+        	<a class="btn btn-default">
+            	<form id="section-day-bar-form">
+                    <input name="day_id" type="hidden"/>
+                    <input name="sort_order" type="hidden"/>
+                </form>
+                <span id="section-day-bar-title">All Days</span>
+            </a>
+        </div>
+        <div class="col-xs-3" id="section-day-bar-button-next-day"><a class="btn btn-default"><i class="fa fa-fw fa-chevron-right"></i></a></div>
+        <div class="col-xs-3" id="section-day-bar-button-add-day"><a class="btn btn-default" onclick="addPlanDay();">Add Day</a></div>
+    </div>
+    <div id="section-hint" class="hidden">
+        <div class="alert alert-info">
+            <b>HINT:</b> <span>Add your favourite place to Plan from Guide</span>
         </div>
     </div>
-	<div id="section-view" class="box-shadow hidden-xs hidden-sm hidden-md hidden-lg">
-    	<ul>
-        	<li><i class="fa fa-fw fa-eye"></i></li>
-        	<li id="section-view-list-guide" class="active">
-                <a 
-                	id="section-view-guide-button" 
-                	data-toggle='tooltip' 
-                    data-placement='bottom' 
-                    title='Close Guide' 
-                    onclick="toggle_section_content('guide');"
-                >
-                	Guide
-                </a>
-            </li>
-            <li id="section-view-list-itinerary" class="active">
-            	<a 
-                	id="section-view-itinerary-button" 
-                	data-toggle='tooltip' 
-                    data-placement='bottom' 
-                    title='Close Itinerary' 
-                    onclick="toggle_section_content('itinerary');"
-                >
-                	Itinerary
-                </a>
-            </li>
-            <li id="section-view-list-map" class="active">
-            	<a 
-                	id="section-view-map-button" 
-                	data-toggle='tooltip' 
-                    data-placement='bottom' 
-                    title='Close Map' 
-                    onclick="toggle_section_content('map');"
-                >
-                	Map
-                </a>
-            </li>
-        </ul>
-    </div>
-    <div id="section-content" class="box-shadow">
-        <div id="section-left">
-            <?php echo $content_section_guide; ?>
+    <div id="section-content">
+        <div class="section" id="section-guide">
+        	<?php echo $section_content_guide; ?>
         </div>
-        <div id="section-center">
-            <?php echo $content_section_table; ?>
+        <div class="section" id="section-plan">
+        	<?php echo $section_content_plan; ?>
         </div>
-        <div id="section-right">
-            <?php echo $content_section_map; ?>
+        <div class="section" id="section-map">
+        	<?php echo $section_content_map; ?>
         </div>
     </div>
 </div>
-<div id="section-footer box-shadow" class="hidden-xs hidden-sm">
-	<?php echo $content_section_footer; ?>
-</div>
 
 <script>
-	function convert_to_title_case(str) {
-		return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-	}
-</script>
-
-<script>
-	var max_section_content_window = 3;
-	var section_content_window = 3;
-	var section_content_window_guide = false;
-	var section_content_window_itinerary = true;
-	var section_content_window_map = true;
-	
-	window.onresize = function(event) {
-		update_section_content();
-	};
-	
-	function open_section_content(view) {
-		if(view == 'guide') {
-			section_content_window_guide = true;
-			section_content_window_itinerary = false;
-			section_content_window_map = false;
-		}
-		else if(view == 'itinerary') {
-			section_content_window_guide = false;
-			section_content_window_itinerary = true;
-			section_content_window_map = false;
-		}
-		else if(view == 'map') {
-			section_content_window_guide = false;
-			section_content_window_itinerary = false;
-			section_content_window_map = true;
-		}
-		update_section_content();
-	}
-	
-	function close_section_content(view) {
-		if(view == 'guide') {
-			section_content_window_guide = false;
-		}
-		else if(view == 'itinerary') {
-			section_content_window_itinerary = false;
-		}
-		else if(view == 'map') {
-			section_content_window_map = false;
-		}
-		update_section_content();
-	}
-	
-	function change_section_content(view) {
-		if(view == 'guide') {
-			section_content_window_guide = true;
-			section_content_window_itinerary = false;
-			section_content_window_map = false;
-		}
-		else if(view == 'itinerary') {
-			section_content_window_guide = false;
-			section_content_window_itinerary = true;
-			section_content_window_map = false;
-		}
-		else if(view == 'map') {
-			section_content_window_guide = false;
-			section_content_window_itinerary = false;
-			section_content_window_map = true;
-		}
-		/*
-		else if(view == 'guide+itinerary') {
-			section_content_window_guide = true;
-			section_content_window_itinerary = true;
-			section_content_window_map = false;
-		}
-		else if(view == 'guide+map') {
-			section_content_window_guide = true;
-			section_content_window_itinerary = false;
-			section_content_window_map = true;
-		}
-		else if(view == 'itinerary+map') {
-			section_content_window_guide = false;
-			section_content_window_itinerary = true;
-			section_content_window_map = true;
-		}
-		*/
-		update_section_content();
-	}
-	
-	function toggle_section_content(view) {
-		if(view == 'guide') {
-			if(section_content_window_guide == true) {
-				section_content_window_guide = false;
+	<!-- START: [tab] -->
+		function showTab(id) {
+			$('.section-tab-button').removeClass('active');
+			$('#section-tab-'+id).addClass('active');
+			$('.section').hide();
+			$('#section-'+id).show();
+			if(id == 'plan') {
+				var day_id = $('#section-day-bar-form input[name=day_id]').val();
+				if(day_id != '') {
+					showPlanDay(day_id);
+				}
+				$('#wrapper-title').removeClass('hidden');
+				$('#wrapper-button-search').addClass('hidden');
+				$('#wrapper-button-save').removeClass('hidden');
+			}
+			else if(id == 'map') {
+				$('#wrapper-title').removeClass('hidden');
+				$('#wrapper-button-search').addClass('hidden');
+				$('#wrapper-button-save').removeClass('hidden');
 			}
 			else {
-				if(section_content_window < max_section_content_window) {
-					section_content_window_guide = true;
+				var day_id = $('#section-day-bar-form input[name=day_id]').val();
+				if(day_id == '') {
+					day_id = $('.plan-day-form-hidden input[name=day_id]').last().val();
+					selectDay(day_id);
 				}
+				$('#wrapper-title').addClass('hidden');
+				$('#wrapper-button-search').removeClass('hidden');
+				$('#wrapper-button-save').addClass('hidden');
 			}
 		}
-		else if(view == 'itinerary') {
-			if(section_content_window_itinerary == true) {
-				section_content_window_itinerary = false;
+		
+		function initTab() {
+			<?php if($this->request->get_or_post('tab')) { ?>
+				showTab("<?php echo $this->request->get_or_post('tab'); ?>");
+			<?php } else { ?>
+				showTab('guide'); //default browser tab
+			<?php } ?>
+		}
+	<!-- END -->
+	
+	<!-- START: [day] -->
+		function setDay() {
+			var day = getCookie('day');
+			var day_id;
+			var sort_order;
+			if(day == '') {
+				var day_length = $('.plan-day-form-hidden').length;
+				if(day_length == 0) {
+					$('#section-day-bar').hide();
+				}
+				else {
+					$('#section-day-bar').show();
+					if($('#section-day-bar-form input[name=day_id]').val() == '') { //set first day as default
+						day_id = $('.plan-day-form-hidden input[name=day_id]').first().val();
+						selectDay(day_id);
+					}
+				}
 			}
 			else {
-				if(section_content_window < max_section_content_window) {
-					section_content_window_itinerary = true;
-				}
+				day = JSON.parse(day);
+				selectDay(day.day_id);
 			}
 		}
-		else if(view == 'map') {
-			if(section_content_window_map == true) {
-				section_content_window_map = false;
+		
+		function selectDay(day_id) {
+			var sort_order = $('#plan-day-'+day_id+'-form-hidden input[name=sort_order]').val();
+			$('#section-day-bar-title').html('Day '+sort_order+' <i class="fa fa-fw fa-caret-down"></i>');
+			$('#section-day-bar-form input[name=day_id]').val(day_id);
+			$('#section-day-bar-form input[name=sort_order]').val(sort_order);
+			
+			$('.plan-day-tr').removeClass('selected');
+			$('#plan-day-'+day_id+'-tr').addClass('selected');
+			
+			saveDayCookie(day_id,sort_order);
+			showPlanDay(day_id);
+			
+			if($('.plan-day-form-hidden input[name=day_id]').first().val() == $('.plan-day-form-hidden input[name=day_id]').last().val()) {
+				$('#section-day-bar-button-empty').hide();
+				$('#section-day-bar-button-previous-day').show();
+				$('#section-day-bar-button-previous-day').addClass('disabled');
+				$('#section-day-bar-button-all-day').removeClass('disabled');
+				$('#section-day-bar-button-next-day').show();
+				$('#section-day-bar-button-next-day').addClass('disabled');
+				$('#section-day-bar-button-add-day').hide();
+			}
+			else if($('#plan-day-'+day_id+'-form-hidden input[name=day_id]').val() == $('.plan-day-form-hidden input[name=day_id]').first().val()) {
+				$('#section-day-bar-button-empty').hide();
+				$('#section-day-bar-button-previous-day').show();
+				$('#section-day-bar-button-previous-day').addClass('disabled');
+				$('#section-day-bar-button-all-day').removeClass('disabled');
+				$('#section-day-bar-button-next-day').show();
+				$('#section-day-bar-button-next-day').removeClass('disabled');
+				$('#section-day-bar-button-add-day').hide();
+			}
+			else if($('#plan-day-'+day_id+'-form-hidden input[name=day_id]').val() == $('.plan-day-form-hidden input[name=day_id]').last().val()) {
+				$('#section-day-bar-button-empty').hide();
+				$('#section-day-bar-button-previous-day').show();
+				$('#section-day-bar-button-previous-day').removeClass('disabled');
+				$('#section-day-bar-button-all-day').removeClass('disabled');
+				$('#section-day-bar-button-next-day').show();
+				$('#section-day-bar-button-next-day').addClass('disabled');
+				$('#section-day-bar-button-add-day').hide();
 			}
 			else {
-				if(section_content_window < max_section_content_window) {
-					section_content_window_map = true;
+				$('#section-day-bar-button-empty').hide();
+				$('#section-day-bar-button-previous-day').show();
+				$('#section-day-bar-button-previous-day').removeClass('disabled');
+				$('#section-day-bar-button-all-day').removeClass('disabled');
+				$('#section-day-bar-button-next-day').show();
+				$('#section-day-bar-button-next-day').removeClass('disabled');
+				$('#section-day-bar-button-add-day').hide();
+			}
+		}
+		
+		function selectAllDay() {
+			showTab('plan');
+			$('#section-day-bar-button-empty').show();
+			$('#section-day-bar-button-previous-day').hide()
+			$('#section-day-bar-button-all-day').addClass('disabled');
+			$('#section-day-bar-button-next-day').hide();
+			$('#section-day-bar-button-add-day').show();
+			$('#section-day-bar-title').html('All Days');
+			$('#section-day-bar-form input[name=day_id]').val('');
+			$('#section-day-bar-form input[name=sort_order]').val('');
+			setCookie('day','',0);
+			showPlanDay('');
+		}
+		
+		function selectPreviousDay() {
+			var day = new Array;
+			var day_id = $('#section-day-bar-form input[name=day_id]').val();
+			$('.plan-day-form-hidden input[name=day_id]').each(function() {
+				value = $(this).val();
+				day.push(value);
+			});
+			var i = 0;
+			var previous_day_id = false;
+			while(previous_day_id == false) {
+				if(day[i] == day_id) {
+					previous_day_id = day[i-1];
 				}
+				i = i + 1;
 			}
-		}
-		update_section_content();
-	}
-	
-	function update_section_content() {
-		update_max_section_content_window();
-		update_section_content_window();
-		verify_max_section_content_window();
-		verify_min_section_content_window();
-		resize_section_content();
-		
-		if(section_content_window_guide == true) { 
-			show_section_content('left','guide'); 
-		} 
-		else { 
-			hide_section_content('left','guide'); 
+			selectDay(previous_day_id);
 		}
 		
-		if(section_content_window_itinerary == true) { 
-			show_section_content('center','itinerary'); 
-		} 
-		else { 
-			hide_section_content('center','itinerary'); 
-		}
-		
-		if(section_content_window_map == true) { 
-			show_section_content('right','map'); 
-		}
-		else {
-			hide_section_content('right','map'); 
-		}
-		//update_section_view_md_select();
-	}
-	
-	function update_max_section_content_window() {
-		var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-		if(w < 640) {
-			max_section_content_window = 1;
-			document.getElementById('section-content').style.width = '100%';
-			
-			$('#section-body').css('overflow-x','hidden');
-			$('#section-content').css('margin-top','40px');
-			
-			var body_height = 'calc(100vh - 48px - 3px)';
-			var section_height = 'calc(100vh - 48px - 3px - 40px)';
-			var guide_height = 'calc(100vh - 48px - 3px - 40px - 49px)';
-			var itinerary_height = 'calc(100vh - 48px - 3px - 32px)';
-			var map_height = 'calc(100vh - 48px - 3px - 40px)';
-			document.getElementById('section-body').style.height = body_height;
-			document.getElementById('section-content').style.height = section_height;
-			document.getElementById('section-left').style.height = section_height;
-			document.getElementById('section-center').style.height = section_height;
-			document.getElementById('section-right').style.height = section_height;
-			document.getElementById('section-content-guide-content').style.height = guide_height;
-			document.getElementById('section-content-itinerary-content').style.height = itinerary_height;
-			document.getElementById('section-content-map-content').style.height = map_height;
-			$('.plan-tbody').css('height',itinerary_height);
-			$('#map').css('height',map_height);
-			
-			swithMobileMode();
-		}
-		else if(w < 960) {
-			max_section_content_window = 3;
-			$('#section-body').css('overflow-x','scroll');
-			$('#section-content').css('width','960px');
-			$('#section-content').css('margin-top','0');
-			
-			var body_height = 'calc(100vh - 48px - 3px - 40px)';
-			var section_height = 'calc(100vh - 48px - 3px - 15px - 40px)';
-			var guide_height = 'calc(100vh - 48px - 3px - 49px - 15px - 40px)';
-			var itinerary_height = section_height;
-			var map_height = section_height;
-			
-			$('#section-body').css('height',body_height);
-			$('#section-content').css('height',section_height);
-			$('#section-left').css('height',section_height);
-			$('#section-center').css('height',section_height);
-			$('#section-right').css('height',section_height);
-			$('#section-content-guide-content').css('height',guide_height);
-			$('#section-content-itinerary-content').css('height',itinerary_height);
-			$('#section-content-map-content').css('height',map_height);
-			$('.plan-tbody').css('height',itinerary_height);
-			$('#map').css('height',map_height);
-			
-			section_content_window_itinerary = true;
-			section_content_window_map = true;
-			
-			swithDesktopMode();
-		}
-		/*
-		else if(w < 960) {
-			max_section_content_window = 2;
-			document.getElementById('section-content').style.width = '640px';
-			
-			var body_height = 'calc(100vh - 48px - 2px - 40px)';
-			var height = 'calc(100vh - 48px - 2px - 30px - 40px)';
-			var content_height = 'calc(100vh - 48px - 2px - 30px - 70px - 40px)';
-			var itinerary_height = 'calc(100vh - 48px - 2px - 30px - 70px - 40px + 70px)';
-			document.getElementById('section-body').style.height = body_height;
-			document.getElementById('section-content').style.height = height;
-			document.getElementById('section-left').style.height = height;
-			document.getElementById('section-center').style.height = height;
-			document.getElementById('section-right').style.height = height;
-			document.getElementById('section-content-guide-content').style.height = content_height;
-			document.getElementById('section-content-itinerary-content').style.height = itinerary_height;
-			document.getElementById('section-content-map-content').style.height =height;
-		}
-		*/
-		else {
-			max_section_content_window = 3;
-			$('#section-body').css('overflow-x','auto');
-			$('#section-content').css('width','960px');
-			$('#section-content').css('margin-top','30px');
-			
-			var body_height = 'calc(100vh - 48px - 3px - 40px)';
-			var height = 'calc(100vh - 48px - 3px - 30px - 40px)';
-			var content_height = 'calc(100vh - 48px - 3px - 30px - 49px - 40px)';
-			var itinerary_height = 'calc(100vh - 48px - 3px - 30px - 40px - 50px)';
-			document.getElementById('section-body').style.height = body_height;
-			document.getElementById('section-content').style.height = height;
-			document.getElementById('section-left').style.height = height;
-			document.getElementById('section-center').style.height = height;
-			document.getElementById('section-right').style.height = height;
-			document.getElementById('section-content-guide-content').style.height = content_height;
-			document.getElementById('section-content-itinerary-content').style.height = itinerary_height;
-			document.getElementById('section-content-map-content').style.height = height;
-			
-			section_content_window_itinerary = true;
-			section_content_window_map = true;
-			
-			swithDesktopMode();
-		}
-	}
-	
-	function update_section_content_window() {
-		section_content_window = 0;
-		if(section_content_window_guide == true) { section_content_window += 1; }
-		if(section_content_window_itinerary == true) { section_content_window += 1; }
-		if(section_content_window_map == true) { section_content_window += 1; }
-	}
-	
-	function verify_max_section_content_window() {
-		if(section_content_window > max_section_content_window) {
-			if(section_content_window_map == true) { 
-				section_content_window_map = false;
-				section_content_window -= 1; 
-				if(section_content_window > max_section_content_window) {
-					section_content_window_itinerary = false;
-					section_content_window -= 1; 
-				}
-			}
-			else if(section_content_window_itinerary == true) { 
-				section_content_window_itinerary = false;
-				section_content_window -= 1; 
-			}
-		}
-	}
-	
-	function verify_min_section_content_window() {
-		if(max_section_content_window < 3 && section_content_window == 0) {
-			section_content_window_guide = true;
-		}
-	}
-	
-	function resize_section_content() {
-		if(section_content_window == 0) {
-			document.getElementById('section-content').style.display = 'none';
-		}
-		else if(section_content_window == 1) {
-			var width = '100%';
-			document.getElementById('section-content').style.display = 'block';
-			document.getElementById('section-left').style.width = width;
-			document.getElementById('section-center').style.width = width;
-			document.getElementById('section-right').style.width = width;
-		}
-		else if(section_content_window == 2) {
-			if(max_section_content_window == 2) {
-				var width = '50%';
-				document.getElementById('section-left').style.width = width;
-				document.getElementById('section-center').style.width = width;
-				document.getElementById('section-right').style.width = width;
+		function selectNextDay() {
+			var day = new Array;
+			var day_id = $('#section-day-bar-form input[name=day_id]').val();
+			if(day_id == '') {
+				//select first day
+				day_id = $('.plan-day-form-hidden input[name=day_id]').first().val();
+				selectDay(day_id);
 			}
 			else {
-				document.getElementById('section-center').style.width = '75%';
-				document.getElementById('section-right').style.width = '25%';
+				$('.plan-day-form-hidden input[name=day_id]').each(function() {
+					value = $(this).val();
+					day.push(value);
+				});
+				var i = 0;
+				var next_day_id = false;
+				while(next_day_id == false) {
+					if(day[i] == day_id) {
+						next_day_id = day[i+1];
+					}
+					i = i + 1;
+				}
+				selectDay(next_day_id);
 			}
 		}
-		else if(section_content_window ==3) {
-			document.getElementById('section-left').style.width = '60%';
-			document.getElementById('section-center').style.width = '15%';
-			document.getElementById('section-right').style.width = '25%';
-		}
-	}
-	
-	function show_section_content(position,view) {
-		show_section_content_window(position);
-		show_section_view_button(view);
 		
-		var text = convert_to_title_case(view);
-		//update_section_view_button_tooltip(view, 'Close '+text);
-	}
-	
-	function hide_section_content(position,view) {
-		hide_section_content_window(position);
-		hide_section_view_button(view);
+		function selectAddDay() {
+		}
 		
-		var text = convert_to_title_case(view);
-		//update_section_view_button_tooltip(view, 'Open '+text);
-	}
-	
-	function show_section_content_window(position) {
-		document.getElementById('section-'+position).style.display = 'block';
-	}
-	
-	function hide_section_content_window(position) {
-		document.getElementById('section-'+position).style.display = 'none';
-	}
-	
-	function show_section_view_button(view) {
-		document.getElementById('section-view-xs-list-'+view).className = 'active';
-		document.getElementById('section-view-list-'+view).className = 'active';
-	}
-	
-	function hide_section_view_button(view) {
-		document.getElementById('section-view-xs-list-'+view).className = '';
-		document.getElementById('section-view-list-'+view).className = '';
-	}
-	
-	/*
-	function update_section_view_button_tooltip(view,text) {
-		var button = document.getElementById('section-view-'+view+'-button');
-		if(typeof $('#'+button.id).attr('aria-describedby') != 'undefined') {
-			var tooltip_id = $('#'+button.id).attr('aria-describedby');
-			$('#'+tooltip_id).hide();
+		function saveDayCookie(day_id,sort_order) {
+			var day_id = $('#section-day-bar-form input[name=day_id]').val();
+			var sort_order = $('#section-day-bar-form input[name=sort_order]').val();
+			var day = {'day_id':day_id,'sort_order':sort_order};
+			day = JSON.stringify(day);
+			setCookie('day',day,7);
 		}
-		$('#'+button.id).attr('data-original-title',text);
-	}
-	*/
+		
+		$('#section-day-bar-button-all-day').on('click',function() {
+			selectAllDay();
+		});
+		$('#section-day-bar-button-previous-day').on('click',function() {
+			selectPreviousDay();
+		});
+		$('#section-day-bar-button-next-day').on('click',function() {
+			selectNextDay();
+		});
+		$('#section-day-bar-button-add-day').on('click',function() {
+			selectAddDay();
+		});
+	<!-- END -->
 	
-	/*
-	function update_section_view_md_select() {
-		if(section_content_window_guide == true && section_content_window_itinerary == true) {
-			document.getElementById('section-view-md-select').value = 'guide+itinerary';
+	<!-- START: [hint] for first timer -->
+		function showHintAlert() {
+			$('#section-hint').removeClass('hidden');
+			var height = 'calc(100vh - 48px - 3px - 40px - 40px - 70px)';
+			$('#section-content').css('height',height);
+			$('#section-guide').css('min-height',height);
+			$('#section-plan').css('min-height',height);
+			$('#section-map').css('min-height',height);
 		}
-		else if(section_content_window_guide == true && section_content_window_map == true) {
-			document.getElementById('section-view-md-select').value = 'guide+map';
+		
+		function hideHintAlert() {
+			$('#section-hint').addClass('hidden');
+			var height = 'calc(100vh - 48px - 3px - 40px - 40px)';
+			$('#section-content').css('height',height);
+			$('#section-guide').css('min-height',height);
+			$('#section-plan').css('min-height',height);
+			$('#section-map').css('min-height',height);
 		}
-		else if(section_content_window_itinerary == true && section_content_window_map == true) {
-			document.getElementById('section-view-md-select').value = 'itinerary+map';
-		}
-		else if(section_content_window_guide == true) {
-			document.getElementById('section-view-md-select').value = 'guide';
-		}
-		else if(section_content_window_itinerary == true) {
-			document.getElementById('section-view-md-select').value = 'itinerary';
-		}
-		else if(section_content_window_map == true) {
-			document.getElementById('section-view-md-select').value = 'map';
-		}
-	}
-	*/
-	
-var testing_map= "testlo";	
+		
+		<?php if($this->session->data['memory'] == 'cookie') { ?>
+			showHintAlert();
+		<?php } else { ?>
+			hideHintAlert();
+		<?php } ?>
+	<!-- END -->
 </script>

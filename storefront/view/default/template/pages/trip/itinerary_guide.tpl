@@ -48,14 +48,13 @@
 	
 	#section-content-guide-content {
 		position:relative;
-		overflow-y:auto;
-		overflow-x:hidden;
 		height:calc(100vh - 48px - 2px - 30px - 49px - 40px);
-		direction:rtl;
 	}
 	
-	#section-content-guide-content div {
-		direction:ltr;
+	#section-content-guide-current {
+		background-color:#FFF;
+		padding-bottom:15px;
+		margin-bottom:10px;
 	}
 	
 	#section-content-guide-image-wrapper {
@@ -91,6 +90,18 @@
 	
 	#section-content-guide-button-add a:hover {
 		box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.2), 0 10px 26px 0 rgba(0, 0, 0, 0.19);
+	}
+	
+	#section-content-guide-button-add.added a {
+		background-color:#e93578;
+		color:#FFF;
+		border:solid thin #e93578;
+	}
+	
+	#section-content-guide-button-add.added a:hover {
+		background-color:#bb285c;
+		color:#FFF;
+		border:solid thin #bb285c;
 	}
 	
 	#section-content-guide-button-add-text {
@@ -165,21 +176,19 @@
 	}
 	
 	#section-content-guide-result-list {
-		margin-top:15px;
-		border-top:solid thin #EEE;
+		margin-top:5px;
 	}
 	
 	.result {
-		display:block;
 		width:100%;
-		height:120px;
-		padding-right:7px;
-		border-bottom:solid thin #EEE;
-		cursor:pointer;
+		padding:5px 15px;
 	}
 	
-	.result:hover {
-		background-color:#EEE;
+	.result-wrapper {
+		width:100%;
+		background-color:#FFF;
+		border-radius:5px;
+		cursor:pointer;
 	}
 	
 	.result-image-wrapper {
@@ -191,6 +200,11 @@
 		float:left;
 		width:120px;
 		height:120px;
+		border-radius:5px 0px 0px 5px;
+	}
+	
+	.result-image img {
+		border-radius:5px 0px 0px 5px;
 	}
 	
 	.result-ranking {
@@ -214,7 +228,7 @@
 		float:left;
 		padding-top:7px;
 		padding-left:7px;
-		width:calc(100% - 120px - 7px - 10px - 7px);
+		width:calc(100% - 120px - 15px);
 		color:#333;
 	}
 	
@@ -267,14 +281,32 @@
 		text-align:center;
 		font-weight:bold;
 	}
+	
+	
+	.result-child-button-add {
+		position:absolute;
+		bottom:15px;
+		right:0;
+	}
+	
+	.result-child-button-add a {
+		margin-left:15px;
+		color:#999;
+	}
+	
+	.result-child-button-add a:hover {
+		margin-left:15px;
+		color:#333;
+	}
+	
+	.result-subtitle {
+		font-weight:bold;
+		color:#333;
+		padding:10px 15px 0px 15px;
+	}
 </style>
 <div id="section-content-guide">
-    <div id="section-content-guide-header">
-    	<!--
-        <div class="row">
-            <div class="spacer-bar hidden-xs hidden-sm col-md-12 col-lg-12"></div>
-        </div>
-        -->
+    <div id="section-content-guide-header" class="hidden">
         <div class="row">
             <div class="input-group pull-left inline col-xs-12 col-sm-12 col-md-12 col-lg-8" style="position:relative;">
             	<form id="section-content-guide-search-form">
@@ -286,28 +318,6 @@
                 </form>
                 <div id="section-content-guide-search-form-suggestion"></div>
             </div>
-            <!--
-            <div class="inline pull-right col-md-12 col-lg-2">
-                <a 
-                	class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
-                	onclick="close_section_content('guide');"
-                    data-toggle='tooltip' 
-                    data-placement='bottom' 
-                    title='Close Guide' 
-                >
-                	<i class="fa fa-fw" id="section-content-guide-header-close">&times;</i>
-                </a>
-                <a 
-                	class="btn btn-simple hidden-xs hidden-sm hidden-md pull-right" 
-                	onclick="open_section_content('guide');"
-                    data-toggle='tooltip' 
-                    data-placement='bottom' 
-                    title='Expand Guide' 
-                >
-                	<i class="fa fa-fw fa-arrows-alt"></i>
-                </a>
-            </div>
-            -->
         </div>
     </div>
     <div>
@@ -337,22 +347,29 @@
         </form>
     </div>
     <div id="section-content-guide-content">
-        <div id="section-content-guide-top">
-        	<div id="section-content-guide-button-add" onclick="addActivityFromGuide();"><a>&#43;</a></div>
-        	<div id="section-content-guide-button-add-text" onclick="addActivityFromGuide();"><small><a>Add to Trip</a></small></div>
-            <div id="section-content-guide-image-wrapper"><div id="section-content-guide-image"></div></div>
-            <div id="section-content-guide-title">
-                <div id="section-content-guide-parent"><a><small><span id="section-content-guide-parent-text"></span></small></a></div>
-                <div id="section-content-guide-name"></div>
+    	<div id="section-content-guide-current" class="box-shadow">
+            <div id="section-content-guide-top">
+                <div id="section-content-guide-button-add" onclick="addActivityFromGuide();"><a>&#43;</a></div>
+                <div id="section-content-guide-button-add-text" class="small" onclick="addActivityFromGuide();"><a>Add to Plan</a></div>
+                <div id="section-content-guide-image-wrapper"><div id="section-content-guide-image"></div></div>
+                <div id="section-content-guide-title">
+                    <div id="section-content-guide-parent"><a><small><span id="section-content-guide-parent-text"></span></small></a></div>
+                    <div id="section-content-guide-name"></div>
+                </div>
             </div>
+            <div id="section-content-guide-tag"></div>
+            <div id="section-content-guide-blurb"></div>
+            <div id="section-content-guide-description"></div>
+            <div id="section-content-guide-button-read"><a class="btn btn-default btn-block" onclick="toggle_guide_description();"><span id="section-content-guide-button-read-text">Read More</span></a></div>
         </div>
-        <div id="section-content-guide-tag"></div>
-        <div id="section-content-guide-blurb"></div>
-        <div id="section-content-guide-description"></div>
-        <div id="section-content-guide-button-read"><a class="btn btn-default btn-block" onclick="toggle_guide_description();"><span id="section-content-guide-button-read-text">Read More</span></a></div>
+        
         <div id="section-content-guide-result-summary" class="hidden">Total <span id="section-content-guide-result-count"><?php echo $result['count']; ?></span> results</div>
-        <div id="section-content-guide-result-list">
-        </div>
+        <div class="result-subtitle destination-region destination-city">Top Destinations</div>
+        <div class="result-list" id="section-content-guide-result-list"></div>
+        <div class="result-subtitle destination-national-park">National Parks</div>
+        <div class="result-list" id="section-content-guide-result-list-destination-national-park"></div>
+        <div class="result-subtitle destination-airport">International Airports</div>
+        <div class="result-list" id="section-content-guide-result-list-destination-airport"></div>
         
         <!--
         <?php foreach($result['child'] as $i) { ?>
@@ -485,20 +502,36 @@
 							}
 						<!-- END -->
 						
+						<!-- START: set add button -->
+							updateGuideCurrentAddButton();
+						<!-- END -->
+						
 						<!-- START: reset result -->
 							var count = 0;
 							document.getElementById('section-content-guide-result-count').innerHTML = count;
-							document.getElementById('section-content-guide-result-list').innerHTML = '';
+							$('.result-list').html('');
+							$('.result-subtitle').hide();
 						<!-- END -->
 						
 						<!-- START: set result of destination child -->
 							if(typeof json.child != 'undefined') {
 								count = parseFloat(count) + parseFloat(json.count.destination);
 								document.getElementById('section-content-guide-result-count').innerHTML = count;
+								var ranking = { text:'' };
 								for(i=0;i<json.count.destination;i++) {
-									var ranking = i+1;
+									var tag_name = json.child[i].tag[0].name.replace(/\s+/g, '-').toLowerCase()
+									if(typeof ranking[tag_name] == 'undefined') { 
+										ranking[tag_name] = 1;
+										$('.result-subtitle.destination-'+tag_name).show();
+									}
+									else {
+										ranking[tag_name] = parseInt(ranking[tag_name]) + 1;
+									}
+									ranking.text = ranking[tag_name];
+									
 									content = '';
-									content += '<div class="result row" ';
+									content += '<div class="result row">';
+									content += '<div class="result-wrapper col-xs-12 box-shadow" ';
 									content += 'onclick="navigate_guide_by_destination_id('+json.child[i].destination_id+')"';
 									content += '>';
 										content += '<div class="result-image-wrapper">';
@@ -506,7 +539,7 @@
 												content += json.child[i].image;
 											content += '</div>';
 											content += '<div class="result-ranking">';
-												content += ranking;
+												content += ranking.text;
 											content += '</div>';
 										content += '</div>';
 										content += '<div class="result-description">';
@@ -525,12 +558,22 @@
 													}
 												}
 											content += '</div>';
-										content += '</div>';
-										content += '<div class="result-button">';
-											content += '&gt;';
+											content += '<div class="result-child-button-add pull-right">';
+												content += '<a class="small">Add to Plan</a>';
+												content += '<a class="small">Read More</a>';
+											content += '</div>';
 										content += '</div>';
 									content += '</div>';
-									document.getElementById('section-content-guide-result-list').innerHTML += content; 
+									content += '</div>';
+									if(name == 'Airport') {
+										document.getElementById('section-content-guide-result-list-destination-airport').innerHTML += content;
+									}
+									else if(name == 'National Park') {
+										document.getElementById('section-content-guide-result-list-destination-national-park').innerHTML += content;
+									}
+									else {
+										document.getElementById('section-content-guide-result-list').innerHTML += content;
+									}
 								}
 							}
 						<!-- END -->
@@ -643,6 +686,31 @@
 	window.onhashchange = function() {
 		reset_guide();
 		refresh_guide();
+	}
+	
+	function updateGuideCurrentAddButton() {
+		var type = $('#section-content-guide-form input[name=type]').val();
+		var type_id = $('#section-content-guide-form input[name=type_id]').val();
+		var added = false;
+		var t;
+		var tid;
+		
+		$('.plan-line-form-hidden').each(function() {
+			t = $(this).find('input[name=type]').val();
+			tid = $(this).find('input[name=type_id]').val();
+			if(t == type && tid == type_id) {
+				added = true;
+			}
+		});
+		if(added == true) {
+			$('#section-content-guide-button-add').addClass('added');
+			$('#section-content-guide-button-add a').html('<i class="fa fa-fw fa-check"></i>');
+			$('#section-content-guide-button-add-text a').html('Added');
+		} else {
+			$('#section-content-guide-button-add').removeClass('added');
+			$('#section-content-guide-button-add a').html('+');
+			$('#section-content-guide-button-add-text a').html('Add to Plan');
+		}
 	}
 	
 	reset_guide();

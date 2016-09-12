@@ -162,7 +162,17 @@
 			lng = $(this).find('.plan-line-form-hidden input[name=lng]').val();	
 			title =	$(this).find('.plan-line-form-hidden input[name=place]').val();
 			var marker_id = $(this).attr("id");
-	
+		
+			// color check
+			if ($(this).closest(".plan-day-tr").hasClass("selected")) {
+				myIcon.fillColor = 'red'; 
+				myIcon.strokeColor = 'red';
+			}
+			else { 
+				myIcon.fillColor = 'grey'; 
+				myIcon.strokeColor = 'black';
+			}
+			
 			if(lat && lng) {
 				position = new google.maps.LatLng(lat, lng); 
 				bounds.extend(position);

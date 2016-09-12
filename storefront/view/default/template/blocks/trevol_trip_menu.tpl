@@ -1,4 +1,86 @@
 <style>
+	/* START: wrapper-menu */
+		#wrapper-menu {
+			position:relative;
+			z-index:1000;
+			border-top:solid thin #EEE;
+			text-align:left;
+		}
+		
+		#wrapper-menu-modal-background {
+			position:absolute;
+			top:0;
+			left:0;
+			height:calc(100vh - 48px);
+			width:calc(100vw);
+			background-color:#000;
+			opacity:0.2;
+			display:none;
+		}
+		
+		#wrapper-menu-modal-body {
+			position:absolute;
+			top:0;
+			left:0;
+		}
+		
+		#wrapper-menu-modal-shadow {
+			position:absolute;
+			top:6px;
+			left:0;
+			width:100%;
+			height:calc(100vh - 48px - 6px);
+			display:none;
+		}
+		
+		#wrapper-menu-modal-content {
+			position:absolute;
+			top:0;
+			left:0;
+			width:100%;
+			height:calc(100vh - 48px);
+			padding:15px 0;
+			background-color:#FFF;
+			display:none;
+		}
+		
+		#wrapper-menu ul {
+			width:100%;
+		}
+		
+		#wrapper-menu li {
+			height:40px;
+			width:100%;
+			line-height:30px;
+		}
+		
+		#wrapper-menu li a {
+			padding:5px 15px;
+			display:block;
+			width:100%;
+			color:#777;
+		}
+		
+		#wrapper-menu li.active a {
+			color:#fff;
+			background-color:#e93578;
+		}
+		
+		#wrapper-menu li a:hover {
+			color:#fff;
+			background-color:#e93578;
+		}
+		
+		.menu-subtitle {
+			padding:5px 15px;
+			display:block;
+			width:100%;
+			color:#777;
+			font-weight:bold;
+		}
+	/* END */
+
+
 	#wrapper-menu-modal-content a.disabled {
 		pointer-events: none;
 		cursor: default;
@@ -11,14 +93,15 @@
 </style>
 
 <div id="wrapper-menu">
-	<div id="wrapper-menu-modal-background" onclick="hide_wrapper_menu();">
+	<div id="wrapper-menu-modal-background" onclick="hide_wrapper_menu();" style="max-width:400px !important;">
     </div>
-    <div id="wrapper-menu-modal-body" class="col-xs-12 col-sm-6 col-md-3">
+    <div id="wrapper-menu-modal-body" class="col-xs-12">
     	<div id="wrapper-menu-modal-shadow" class="box-shadow">
         </div>
     	<div id="wrapper-menu-modal-content">
             <ul>
             	<!-- START: [desktop view] -->
+                	<li class="menu-subtitle">My Trip</li>
                     <li class="menu-itinerary-list">
                         <a onclick="hide_wrapper_menu(); verify_new_trip_condition();">
                             <i class="fa fa-fw fa-file"></i>
@@ -64,8 +147,8 @@
                             Remove to Archive
                         </a>
                     </li>
-                    <hr class="menu-itinerary-list"/>
-                    <li class="menu-itinerary-list active">
+                    <hr class="menu-itinerary-list hidden"/>
+                    <li class="menu-itinerary-list hidden active">
                         <a>
                             <i class="fa fa-fw fa-file-text"></i>
                             <i class="fa fa-fw"></i>
@@ -81,6 +164,8 @@
                     </li>
                 <!-- END -->
                 <!-- START: [mobile view] -->
+                	<hr class="menu-itinerary-list"/>
+                    <li class="menu-subtitle">My Account</li>
                     <?php if($this->user->isLogged() == false) { ?>
                         <!-- START: [not logged] -->
                             <li class="menu-account-list">

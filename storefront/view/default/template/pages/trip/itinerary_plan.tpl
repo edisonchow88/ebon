@@ -105,14 +105,6 @@
 		
 		.plan-tbody {
 			position:relative;
-			overflow-y:scroll;
-			overflow-x:auto;
-			direction:rtl;
-			height:calc(100vh - 50px - 30px - 50px - 40px - 40px);	
-		}
-		
-		.plan-tbody > div {
-			direction:ltr;
 		}
 		
 		.plan-thead {
@@ -126,12 +118,22 @@
 		
 		.plan-form {
 			overflow:hidden;
-			border-bottom:solid thin #DDD;
 			cursor:pointer;
 		}
 		
+		.plan-day-form {
+			border-bottom:solid thin #DDD;
+			background-color:#FFF;
+		}
+		
+		/*
 		.plan-form:hover {
 			background-color:#EEE;
+		}
+		*/
+		
+		.plan-line-tr .plan-form {
+			height:100px;
 		}
 		
 		.plan-tr > .plan-th:last-of-type, .plan-form > .plan-td:last-of-type {
@@ -167,7 +169,62 @@
 		}
 		
 		.plan-line-tr {
-			background-color:#FFC;
+			height:110px;
+			padding:5px 15px;
+			margin-bottom:5px;
+		}
+		
+		.plan-line-image {
+			width:100px;
+			height:100px;
+			display:block;
+			float:left;
+			border-radius:7px 0px 0px 7px;
+			background-color:#333;
+			color:#CCC;
+			text-align:center;
+		}
+		
+		.plan-line-image i {
+			margin-top:28px;
+		}
+		
+		.plan-line-image img {
+			border-radius:5px 0px 0px 5px;
+		}
+		
+		.plan-line-form {
+			position:relative;
+			width:calc(100% - 100px);
+			padding:7px;
+			display:block;
+			float:left;
+			background-color:#FFF;
+			border-radius:0px 5px 5px 0px;
+		}
+		
+		.plan-line-tr .plan-td {
+			padding:0;
+			line-height:20px;
+		}
+		
+		.plan-line-tr .plan-col-command {
+			position:absolute;
+			bottom:5px;
+			right:0;
+		}
+		
+		.plan-line-tr .plan-col-title {
+			width:100%;
+			font-weight:bold;
+		}
+		
+		.plan-line-tr .plan-col-time {
+			width:100%;
+		}
+		
+		.plan-col-command .btn-simple {
+			width:64px;
 		}
 		
 		.plan-btn-add-line {
@@ -191,11 +248,17 @@
 		}
 		
 		.plan-mobile-tr {
-			background-color:#FFF !important;
+			background-color:transparent !important;
 		}
 		
-		.plan-mobile-tr .plan-form:hover {
-			background-color:#FFF !important;
+		.plan-empty {
+			width:100%;
+			padding-top:50px;
+			color:#999;
+			text-align:center;
+			font-size:14px;
+			font-weight:bold;
+			display:none;
 		}
 	/* END */
 	
@@ -258,8 +321,9 @@
 		
 		.ui-draggable-placeholder {
 			background-color: rgba(220,220,220,0.3);
-			height: 41px;
+			height: 115px;
 			text-align: center;
+			border-top:solid thin #DDD;
 			border-bottom:solid thin #DDD;
 		}
 		
@@ -368,6 +432,8 @@
             <div class='plan-tbody'>
             	<div class='plan-day'>
             	</div>
+                <div class="plan-no-day plan-empty">No plan</div>
+                <div class="plan-no-activity plan-empty">No activity in this day</div>
             </div>
         </div>
     </div>
@@ -411,13 +477,14 @@
 												sort_order:1,
 												time:"10:00",
 												duration:30,
-												title:"Visit Tokyo Tower",
+												title:"Tokyo Tower",
 												description:"Go up to top",
 												activity:"Visit",
 												place:"Tokyo Tower",
 												fee:500,
 												currency:'JPY',
-												note:"Check out One Piece"
+												note:"Check out One Piece",
+												image_id:226
 											},
 											{
 												line_id:2,
@@ -425,13 +492,14 @@
 												sort_order:2,
 												time:"11:00",
 												duration:60,
-												title:"Visit Osaka Tower",
+												title:"Osaka Tower",
 												description:null,
 												activity:"Visit",
 												place:"Osaka Tower",
 												fee:600,
 												currency:'JPY',
-												note:''
+												note:'',
+												image_id:217
 											},
 											{
 												line_id:3,
@@ -439,13 +507,14 @@
 												sort_order:3,
 												time:null,
 												duration:null,
-												title:"Visit Kyoto Tower",
+												title:"Kyoto Tower",
 												description:null,
 												activity:"Visit",
 												place:"Kyoto Tower",
 												fee:null,
 												currency:null,
-												note:null
+												note:null,
+												image_id:224
 											}
 										]
 									},
@@ -460,7 +529,7 @@
 								]
 							};
 							plan = JSON.stringify(plan);
-							setCookie('plan',plan,1);
+							setCookie('plan',plan,7);
 							plan = JSON.parse(plan);
 							runRefreshPlanTable(plan);
 						<!-- END -->
@@ -519,12 +588,14 @@
 				updateDateFormButtonEvent();
 				initSortableDay();
 				initSortableLine();
-				updateSectionLimiter();
+				//updateSectionLimiter();
 			<!-- END -->
 			
 			<!-- START: end loading -->
-				initMap();
-				update_section_content();
+				swithMobileMode();
+				setDay();
+				initTab();
+				//initMap();
 				$('#wrapper-splash').fadeOut();
 			<!-- END -->
 		}
@@ -649,15 +720,20 @@
 			<!-- START: set output for command -->
 				var output_command = ""
 					+ "<div>"
+						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-select' onclick='selectDay("+day.day_id+");'>"
+							+ "Select"
+						+ "</a>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-sort'>"
-							+ "<i class='fa fa-fw fa-arrows-v' aria-hidden='true'></i>"
+							+ "Move"
 						+ "</a>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete-day' data-id='plan-day-" + day.day_id+"-tr'>"
-							+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
+							+ "Delete"
 						+ "</a>"
+						/*
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-toggle-day'>"
 							+ "<i class='fa fa-fw fa-chevron-circle-down' aria-hidden='true'></i>"
 						+ "</a>"
+						*/
 					+ "</div>"
 				;
 			<!-- END -->
@@ -723,6 +799,15 @@
 				});
 			<!-- END -->
 			
+			<!-- START: set image -->
+					if(typeof line['image_id'] != 'undefined' && line['image_id'] != null && line['image_id'] != '') {
+						var html_plan_image = '<img id="image-'+line['image_id']+'" src="resources/image/cropped/'+line['image_id']+'.jpg" title="'+line['title']+'" alt="'+line['title']+'" width="100px">';
+					}
+					else {
+						var html_plan_image = '<i class="fa fa-fw fa-4x fa-map-marker"></i>';
+					}
+			<!-- END -->
+			
 			<!-- START -->
 				var html_plan_form_hidden='';
 				$.each(column, function(i, col) {
@@ -741,8 +826,11 @@
 			
 			<!-- START: set output for line -->
 				var output_line = ""
-					+ "<div class='plan-line-tr' id='plan-line-" + line.line_id + "-tr'>"
-						+ "<form class='plan-line-form plan-form' id='plan-line-" + line.line_id + "-form'>"
+					+ "<div class='plan-line-tr row' id='plan-line-" + line.line_id + "-tr'>"
+						+ "<div class='plan-line-image box-shadow' id='plan-line-" + line.line_id + "-image'>"
+							+ html_plan_image
+						+ "</div>"
+						+ "<form class='plan-line-form plan-form box-shadow' id='plan-line-" + line.line_id + "-form'>"
 							+ html_plan_form
 						+ "</form>"
 						+ "<form class='plan-line-form-hidden plan-form-hidden hidden' id='plan-line-" + line.line_id + "-form-hidden'>"
@@ -763,22 +851,22 @@
 				navigation += 'setTimeout(function() { $(\'#section-view-xs-list-guide a\').trigger(\'click\'); }, 100);';
 				
 				if(typeof line['type'] != 'undefined' && line['type'] != null && line['type'] != '') {
-					info_btn = '<a class="plan-btn btn btn-simple" onclick="'+navigation+'"><i class="fa fa-fw fa-info-circle"></i></a>';
+					info_btn = '<a class="plan-btn btn btn-simple" onclick="'+navigation+'">Read</a>';
 				}
 				else {
-					info_btn = '<a class="plan-btn btn btn-simple hidden"><i class="fa fa-fw fa-info-circle"></i></a>';
+					info_btn = '<a class="plan-btn btn btn-simple hidden">Read</a>';
 				}
 				
 				var output_command = ""
 					+ "<div>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-sort'>"
-							+ "<i class='fa fa-fw fa-arrows-v' aria-hidden='true'></i>"
+							+ "Move"
 						+ "</a>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-delete' data-toggle='confirmation-delete-line' data-id='plan-line-" + line.line_id+"-tr'>"
-							+ "<i class='fa fa-fw fa-trash' aria-hidden='true'></i>"
+							+ "Delete"
 						+ "</a>"
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-edit' data-toggle='modal' data-target='#modal-edit-line'>"
-							+ "<i class='fa fa-fw fa-pencil' aria-hidden='true'></i>"
+							+ "Edit"
 						+ "</a>"
 						+ info_btn
 					+ "</div>"
@@ -798,6 +886,10 @@
 				$('.fa-ellipsis-h').tooltip();
 				$('.fa-sticky-note').tooltip();
 				$('.fa-info-circle').tooltip();
+			<!-- END -->
+			
+			<!-- START: temporary code (to be replaced) -->
+				$('.icon-edit').hide();
 			<!-- END -->
 		}
 		
@@ -1402,8 +1494,8 @@
 					<!-- END -->
 					serial += ']';
 				serial += '}';
-				setCookie('plan',serial,1);
-				updateSectionLimiter();
+				setCookie('plan',serial,7);
+				//updateSectionLimiter();
 			<?php } ?>
 		}
 		
@@ -1491,7 +1583,7 @@
 		}
 		
 		function updatePlanTableButtonEvent() {
-			$(".plan-day-form").off().on("click", toggleDay);
+			//$(".plan-day-form").off().on("click", toggleDay);
 			// Function for delete Day & Line
 			deletePlanDay();
 			deletePlanLine();
@@ -1668,6 +1760,8 @@
 				initSortableDay();
 				initSortableLine();
 			<!-- END -->
+			
+				adjustPlanDayView();
 			
 			<!-- START -->
 				if($('#section-content-guide').is(':visible')) {
@@ -2227,6 +2321,7 @@
 			
 			<?php if($this->session->data['memory'] == 'cookie') { ?>
 				runAddPlanLine(line,line_raw);
+				updateGuideCurrentAddButton();
 			<?php } else { ?>
 				<!-- START: set data -->
 					var data = {
@@ -2244,13 +2339,13 @@
 							line.line_id = json.line_id;
 							line_raw.line_id = json.line_id;
 							runAddPlanLine(line,line_raw);
+							updateGuideCurrentAddButton();
 						}
 					}, "json");
 				<!-- END -->
 			<?php } ?>
 		}
 	<!-- END -->
-	
 		
 	$(document).ready(function() {
 		refreshPlanTable();
@@ -2262,6 +2357,40 @@
 
 <!-- START: add function to search button -->
 	<script>
+		function adjustPlanDayView() {
+			$('.plan-day-tr .plan-col-image-id').hide();
+			$('.plan-day-form .plan-col-title').hide();
+		}
+		
+		function showPlanDay(day_id) {
+			$('#section-content-itinerary-header').hide();
+			$('.plan-day-form .plan-col-duration').show();
+			$('.plan-line-form .plan-col-duration').hide();
+			$('.plan-thead').hide();
+			$('.plan-btn-add-line').hide();
+			$('.plan-btn-add-day').hide();
+			$('.icon-toggle-day').hide();
+			$('.icon-edit').hide();
+			$('.plan-no-activity').hide();
+			if(day_id == '') {
+				adjustPlanDayView();
+				$('.plan-day-form').show();
+				$('.plan-day-content').hide();
+				$('.plan-line-tr').hide();
+			}
+			else {
+				$('.plan-day-form').hide();
+				$('.plan-day-content').hide();
+				$('#plan-day-'+day_id+'-content').show();
+				$('.plan-line-tr').show();
+				$('.plan-line-tr .plan-col-day').hide();
+				$('.plan-line-tr .plan-col-title').show();
+				if($('#plan-day-'+day_id+'-content .plan-line-tr').length == 0) {
+					$('.plan-no-activity').show();
+				}
+			}
+		}
+		
 		function minimizePlanTableColumn() {
 			$('.plan-thead').hide();
 			$('.plan-tbody').addClass('noscrollbar');
@@ -2315,47 +2444,51 @@
 		}
 		
 		function swithMobileMode() {
-			if($('#wrapper-mobile-icon').hasClass('hidden')) {
-				maximizePlanTableColumn();
-				<!-- START: [header] -->
-				$('#wrapper-header').addClass('view-mode');
-				$('#wrapper-title').tooltip('disable');
-				$('#wrapper-title-input').attr("disabled", true);
-				$('#wrapper-account-icon').hide();
-				$('#wrapper-mobile-icon').removeClass('hidden');
-				<!-- END -->
-				<!-- START: [menu] -->
-				$('#wrapper-menu .menu-itinerary-list').hide();
-				$('#wrapper-menu .menu-account-list').show();
-				<!-- END -->
-				<!-- START: [guide] -->
-				$('#section-content-guide-content').addClass('noscrollbar');
-				$('#section-content-guide-button-add').hide();
-				$('#section-content-guide-button-add-text').hide();
-				<!-- END -->
-				<!-- START: [itinerary] -->
-				$('#section-content-itinerary-header').hide();
-				$('.plan-thead').hide();
-				$('.plan-tbody').addClass('noscrollbar');
-				$('.plan-col-duration').hide();
-				$('.plan-col-fee').hide();
-				$('.plan-col-currency').hide();
-				$('.plan-col-description').hide();
-				$('.plan-col-note').hide();
-				$('.icon-toggle-day').hide();
-				$('.icon-sort').hide();
-				$('.icon-delete').hide();
-				$('.icon-edit').hide();
-				$('.plan-btn-tr').hide();
-				//[event]
-				$(".plan-day-tr").css('pointer-events','none');
-				$('.plan-btn').css('pointer-events','auto');
-				//[line]
-				setTimeout(function() {$('.plan-day-content').removeClass('hidden');}, 100);
-				$('.plan-day-tr').addClass('plan-mobile-tr');
-				$('.plan-line-tr').addClass('plan-mobile-tr');
-				<!-- END -->
-			}
+			maximizePlanTableColumn();
+			<!-- START: [header] -->
+			//$('#wrapper-header').addClass('view-mode');
+			//$('#wrapper-title').tooltip('disable');
+			//$('#wrapper-title-input').attr("disabled", true);
+			//$('#wrapper-account-icon').hide();
+			//$('#wrapper-mobile-icon').removeClass('hidden');
+			<!-- END -->
+			<!-- START: [menu] -->
+			//$('#wrapper-menu .menu-itinerary-list').hide();
+			//$('#wrapper-menu .menu-account-list').show();
+			<!-- END -->
+			<!-- START: [guide] -->
+			//$('#section-content-guide-content').addClass('noscrollbar');
+			//$('#section-content-guide-button-add').hide();
+			//$('#section-content-guide-button-add-text').hide();
+			<!-- END -->
+			<!-- START: [itinerary] -->
+			//$('#btn-search').hide();
+			$('#section-content-itinerary-header').hide();
+			$('.plan-thead').hide();
+			$('.plan-tbody').addClass('noscrollbar');
+			$('.plan-col-duration').hide();
+			$('.plan-col-fee').hide();
+			$('.plan-col-currency').hide();
+			$('.plan-col-description').hide();
+			$('.plan-col-note').hide();
+			//$('.plan-col-command').css('display','block');
+			$('.plan-day-form').hide();
+			$('.plan-day-tr .plan-col-title').hide();
+			$('.plan-day-tr .plan-col-image-id').hide();
+			$('.icon-toggle-day').hide();
+			$('.icon-edit').hide();
+			$('.plan-btn-add-line').hide();
+			$('.plan-btn-add-day').hide();
+			$('.plan-line-tr .plan-col-day').hide();
+			$('.plan-line-tr .plan-col-title').show();
+			//[event]
+			//$(".plan-day-tr").css('pointer-events','none');
+			//$('.plan-btn').css('pointer-events','auto');
+			//[line]
+			setTimeout(function() {$('.plan-day-content').removeClass('hidden');}, 100);
+			$('.plan-day-tr').addClass('plan-mobile-tr');
+			$('.plan-line-tr').addClass('plan-mobile-tr');
+			<!-- END -->
 		}
 		
 		function swithDesktopMode() {
@@ -2412,15 +2545,8 @@
 		}
 		
         $('#btn-search').on('click', function() {
-            toggle_section_content('guide');
-            if($('#section-content-guide').is(':visible')) {
-				minimizePlanTableColumn();
-            }
-            else {
-				maximizePlanTableColumn();
-            }
+            showTab('guide');
         });
- 
 <!-- END -->
 
 <!-- Show popover hint (helper) -->

@@ -62,10 +62,10 @@ class ControllerPagesTripItinerary extends AController {
 		
 		//START: set modal
 			$this->addChild('modal/home/splash', 'modal_home_splash', 'modal/home/splash.tpl');
-			$this->addChild('pages/trip/itinerary_guide', 'content_section_guide', 'pages/trip/itinerary_guide.tpl');
-			$this->addChild('pages/trip/itinerary_table', 'content_section_table', 'pages/trip/itinerary_table.tpl');
-			$this->addChild('pages/trip/itinerary_map', 'content_section_map', 'pages/trip/itinerary_map.tpl');
-			$this->addChild('pages/trip/itinerary_footer', 'content_section_footer', 'pages/trip/itinerary_footer.tpl');
+			$this->addChild('pages/trip/itinerary_guide', 'section_content_guide', 'pages/trip/itinerary_guide.tpl');
+			$this->addChild('pages/trip/itinerary_plan', 'section_content_plan', 'pages/trip/itinerary_plan.tpl');
+			$this->addChild('pages/trip/itinerary_map', 'section_content_map', 'pages/trip/itinerary_map.tpl');
+			$this->addChild('pages/trip/itinerary_footer', 'section_content_footer', 'pages/trip/itinerary_footer.tpl');
 		//END
 		
 		//START: set link

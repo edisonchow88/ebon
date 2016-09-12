@@ -1,4 +1,18 @@
 <style>
+	/* START: wrapper-title */
+		#wrapper-title {
+			display:inline-block;
+			float:left;
+			margin-left:15px;
+		}
+		
+		#wrapper-title input {
+			box-shadow:none;
+			border:none;
+			min-width:250px;
+		}
+	/* END */
+	
 	#wrapper-title-input:disabled {
 		background-color:#FFF;
 		border:none;
@@ -18,25 +32,71 @@
 		background-color:#e93578;
 		color:#FFF;
 	}
+	
+	/* START: wrapper-hint */
+		#wrapper-hint {
+			position:absolute;
+			top:12.5px;
+			left:60px;
+			height:23px;
+			border-radius:3px;
+			padding:3px 10px;
+			background-color:#F69;
+			display:none;
+		}
+	/* END */
+	
+	/* START: wrapper-button-search */
+		#wrapper-button-search {
+			display:inline-block;
+			float:right;
+		}
+		
+		#wrapper-button-search a {
+			margin:-7px 0;
+			padding:14px;
+			border:none;
+		}
+	/* END */
+	
+	/* START: wrapper-button-save */
+		#wrapper-button-save {
+			display:inline-block;
+			float:right;
+		}
+		
+		#wrapper-button-save a {
+			margin:-7px 0;
+			padding:14px;
+			border:none;
+			color:#FFF;
+			font-weight:bold;
+		}
+	/* END */
 </style>
 
-<div id="wrapper-header" class="box-shadow">
+<div id="wrapper-header" class="view-mode">
 	<div id="wrapper-menu-icon" data-toggle='tooltip' data-placement='bottom' title='Open Menu'>
     	<a class="btn btn-primary" onclick="toggle_wrapper_menu(); hide_wrapper_account();"><i class="fa fa-fw fa-bars fa-lg"></i></a>
     </div>
     <!-- START: [trip name] -->
     	<?php if($this->session->data['mode'] == 'edit') { ?>
-        	<div id="wrapper-title" data-toggle='tooltip' data-placement='bottom' title='Rename Trip'>
+        	<div id="wrapper-title" class="hidden" data-toggle='tooltip' data-placement='bottom' title='Rename Trip'>
         		<input id="wrapper-title-input" class="form-control" type="text"></input>
             </div>
         <?php } else { ?>
-            <div id="wrapper-title">
+            <div id="wrapper-title" class="hidden">
                 <input id="wrapper-title-input" class="form-control" type="text" disabled></input>
             </div>
         <?php } ?>
     <!-- END -->
+    <!-- START: [hint] -->
+    	<div id="wrapper-hint" class="small">
+        	<b>HINT:</b> <span>Add your favourite place</span>
+        </div>
+    <!-- END -->
     <!-- START: float right -->
-        <div id="wrapper-account-icon" class="dropdown" data-toggle='tooltip' data-placement='bottom' title='Open Account Menu'>
+        <div id="wrapper-account-icon" class="hidden dropdown" data-toggle='tooltip' data-placement='bottom' title='Open Account Menu'>
         	<a onclick="toggle_wrapper_account(); hide_wrapper_menu();">
             	<?php if($logged == true) { ?>
                     <span class="fa-stack fa-lg">
@@ -51,20 +111,24 @@
                 <?php } ?>
             </a>
         </div>
-        <div id="wrapper-mobile-icon" class="hidden">
-        	<span class="label label-default"><i class="fa fa-fw fa-mobile"></i> Mobile View</span>
-        </div>
         <!-- START: [button] -->
+        	<div id="wrapper-button-search" class="hidden">
+                <a class="btn btn-primary"><i class="fa fa-fw fa-search fa-lg"></i></a>
+            </div>
             <?php if($this->session->data['mode'] == 'view') { ?>
-                <div id="wrapper-button" class="hidden-xs hidden-sm">
+                <div id="wrapper-button" class="hidden">
                     <a class="btn btn-default disabled" style="width:120px !important;"><i class="fa fa-fw fa-eye"></i> View Only</a>
                 </div>
             <?php } else { ?>
-                <div id="wrapper-button" class="hidden-xs hidden-sm">
+            	<div id="wrapper-button-share">
+                	<a class="btn btn-default hidden" data-toggle="modal" data-target="#modal-trip-share">Share</a>
+                </div>
+                <div id="wrapper-button-save" class="hidden">
+                	<!--
                     <?php if($this->session->data['memory'] == 'server') { ?>
                         <span class="label label-success">Auto Saved</span>
                     <?php } ?>
-                    <a class="btn btn-default hidden" data-toggle="modal" data-target="#modal-trip-share">Share</a>
+                    -->
                     <?php if($this->session->data['memory'] == 'cookie') { ?>
                     	<a class="btn btn-primary" onclick="verify_save_trip_condition();">Save</a>
                     <?php } ?>

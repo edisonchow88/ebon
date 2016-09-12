@@ -168,7 +168,6 @@
 				width:100%;
 				float:left;
 				height:calc(100vh - 48px - 3px - 40px);
-				background-color:#F00;
 			}
 		/* END */
 	/* END */	

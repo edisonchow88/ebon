@@ -595,7 +595,6 @@
 				swithMobileMode();
 				setDay();
 				initTab();
-				//initMap();
 				$('#wrapper-splash').fadeOut();
 			<!-- END -->
 		}

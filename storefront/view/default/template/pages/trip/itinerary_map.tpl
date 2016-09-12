@@ -36,11 +36,18 @@
 	}
 	
 	#map {
-        height:100%;
+        height:300px;
+		width: 100%;
 	}
 	
 	.map-selected {
 		background-color: #CCC !important;
+	}
+	
+	.map-option-group {
+		position: absolute;
+		z-index: 10;
+		padding: 5px;
 	}
 </style>
 
@@ -88,13 +95,12 @@
     -->
     <div id="section-content-map-content">
 
-    	<button onclick="initMap()"></button>
-        <div class="btn-group" role="group" aria-label="...">
+  <!--  	<button onclick="initMap()"></button>--> 
+        <div class="btn-group map-option-group" role="group" aria-label="...">
   			<button type="button" class="btn btn-default map-option map-selected" value="day">Day</button>
   			<button type="button" class="btn btn-default map-option" value="all">All</button>
 		</div>
-
-    	<div id="map"></div>
+       <div id="map"></div>
     </div>
 </div>
 
@@ -142,30 +148,21 @@
 			path: 'M245,0C157.687,0,86.905,70.781,86.905,158.094c0,14.641,1.999,28.812,5.724,42.266c1.491,5.388,3.252,10.663,5.283,15.803   l4.794,10.894L245,490l142.481-263.316l4.321-9.818c2.149-5.363,4.011-10.871,5.57-16.505c3.724-13.455,5.724-27.626,5.724-42.266   C403.095,70.781,332.313,0,245,0z M245,234.271c-42.797,0-77.609-34.812-77.609-77.609c0-42.79,34.812-77.602,77.609-77.602   s77.609,34.812,77.609,77.602C322.609,199.459,287.797,234.271,245,234.271z',
 			fillColor: 'red',
 			fillOpacity: 0.8,
-			scale: 0.05,
+			scale: 0.03,
 			anchor: new google.maps.Point(250, 450),
 			strokeColor: 'red',
 			strokeWeight: 1
 		};
 			
-			
-						
+		//	setting to day view only for now
+		// map_option_selector = "#"+selected_day_id + " .plan-line-tr";
+		//				
 		$(map_option_selector).each(function(i) {
 			lat = $(this).find('.plan-line-form-hidden input[name=lat]').val();
 			lng = $(this).find('.plan-line-form-hidden input[name=lng]').val();	
 			title =	$(this).find('.plan-line-form-hidden input[name=place]').val();
 			var marker_id = $(this).attr("id");
-			/*
-			if (check_color == 1){
-				var color_list = [red,blue,green]
-				var prev_day,curr_day, day_color;
-				curr_day = $(this).closest(".plan-day-tr").attr("id");
-				if ( prev_day == "") day_color = 0;
-				else if ( curr_day != prev_day) day_color++;
-				myIcon = {strokeColor: color_list[day_color]}
-				prev_day = curr_day;
-			}
-			*/
+	
 			if(lat && lng) {
 				position = new google.maps.LatLng(lat, lng); 
 				bounds.extend(position);
@@ -256,7 +253,7 @@
 			
 		});
 	   
-		$(window).load(updateMap);
+		
 		
 		
 	

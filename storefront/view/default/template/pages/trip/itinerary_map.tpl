@@ -36,7 +36,6 @@
 	}
 	
 	#map {
-        height:300px;
 		width: 100%;
 	}
 	

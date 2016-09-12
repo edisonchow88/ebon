@@ -224,10 +224,12 @@
 			$('.section').hide();
 			$('#section-'+id).show();
 			if(id == 'plan') {
-				var day_id = $('#section-day-bar-form input[name=day_id]').val();
-				if(day_id != '') {
-					showPlanDay(day_id);
-				}
+				<!-- START: go to selected day if any -->
+					var day_id = $('#section-day-bar-form input[name=day_id]').val();
+					if(day_id != '') {
+						showPlanDay(day_id);
+					}
+				<!-- END -->
 				$('#wrapper-title').removeClass('hidden');
 				$('#wrapper-button-search').addClass('hidden');
 				$('#wrapper-button-save').removeClass('hidden');
@@ -239,14 +241,25 @@
 				initMap();
 			}
 			else {
-				var day_id = $('#section-day-bar-form input[name=day_id]').val();
-				if(day_id == '') {
-					day_id = $('.plan-day-form-hidden input[name=day_id]').last().val();
-					selectDay(day_id);
-				}
+				reset_guide();
+				refresh_guide(); 
+				
+				<!-- START: select last day if no day_id -->
+					var day_id = $('#section-day-bar-form input[name=day_id]').val();
+					if(day_id == '') {
+						day_id = $('.plan-day-form-hidden input[name=day_id]').last().val();
+						selectDay(day_id);
+					}
+				<!-- END -->
+				
+				$('#wrapper-title').removeClass('hidden');
+				$('#wrapper-button-search').addClass('hidden');
+				$('#wrapper-button-save').removeClass('hidden');
+				/*
 				$('#wrapper-title').addClass('hidden');
 				$('#wrapper-button-search').removeClass('hidden');
 				$('#wrapper-button-save').addClass('hidden');
+				*/
 			}
 		}
 		
@@ -424,6 +437,7 @@
 			$('#section-guide').css('min-height',height);
 			$('#section-plan').css('min-height',height);
 			$('#section-map').css('min-height',height);
+			$('#map').css('min-height',height);
 		}
 		
 		function hideHintAlert() {
@@ -433,12 +447,15 @@
 			$('#section-guide').css('min-height',height);
 			$('#section-plan').css('min-height',height);
 			$('#section-map').css('min-height',height);
+			$('#map').css('min-height',height);
 		}
-		
+		/*
 		<?php if($this->session->data['memory'] == 'cookie') { ?>
 			showHintAlert();
 		<?php } else { ?>
 			hideHintAlert();
 		<?php } ?>
+		*/
+		hideHintAlert();
 	<!-- END -->
 </script>

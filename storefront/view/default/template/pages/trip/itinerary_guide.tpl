@@ -135,11 +135,19 @@
 	}
 	
 	#section-content-guide-parent {
-		padding:7px 7px 0 7px;
+		position:absolute;
+		top:10px;
 	}
 	
-	#section-content-guide-parent a {
+	#section-content-guide-parent-text {
+		width:48px;
+		height:48px;
+		border-radius:0 5px 5px 0;
+		padding-top:15px;
+		padding-left:7px;
+		background-color:#000;
 		color:#FFF;
+		opacity:.5;
 	}
 	
 	#section-content-guide-name {
@@ -341,6 +349,7 @@
             />
             <input type="hidden" name="type_id"/>
             <input type="hidden" name="type"/>
+            <input type="hidden" name="image_id"/>
             <input type="hidden" name="name"/>
             <input type="hidden" name="lat"/>
             <input type="hidden" name="lng"/>
@@ -351,9 +360,11 @@
             <div id="section-content-guide-top">
                 <div id="section-content-guide-button-add" onclick="addActivityFromGuide();"><a>&#43;</a></div>
                 <div id="section-content-guide-button-add-text" class="small" onclick="addActivityFromGuide();"><a>Add to Plan</a></div>
-                <div id="section-content-guide-image-wrapper"><div id="section-content-guide-image"></div></div>
+                <div id="section-content-guide-image-wrapper">
+                	<div id="section-content-guide-image"></div>
+                    <div id="section-content-guide-parent"><a id="section-content-guide-parent-text" class="btn"></a></div>
+                </div>
                 <div id="section-content-guide-title">
-                    <div id="section-content-guide-parent"><a><small><span id="section-content-guide-parent-text"></span></small></a></div>
                     <div id="section-content-guide-name"></div>
                 </div>
             </div>
@@ -436,13 +447,16 @@
 								$('#section-content-guide-form input[name=type]').val('poi');
 								$('#section-content-guide-form input[name=type_id]').val(json.current.poi_id);
 							}
+							if(typeof json.current.image[0].image_id != 'undefined' && json.current.image[0].image_id != null && json.current.image[0].image_id !='' ) {
+								$('#section-content-guide-form input[name=image_id]').val(json.current.image[0].image_id);
+							}
 							$('#section-content-guide-form input[name=lat]').val(json.current.lat);
 							$('#section-content-guide-form input[name=lng]').val(json.current.lng);
 						<!-- END -->
 						
 						<!-- START: set parent -->
 							if(typeof json.current.parent != 'undefined') {
-								document.getElementById('section-content-guide-parent-text').innerHTML = json.current.parent.name+' >';
+								$('#section-content-guide-parent-text').html('<i class="fa fa-fw fa-chevron-left fa-lg"></i>');
 								$('#section-content-guide-parent').off("click"); //remove all existing click event
 								$('#section-content-guide-parent').click(function() { navigate_guide_by_destination_id(json.current.parent.destination_id); });
 							}
@@ -637,6 +651,7 @@
 			<!-- START: reset search -->
 				$('#section-content-guide-search-form').trigger('reset');
 			<!-- END -->
+			$('#section-content').scrollTop;
 		}
 		else if(type == 'poi') {
 			document.getElementById('section-content-guide-form-input-destination-id').value = '';
@@ -645,6 +660,7 @@
 			<!-- START: reset search -->
 				$('#section-content-guide-search-form').trigger('reset');
 			<!-- END -->
+			$('#section-content').scrollTop;
 		}
 	}
 	
@@ -655,6 +671,7 @@
 		<!-- START: reset search -->
 			$('#section-content-guide-search-form').trigger('reset');
 		<!-- END -->
+			$('#section-content').scrollTop;
 	}
 	
 	function navigate_guide_by_poi_id(poi_id) {
@@ -664,6 +681,7 @@
 		<!-- START: reset search -->
 			$('#section-content-guide-search-form').trigger('reset');
 		<!-- END -->
+			$('#section-content').scrollTop;
 	}
 	
 	function reset_guide() {
@@ -679,7 +697,7 @@
 			document.getElementById('section-content-guide-form-input-poi-id').value = hash;
 		}
 		else {
-			window.location.hash = '#destination_id-1';
+			window.location.hash = '#destination_id-8';
 		}
 	}
 	
@@ -688,7 +706,7 @@
 		refresh_guide();
 	}
 	
-	function updateGuideCurrentAddButton() {
+	function updateGuideCurrentAddButton(force) {
 		var type = $('#section-content-guide-form input[name=type]').val();
 		var type_id = $('#section-content-guide-form input[name=type_id]').val();
 		var added = false;
@@ -702,7 +720,7 @@
 				added = true;
 			}
 		});
-		if(added == true) {
+		if(added == true || force == true) {
 			$('#section-content-guide-button-add').addClass('added');
 			$('#section-content-guide-button-add a').html('<i class="fa fa-fw fa-check"></i>');
 			$('#section-content-guide-button-add-text a').html('Added');

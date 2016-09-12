@@ -236,6 +236,7 @@
 				$('#wrapper-title').removeClass('hidden');
 				$('#wrapper-button-search').addClass('hidden');
 				$('#wrapper-button-save').removeClass('hidden');
+				initMap();
 			}
 			else {
 				var day_id = $('#section-day-bar-form input[name=day_id]').val();
@@ -289,7 +290,8 @@
 			$('#section-day-bar-form input[name=sort_order]').val(sort_order);
 			
 			$('.plan-day-tr').removeClass('selected');
-			$('#plan-day-'+day_id+'-tr').addClass('selected');
+			$('#plan-day-'+day_id+'-tr').addClass('selected').trigger("selectedDayChanged");
+			
 			
 			saveDayCookie(day_id,sort_order);
 			showPlanDay(day_id);

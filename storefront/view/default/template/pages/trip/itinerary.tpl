@@ -146,7 +146,10 @@
 			#section-content {
 				width:100%;
 				height:calc(100vh - 48px - 3px - 40px - 40px);
-				overflow:auto;
+				overflow:scroll;
+				padding-top:1px;
+				margin-top:-1px;
+				-webkit-overflow-scrolling: touch;
 				background-color:#FFF;
 			}
 			
@@ -363,6 +366,7 @@
 		
 		function selectPreviousDay() {
 			var day = new Array;
+			var num_of_day = $('.plan-day-form-hidden').length;
 			var day_id = $('#section-day-bar-form input[name=day_id]').val();
 			$('.plan-day-form-hidden input[name=day_id]').each(function() {
 				value = $(this).val();
@@ -370,7 +374,7 @@
 			});
 			var i = 0;
 			var previous_day_id = false;
-			while(previous_day_id == false) {
+			while(previous_day_id == false && i <= num_of_day) {
 				if(day[i] == day_id) {
 					previous_day_id = day[i-1];
 				}
@@ -381,6 +385,7 @@
 		
 		function selectNextDay() {
 			var day = new Array;
+			var num_of_day = $('.plan-day-form-hidden').length;
 			var day_id = $('#section-day-bar-form input[name=day_id]').val();
 			if(day_id == '') {
 				//select first day
@@ -394,7 +399,7 @@
 				});
 				var i = 0;
 				var next_day_id = false;
-				while(next_day_id == false) {
+				while(next_day_id == false && i <= num_of_day) {
 					if(day[i] == day_id) {
 						next_day_id = day[i+1];
 					}

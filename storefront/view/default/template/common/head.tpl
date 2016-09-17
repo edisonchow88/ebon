@@ -106,7 +106,6 @@ $(document).on('click','a.call_to_order',function(){
 	return false;
 });
 
-
 <?php //search block form function ?>
 function search_submit () {
 
@@ -130,4 +129,3 @@ function search_submit () {
 }
 
 </script>
-

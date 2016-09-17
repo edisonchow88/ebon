@@ -9,7 +9,7 @@
 		#wrapper-title input {
 			box-shadow:none;
 			border:none;
-			min-width:250px;
+			min-width:150px;
 		}
 	/* END */
 	

@@ -6,7 +6,8 @@
 		z-index:9999;
 		width:100%;
 		height:calc(100vh);
-		padding-top:calc(30vh);
+		padding-top:calc(20vh);
+		/* padding-top:calc(30vh); */
 		overflow:hidden;
 		background-color:#e93578;
 		color:#FFF;
@@ -23,7 +24,12 @@
 	}
 </style>
 
+
 <div id='wrapper-splash'>
     <div id='wrapper-splash-title'>Trevol</div>
     <div id='wrapper-splash-subtitle'>The Planner</div>
+    <div style="margin-top:50px;">
+        <div>We are working on something awesome.</div>
+        <div>We will be back soon.</div>
+    </div>
 </div>

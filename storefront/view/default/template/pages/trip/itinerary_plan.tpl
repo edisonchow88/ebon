@@ -2084,7 +2084,7 @@
 				var place = line.place;
 				var added_line = "";
 				if(typeof place != 'undefined' && place != null && place != '') { added_line = place; } else { added_line = "New Activity"; }
-				var day = $("#plan-day-"+ day_id +"-tr").find(".plan-day-form-hidden input[name=sort_order]").val();
+				var day = $("#plan-day-"+ line.day_id +"-tr").find(".plan-day-form-hidden input[name=sort_order]").val();
 				
 				var hint = added_line + " added to Day " + day;
 				showHint(hint);

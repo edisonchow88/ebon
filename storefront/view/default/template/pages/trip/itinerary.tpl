@@ -199,7 +199,11 @@
             </a>
         </div>
         <div class="col-xs-3" id="section-day-bar-button-next-day"><a class="btn btn-default"><i class="fa fa-fw fa-chevron-right"></i></a></div>
-        <div class="col-xs-3" id="section-day-bar-button-add-day"><a class="btn btn-default" onclick="addPlanDay();">Add Day</a></div>
+        <?php if($this->session->data['mode'] == 'edit') { ?>
+        	<div class="col-xs-3" id="section-day-bar-button-add-day"><a class="btn btn-default" onclick="addPlanDay();">Add Day</a></div>
+        <?php } else { ?>
+        	<div class="col-xs-3" id="section-day-bar-button-add-day"><a class="btn btn-default disabled"></a></div>
+        <?php } ?>
     </div>
     <div id="section-hint" class="hidden">
         <div class="alert alert-info">

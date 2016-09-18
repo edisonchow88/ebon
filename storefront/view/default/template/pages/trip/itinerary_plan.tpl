@@ -1900,6 +1900,7 @@
 			var line_id = $('#'+line).find('.plan-line-form-hidden input[name=line_id]').val();
 			var type_id = $('#'+line).find('.plan-line-form-hidden input[name=type_id]').val();
 			var type = $('#'+line).find('.plan-line-form-hidden input[name=type]').val();
+			var image_id = $('#'+line).find('.plan-line-form-hidden input[name=image_id]').val();
 			var place = $('#'+line).find('.plan-line-form-hidden input[name=place]').val();
 			var lat = $('#'+line).find('.plan-line-form-hidden input[name=lat]').val();
 			var lng = $('#'+line).find('.plan-line-form-hidden input[name=lng]').val();
@@ -1918,6 +1919,7 @@
 			$('#modal-edit-line-form input[name=line_id]').val(line_id);
 			if(typeof type_id != 'undefined') { $('#modal-edit-line-form input[name=type_id]').val(type_id); }
 			if(typeof type != 'undefined') { $('#modal-edit-line-form input[name=type]').val(type); }
+			if(typeof image_id != 'undefined') { $('#modal-edit-line-form input[name=image_id]').val(image_id); }
 			if(typeof place != 'undefined') { $('#modal-edit-line-form input[name=place]').val(place); }
 			if(typeof lat != 'undefined') { $('#modal-edit-line-form input[name=lat]').val(lat); }
 			if(typeof lng != 'undefined') { $('#modal-edit-line-form input[name=lng]').val(lng); }

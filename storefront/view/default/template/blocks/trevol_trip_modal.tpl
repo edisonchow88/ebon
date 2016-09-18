@@ -217,7 +217,7 @@
                                 <input type="hidden" id="modal-edit-line-form-input-name-hidden" />
                                 <input type="hidden" name="type" id="modal-edit-line-form-input-type-hidden" />
                                 <input type="hidden" name="type_id" id="modal-edit-line-form-input-type-id-hidden" />
-                                
+                                <input type="hidden" name="image_id" id="modal-edit-line-form-input-image-id-hidden" />
                             </div>
                             <div class="col-xs-2">
                                 <input class="border-right" placeholder='Latitude' name="lat" />
@@ -402,7 +402,8 @@
 				suggestion	: form + '-search-input-keyword-suggestion',
 				hidden		: form + '-input-name-hidden',
 				type		: form + '-input-type-hidden',
-				type_id		: form + '-input-type-id-hidden'
+				type_id		: form + '-input-type-id-hidden',
+				image_id		: form + '-input-image-id-hidden'
 			};
             
             $('#'+input.input).off();
@@ -461,6 +462,7 @@
             else if(key_code != '' && key_code != 'undefined' && key_code != null) {
 				$('#'+input.type).val('');
 				$('#'+input.type_id).val('');
+				$('#'+input.image_id).val('');
 				$('#'+form+' input[name=place]').val('');
 				$('#'+form+' input[name=lat]').val('');
 				$('#'+form+' input[name=lng]').val('');
@@ -488,7 +490,7 @@
 				var output = '';
 				output += "<ul class='list-group' style='margin-top:-1px;'>";
 				for(i = 0; i < result.length; i++) {
-					output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion(\""+result[i].type_id+"\", \""+result[i].type+"\", \""+result[i].name+"\", \""+result[i].lat+"\", \""+result[i].lng+"\")')'>";
+					output += "<a id='suggestion-"+i+"' class='suggestion btn list-group-item' style='border-top-right-radius:0; border-top-left-radius:0;' onclick='select_suggestion(\""+result[i].image_id+"\", \""+result[i].type_id+"\", \""+result[i].type+"\", \""+result[i].name+"\", \""+result[i].lat+"\", \""+result[i].lng+"\")')'>";
 						output += "<div class='text-left' style='width:100%;'>";
 							output += "<div class='text-left text-success' style='display:inline-block; width:50px;'>";
 							if(result[i].type == 'destination') {
@@ -560,7 +562,8 @@
 				suggestion	: form + '-search-input-keyword-suggestion',
 				hidden		: form + '-input-name-hidden',
 				type		: form + '-input-type-hidden',
-				type_id		: form + '-input-type-id-hidden'
+				type_id		: form + '-input-type-id-hidden',
+				image_id		: form + '-input-image-id-hidden'
 			};
             
             if(this.selected_suggestion != this.suggestion.length) {
@@ -569,6 +572,7 @@
 				$('#'+input.input).val(this.suggestion[this.selected_suggestion].name);
 				$('#'+input.type).val(this.suggestion[this.selected_suggestion].type);
 				$('#'+input.type_id).val(this.suggestion[this.selected_suggestion].type_id);
+				$('#'+input.image_id).val(this.suggestion[this.selected_suggestion].image_id);
 				$('#'+form+' input[name=title]').val(this.suggestion[this.selected_suggestion].name);
 				$('#'+form+' input[name=place]').val(this.suggestion[this.selected_suggestion].name);
 				$('#'+form+' input[name=lat]').val(this.suggestion[this.selected_suggestion].lat);
@@ -578,24 +582,27 @@
 				$('#'+input.input).val($('#'+input.hidden).val());
 				$('#'+input.type).val('');
 				$('#'+input.type_id).val('');
+				$('#'+input.image_id).val('');
 				$('#'+form+' input[name=lat]').val('');
 				$('#'+form+' input[name=lng]').val('');
             }
         }
         
-        function select_suggestion(type_id, type, name, lat, lng) {
+        function select_suggestion(image_id, type_id, type, name, lat, lng) {
 			var form = 'modal-edit-line-form';
 			var input = {
 				input		: form + '-search input[name=keyword]',
 				suggestion	: form + '-search-input-keyword-suggestion',
 				hidden		: form + '-input-name-hidden',
 				type		: form + '-input-type-hidden',
-				type_id		: form + '-input-type-id-hidden'
+				type_id		: form + '-input-type-id-hidden',
+				image_id		: form + '-input-image-id-hidden'
 			};
 			$('#'+input.input).val(name);
 			$('#'+input.hidden).val(name);
 			$('#'+input.type).val(type);
 			$('#'+input.type_id).val(type_id);
+			$('#'+input.image_id).val(image_id);
 			$('#'+form+' input[name=title]').val(name);
 			$('#'+form+' input[name=place]').val(name);
 			$('#'+form+' input[name=lat]').val(lat);

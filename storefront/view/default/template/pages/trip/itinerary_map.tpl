@@ -119,7 +119,7 @@
 			center: myLatlng,
 			zoom: 4,
 			minZoom: 1,
-			maxZoom: 8,
+			maxZoom: 15,
 			disableDefaultUI: true
 		});
 		updateMap();

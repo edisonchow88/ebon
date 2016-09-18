@@ -159,7 +159,6 @@
 		
 		.plan-btn-tr {
 			overflow:hidden;
-			border-bottom:solid thin #DDD;
 			height:40px;
 			padding:7px;
 		}
@@ -228,15 +227,22 @@
 		}
 		
 		.plan-btn-add-line {
-			background-color:#FFE;
+			padding:5px 15px;
+			height:48px;
 		}
 		
 		.plan-btn-add-line a {
-			outline:thin dashed #CCC;
+			border:thin dashed #CCC;
+			border-radius:5px;
+		}
+		
+		.plan-btn-add-line a:hover {
+			border:thin dashed #333;
+			border-radius:5px;
 		}
 		
 		.plan-btn-tr a {
-			color:#CCC;
+			color:#777;
 		}
 		
 		.plan-btn-tr a:hover {
@@ -835,7 +841,7 @@
 			<!-- END -->
 			
 			<!-- START: temporary code (to be replaced) -->
-				$('.icon-edit').hide();
+				//$('.icon-edit').hide();
 			<!-- END -->
 		}
 		
@@ -1910,6 +1916,8 @@
 			var note = $('#'+line).find('.plan-line-form-hidden input[name=note]').val();
 			
 			$('#modal-edit-line-form input[name=line_id]').val(line_id);
+			if(typeof type_id != 'undefined') { $('#modal-edit-line-form input[name=type_id]').val(type_id); }
+			if(typeof type != 'undefined') { $('#modal-edit-line-form input[name=type]').val(type); }
 			if(typeof place != 'undefined') { $('#modal-edit-line-form input[name=place]').val(place); }
 			if(typeof lat != 'undefined') { $('#modal-edit-line-form input[name=lat]').val(lat); }
 			if(typeof lng != 'undefined') { $('#modal-edit-line-form input[name=lng]').val(lng); }
@@ -1964,6 +1972,7 @@
 			<!-- START: get form data -->
 				var type_id = $('#modal-edit-line-form input[name=type_id]').val()||null;
 				var type = $('#modal-edit-line-form input[name=type]').val()||null;
+				var image_id = $('#modal-edit-line-form input[name=image_id]').val()||null;
 				var day_id = $('#modal-edit-line-form input[name=day_id]').val();
 				var sort_order = $('#plan-day-'+day_id+'-line .plan-line-tr').length + 1;
 				var time = $('#modal-edit-line-form input[name=time]').val()||null;
@@ -1998,6 +2007,7 @@
 						line_id		:line_id,
 						type		:type,
 						type_id		:type_id,
+						image_id	:image_id,
 						day_id		:day_id,
 						sort_order	:sort_order,
 						time		:time,
@@ -2018,6 +2028,7 @@
 						line_id		:line_id,
 						type		:type,
 						type_id		:type_id,
+						image_id	:image_id,
 						day_id		:day_id,
 						sort_order	:sort_order,
 						time		:time,
@@ -2096,6 +2107,7 @@
 				var line_id = $('#modal-edit-line-form input[name=line_id]').val();
 				var type = $('#modal-edit-line-form input[name=type]').val();
 				var type_id = $('#modal-edit-line-form input[name=type_id]').val();
+				var image_id = $('#modal-edit-line-form input[name=image_id]').val();
 				var time = $('#modal-edit-line-form input[name=time]').val()||null;
 				var hour = $('#modal-edit-line-form input[name=hour]').val()||null;
 				var minute = $('#modal-edit-line-form input[name=minute]').val()||null;
@@ -2117,6 +2129,7 @@
 						line_id		:line_id,
 						type		:type,
 						type_id		:type_id,
+						image_id	:image_id,
 						time		:time,
 						duration	:duration,
 						activity	:activity,
@@ -2420,10 +2433,10 @@
 			$('.plan-day-form .plan-col-duration').show();
 			$('.plan-line-form .plan-col-duration').hide();
 			$('.plan-thead').hide();
-			$('.plan-btn-add-line').hide();
+			//$('.plan-btn-add-line').hide();
 			$('.plan-btn-add-day').hide();
 			$('.icon-toggle-day').hide();
-			$('.icon-edit').hide();
+			//$('.icon-edit').hide();
 			$('.plan-no-activity').hide();
 			if(day_id == '') {
 				adjustPlanDayView();
@@ -2529,8 +2542,8 @@
 			$('.plan-day-tr .plan-col-title').hide();
 			$('.plan-day-tr .plan-col-image-id').hide();
 			$('.icon-toggle-day').hide();
-			$('.icon-edit').hide();
-			$('.plan-btn-add-line').hide();
+			//$('.icon-edit').hide();
+			//$('.plan-btn-add-line').hide();
 			$('.plan-btn-add-day').hide();
 			$('.plan-line-tr .plan-col-day').hide();
 			$('.plan-line-tr .plan-col-title').show();

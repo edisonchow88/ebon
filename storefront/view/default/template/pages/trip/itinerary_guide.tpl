@@ -572,10 +572,12 @@
 													}
 												}
 											content += '</div>';
+											/*
 											content += '<div class="result-child-button-add pull-right">';
 												content += '<a class="small">Add to Plan</a>';
 												content += '<a class="small">Read More</a>';
 											content += '</div>';
+											*/
 										content += '</div>';
 									content += '</div>';
 									content += '</div>';

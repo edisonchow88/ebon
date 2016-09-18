@@ -269,9 +269,13 @@ class ModelGuidePoi extends Model{
 					if($result['type'] == 'poi') {
 						$destination = array_values($this->getPoiDestinationByPoiId($result['type_id']));
 						$output[$result['type'].$result['type_id']]['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($destination[0]['destination_id']);
+						$poi = $this->model_guide_destination->getPoi($result['type_id']);
+						$output[$result['type'].$result['type_id']]['image_id'] = $poi['image'][0]['image_id'];
 					}
 					else if($result['type'] == 'destination') {
 						$output[$result['type'].$result['type_id']]['parent'] = $this->model_guide_destination->getDestinationSpecialTagByDestinationId($result['parent_id']);
+						$destination = $this->model_guide_destination->getDestination($result['type_id']);
+						$output[$result['type'].$result['type_id']]['image_id'] = $destination['image'][0]['image_id'];
 					}
 				}
 			//END

@@ -14,7 +14,8 @@
 	/* END */
 	
 	#wrapper-title-input:disabled {
-		background-color:#FFF;
+		-webkit-text-fill-color:#FFF;
+		color:#FFF;
 		border:none;
 		cursor:default;
 	}

@@ -460,16 +460,13 @@
 								$('#section-content-guide-parent').off("click"); //remove all existing click event
 								$('#section-content-guide-parent').click(function() { navigate_guide_by_destination_id(json.current.parent.destination_id); });
 							}
-							else {
-								document.getElementById('section-content-guide-parent-text').innerHTML = '&nbsp;';
-							}
-						<!-- END -->
-						
-						<!-- START: set destination -->
-							if(typeof json.current.destination != 'undefined') {
-								document.getElementById('section-content-guide-parent-text').innerHTML = json.current.destination.name+' >';
+							else if(typeof json.current.destination != 'undefined') {
+								$('#section-content-guide-parent-text').html('<i class="fa fa-fw fa-chevron-left fa-lg"></i>');
 								$('#section-content-guide-parent').off("click"); //remove all existing click event
 								$('#section-content-guide-parent').click(function() { navigate_guide_by_destination_id(json.current.destination.destination_id); });
+							}
+							else {
+								document.getElementById('section-content-guide-parent-text').innerHTML = '&nbsp;';
 							}
 						<!-- END -->
 						
@@ -545,39 +542,41 @@
 									
 									content = '';
 									content += '<div class="result row">';
-									content += '<div class="result-wrapper col-xs-12 box-shadow" ';
-									content += 'onclick="navigate_guide_by_destination_id('+json.child[i].destination_id+')"';
-									content += '>';
-										content += '<div class="result-image-wrapper">';
-											content += '<div class="result-image">';
-												content += json.child[i].image;
+										content += '<div class="result-wrapper col-xs-12 box-shadow" ';
+										content += 'onclick="navigate_guide_by_destination_id('+json.child[i].destination_id+')"';
+										content += '>';
+											content += '<div class="result-image-wrapper">';
+												content += '<div class="result-image">';
+													content += json.child[i].image;
+												content += '</div>';
+												content += '<div class="result-ranking">';
+													content += ranking.text;
+												content += '</div>';
 											content += '</div>';
-											content += '<div class="result-ranking">';
-												content += ranking.text;
-											content += '</div>';
-										content += '</div>';
-										content += '<div class="result-description">';
-											content += '<div class="result-name line-clamp-1">';
-												content += json.child[i].name;
-											content += '</div>';
-											content += '<small><div class="result-blurb line-clamp-2">';
-												content += json.child[i].blurb;
-											content += '</div></small>';
-											content += '<div class="tag">';
-												if(typeof json.child[i].tag != 'undefined') {
-													for(t=0;t<Math.min(json.child[i].tag.length,3);t++) {
-														var name = json.child[i].tag[t].name;
-														var color = json.child[i].tag[t].type_color;
-														content += '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
+											content += '<div class="result-description">';
+												content += '<div class="result-name line-clamp-1">';
+													content += json.child[i].name;
+												content += '</div>';
+												content += '<small><div class="result-blurb line-clamp-2">';
+													content += json.child[i].blurb;
+												content += '</div></small>';
+												content += '<div class="tag">';
+													if(typeof json.child[i].tag != 'undefined') {
+														for(t=0;t<Math.min(json.child[i].tag.length,3);t++) {
+															var name = json.child[i].tag[t].name;
+															var color = json.child[i].tag[t].type_color;
+															content += '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
+														}
 													}
-												}
-											content += '</div>';
-											content += '<div class="result-child-button-add pull-right">';
-												content += '<a class="small">Add to Plan</a>';
-												content += '<a class="small">Read More</a>';
+												content += '</div>';
+												/*
+												content += '<div class="result-child-button-add pull-right">';
+													content += '<a class="small">Add to Plan</a>';
+													content += '<a class="small">Read More</a>';
+												content += '</div>';
+												*/
 											content += '</div>';
 										content += '</div>';
-									content += '</div>';
 									content += '</div>';
 									if(name == 'Airport') {
 										document.getElementById('section-content-guide-result-list-destination-airport').innerHTML += content;
@@ -598,33 +597,37 @@
 								document.getElementById('section-content-guide-result-count').innerHTML = count;
 								for(i=0;i<json.count.poi;i++) {
 									content = '';
-									content += '<div class="result row" ';
-									content += 'onclick="navigate_guide_by_poi_id('+json.poi[i].poi_id+')"';
-									content += '>';
-										content += '<div class="result-image">';
-											content += json.poi[i].image;
-										content += '</div>';
-										content += '<div class="result-description">';
-											content += '<div class="result-name line-clamp-1">';
-												content += json.poi[i].name;
+									content += '<div class="result row">';
+										content += '<div class="result-wrapper col-xs-12 box-shadow" ';
+										content += 'onclick="navigate_guide_by_poi_id('+json.poi[i].poi_id+')"';
+										content += '>';
+											content += '<div class="result-image">';
+												content += json.poi[i].image;
 											content += '</div>';
-											content += '<div class="result-rating"><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star-o"></i></div>';
-											content += '<small><div class="result-blurb line-clamp-2">';
-												content += json.poi[i].blurb;
-											content += '</div></small>';
-											content += '<div class="tag">';
-												if(typeof json.poi[i].tag != 'undefined') {
-													for(t=0;t<Math.min(json.poi[i].tag.length,3);t++) {
-														var name = json.poi[i].tag[t].name;
-														var color = json.poi[i].tag[t].type_color;
-														content += '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
+											content += '<div class="result-description">';
+												content += '<div class="result-name line-clamp-1">';
+													content += json.poi[i].name;
+												content += '</div>';
+												content += '<div class="result-rating"><i class="fa fa-fw fa-star"></i><i class="fa fa-fw fa-star-o"></i></div>';
+												content += '<small><div class="result-blurb line-clamp-2">';
+													content += json.poi[i].blurb;
+												content += '</div></small>';
+												content += '<div class="tag">';
+													if(typeof json.poi[i].tag != 'undefined') {
+														for(t=0;t<Math.min(json.poi[i].tag.length,3);t++) {
+															var name = json.poi[i].tag[t].name;
+															var color = json.poi[i].tag[t].type_color;
+															content += '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
+														}
 													}
-												}
+												content += '</div>';
 											content += '</div>';
 										content += '</div>';
+										/*
 										content += '<div class="result-button">';
 											content += '&gt;';
 										content += '</div>';
+										*/
 									content += '</div>';
 									document.getElementById('section-content-guide-result-list').innerHTML += content; 
 								}

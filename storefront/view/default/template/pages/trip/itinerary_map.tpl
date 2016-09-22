@@ -119,11 +119,9 @@
 			center: myLatlng,
 			zoom: 4,
 			minZoom: 1,
-			maxZoom: 8,
+			maxZoom: 15,
 			disableDefaultUI: true
 		});
-		
-		
 		updateMap();
 	}
 		
@@ -157,8 +155,8 @@
 		// map_option_selector = "#"+selected_day_id + " .plan-line-tr";
 		//				
 		$(map_option_selector).each(function(i) {
-			lat = $(this).find('.plan-line-form-hidden input[name=lat]').val();
-			lng = $(this).find('.plan-line-form-hidden input[name=lng]').val();	
+			lat = parseFloat($(this).find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
+			lng = parseFloat($(this).find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);	
 			title =	$(this).find('.plan-line-form-hidden input[name=place]').val();
 			var marker_id = $(this).attr("id");
 		
@@ -172,15 +170,15 @@
 				myIcon.strokeColor = 'black';
 			}
 			
-			if(lat && lng) {
-				position = new google.maps.LatLng(lat, lng); 
+			if(typeof lat != 'undefined' && lat != null && lat != '' && typeof lng != 'undefined' && lng != null && lng != '') {
+				position = new google.maps.LatLng(lat,lng);
 				bounds.extend(position);
 				marker = new google.maps.Marker({
 					position: position,
 					map: map,
 					icon : myIcon,
 					title: title
-					})
+				});
 				marker.set("id", marker_id);
 				markers.push(marker);
 				positions.push(position);
@@ -198,10 +196,9 @@
 		if (markers.length < 1) { 
 			map.setCenter(new google.maps.LatLng(3.139003, 101.686852)); //Malaysia
 		}
-		
 		else if (markers.length > 1 ) {
-		var routes = [];	
-			for (var i = 0, n = positions.length; i < n; i++) {	
+			var routes = [];	
+			for (var i = 0, n = positions.length; i < (n-1); i++) {	
 				var coordinates = new Array();
 				coordinates [0] = positions[i];
 				coordinates [1] = positions[i+1];
@@ -223,8 +220,9 @@
 			}
 			map.fitBounds(bounds);
 		}
-		
-		else map.fitBounds(bounds);
+		else {
+			map.fitBounds(bounds);
+		}
 		
 	}
 </script>

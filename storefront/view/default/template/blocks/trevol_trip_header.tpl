@@ -14,7 +14,8 @@
 	/* END */
 	
 	#wrapper-title-input:disabled {
-		background-color:#FFF;
+		-webkit-text-fill-color:#FFF;
+		color:#FFF;
 		border:none;
 		cursor:default;
 	}
@@ -76,12 +77,14 @@
 </style>
 
 <div id="wrapper-header" class="view-mode">
-	<div id="wrapper-menu-icon" data-toggle='tooltip' data-placement='bottom' title='Open Menu'>
+	<div id="wrapper-menu-icon">
+    <!-- <div id="wrapper-menu-icon" data-toggle='tooltip' data-placement='bottom' title='Open Menu'> -->
     	<a class="btn btn-primary" onclick="toggle_wrapper_menu(); hide_wrapper_account();"><i class="fa fa-fw fa-bars fa-lg"></i></a>
     </div>
     <!-- START: [trip name] -->
     	<?php if($this->session->data['mode'] == 'edit') { ?>
-        	<div id="wrapper-title" class="hidden" data-toggle='tooltip' data-placement='bottom' title='Rename Trip'>
+        	<div id="wrapper-title" class="hidden">
+        	<!-- <div id="wrapper-title" class="hidden" data-toggle='tooltip' data-placement='bottom' title='Rename Trip'> -->
         		<input id="wrapper-title-input" class="form-control" type="text"></input>
             </div>
         <?php } else { ?>
@@ -96,7 +99,8 @@
         </div>
     <!-- END -->
     <!-- START: float right -->
-        <div id="wrapper-account-icon" class="hidden dropdown" data-toggle='tooltip' data-placement='bottom' title='Open Account Menu'>
+        <div id="wrapper-account-icon" class="hidden dropdown">
+        <!-- <div id="wrapper-account-icon" class="hidden dropdown" data-toggle='tooltip' data-placement='bottom' title='Open Account Menu'> -->
         	<a onclick="toggle_wrapper_account(); hide_wrapper_menu();">
             	<?php if($logged == true) { ?>
                     <span class="fa-stack fa-lg">

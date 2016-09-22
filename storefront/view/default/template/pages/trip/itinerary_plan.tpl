@@ -159,7 +159,6 @@
 		
 		.plan-btn-tr {
 			overflow:hidden;
-			border-bottom:solid thin #DDD;
 			height:40px;
 			padding:7px;
 		}
@@ -227,16 +226,32 @@
 			width:64px;
 		}
 		
+		.plan-col-title a {
+			padding:0;
+			margin:0;
+			font-weight:bold; 
+			font-size:12px;
+			border:none;
+			line-height:20px;
+		}
+		
 		.plan-btn-add-line {
-			background-color:#FFE;
+			padding:5px 15px;
+			height:48px;
 		}
 		
 		.plan-btn-add-line a {
-			outline:thin dashed #CCC;
+			border:thin dashed #CCC;
+			border-radius:5px;
+		}
+		
+		.plan-btn-add-line a:hover {
+			border:thin dashed #333;
+			border-radius:5px;
 		}
 		
 		.plan-btn-tr a {
-			color:#CCC;
+			color:#777;
 		}
 		
 		.plan-btn-tr a:hover {
@@ -690,6 +705,16 @@
 		}
 		
 		function printLine(column, line, line_raw) {
+			<!-- START: set navigation -->
+				var navigation = '';
+				
+				navigation = 'var type = $(\'#plan-line-'+line['line_id']+'-form-hidden input[name=type]\').val();';
+				navigation += 'var type_id = $(\'#plan-line-'+line['line_id']+'-form-hidden input[name=type_id]\').val();';
+				navigation += 'navigate_guide(type, type_id);';
+				navigation += 'setTimeout(function() { $(\'#btn-search\').trigger(\'click\'); }, 100);';
+				navigation += 'setTimeout(function() { $(\'#section-view-xs-list-guide a\').trigger(\'click\'); }, 100);';
+			<!-- END -->
+			
 			<!-- START: set html_plan_form -->
 				var html_plan_form = '';
 				$.each(column, function(i, col) {
@@ -714,7 +739,15 @@
 						html_plan_form += ">";
 					<!-- END -->
 					<!-- START: set <td> text -->
-						if(col.name == 'description') {
+						if(col.name == 'title') {
+							if(typeof line['type'] != 'undefined' && line['type'] != null && line['type'] != '') {
+								html_plan_form += '<a class="plan-btn btn btn-simple" onclick="'+navigation+'">' + line[col.name] + '</a>';
+							}
+							else {
+								html_plan_form += line[col.name];
+							}
+						}
+						else if(col.name == 'description') {
 							if(typeof line[col.name] != 'undefined' && line[col.name] != null && line[col.name] != '') {
 								html_plan_form += '<i class="fa fa-fw fa-ellipsis-h" data-toggle="tooltip" data-placement="bottom" title="'+line[col.name]+'"></i>';
 							}
@@ -783,20 +816,15 @@
 			
 			<!-- START: set output for command -->
 				var info_btn;
-				var navigation = '';
 				
-				navigation = 'var type = $(\'#plan-line-'+line['line_id']+'-form-hidden input[name=type]\').val();';
-				navigation += 'var type_id = $(\'#plan-line-'+line['line_id']+'-form-hidden input[name=type_id]\').val();';
-				navigation += 'navigate_guide(type, type_id);';
-				navigation += 'setTimeout(function() { $(\'#btn-search\').trigger(\'click\'); }, 100);';
-				navigation += 'setTimeout(function() { $(\'#section-view-xs-list-guide a\').trigger(\'click\'); }, 100);';
-				
+				/*
 				if(typeof line['type'] != 'undefined' && line['type'] != null && line['type'] != '') {
 					info_btn = '<a class="plan-btn btn btn-simple" onclick="'+navigation+'">Read</a>';
 				}
 				else {
 					info_btn = '<a class="plan-btn btn btn-simple hidden">Read</a>';
 				}
+				*/
 				
 				var output_command = ""
 					+ "<div>"
@@ -814,7 +842,9 @@
 						+ "<a type='button' class='plan-btn btn btn-simple pull-right icon-edit' data-toggle='modal' data-target='#modal-edit-line'>"
 							+ "Edit"
 						+ "</a>"
+						/*
 						+ info_btn
+						*/
 					+ "</div>"
 				;
 			<!-- END -->
@@ -835,7 +865,7 @@
 			<!-- END -->
 			
 			<!-- START: temporary code (to be replaced) -->
-				$('.icon-edit').hide();
+				//$('.icon-edit').hide();
 			<!-- END -->
 		}
 		
@@ -1894,6 +1924,7 @@
 			var line_id = $('#'+line).find('.plan-line-form-hidden input[name=line_id]').val();
 			var type_id = $('#'+line).find('.plan-line-form-hidden input[name=type_id]').val();
 			var type = $('#'+line).find('.plan-line-form-hidden input[name=type]').val();
+			var image_id = $('#'+line).find('.plan-line-form-hidden input[name=image_id]').val();
 			var place = $('#'+line).find('.plan-line-form-hidden input[name=place]').val();
 			var lat = $('#'+line).find('.plan-line-form-hidden input[name=lat]').val();
 			var lng = $('#'+line).find('.plan-line-form-hidden input[name=lng]').val();
@@ -1910,6 +1941,9 @@
 			var note = $('#'+line).find('.plan-line-form-hidden input[name=note]').val();
 			
 			$('#modal-edit-line-form input[name=line_id]').val(line_id);
+			if(typeof type_id != 'undefined') { $('#modal-edit-line-form input[name=type_id]').val(type_id); }
+			if(typeof type != 'undefined') { $('#modal-edit-line-form input[name=type]').val(type); }
+			if(typeof image_id != 'undefined') { $('#modal-edit-line-form input[name=image_id]').val(image_id); }
 			if(typeof place != 'undefined') { $('#modal-edit-line-form input[name=place]').val(place); }
 			if(typeof lat != 'undefined') { $('#modal-edit-line-form input[name=lat]').val(lat); }
 			if(typeof lng != 'undefined') { $('#modal-edit-line-form input[name=lng]').val(lng); }
@@ -1964,6 +1998,7 @@
 			<!-- START: get form data -->
 				var type_id = $('#modal-edit-line-form input[name=type_id]').val()||null;
 				var type = $('#modal-edit-line-form input[name=type]').val()||null;
+				var image_id = $('#modal-edit-line-form input[name=image_id]').val()||null;
 				var day_id = $('#modal-edit-line-form input[name=day_id]').val();
 				var sort_order = $('#plan-day-'+day_id+'-line .plan-line-tr').length + 1;
 				var time = $('#modal-edit-line-form input[name=time]').val()||null;
@@ -1998,6 +2033,7 @@
 						line_id		:line_id,
 						type		:type,
 						type_id		:type_id,
+						image_id	:image_id,
 						day_id		:day_id,
 						sort_order	:sort_order,
 						time		:time,
@@ -2018,6 +2054,7 @@
 						line_id		:line_id,
 						type		:type,
 						type_id		:type_id,
+						image_id	:image_id,
 						day_id		:day_id,
 						sort_order	:sort_order,
 						time		:time,
@@ -2084,7 +2121,7 @@
 				var place = line.place;
 				var added_line = "";
 				if(typeof place != 'undefined' && place != null && place != '') { added_line = place; } else { added_line = "New Activity"; }
-				var day = $("#plan-day-"+ day_id +"-tr").find(".plan-day-form-hidden input[name=sort_order]").val();
+				var day = $("#plan-day-"+ line.day_id +"-tr").find(".plan-day-form-hidden input[name=sort_order]").val();
 				
 				var hint = added_line + " added to Day " + day;
 				showHint(hint);
@@ -2096,6 +2133,7 @@
 				var line_id = $('#modal-edit-line-form input[name=line_id]').val();
 				var type = $('#modal-edit-line-form input[name=type]').val();
 				var type_id = $('#modal-edit-line-form input[name=type_id]').val();
+				var image_id = $('#modal-edit-line-form input[name=image_id]').val();
 				var time = $('#modal-edit-line-form input[name=time]').val()||null;
 				var hour = $('#modal-edit-line-form input[name=hour]').val()||null;
 				var minute = $('#modal-edit-line-form input[name=minute]').val()||null;
@@ -2117,6 +2155,7 @@
 						line_id		:line_id,
 						type		:type,
 						type_id		:type_id,
+						image_id	:image_id,
 						time		:time,
 						duration	:duration,
 						activity	:activity,
@@ -2420,10 +2459,10 @@
 			$('.plan-day-form .plan-col-duration').show();
 			$('.plan-line-form .plan-col-duration').hide();
 			$('.plan-thead').hide();
-			$('.plan-btn-add-line').hide();
+			//$('.plan-btn-add-line').hide();
 			$('.plan-btn-add-day').hide();
 			$('.icon-toggle-day').hide();
-			$('.icon-edit').hide();
+			//$('.icon-edit').hide();
 			$('.plan-no-activity').hide();
 			if(day_id == '') {
 				adjustPlanDayView();
@@ -2529,8 +2568,8 @@
 			$('.plan-day-tr .plan-col-title').hide();
 			$('.plan-day-tr .plan-col-image-id').hide();
 			$('.icon-toggle-day').hide();
-			$('.icon-edit').hide();
-			$('.plan-btn-add-line').hide();
+			//$('.icon-edit').hide();
+			//$('.plan-btn-add-line').hide();
 			$('.plan-btn-add-day').hide();
 			$('.plan-line-tr .plan-col-day').hide();
 			$('.plan-line-tr .plan-col-title').show();

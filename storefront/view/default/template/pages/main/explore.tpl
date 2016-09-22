@@ -20,8 +20,8 @@
 	
 	#wrapper-explore-loading {
 		text-align:center;
-		height:100vh;
-		padding-top:20vh;
+		height:calc(100vh - 120px);
+		padding-top:30vh;
 	}
 	
 	#wrapper-explore-current {
@@ -94,9 +94,138 @@
 		text-decoration:underline;
 	}
 	
+	#wrapper-explore-child {
+		margin-top:15px;
+		margin-bottom:30px;
+	}
+	
 	.tag {
 		margin-right:5px;
 	}
+	
+	/* START: [child] */
+		.result {
+			width:100%;
+			padding:5px 15px;
+		}
+		
+		.result-wrapper {
+			width:100%;
+			background-color:#FFF;
+			border-radius:5px;
+			cursor:pointer;
+		}
+		
+		.result-image-wrapper {
+			position:relative;
+		}
+		
+		.result-image {
+			display:block;
+			float:left;
+			width:120px;
+			height:120px;
+			border-radius:5px 0px 0px 5px;
+		}
+		
+		.result-image img {
+			border-radius:5px 0px 0px 5px;
+		}
+		
+		.result-ranking {
+			position:absolute;
+			top:5px;
+			left:5px;
+			width:20px;
+			height:20px;
+			border-radius:3px;
+			background-color:#000;
+			color:#FFF;
+			text-align:center;
+			padding:0;
+			opacity:.7;
+		}
+		
+		.result-description {
+			position:relative;
+			height:120px;
+			display:block;
+			float:left;
+			padding-top:7px;
+			padding-left:7px;
+			width:calc(100% - 120px - 15px);
+			color:#333;
+		}
+		
+		.result-name {
+			color:#e93578;
+			font-weight:bold;
+			height:20px;
+			overflow:hidden;
+			margin-bottom:7px;
+		}
+		
+		.result-rating {
+			color:#000;
+			margin-bottom:7px;
+		}
+		
+		
+		.result-blurb {
+			width:100%;
+			height:34px;
+			overflow:hidden;
+			margin-bottom:7px;
+		}
+		
+		.line-clamp-1 {
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			-webkit-box-orient: vertical;  
+		}
+		
+		.line-clamp-2 {
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;  
+		}
+		
+		.result-tag {
+			position:absolute;
+			bottom: 15px;
+		}
+		
+		.result-button {
+			display:block;
+			float:right;
+			padding:30px 7px;
+			text-align:center;
+			font-weight:bold;
+		}
+		
+		
+		.result-child-button-add {
+			position:absolute;
+			bottom:15px;
+			right:0;
+		}
+		
+		.result-child-button-add a {
+			margin-left:15px;
+			color:#999;
+		}
+		
+		.result-child-button-add a:hover {
+			margin-left:15px;
+			color:#333;
+		}
+		
+		.result-subtitle {
+			font-weight:bold;
+			color:#333;
+			padding:10px 15px 0px 15px;
+		}
+	/* END */
 </style>
 
 <!-- START: [header] -->
@@ -130,6 +259,7 @@
             <div id="wrapper-explore-current-title" class="row wrapper-explore-current-row"></div>
             <div id="wrapper-explore-current-rating" class="row wrapper-explore-current-row-half"></div>
         	<div id="wrapper-explore-current-tag" class="row wrapper-explore-current-row"></div>
+            <div id="wrapper-explore-current-description" class="row wrapper-explore-current-row"></div>
         </div>
         <div id="wrapper-explore-current-action">
         	<div id="wrapper-explore-current-favourite" class="row wrapper-explore-current-row">
@@ -161,6 +291,20 @@
             </div>
         </div>
     </div>
+    <div id="wrapper-explore-child">
+    	<div id="wrapper-explore-child-destination">
+        	<div class="result-subtitle">Top Destinations</div>
+        	<div class="result-list"></div>
+        </div>
+        <!--
+        <div class="result-subtitle destination-region destination-city">Top Destinations</div>
+        <div class="result-list" id="wrapper-explore-child-destination"></div>
+        <div class="result-subtitle destination-national-park">National Parks</div>
+        <div class="result-list" id="wrapper-explore-child-destination-national-park"></div>
+        <div class="result-subtitle destination-airport">International Airports</div>
+        <div class="result-list" id="wrapper-explore-child-destination-airport"></div>
+        -->
+    </div>
 <!-- END -->
 
 <!-- START: [modal] -->
@@ -170,14 +314,6 @@
 <!-- END -->
 
 <script>
-	function getHash() {
-		var hash = location.hash;
-		if(hash.indexOf('gid') > 0) {
-			hash = hash.replace('#gid=','');
-		}
-		return hash;
-	}
-	
 	function convertTime(time) {
 	  // Check correct time format and split into components
 	  time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
@@ -193,14 +329,34 @@
 	function convertTitleCase(str) {
 		return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 	}
+</script>
+<script>
+	function getHash() {
+		var hash = location.hash;
+		if(hash.indexOf('gid') > 0) {
+			hash = hash.replace('#gid=','');
+		}
+		return hash;
+	}
+	
+	function explore(place_id) {
+		if(place_id != '') {
+			window.location.hash = '#gid='+place_id;
+		}
+		else {
+			window.location.hash = '';
+		}
+	}
 
 	function updateWrapperExploreResult(place) {
 		var current = {
 			place_id					: null,
 			name						: null,
+			description					: null,
 			lat							: null,
 			lng							: null,
 			url							: null,
+			image						: {},
 			photos						: new Array(),
 			icon						: null,
 			types						: new Array(),
@@ -213,7 +369,9 @@
 			opening_hours				: {},
 			utc_offset					: null,
 			website						: null,
-			international_phone_number	: null
+			international_phone_number	: null,
+			destination					: new Array(),
+			poi							: new Array()
 		};
 		
 		<!-- START: set variable from Google -->
@@ -230,6 +388,36 @@
 			});
 		<!-- END -->
 		
+		<!-- START: replace variable from server -->
+			<!-- START: set data -->
+                var data = { action:'search',place_id:current.place_id }
+            <!-- END -->
+            <!-- START: send POST -->
+                $.post("<?php echo $ajax['main/ajax_explore']; ?>", data, function(json) {
+					if(json != false) {
+						if(typeof json.current.parent != 'undefined' && json.current.parent != null && json.current.parent != '') {
+							current.parent = json.current.parent;
+						}
+						if(typeof json.current.image != 'undefined' && json.current.image != null && json.current.image != '') {
+							current.image = json.current.image;
+						}
+						if(typeof json.current.description != 'undefined' && json.current.description != null && json.current.description != '') {
+							current.description = json.current.description;
+						}
+						if(typeof json.destination != 'undefined' && json.destination != null && json.destination != '') {
+							current.destination = json.destination;
+						}
+						if(typeof json.poi != 'undefined' && json.poi != null && json.poi != '') {
+							current.poi = json.poi;
+						}
+					}
+					runUpdateWrapperExploreResult(current, json);
+                }, "json");
+            <!-- END -->
+		<!-- END -->
+	}
+	
+	function runUpdateWrapperExploreResult(current, json) {
 		<!-- START: clear ex-data -->
 			<!-- START: reset value -->
 				$('#wrapper-explore-current-image').html('');
@@ -237,17 +425,20 @@
 				$('#wrapper-explore-current-title').html('');
 				$('#wrapper-explore-current-rating').html('');
 				$('#wrapper-explore-current-tag').html('');
+				$('#wrapper-explore-current-description').html('');
 				$('#wrapper-explore-current-hour .detail').html('');
 				$('#wrapper-explore-current-address .detail').html('');
 				$('#wrapper-explore-current-phone .detail').html('');
 				$('#wrapper-explore-current-website .detail').html('');
 				$('#wrapper-explore-current-review').html('');
+				$('.result-list').html('');
 			<!-- END -->
 			<!-- START: reset visibility -->
 				$('#wrapper-explore-current-misc').show();
 				$('#wrapper-explore-current-parent').hide();
 				$('#wrapper-explore-current-rating').hide();
 				$('#wrapper-explore-current-tag').hide();
+				$('#wrapper-explore-current-description').hide();
 				$('#wrapper-explore-current-hour').hide();
 				$('#wrapper-explore-current-address').hide();
 				$('#wrapper-explore-current-phone').hide();
@@ -260,52 +451,93 @@
 		<!-- END -->
 		
 		//image
-		if(current.photos.length > 0) {
-			$('#wrapper-explore-current-image').html("<img src='"+current.photos[0].url+"' onerror='$(this).hide();'>");
-		}
+		<!-- START: [image] -->
+			<!-- START: using own server -->
+				if(typeof current.image != 'undefined' && current.image != null && current.image != '') {
+					$('#wrapper-explore-current-image').html("<img src='"+current.image[0].path+"' onerror='$(this).hide();'>");
+				}
+			<!-- END -->
+			<!-- START: using Google -->
+				else {
+					if(current.photos.length > 0) {
+						$('#wrapper-explore-current-image').html("<img src='"+current.photos[0].url+"' onerror='$(this).hide();'>");
+					}
+				}
+			<!-- END -->
+		<!-- END -->
 		
 		//parent
-		if(current.types.length > 0) {
-			if($.inArray('country',current.types) != -1) {
-				//set world as parent
-				$('#wrapper-explore-current-parent').html('<a>World /</a>');
-				$('#wrapper-explore-current-parent').show();
-			}
-			else if($.inArray('administrative_area_level_1',current.types) != -1) {
-				//set country as parent
-				if(current.address_components.length > 0) {
-					$.each(current.address_components, function(index,value) {
-						if($.inArray('country',value.types) != -1) {
-							$('#wrapper-explore-current-parent').html(value.long_name+' /');
-							$('#wrapper-explore-current-parent').show();
-						}
-					});
+		<!-- START: [parent] -->
+			<!-- START: using own server -->
+				if(typeof current.parent != 'undefined' && current.parent != null && current.parent != '') {
+					if(typeof current.parent.g_place_id != 'undefined' && current.parent.g_place_id != null && current.parent.g_place_id != '') {
+						$('#wrapper-explore-current-parent').html('<a onclick="explore(\''+current.parent.g_place_id+'\');">'+current.parent.name+' /</a>');
+					}
+					else {
+						$('#wrapper-explore-current-parent').html('<a onclick="explore(\'\');">'+current.parent.name+' /</a>');
+					}
+					$('#wrapper-explore-current-parent').show();
 				}
-			}
-			else if($.inArray('locality',current.types) != -1) {
-				//set administrative as parent
-				if(current.address_components.length > 0) {
-					$.each(current.address_components, function(index,value) {
-						if($.inArray('administrative_area_level_1',value.types) != -1) {
-							$('#wrapper-explore-current-parent').html(value.long_name+' /');
-							$('#wrapper-explore-current-parent').show();
-						}
-					});
+			<!-- END -->
+			<!-- START: using Google -->
+				else {
+					if(current.address_components.length > 0) {
+						var city = 0;
+						var region = 0;
+						var country = 0;
+						
+						<!-- START: assign address component -->
+							$.each(current.address_components, function(index,value) {
+								if($.inArray('locality',value.types) != -1) {
+									city = value.long_name;
+								}
+								else if($.inArray('administrative_area_level_1',value.types) != -1) {
+									region = value.long_name;
+								}
+								else if($.inArray('country',value.types) != -1) {
+									country = value.long_name;
+								}
+							});
+						<!-- END -->
+						
+						<!-- START: set parent based on type -->
+							if(current.types.length > 0) {
+								if($.inArray('country',current.types) != -1) {
+									//set world as parent
+									$('#wrapper-explore-current-parent').html('<a>World /</a>');
+									$('#wrapper-explore-current-parent').show();
+								}
+								else if($.inArray('administrative_area_level_1',current.types) != -1) {
+									//set country as parent
+									$('#wrapper-explore-current-parent').html(country+' /');
+									$('#wrapper-explore-current-parent').show();
+								}
+								else if($.inArray('locality',current.types) != -1) {
+									//set administrative as parent
+									$('#wrapper-explore-current-parent').html(region+' /');
+									$('#wrapper-explore-current-parent').show();
+								}
+								else {
+									//set lowest political as parent
+									if(city != 0) {
+										$('#wrapper-explore-current-parent').html(city+' /');
+										$('#wrapper-explore-current-parent').show();
+									}
+									else if(region != 0) {
+										$('#wrapper-explore-current-parent').html(region+' /');
+										$('#wrapper-explore-current-parent').show();
+									}
+									else if(country != 0) {
+										$('#wrapper-explore-current-parent').html(country+' /');
+										$('#wrapper-explore-current-parent').show();
+									}
+								}
+							}
+						<!-- END -->
+					}
 				}
-			}
-			else {
-				//set city as parent
-				if(current.address_components.length > 0) {
-					$.each(current.address_components, function(index,value) {
-						if($.inArray('locality',value.types) != -1) {
-							$('#wrapper-explore-current-parent').html(value.long_name+' /');
-							$('#wrapper-explore-current-parent').show();
-						}
-					});
-				}
-			}
-			
-		}
+			<!-- END -->
+		<!-- END -->
 		
 		//title
 		$('#wrapper-explore-current-title').html(current.name);
@@ -351,6 +583,9 @@
 				else if(value == 'sublocality') {
 					tag.push('Area');
 				}
+				else if(value == 'natural_feature') {
+					tag.push('Nature');
+				}
 				else if(value == 'political') {}
 				else if(value == 'establishment') {}
 				else if(value == 'premise') {}
@@ -366,6 +601,12 @@
 				});
 				$('#wrapper-explore-current-tag').show();
 			}
+		}
+		
+		//description
+		if(current.description != null) {
+			$('#wrapper-explore-current-description').html(current.description);
+			$('#wrapper-explore-current-description').show();
 		}
 		
 		//hour
@@ -484,6 +725,89 @@
 				$('#wrapper-explore-current-review').append(content);
 			});
 		}
+		
+		<!-- START: reset child -->
+			var count = 0;
+		<!-- END -->
+		
+		<!-- START: hide child wrapper -->
+			$('#wrapper-explore-child-destination').hide();
+			$('#wrapper-explore-child-destination-airport').hide();
+			$('#wrapper-explore-child-destination-national-park').hide();
+		<!-- END -->
+		
+		<!-- START: [child destination] -->
+			if(current.destination.length > 0) {
+				count = parseFloat(count) + parseFloat(json.count.destination);
+				//document.getElementById('section-content-guide-result-count').innerHTML = count;
+				var ranking = { text:'' };
+				for(i=0;i<json.count.destination;i++) {
+					var tag_name = json.destination[i].tag[0].name.replace(/\s+/g, '-').toLowerCase();
+					<!-- START: assign ranking -->
+						if(typeof ranking[tag_name] == 'undefined') { 
+							ranking[tag_name] = 1;
+							$('.result-subtitle.destination-'+tag_name).show();
+						}
+						else {
+							ranking[tag_name] = parseInt(ranking[tag_name]) + 1;
+						}
+						ranking.text = ranking[tag_name];
+					<!-- END -->
+					<!-- START: write content -->
+						content = '';
+						content += '<div class="result row">';
+							content += '<div class="result-wrapper col-xs-12 box-shadow" ';
+							content += 'onclick="explore(\''+json.destination[i].g_place_id+'\')";';
+							content += '>';
+								content += '<div class="result-image-wrapper">';
+									content += '<div class="result-image">';
+										content += json.destination[i].image;
+									content += '</div>';
+									content += '<div class="result-ranking">';
+										content += ranking.text;
+									content += '</div>';
+								content += '</div>';
+								content += '<div class="result-description">';
+									content += '<div class="result-name line-clamp-1">';
+										content += json.destination[i].name;
+									content += '</div>';
+									content += '<small><div class="result-blurb line-clamp-2">';
+										content += json.destination[i].blurb;
+									content += '</div></small>';
+									content += '<div class="result-tag">';
+										if(typeof json.destination[i].tag != 'undefined') {
+											for(t=0;t<Math.min(json.destination[i].tag.length,3);t++) {
+												var name = json.destination[i].tag[t].name;
+												var color = json.destination[i].tag[t].type_color;
+												content += '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
+											}
+										}
+									content += '</div>';
+								content += '</div>';
+							content += '</div>';
+						content += '</div>';
+					<!-- END -->
+					<!-- START: assign wrapper -->
+						if(name == 'Airport') {
+							$('#wrapper-explore-child-destination-airport .result-list').append(content);
+							$('#wrapper-explore-child-airport').show();
+						}
+						else if(name == 'National Park') {
+							$('#wrapper-explore-child-destination-national-park .result-list').append(content);
+							$('#wrapper-explore-child-national-park').show();
+						}
+						else {
+							$('#wrapper-explore-child-destination .result-list').append(content);
+							$('#wrapper-explore-child-destination').show();
+						}
+					<!-- END -->
+					$('#wrapper-explore-child').show();
+				}
+			}
+		<!-- END -->
+		
+		<!-- START: [child poi] -->
+		<!-- END -->
 		
 		setTimeout(function() {
 			$(window).scrollTop(0);

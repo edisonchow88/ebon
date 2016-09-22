@@ -42,6 +42,7 @@
 		$(window).scrollTop(0);
 		$('#wrapper-explore-loading').show();
 		$('#wrapper-explore-current').hide();
+		$('#wrapper-explore-child').hide();
 		
 		var map = new google.maps.Map(document.getElementById('map'), {
 			center: {lat: -3.1385059, lng: 101.6869895},

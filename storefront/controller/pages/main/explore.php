@@ -16,6 +16,10 @@ class ControllerPagesMainExplore extends AController {
 		//START: set result
 		//END
 		
+		//START: set ajax
+			$ajax['main/ajax_explore'] = $this->html->getSecureURL('main/ajax_explore');
+		//END
+		
 		//START: set modal
 			$this->addChild('modal/explore/search', 'modal_explore_search', 'modal/explore/search.tpl');
 			$this->addChild('modal/explore/map', 'modal_explore_map', 'modal/explore/map.tpl');
@@ -27,6 +31,9 @@ class ControllerPagesMainExplore extends AController {
 		
 		//START: set variable
 			$this->view->batchAssign($this->data);
+			if(count($result) > 0) { $this->view->assign('result', $result); }
+			if(count($link) > 0) { $this->view->assign('link', $link); }
+			if(count($ajax) > 0) { $this->view->assign('ajax', $ajax); }
 		//END
 		
 		//START: set template 

@@ -384,6 +384,8 @@
 		$('#wrapper-explore-child').hide();
 	}
 	
+	startLoadExplore();
+	
 	function explorePlace(place_id) {
 		if(place_id != '') {
 			window.location.hash = '#gid='+place_id;
@@ -865,7 +867,6 @@
 							$('#wrapper-explore-child-destination').show();
 						}
 					<!-- END -->
-					$('#wrapper-explore-child').show();
 				}
 			}
 		<!-- END -->
@@ -876,6 +877,7 @@
 		setTimeout(function() {
 			$(window).scrollTop(0);
 			$('#wrapper-explore-current').show();
+			$('#wrapper-explore-child').show();
 			$('#wrapper-explore-loading').hide();
 		}, 500);
 	}

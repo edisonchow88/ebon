@@ -116,6 +116,41 @@
 			cursor:pointer;
 		}
 		
+		/* START: [country] */
+			.result-country-wrapper {
+				position:relative;
+				border-radius:5px;
+				cursor:pointer;
+			}
+			
+			.result-country-image {
+				height:200px;
+				overflow:hidden;
+				border-radius:5px;
+			}
+			
+			.result-country-image img {
+				width:100%;
+				margin-top:-50px;
+			}
+			
+			.result-country-name {
+				position:absolute;
+				bottom:0;
+				width:100%;
+				padding:7px 15px;
+				border-radius:0 0 5px 5px;
+				background-color:rgba(0, 0, 0, 0.5);
+				color: white;
+				text-shadow:
+				-1px -1px 0 #000,
+				1px -1px 0 #000,
+				-1px 1px 0 #000,
+				1px 1px 0 #000;
+				font-size:18px;
+			}
+		/* END */
+		
 		.result-image-wrapper {
 			position:relative;
 		}
@@ -292,18 +327,21 @@
         </div>
     </div>
     <div id="wrapper-explore-child">
-    	<div id="wrapper-explore-child-destination">
+    	<div class="result-list-wrapper" id="wrapper-explore-child-destination-country">
+        	<div class="result-list"></div>
+        </div>
+    	<div class="result-list-wrapper" id="wrapper-explore-child-destination">
         	<div class="result-subtitle">Top Destinations</div>
         	<div class="result-list"></div>
         </div>
-        <!--
-        <div class="result-subtitle destination-region destination-city">Top Destinations</div>
-        <div class="result-list" id="wrapper-explore-child-destination"></div>
-        <div class="result-subtitle destination-national-park">National Parks</div>
-        <div class="result-list" id="wrapper-explore-child-destination-national-park"></div>
-        <div class="result-subtitle destination-airport">International Airports</div>
-        <div class="result-list" id="wrapper-explore-child-destination-airport"></div>
-        -->
+        <div class="result-list-wrapper" id="wrapper-explore-child-destination-national-park">
+        	<div class="result-subtitle">National Parks</div>
+        	<div class="result-list"></div>
+        </div>
+        <div class="result-list-wrapper" id="wrapper-explore-child-destination-airport">
+        	<div class="result-subtitle">International Airports</div>
+        	<div class="result-list"></div>
+        </div>
     </div>
 <!-- END -->
 
@@ -339,13 +377,31 @@
 		return hash;
 	}
 	
-	function explore(place_id) {
+	function startLoadExplore() {
+		$(window).scrollTop(0);
+		$('#wrapper-explore-loading').show();
+		$('#wrapper-explore-current').hide();
+		$('#wrapper-explore-child').hide();
+	}
+	
+	function explorePlace(place_id) {
 		if(place_id != '') {
 			window.location.hash = '#gid='+place_id;
 		}
 		else {
 			window.location.hash = '';
 		}
+	}
+	
+	function searchPlace(keyword) {
+		startLoadExplore();
+		$('#modal-explore-search-input-keyword').val(keyword);
+		var input = document.getElementById('modal-explore-search-input-keyword');
+		google.maps.event.trigger(input, 'focus')
+		google.maps.event.trigger(input, 'keydown', {
+			keyCode: 13
+		});
+		$('#modal-explore-search-input-keyword').val('');
 	}
 
 	function updateWrapperExploreResult(place) {
@@ -356,7 +412,6 @@
 			lat							: null,
 			lng							: null,
 			url							: null,
-			image						: {},
 			photos						: new Array(),
 			icon						: null,
 			types						: new Array(),
@@ -443,6 +498,7 @@
 				$('#wrapper-explore-current-address').hide();
 				$('#wrapper-explore-current-phone').hide();
 				$('#wrapper-explore-current-website').hide();
+				$('.result-list-wrapper').hide();
 			<!-- END -->
 		<!-- END -->
 		
@@ -456,6 +512,7 @@
 				if(typeof current.image != 'undefined' && current.image != null && current.image != '') {
 					$('#wrapper-explore-current-image').html("<img src='"+current.image[0].path+"' onerror='$(this).hide();'>");
 				}
+				
 			<!-- END -->
 			<!-- START: using Google -->
 				else {
@@ -471,10 +528,10 @@
 			<!-- START: using own server -->
 				if(typeof current.parent != 'undefined' && current.parent != null && current.parent != '') {
 					if(typeof current.parent.g_place_id != 'undefined' && current.parent.g_place_id != null && current.parent.g_place_id != '') {
-						$('#wrapper-explore-current-parent').html('<a onclick="explore(\''+current.parent.g_place_id+'\');">'+current.parent.name+' /</a>');
+						$('#wrapper-explore-current-parent').html('<a onclick="explorePlace(\''+current.parent.g_place_id+'\');">'+current.parent.name+' /</a>');
 					}
 					else {
-						$('#wrapper-explore-current-parent').html('<a onclick="explore(\'\');">'+current.parent.name+' /</a>');
+						$('#wrapper-explore-current-parent').html('<a onclick="explorePlace(\'\');">'+current.parent.name+' /</a>');
 					}
 					$('#wrapper-explore-current-parent').show();
 				}
@@ -504,31 +561,38 @@
 							if(current.types.length > 0) {
 								if($.inArray('country',current.types) != -1) {
 									//set world as parent
-									$('#wrapper-explore-current-parent').html('<a>World /</a>');
+									$('#wrapper-explore-current-parent').html('<a onclick="explorePlace(\'\');">Earth /</a>');
 									$('#wrapper-explore-current-parent').show();
 								}
 								else if($.inArray('administrative_area_level_1',current.types) != -1) {
 									//set country as parent
-									$('#wrapper-explore-current-parent').html(country+' /');
+									$('#wrapper-explore-current-parent').html('<a onclick="searchPlace(\''+country+'\');">'+country+' /</a>');
 									$('#wrapper-explore-current-parent').show();
 								}
 								else if($.inArray('locality',current.types) != -1) {
 									//set administrative as parent
-									$('#wrapper-explore-current-parent').html(region+' /');
-									$('#wrapper-explore-current-parent').show();
+									if(region != 0 && city != region) { //avoid city and region with same name
+										$('#wrapper-explore-current-parent').html('<a onclick="searchPlace(\''+region+'\');">'+region+' /</a>');
+										$('#wrapper-explore-current-parent').show();
+									}
+									else if(country != 0) {
+										//$('#wrapper-explore-current-parent').html(country+' /');
+										$('#wrapper-explore-current-parent').append('<a onclick="searchPlace(\''+country+'\');">'+country+' /</a>');
+										$('#wrapper-explore-current-parent').show();
+									}
 								}
 								else {
 									//set lowest political as parent
 									if(city != 0) {
-										$('#wrapper-explore-current-parent').html(city+' /');
+										$('#wrapper-explore-current-parent').html('<a onclick="searchPlace(\''+city+'\');">'+city+' /</a>');
 										$('#wrapper-explore-current-parent').show();
 									}
 									else if(region != 0) {
-										$('#wrapper-explore-current-parent').html(region+' /');
+										$('#wrapper-explore-current-parent').html('<a onclick="searchPlace(\''+region+'\');">'+region+' /</a>');
 										$('#wrapper-explore-current-parent').show();
 									}
 									else if(country != 0) {
-										$('#wrapper-explore-current-parent').html(country+' /');
+										$('#wrapper-explore-current-parent').html('<a onclick="searchPlace(\''+country+'\');">'+country+' /</a>');
 										$('#wrapper-explore-current-parent').show();
 									}
 								}
@@ -757,7 +821,7 @@
 						content = '';
 						content += '<div class="result row">';
 							content += '<div class="result-wrapper col-xs-12 box-shadow" ';
-							content += 'onclick="explore(\''+json.destination[i].g_place_id+'\')";';
+							content += 'onclick="explorePlace(\''+json.destination[i].g_place_id+'\')";';
 							content += '>';
 								content += '<div class="result-image-wrapper">';
 									content += '<div class="result-image">';
@@ -790,11 +854,11 @@
 					<!-- START: assign wrapper -->
 						if(name == 'Airport') {
 							$('#wrapper-explore-child-destination-airport .result-list').append(content);
-							$('#wrapper-explore-child-airport').show();
+							$('#wrapper-explore-child-destination-airport').show();
 						}
 						else if(name == 'National Park') {
 							$('#wrapper-explore-child-destination-national-park .result-list').append(content);
-							$('#wrapper-explore-child-national-park').show();
+							$('#wrapper-explore-child-destination-national-park').show();
 						}
 						else {
 							$('#wrapper-explore-child-destination .result-list').append(content);
@@ -814,6 +878,102 @@
 			$('#wrapper-explore-current').show();
 			$('#wrapper-explore-loading').hide();
 		}, 500);
+	}
+	
+	function initExplore() {
+		<!-- START: replace variable from server -->
+			<!-- START: set data -->
+                var data = { action:'init' }
+            <!-- END -->
+            <!-- START: send POST -->
+                $.post("<?php echo $ajax['main/ajax_explore']; ?>", data, function(json) {
+					<!-- START: reset value -->
+						$('.result-list').html('');
+					<!-- END -->
+					<!-- START: reset visibility -->
+						$('.result-list-wrapper').hide();
+					<!-- END -->
+					<!-- START: [child destination] -->
+						var count = 0;
+						count = parseFloat(count) + parseFloat(json.count.destination);
+						var ranking = { text:'' };
+						for(i=0;i<json.count.destination;i++) {
+							var tag_name = json.destination[i].tag[0].name.replace(/\s+/g, '-').toLowerCase();
+							<!-- START: assign ranking -->
+							/*
+								if(typeof ranking[tag_name] == 'undefined') { 
+									ranking[tag_name] = 1;
+									$('.result-subtitle.destination-'+tag_name).show();
+								}
+								else {
+									ranking[tag_name] = parseInt(ranking[tag_name]) + 1;
+								}
+								ranking.text = ranking[tag_name];
+							*/
+							<!-- END -->
+							<!-- START: write content -->
+								content = '';
+								content += '<div class="result row">';
+									content += '<div class="result-country-wrapper col-xs-12 box-shadow" ';
+									content += 'onclick="explorePlace(\''+json.destination[i].g_place_id+'\')";';
+									content += '>';
+										content += '<div class="result-country-image">';
+											content += json.destination[i].image;
+										content += '</div>';
+										content += '<div class="result-country-name">';
+											content += json.destination[i].name;
+										content += '</div>';
+									content += '</div>';
+								content += '</div>';
+								/*
+								content += '<div class="result row">';
+									content += '<div class="result-wrapper col-xs-12 box-shadow" ';
+									content += 'onclick="explorePlace(\''+json.destination[i].g_place_id+'\')";';
+									content += '>';
+										content += '<div class="result-image-wrapper">';
+											content += '<div class="result-image">';
+												content += json.destination[i].image;
+											content += '</div>';
+											content += '<div class="result-ranking">';
+												content += ranking.text;
+											content += '</div>';
+										content += '</div>';
+										content += '<div class="result-description">';
+											content += '<div class="result-name line-clamp-1">';
+												content += json.destination[i].name;
+											content += '</div>';
+											content += '<small><div class="result-blurb line-clamp-2">';
+												content += json.destination[i].blurb;
+											content += '</div></small>';
+											content += '<div class="result-tag">';
+												if(typeof json.destination[i].tag != 'undefined') {
+													for(t=0;t<Math.min(json.destination[i].tag.length,3);t++) {
+														var name = json.destination[i].tag[t].name;
+														var color = json.destination[i].tag[t].type_color;
+														content += '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
+													}
+												}
+											content += '</div>';
+										content += '</div>';
+									content += '</div>';
+								content += '</div>';
+								*/
+							<!-- END -->
+							<!-- START: assign wrapper -->
+								$('#wrapper-explore-child-destination-country .result-list').append(content);
+								$('#wrapper-explore-child-destination-country').show();
+							<!-- END -->
+							$('#wrapper-explore-child').show();
+						}
+					<!-- END -->
+					
+					setTimeout(function() {
+						$(window).scrollTop(0);
+						$('#wrapper-explore-loading').hide();
+					}, 300);
+                }, "json");
+            <!-- END -->
+		<!-- END -->
 	}
 	
 	window.onhashchange = function() {

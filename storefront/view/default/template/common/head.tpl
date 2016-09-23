@@ -29,8 +29,10 @@
 <link href="<?php echo $link['href']; ?>" rel="<?php echo $link['rel']; ?>" />
 <?php } ?>
 
+<!--
 <link href='//fonts.googleapis.com/css?family=Open+Sans:400,300italic,400italic,600,600italic' rel='stylesheet' type='text/css' />
 <link href='//fonts.googleapis.com/css?family=Crete+Round' rel='stylesheet' type='text/css' />
+-->
 <link href="<?php echo $this->templateResource('/stylesheet/style.css'); ?>" rel="stylesheet" type='text/css' />
 
 <?php if ( $template_debug_mode ) {  ?>
@@ -47,8 +49,10 @@
 <link rel="<?php echo $style['rel']; ?>" type="text/css" href="<?php echo $style['href']; ?>" media="<?php echo $style['media']; ?>" />
 <?php } ?>
 
+<!--
 <script type="text/javascript"
         src="<?php echo $ssl ? 'https' : 'http'?>://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+-->
 <script type="text/javascript">
     if (typeof jQuery == 'undefined') {
         var include = '<script type="text/javascript" src="<?php echo $this->templateResource('/javascript/jquery-1.11.0.min.js'); ?>"><\/script>';

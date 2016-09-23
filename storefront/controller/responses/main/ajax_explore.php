@@ -24,13 +24,39 @@ class ControllerResponsesMainAjaxExplore extends AController {
 		$action = $this->data['action'];
 		unset($this->data['action']);
 		
-		if($action == 'search') { $this->search(); return; }
+		if($action == 'init') { $this->init(); return; }
+		else if($action == 'search') { $this->search(); return; }
 		else { 
 		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 			$result['warning'][] = 'System Failure: Please contact Admin.'; 
 			$response = json_encode($result);
 			echo $response;	
 		}
+	}
+	
+	public function init() {
+		//START: get child destination
+			//START: set data
+				$data = $this->model_guide_destination->getDestinationChild(1);
+			//END
+			//START: set result
+				if(count($data) > 0) {
+					$result['count']['destination'] = $data['count'];
+					unset($data['count']);
+					
+					foreach($data as $row) {
+						$destination_id = $row['destination_id'];
+						foreach($row as $key => $value) { $result['destination'][$destination_id][$key] = $row[$key]; }	
+						$result['destination'][$destination_id]['image'] = $row['image']['image'];	
+					}
+					
+					$result['destination'] = array_values($result['destination']);
+				}
+			//END
+		//END
+		
+		$response = json_encode($result);
+		echo $response;
 	}
 	
 	public function search() {

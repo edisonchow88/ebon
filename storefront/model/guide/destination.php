@@ -67,6 +67,8 @@ class ModelGuideDestination extends Model{
 					ON t1.destination_id = t5.destination_id 
 					LEFT JOIN ".$this->db->table($this->table_relation)." t6
 					ON t1.destination_id = t6.destination_id 
+					LEFT JOIN ".$this->db->table($this->table_google)." t7
+					ON t1.destination_id = t7.destination_id 
 				";
 				if($keyword != '') {
 					$sql .= "
@@ -101,6 +103,8 @@ class ModelGuideDestination extends Model{
 					ON t1.destination_id = t5.destination_id 
 					LEFT JOIN ".$this->db->table($this->table_relation)." t6
 					ON t1.destination_id = t6.destination_id 
+					LEFT JOIN ".$this->db->table($this->table_google)." t7
+					ON t1.destination_id = t7.destination_id 
 					WHERE t1.destination_id = '" . (int)$destination_id . "' 
 					GROUP BY t1.destination_id 
 				";
@@ -196,9 +200,11 @@ class ModelGuideDestination extends Model{
 		public function getDestinationSpecialTagByDestinationId($destination_id) {
 			//START: Run SQL
 				$sql = "
-					SELECT DISTINCT destination_id, name
-					FROM " . $this->db->table($this->table_alias) . " 
-					WHERE destination_id = '" . (int)$destination_id . "' 
+					SELECT DISTINCT t1.destination_id, t1.name, t2.g_place_id
+					FROM " . $this->db->table($this->table_alias) . " t1
+					LEFT JOIN " . $this->db->table($this->table_google) . " t2
+					ON t1.destination_id = t2.destination_id
+					WHERE t1.destination_id = '" . (int)$destination_id . "' 
 					ORDER BY ranking desc 
 					LIMIT 1
 				";
@@ -1551,6 +1557,8 @@ class ModelGuideDestination extends Model{
 					ON t1.destination_id = t5.destination_id 
 					LEFT JOIN ".$this->db->table($this->table)." t6
 					ON t1.destination_id = t6.destination_id 
+					LEFT JOIN ".$this->db->table($this->table_google)." t7
+					ON t1.destination_id = t7.destination_id 
 					WHERE t1.parent_id = '" . (int)$destination_id . "' 
 					AND t6.status = '1'
 					GROUP BY t1.destination_id 

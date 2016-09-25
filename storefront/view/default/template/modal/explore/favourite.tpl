@@ -91,19 +91,41 @@
 	function printFavourite(data) {
 		var content = '';
 		var address = '';
+		var last_address_component = '';
 		var order = '';
 		if(data.country != null && data.country != '') {
-			address = data.country;
+			if(data.country.toLowerCase() != data.name.toLowerCase()) {
+				address = data.country;
+			}
+			last_address_component = data.country;
 		}
 		if(data.region != null && data.region != '') {
-			address += ', ' + data.region;
+			if(data.region.toLowerCase() != data.name.toLowerCase()) {
+				address += data.region;
+			}
+			last_address_component = data.region;
 		}
 		if(data.city != null && data.city != '') {
-			address += ', ' + data.city;
+			if(data.city.toLowerCase() != data.name.toLowerCase()) {
+				address += data.city;
+			}
+			last_address_component = data.city;
 		}
 		
 		<!-- START: [order] -->
-			order = address + ', ' + data.name;
+			if(last_address_component.toLowerCase() == data.country.toLowerCase()) {
+				order = data.name;
+			}
+			else {
+				order = address + ', ' + data.name;
+			}
+		<!-- END -->
+		
+		<!-- START: [title only] -->
+			var line_height = '';
+			if(address == '') {
+				line_height = 'style="line-height:40px;"';
+			}
 		<!-- END -->
 		
 		content += ''
@@ -115,7 +137,7 @@
 					+ '<div class="result-favourite-blurb line-clamp-1">'
 						+ address
 					+ '</div>'
-					+ '<div class="result-favourite-title line-clamp-1">'
+					+ '<div class="result-favourite-title line-clamp-1" ' + line_height + '>'
 						+ data.name
 					+ '</div>'
 				+ '</div>'

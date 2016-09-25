@@ -55,5 +55,84 @@ class ModelExplorePlace extends Model{
 			return $output;
 		}
 	//END
+	
+	//START: [Google]
+		public function verifyGoogleByPlaceId($place_id) {
+			//START: run sql
+				$sql = "
+					SELECT g_place_id
+					FROM " . $this->db->table($this->table) . "
+					WHERE g_place_id = '" . $place_id . "'
+					LIMIT 1
+				";
+				$query = $this->db->query($sql);
+			//END
+			//START: Set Output
+				if($query->num_rows == 0) {
+					$output = false;
+				}
+				else {
+					$output = true;
+				}
+			//END
+			return $output;
+		}
+		
+		public function getGoogleByPlaceId($place_id) {
+			//START: run sql
+				$sql = "
+					SELECT *
+					FROM " . $this->db->table($this->table) . "
+					WHERE g_place_id = '" . $place_id . "'
+					LIMIT 1
+				";
+				$query = $this->db->query($sql);
+			//END
+			//START: Set Output
+				$result = $query->row;
+				$output = $query->row;
+				if($query->num_rows == 0) {
+					$output = false;
+				}
+			//END
+			return $output;
+		}
+		
+		public function addGoogle($data) {
+			//START: Run SQL
+				$fields = $this->getFields($this->db->table($this->table));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f])) {
+						if($data[$f] == 'NULL') {
+							$update[$f] = $f . " = NULL";
+						}
+						else {
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+						}
+					}
+				}
+				
+				if(in_array('date_added',$fields)) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(in_array('date_modified',$fields)) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table) . "` 
+					SET " . implode(',', $update) . "
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			$google_id = $this->db->getLastId();
+			
+			//START: Run Chain Reaction
+			//END
+			
+			$this->cache->delete('google');
+			
+			return $google_id;
+		}
+	//END
 }
 ?>

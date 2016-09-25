@@ -163,11 +163,17 @@
 	/* END */
 	
 	/* START: modal */
+		.modal {
+			text-align:center;
+		}
+		
 		.modal-dialog {
 			margin:0 auto;
+			text-align:left;
 		}
 		
 		.modal-content {
+			position:relative;
 			border-radius:0;
 			border:none;
 		}
@@ -178,6 +184,28 @@
 			height:40px;
 			padding:0;
 			border-bottom:solid thin #CCC;
+		}
+		
+		.modal-header-fixed {
+			position:fixed;
+			top:0;
+			width:100%;
+			text-align:center;
+			border-radius:0;
+			padding:0;
+			z-index:10500;
+		}
+		
+		.modal-header-fixed > .fixed-bar {
+			height:40px;
+			margin:0 auto;
+			background-color:#DDD;
+			border-bottom:solid thin #CCC;
+		}
+		
+		.modal-header-shadow {
+			display:block;
+			height:40px;
 		}
 		
 		.modal-body {
@@ -215,7 +243,7 @@
     </div>
     <div id="section-tab" class="fixed-bar">
     	<ul>
-        	<li id="section-tab-explore" class="section-tab-button active"><a onclick="showTab('explore');">Explore</a></li>
+        	<li id="section-tab-explore" class="section-tab-button"><a onclick="showTab('explore');">Explore</a></li>
             <li id="section-tab-trip" class="section-tab-button"><a onclick="showTab('trip');">Trips</a></li>
             <li id="section-tab-account" class="section-tab-button"><a onclick="showTab('account');">Account</a></li>
         </ul>

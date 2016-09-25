@@ -24,6 +24,7 @@ class ControllerPagesMainExplore extends AController {
 			$this->addChild('modal/explore/search', 'modal_explore_search', 'modal/explore/search.tpl');
 			$this->addChild('modal/explore/map', 'modal_explore_map', 'modal/explore/map.tpl');
 			$this->addChild('modal/explore/review', 'modal_explore_review', 'modal/explore/review.tpl');
+			$this->addChild('modal/explore/favourite', 'modal_explore_favourite', 'modal/explore/favourite.tpl');
 		//END
 		
 		//START: set link

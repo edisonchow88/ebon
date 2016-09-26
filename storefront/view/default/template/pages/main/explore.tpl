@@ -321,7 +321,7 @@
                         <i class="fa fa-circle fa-stack-2x"></i>
                         <i class="fa fa-heart fa-stack-1x fa-inverse"></i>
                     </span>
-                 	<span>Added to My Favourite. </span>
+                 	<span>Added. </span>
                     <span><a data-toggle="modal" data-target="#modal-explore-favourite">(view my favourite)</a></span>
                  </div>
             </div>

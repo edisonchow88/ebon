@@ -1,6 +1,7 @@
 <style>
 	#modal-explore-favourite .modal-body {
 		padding:0;
+		padding-bottom:70px;
 	}
 	
 	#modal-explore-favourite-list-empty {
@@ -13,10 +14,6 @@
 		padding:15px 0;
 		color:#000;
 		cursor:pointer;
-	}
-	
-	.result-favourite-row:hover {
-		background-color:#EEE;
 	}
 	
 	.result-favourite-image img {
@@ -49,38 +46,40 @@
 </style>
 
 <!-- START: Modal -->
-    <div class="modal" id="modal-explore-favourite" role="dialog">
-    	<div class="modal-header-fixed">
-        	<div id="modal-explore-favourite-header-general" class="fixed-bar">
-                <div class="col-xs-3 text-left">
-                    <a id="modal-explore-favourite-button-edit" class="btn btn-header" onclick="openEditFavourite();">Edit</i></a>
+    <div class="modal modal-fixed-top" id="modal-explore-favourite" role="dialog">
+        <div class="modal-wrapper">
+            <div class="modal-header">
+                <div id="modal-explore-favourite-header-general" class="fixed-bar">
+                    <div class="col-xs-3 text-left">
+                        <a id="modal-explore-favourite-button-edit" class="btn btn-header" onclick="openEditFavourite();">Edit</i></a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <span class="btn-header modal-title">My Favourites</span>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                        <a id="modal-explore-favourite-button-close" class="btn btn-header" data-toggle="modal" data-target="#modal-explore-favourite"><i class="fa fa-fw fa-lg fa-times-circle"></i></a>
+                        <span class="sr-only">Back</span>
+                    </div>
                 </div>
-                <div class="col-xs-6 text-center">
-                    <span class="btn-header modal-title">My Favourites</span>
-                </div>
-                <div class="col-xs-3 text-right">
-                    <a id="modal-explore-favourite-button-close" class="btn btn-header" data-toggle="modal" data-target="#modal-explore-favourite"><i class="fa fa-fw fa-lg fa-times-circle"></i></a>
-                    <span class="sr-only">Back</span>
+                <div id="modal-explore-favourite-header-edit" class="fixed-bar">
+                    <div class="col-xs-3 text-left">
+                        <a id="modal-explore-favourite-button-edit" class="btn btn-header" onclick="closeEditFavourite();">Cancel</i></a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <span class="btn-header modal-title"></span>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                        <a id="modal-explore-favourite-button-delete" class="btn btn-header disabled" onclick="deleteFavourite(); closeEditFavourite();">Delete</i></a>
+                    </div>
                 </div>
             </div>
-            <div id="modal-explore-favourite-header-edit" class="fixed-bar">
-                <div class="col-xs-3 text-left">
-                    <a id="modal-explore-favourite-button-edit" class="btn btn-header" onclick="closeEditFavourite();">Close</i></a>
-                </div>
-                <div class="col-xs-6 text-center">
-                    <span class="btn-header modal-title"></span>
-                </div>
-                <div class="col-xs-3 text-right">
-                	<a id="modal-explore-favourite-button-delete" class="btn btn-header disabled" onclick="deleteFavourite(); closeEditFavourite();">Delete</i></a>
-                </div>
-            </div>
-        </div>
-        <div class="modal-header-shadow"></div>
-        <div class="modal-dialog fixed-bar">
-            <div class="modal-content">
-                <div class="modal-body">
-                	<div id="modal-explore-favourite-list"></div>
-                    <div id="modal-explore-favourite-list-empty">The list is empty.</div>
+            <div class="modal-dialog fixed-bar">
+                <div class="modal-header-shadow"></div>
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="modal-explore-favourite-list"></div>
+                        <div id="modal-explore-favourite-list-empty">The list is empty.</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,13 +100,13 @@
 		}
 		if(data.region != null && data.region != '') {
 			if(data.region.toLowerCase() != data.name.toLowerCase()) {
-				address += data.region;
+				address += ', ' + data.region;
 			}
 			last_address_component = data.region;
 		}
 		if(data.city != null && data.city != '') {
 			if(data.city.toLowerCase() != data.name.toLowerCase()) {
-				address += data.city;
+				address += ', ' + data.city;
 			}
 			last_address_component = data.city;
 		}
@@ -285,6 +284,7 @@
 	function closeEditFavourite() {
 		$('#modal-explore-favourite-header-general').show();
 		$('#modal-explore-favourite-header-edit').hide();
+		$('#modal-explore-favourite-button-delete').addClass('disabled');
 		$('.result-favourite-button').html('<i class="fa fa-fw fa-lg fa-chevron-right"></i>');
 		$('.result-favourite-button').css('color','#000');
 		$('.result-favourite-row').off().on('click',function() {
@@ -312,6 +312,10 @@
 	function deleteFavourite() {
 		$('.result-favourite-row.selected').remove();
 		saveFavouriteViaCookie();
+		if(inFavourite(getHash()) == false) {
+			$('#wrapper-explore-current-favourite .button-add-favourite').show();
+			$('#wrapper-explore-current-favourite .button-show-favourite').hide();
+		}
 	}
 	
 	function inFavourite(place_id) {
@@ -356,8 +360,21 @@
 	refreshFavouriteList();
 </script>
 <script>
+	$("#modal-explore-favourite").on("show", function () {
+		$("body").addClass("modal-open");
+	}).on("hidden", function () {
+		$("body").removeClass("modal-open");
+	});
+	
 	$("#modal-explore-favourite").on( "show.bs.modal", function() {
 		closeEditFavourite();
 		sortFavourite();
+		$('body').css('overflow-y','hidden');
+	});
+	$("#modal-explore-favourite").on( "shown.bs.modal", function() {
+		$('#modal-explore-favourite .modal-content').scrollTop(0);
+	});
+	$("#modal-explore-favourite").on( "hide.bs.modal", function() {
+		$('body').css('overflow-y','scroll');
 	});
 </script>

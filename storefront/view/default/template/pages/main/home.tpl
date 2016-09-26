@@ -186,28 +186,6 @@
 			border-bottom:solid thin #CCC;
 		}
 		
-		.modal-header-fixed {
-			position:fixed;
-			top:0;
-			width:100%;
-			text-align:center;
-			border-radius:0;
-			padding:0;
-			z-index:10500;
-		}
-		
-		.modal-header-fixed > .fixed-bar {
-			height:40px;
-			margin:0 auto;
-			background-color:#DDD;
-			border-bottom:solid thin #CCC;
-		}
-		
-		.modal-header-shadow {
-			display:block;
-			height:40px;
-		}
-		
 		.modal-body {
 			min-height:calc(100vh - 40px);
 		}
@@ -215,6 +193,60 @@
 		.modal-title {
 			color:#000;
 			font-weight:bold;
+		}
+	/* END */
+	/* START: [modal fixed-top] */
+		body.modal-open {
+			overflow: hidden;
+			position:fixed;
+			top:0;
+			bottom:0;
+			left:0;
+			right:0;
+		}
+		.modal.modal-fixed-top {
+			top: 0; 
+			right: 0; 
+			bottom: 0; 
+			left: 0;
+			-webkit-overflow-scrolling:auto;
+			overflow-x:hidden;
+			overflow-y:hidden;
+		}
+		.modal-fixed-top .modal-wrapper {
+			position:relative;
+		}
+		.modal-fixed-top .modal-header {
+			position:absolute;
+			top:0;
+			width:100%;
+			text-align:center;
+			border-radius:0;
+			padding:0;
+			z-index:10500;
+			background-color:transparent;
+			border-bottom:none;
+		}
+		.modal-fixed-top .modal-header > .fixed-bar {
+			height:40px;
+			margin:0 auto;
+			background-color:#DDD;
+			border-bottom:solid thin #CCC;
+		}
+		.modal-fixed-top .modal-header-shadow {
+			display:block;
+			height:40px;
+		}
+		.modal-fixed-top .modal-dialog {
+			background-color:#FFF;
+		}
+		.modal-fixed-top .modal-content {
+			overflow-y:scroll;
+			overflow-x:hidden;
+			-webkit-overflow-scrolling:touch;
+			height:calc(100vh - 40px);
+			padding-top:1px;
+			margin-top:-1px;
 		}
 	/* END */
 </style>

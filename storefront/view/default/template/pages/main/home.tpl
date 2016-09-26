@@ -118,6 +118,7 @@
 			width:100%;
 			min-height:100vh;
 			float:left;
+			background-color:#EEE;
 			padding-top:calc(40px);
 			padding-bottom:calc(40px);
 		}
@@ -248,6 +249,9 @@
 			padding-top:1px;
 			margin-top:-1px;
 		}
+		.modal-fixed-top .modal-body {
+			padding-bottom:70px;
+		}
 	/* END */
 </style>
 
@@ -266,11 +270,6 @@
         </div>
         <div class="content" id="content-account">
         	<?php echo $section_content_account; ?>
-            <?php 
-            	for($i=0;$i<100;$i++) {
-                	echo '<div>'.$i.'</div><br/>';
-            	}
-            ?>
         </div>
     </div>
     <div id="section-tab" class="fixed-bar">

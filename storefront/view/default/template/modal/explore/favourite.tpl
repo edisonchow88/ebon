@@ -234,6 +234,7 @@
 				printFavourite(data);
 				if(user_id == '') {
 					saveFavouriteViaCookie();
+					showHint('Favourite Added');
 				}
 				else {
 					addFavouriteViaServer(place_id);
@@ -265,6 +266,7 @@
 		<!-- END -->
 		<!-- START: send POST -->
 			$.post("<?php echo $ajax['main/ajax_favourite']; ?>", data, function(json) {
+				showHint('Favourite Added');
 			}, "json");
 		<!-- END -->
 		<!-- START: update button -->
@@ -345,6 +347,7 @@
 			$('.result-favourite-row.selected').remove();
 			saveFavouriteViaCookie();
 			updateWrapperExploreButtonAddFavourite(getHash());
+			showHint('Favourite Deleted');
 		<?php } else { ?>
 			<!-- START: get data -->
 				var user_id = "<?php echo $this->user->getUserId(); ?>";
@@ -380,6 +383,9 @@
 					<!-- END -->
 					<!-- START: update button -->
 						updateFavouriteButton(i);
+					<!-- END -->
+					<!-- START: show hint -->
+						showHint('Favourite Deleted');
 					<!-- END -->
 				}, "json");
 			<!-- END -->

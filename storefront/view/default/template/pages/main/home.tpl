@@ -350,8 +350,31 @@
 			border-top:none;
 		}
 	/* END */
+	/* START: [popover hint] */	
+		#section-popover-hint {
+			position:fixed;
+			bottom:10px;
+			right:0;
+			left:0;
+			width:100%;
+			z-index:15000;
+		}
+		
+		#popover-hint{
+			margin:auto;
+			width:390px;
+			line-height:50px;
+			max-width:calc(100% - 10px);
+			height:auto;
+			background-color: rgba(0,0,0,0.9);
+			color:#FFF;
+			padding: 5px;
+			display: none;
+		}
+	/* END */	
 </style>
 
+<div id="section-popover-hint"><div id="popover-hint" class="fixed-bar"></div></div>
 <div id="section-body" class="fixed-bar">
 	<div class="row" id="section-content">
         <div class="content" id="content-explore">
@@ -374,6 +397,13 @@
 </div>
 
 <script>
+	<!-- START: [popover hint] -->
+		function showHint(hint) {
+			$("#popover-hint").hide();
+			$("#popover-hint").html(hint).fadeIn(100);
+			setTimeout(function() { $("#popover-hint").delay(1000).fadeOut(300); }, 2000);
+		}
+	<!-- END -->
 	<!-- START: [tab] -->
 		function showTab(id) {
 			$('.section-tab-button').removeClass('active');

@@ -51,7 +51,7 @@
             <div class="modal-header">
                 <div id="modal-explore-favourite-header-general" class="fixed-bar">
                     <div class="col-xs-3 text-left">
-                        <a id="modal-explore-favourite-button-edit" class="btn btn-header" onclick="openEditFavourite();">Edit</i></a>
+                        <a id="modal-explore-favourite-button-edit" class="btn btn-header" onclick="openEditFavourite();">Edit</a>
                     </div>
                     <div class="col-xs-6 text-center">
                         <span class="btn-header modal-title">My Favourites</span>

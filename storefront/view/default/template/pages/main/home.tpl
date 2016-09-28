@@ -196,6 +196,76 @@
 			font-weight:bold;
 		}
 	/* END */
+	/* START: [modal form] */
+		.modal-body-footnote {
+			width:100%;
+			text-align:center;
+		}
+		
+		.modal-button {
+			border-radius:3px;
+			line-height:40px;
+			padding:0;
+		}
+		
+		.modal .form-group {
+			position:relative;
+		}
+		
+		.modal .form-control {
+			border:none;
+			border-bottom:solid thin #DDD;
+			height:40px;
+			margin-top:15px;
+			margin-bottom:15px;
+			box-shadow: 0 2px 0 0 #FFF;
+			padding:0;
+			color:#000;
+		}
+		
+		.modal .form-control:focus {
+			border-bottom:solid thin #e93578;
+			box-shadow: 0 2px 0 0 #e93578;
+		}
+		
+		.modal .form-control:focus ~label {
+			color:#e93578;
+		}
+		
+		.modal .form-group:first-child {
+			margin-top:15px;
+		}
+		
+		.modal .form-group:last-child {
+			margin-bottom:30px;
+		}
+		
+		.modal label {
+			position:absolute;
+			top:0;
+			left:0;
+			padding:0;
+			margin:0;
+			font-size:12px;
+			z-index:3;
+			color:#999;
+		}
+		input:-webkit-autofill {
+			-webkit-box-shadow: 0 0 0 1000px white inset !important;
+		}
+		input.form-control::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+		  color: #999;
+			}
+		input.form-control::-moz-placeholder { /* Firefox 19+ */
+		  color: #999;
+		}
+		input.form-control:-ms-input-placeholder { /* IE 10+ */
+		  color: #999;
+		}
+		input.form-control:-moz-placeholder { /* Firefox 18- */
+		  color: #999;
+		}
+	/* END */
 	/* START: [modal fixed-top] */
 		body.modal-open {
 			overflow: hidden;
@@ -251,6 +321,17 @@
 		}
 		.modal-fixed-top .modal-body {
 			padding-bottom:70px;
+		}
+		.modal-fixed-top .modal-footer {
+			position:absolute;
+			bottom:0;
+			width:100%;
+			text-align:center;
+			border-radius:0;
+			padding:0;
+			z-index:10500;
+			background-color:transparent;
+			border-top:none;
 		}
 	/* END */
 </style>

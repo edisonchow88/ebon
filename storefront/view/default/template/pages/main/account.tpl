@@ -9,6 +9,11 @@
 		margin:auto;
 	}
 	
+	#wrapper-account-detail {
+		color:#000;
+		text-align:center;
+	}
+	
 	#wrapper-account-button {
 		padding-top:30px;
 		text-align:center;
@@ -35,16 +40,39 @@
     </div>
 </div>
 <div id="wrapper-account-avatar">
-	<div id="wrapper-account-avatar-image">
-        <span class="fa-stack fa-5x">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-user fa-stack-1x fa-inverse"></i>
-        </span>
-    </div>
+	<?php if($logged == true) { ?>
+    	<div id="wrapper-account-avatar-image">
+            <span class="fa-stack fa-5x">
+            	<i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-stack-1x fa-inverse"><?php echo ucfirst(substr($this->user->getEmail(),0,1)); ?></i>
+            </span>
+        </div>
+    <?php } else { ?>
+        <div id="wrapper-account-avatar-image">
+            <span class="fa-stack fa-5x">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+            </span>
+        </div>
+    <?php } ?>
+</div>
+<div id="wrapper-account-detail">
+	<?php if($logged == true) { ?>
+    	<div><?php echo $this->user->getEmail(); ?></div>
+    <?php } ?>
 </div>
 <div id="wrapper-account-button">
-	<a class="btn btn-block btn-primary box-shadow" data-toggle="modal" data-target="#modal-account-login">Log In</a>
-    <a class="btn btn-block btn-default box-shadow" data-toggle="modal" data-target="#modal-account-signup">Sign Up</a>
+	<?php if($logged == true) { ?>
+        <!-- START: if logged -->
+            <a class="btn btn-block btn-default box-shadow" data-toggle="modal" data-target="#modal-account-detail">View Profile</a>
+        	<a class="btn btn-block btn-default box-shadow" onclick="logout();">Log Out</a>
+        <!-- END -->
+    <?php } else { ?>
+        <!-- START: if not logged -->
+            <a class="btn btn-block btn-primary box-shadow" data-toggle="modal" data-target="#modal-account-login">Log In</a>
+        	<a class="btn btn-block btn-default box-shadow" data-toggle="modal" data-target="#modal-account-signup">Sign Up</a>
+        <!-- END -->
+    <?php } ?>
 </div>
 
 <!-- START: [modal] -->

@@ -1,8 +1,8 @@
 <!-- START: Modal -->
-    <div class="modal" id="modal-account-login" role="dialog">
-        <div class="modal-dialog fixed-bar">
-            <div class="modal-content">
-                <div class="modal-header">
+    <div class="modal modal-fixed-top" id="modal-account-login" role="dialog">
+        <div class="modal-wrapper">
+            <div class="modal-header">
+            	<div class="fixed-bar">
                     <div class="col-xs-3 text-left">
                         <a class="btn btn-header" data-toggle="modal" data-target="#modal-account-login"><i class="fa fa-fw fa-lg fa-times-circle"></i><span class="sr-only">Cancel</span></a>
                     </div>
@@ -12,15 +12,18 @@
                     <div class="col-xs-3 text-right">
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="modal-dialog fixed-bar">
+            <div class="modal-header-shadow"></div>
+            <div class="modal-content">
                 <div class="modal-body">
                     <div id="modal-account-login-form-alert"></div>
                     <?php echo $modal_component['form']; ?>
                     <button type="button" class="btn btn-block btn-primary modal-button" onclick="login();">Log In</button>
                     <div class="modal-body-footnote">
-                    	<div>
                         <span>New to Trevol? </span>
                         <a data-dismiss="modal" data-toggle='modal' data-target="#modal-account-signup" >Sign up</a>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -190,7 +190,7 @@
 			//END
 			
 			//START: [form]
-				$content .= '<form id="'.$id.'" ';
+				$content .= '<form class="modal-form" id="'.$id.'" ';
 				if($setting['autocomplete'] == true) { $content .= 'autocomplete="on" '; }
 				else if($setting['autocomplete'] == false) { $content .= 'autocomplete="off" '; }
 				$content .= '>';

@@ -12,6 +12,11 @@ class ControllerModalExploreFavourite extends AController {
 		
 		//START: set ajax
 			$ajax['main/ajax_explore'] = $this->html->getSecureURL('main/ajax_explore');
+			$ajax['main/ajax_favourite'] = $this->html->getSecureURL('main/ajax_favourite');
+		//END
+		
+		//START: set link
+			$link['home'] = $this->html->getSecureURL('main/home');
 		//END
 		
 		//START: set variable

@@ -27,7 +27,7 @@ class ControllerResponsesMainAjaxExplore extends AController {
 		if($action == 'init') { $this->init(); return; }
 		else if($action == 'search') { $this->search(); return; }
 		else if($action == 'get_place') { $this->getPlace(); return; }
-		else if($action == 'add_favourite') { $this->addFavourite(); return; }
+		else if($action == 'add_place') { $this->addPlace(); return; }
 		else { 
 		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 			$result['warning'][] = 'System Failure: Please contact Admin.'; 
@@ -148,7 +148,7 @@ class ControllerResponsesMainAjaxExplore extends AController {
 		
 	}
 	
-	public function addFavourite() {
+	public function addPlace() {
 		//START: set variable
 			$place_id = $this->data['place_id'];
 			$user_id = $this->data['user_id'];

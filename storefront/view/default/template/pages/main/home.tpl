@@ -27,6 +27,21 @@
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	}
 	
+	/* START: empty-list */
+		.empty-list {
+			color:#777;
+			margin-top:20vh;
+			padding:15px;
+			text-align:center;
+		}
+		
+		.empty-list .title {
+			background-color:transparent;
+			color:#777;
+			font-weight:bold;
+		}
+	/* END */
+	
 	/* START: section-tab */
 		#section-tab {
 			position:fixed;
@@ -110,6 +125,7 @@
 			width:100%;
 			min-height:100vh;
 			float:left;
+			background-color:#EEE;
 			padding-top:calc(40px);
 			padding-bottom:calc(40px);
 		}
@@ -208,11 +224,11 @@
 			padding:0;
 		}
 		
-		.modal .form-group {
+		.modal-form .form-group {
 			position:relative;
 		}
 		
-		.modal .form-control {
+		.modal-form .form-control {
 			border:none;
 			border-bottom:solid thin #DDD;
 			height:40px;
@@ -223,24 +239,24 @@
 			color:#000;
 		}
 		
-		.modal .form-control:focus {
+		.modal-form .form-control:focus {
 			border-bottom:solid thin #e93578;
 			box-shadow: 0 2px 0 0 #e93578;
 		}
 		
-		.modal .form-control:focus ~label {
+		.modal-form .form-control:focus ~label {
 			color:#e93578;
 		}
 		
-		.modal .form-group:first-child {
+		.modal-form .form-group:first-child {
 			margin-top:15px;
 		}
 		
-		.modal .form-group:last-child {
+		.modal-form .form-group:last-child {
 			margin-bottom:30px;
 		}
 		
-		.modal label {
+		.modal-form label {
 			position:absolute;
 			top:0;
 			left:0;
@@ -250,19 +266,19 @@
 			z-index:3;
 			color:#999;
 		}
-		input:-webkit-autofill {
+		.modal-form input:-webkit-autofill {
 			-webkit-box-shadow: 0 0 0 1000px white inset !important;
 		}
-		input.form-control::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+		.modal-form input.form-control::-webkit-input-placeholder { /* Chrome/Opera/Safari */
 		  color: #999;
 			}
-		input.form-control::-moz-placeholder { /* Firefox 19+ */
+		.modal-form input.form-control::-moz-placeholder { /* Firefox 19+ */
 		  color: #999;
 		}
-		input.form-control:-ms-input-placeholder { /* IE 10+ */
+		.modal-form input.form-control:-ms-input-placeholder { /* IE 10+ */
 		  color: #999;
 		}
-		input.form-control:-moz-placeholder { /* Firefox 18- */
+		.modal-form input.form-control:-moz-placeholder { /* Firefox 18- */
 		  color: #999;
 		}
 	/* END */
@@ -343,11 +359,6 @@
         </div>
         <div class="content" id="content-trip">
         	<?php echo $section_content_trip; ?>
-            <?php 
-            	for($i=0;$i<100;$i++) {
-                	echo '<div>'.$i.'</div><br/>';
-            	}
-            ?>
         </div>
         <div class="content" id="content-account">
         	<?php echo $section_content_account; ?>

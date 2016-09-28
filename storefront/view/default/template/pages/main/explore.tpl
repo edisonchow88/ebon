@@ -520,14 +520,7 @@
 		<!-- END -->
 		
 		<!-- START: [favourite] -->
-			if(inFavourite(current.place_id) == true) {
-				$('#wrapper-explore-current-favourite .button-add-favourite').hide();
-				$('#wrapper-explore-current-favourite .button-show-favourite').show();
-			}
-			else {
-				$('#wrapper-explore-current-favourite .button-add-favourite').show();
-				$('#wrapper-explore-current-favourite .button-show-favourite').hide();
-			}
+			updateWrapperExploreButtonAddFavourite(current.place_id);
 		<!-- END -->
 		
 		<!-- START: [place_id] -->
@@ -915,6 +908,39 @@
 			$('#wrapper-explore-child').show();
 			$('#wrapper-explore-loading').hide();
 		}, 500);
+	}
+	
+	function updateWrapperExploreButtonAddFavourite(place_id) {
+		<?php if($this->user->isLogged() == false) { ?>
+			if(inFavourite(place_id) == true) {
+				$('#wrapper-explore-current-favourite .button-add-favourite').hide();
+				$('#wrapper-explore-current-favourite .button-show-favourite').show();
+			}
+			else {
+				$('#wrapper-explore-current-favourite .button-add-favourite').show();
+				$('#wrapper-explore-current-favourite .button-show-favourite').hide();
+			}
+		<?php } else { ?>
+			<!-- START: set data -->
+				var data = {
+					"action"	: "get_favourite",
+					"user_id"	: "<?php echo $this->user->getUserId(); ?>"
+				};
+			<!-- END -->
+			<!-- START: send POST -->
+				$.post("<?php echo $ajax['main/ajax_favourite']; ?>", data, function(json) {
+					var favourite = json;
+					if($.inArray(place_id,favourite) != -1) {
+						$('#wrapper-explore-current-favourite .button-add-favourite').hide();
+						$('#wrapper-explore-current-favourite .button-show-favourite').show();
+					}
+					else {
+						$('#wrapper-explore-current-favourite .button-add-favourite').show();
+						$('#wrapper-explore-current-favourite .button-show-favourite').hide();
+					}
+				}, "json");
+			<!-- END -->
+		<?php } ?>
 	}
 	
 	function initExplore() {

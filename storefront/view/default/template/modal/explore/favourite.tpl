@@ -4,11 +4,6 @@
 		padding-bottom:70px;
 	}
 	
-	#modal-explore-favourite-list-empty {
-		padding:15px;
-		text-align:center;
-	}
-	
 	.result-favourite-row {
 		border-bottom:solid thin #DDD;
 		padding:15px 0;
@@ -78,7 +73,10 @@
                 <div class="modal-content">
                     <div class="modal-body">
                         <div id="modal-explore-favourite-list"></div>
-                        <div id="modal-explore-favourite-list-empty">The list is empty.</div>
+                        <div id="modal-explore-favourite-list-empty" class="empty-list">
+                        	<div class="title">Your List is Empty</div>
+                            <div class="cta">Click to <a href="<?php echo $link['home']; ?>">explore new places</a>.</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -155,14 +153,14 @@
 		<?php if($this->user->isLogged() != false) { ?>
 			<!-- START: [logged] -->
 				<!-- START: set data -->
-					var favourite = {
+					var data = {
 						"action":"get_favourite",
 						"user_id":"<?php echo $this->user->getUserId(); ?>"
 					};
 				<!-- END -->
 				<!-- START: send POST -->
-					$.post("<?php echo $ajax['main/ajax_explore']; ?>", data, function(json) {
-						runRefreshFavouriteList(favourite);
+					$.post("<?php echo $ajax['main/ajax_favourite']; ?>", data, function(json) {
+						runRefreshFavouriteList(json);
 					}, "json");
 				<!-- END -->
 			<!-- END -->
@@ -221,7 +219,7 @@
 		<!-- END -->
 		<!-- START: set data -->
 			var data = {
-				"action"	: "add_favourite",
+				"action"	: "add_place",
 				"user_id"	: user_id,
 				"place_id"	: place_id,
 				"name"		: name,
@@ -237,7 +235,40 @@
 				if(user_id == '') {
 					saveFavouriteViaCookie();
 				}
+				else {
+					addFavouriteViaServer(place_id);
+				}
 			}, "json");
+		<!-- END -->
+	}
+	
+	function addFavouriteViaServer(place_id) {
+		<!-- START: declare variable -->
+			var favourite = [];
+			var i = 0;
+		<!-- END -->
+		<!-- START: set data -->
+			$('.result-favourite-form').each(function() {
+				favourite.push($(this).find('input[name=place_id]').val());
+				i += 1;
+			});
+		<!-- END -->
+		<!-- START: get data -->
+			var user_id = "<?php echo $this->user->getUserId(); ?>";
+		<!-- END -->
+		<!-- START: set data -->
+			var data = {
+				"action"	: "add_favourite",
+				"user_id"	: user_id,
+				"place_id"	: place_id
+			};
+		<!-- END -->
+		<!-- START: send POST -->
+			$.post("<?php echo $ajax['main/ajax_favourite']; ?>", data, function(json) {
+			}, "json");
+		<!-- END -->
+		<!-- START: update button -->
+			updateFavouriteButton(i);
 		<!-- END -->
 	}
 	
@@ -310,12 +341,49 @@
 	}
 	
 	function deleteFavourite() {
-		$('.result-favourite-row.selected').remove();
-		saveFavouriteViaCookie();
-		if(inFavourite(getHash()) == false) {
-			$('#wrapper-explore-current-favourite .button-add-favourite').show();
-			$('#wrapper-explore-current-favourite .button-show-favourite').hide();
-		}
+		<?php if($this->user->isLogged() == false) { ?>
+			$('.result-favourite-row.selected').remove();
+			saveFavouriteViaCookie();
+			updateWrapperExploreButtonAddFavourite(getHash());
+		<?php } else { ?>
+			<!-- START: get data -->
+				var user_id = "<?php echo $this->user->getUserId(); ?>";
+				var place = new Array();
+				var place_id = '';
+				var e;
+				for(i=0;i<$('.result-favourite-row.selected').length;i++) {
+					e = $('.result-favourite-row.selected .result-favourite-form input[name=place_id]').get(i);
+					place_id = $(e).val();
+					place.push(place_id);
+				}
+			<!-- END -->
+			<!-- START: set data -->
+				var data = {
+					"action"	: "delete_favourite",
+					"user_id"	: user_id,
+					"place"	: place
+				};
+			<!-- END -->
+			<!-- START: send POST -->
+				$.post("<?php echo $ajax['main/ajax_favourite']; ?>", data, function(json) {
+					$('.result-favourite-row.selected').remove();
+					updateWrapperExploreButtonAddFavourite(getHash());
+					<!-- START: declare variable -->
+						var favourite = [];
+						var i = 0;
+					<!-- END -->
+					<!-- START: set data -->
+						$('.result-favourite-form').each(function() {
+							favourite.push($(this).find('input[name=place_id]').val());
+							i += 1;
+						});
+					<!-- END -->
+					<!-- START: update button -->
+						updateFavouriteButton(i);
+					<!-- END -->
+				}, "json");
+			<!-- END -->
+		<?php } ?>
 	}
 	
 	function inFavourite(place_id) {
@@ -348,11 +416,13 @@
 		if(length > 0) {
 			$('#wrapper-explore-favourite-button').html('<span class="badge">'+length+'</span>'+'<i class="fa fa-fw fa-lg fa-heart"></i>');
 			$('#modal-explore-favourite-list-empty').hide();
+			$('#modal-explore-favourite .modal-content').css('background-color','#FFF');
 			$('#modal-explore-favourite-button-edit').removeClass('disabled');
 		}
 		else {
 			$('#wrapper-explore-favourite-button').html('<i class="fa fa-fw fa-lg fa-heart-o"></i>');
 			$('#modal-explore-favourite-list-empty').show();
+			$('#modal-explore-favourite .modal-content').css('background-color','#EEE');
 			$('#modal-explore-favourite-button-edit').addClass('disabled');
 		}
 	}

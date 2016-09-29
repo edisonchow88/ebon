@@ -281,6 +281,10 @@
 		.modal-form input.form-control:-moz-placeholder { /* Firefox 18- */
 		  color: #999;
 		}
+		
+		.modal-form input[type='date'] {
+			-webkit-appearance: none;
+		}
 	/* END */
 	/* START: [modal fixed-top] */
 		body.modal-open {

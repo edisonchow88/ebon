@@ -259,18 +259,46 @@
 										if($i['type'] == 'disabled') { $disabled = 'disabled'; } 
 										$placeholder = $i['placeholder'];
 										if($i['required'] == true) { $placeholder .= ' *'; }
-										$content .= '
-											<input 
-												type="'.$i['type'].'" 
-												class="form-control"
-												id="'.$id.'-input-'.$i['id'].'" 
-												name="'.$i['name'].'"
-												value="'.$i['value'].'"
-												placeholder="'.$placeholder.'"
-												onkeyup="if($(this).val() == \'\') { $(this).siblings(\'label\').addClass(\'hidden\'); } else { $(this).siblings(\'label\').removeClass(\'hidden\'); }"
-												'.$disabled.'
-											/>
-										';
+										if(isset($i['min'])) { $min = 'min="'.$i['min'].'"'; } else { $min = ''; }
+										if(isset($i['max'])) { $max = 'max="'.$i['max'].'"'; } else { $max = ''; }
+										if(isset($i['step'])) { $step = 'step="'.$i['step'].'"'; } else { $step = ''; }
+										if(isset($i['pattern'])) { $pattern = 'pattern="'.$i['pattern'].'"'; } else { $pattern = ''; }
+										if($i['type'] == 'date') {
+											$content .= '
+												<input 
+													type="'.$i['type'].'" 
+													class="form-control"
+													id="'.$id.'-input-'.$i['id'].'" 
+													name="'.$i['name'].'"
+													value="'.$i['value'].'"
+													placeholder="'.$placeholder.'"
+													'.$disabled.'
+													'.$min.'
+													'.$max.'
+													'.$step.'
+													'.$pattern.'												
+												/>
+											';
+
+										}
+										else {
+											$content .= '
+												<input 
+													type="'.$i['type'].'" 
+													class="form-control"
+													id="'.$id.'-input-'.$i['id'].'" 
+													name="'.$i['name'].'"
+													value="'.$i['value'].'"
+													placeholder="'.$placeholder.'"
+													onkeyup="if($(this).val() == \'\') { $(this).siblings(\'label\').addClass(\'hidden\'); } else { $(this).siblings(\'label\').removeClass(\'hidden\'); }"
+													'.$disabled.'
+													'.$min.'
+													'.$max.'
+													'.$step.'
+													'.$pattern.'
+												/>
+											';
+										}
 									//END
 									//START: [help]
 										if(isset($i['help'])) {
@@ -312,10 +340,12 @@
 									//END
 								}
 								//START: [label]
-									if($i['value'] == '') { $hidden = 'hidden'; }
+									if($i['value'] == '' && $i['type'] != 'date') { $hidden = 'hidden'; }
+									$label = $i['label'];
+									if($i['required'] == true) { $label .= ' *'; }
 									if($i['label'] != '') {
 										$content .= '<label class="control-label col-xs-12 '.$hidden.'">';
-										$content .= $i['label'];
+										$content .= $label;
 										$content .= '</label>';
 									}
 								//END

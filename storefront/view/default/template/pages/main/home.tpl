@@ -374,7 +374,7 @@
 	/* END */	
 </style>
 
-<div id="section-popover-hint"><div id="popover-hint" class="fixed-bar"></div></div>
+<div id="section-popover-hint"><div id="popover-hint" class="fixed-bar" onclick="$(this).hide();"></div></div>
 <div id="section-body" class="fixed-bar">
 	<div class="row" id="section-content">
         <div class="content" id="content-explore">
@@ -422,4 +422,8 @@
 		
 		initTab();
 	<!-- END -->
+	
+	<?php if($last_action != '') { ?>
+		showHint("<?php echo $last_action; ?>");
+	<?php } ?>
 </script>

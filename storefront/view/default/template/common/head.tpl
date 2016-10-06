@@ -34,6 +34,7 @@
 <link href='//fonts.googleapis.com/css?family=Crete+Round' rel='stylesheet' type='text/css' />
 -->
 <link href="<?php echo $this->templateResource('/stylesheet/style.css'); ?>" rel="stylesheet" type='text/css' />
+<link href="<?php echo $this->templateResource('/stylesheet/swiper.min.css'); ?>" rel="stylesheet" type='text/css' />
 
 <?php if ( $template_debug_mode ) {  ?>
 <link href="<?php echo $this->templateResource('/stylesheet/template_debug.css'); ?>" rel="stylesheet" />

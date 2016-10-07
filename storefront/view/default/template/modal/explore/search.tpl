@@ -94,7 +94,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                 	<div id="modal-explore-search-input-keyword-wrapper" class="row">
-                    	<div class="col-xs-10">
+                    	<div class="col-xs-10" style="max-width:calc(100% - 80px);">
                         	<form id="modal-explore-search-keyword-form">
                                 <input id="modal-explore-search-input-keyword" class="form-control" placeholder="Search"/>
                                 <a id="modal-explore-search-button-clear" class="btn btn-header"><div><i class="fa fa-fw fa-times-circle"></i><span class="sr-only">x</span></div></a>

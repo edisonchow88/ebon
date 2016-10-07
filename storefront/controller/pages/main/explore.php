@@ -18,12 +18,14 @@ class ControllerPagesMainExplore extends AController {
 		
 		//START: set ajax
 			$ajax['main/ajax_explore'] = $this->html->getSecureURL('main/ajax_explore');
+			$ajax['main/ajax_favourite'] = $this->html->getSecureURL('main/ajax_favourite');
 		//END
 		
 		//START: set modal
 			$this->addChild('modal/explore/search', 'modal_explore_search', 'modal/explore/search.tpl');
 			$this->addChild('modal/explore/map', 'modal_explore_map', 'modal/explore/map.tpl');
 			$this->addChild('modal/explore/review', 'modal_explore_review', 'modal/explore/review.tpl');
+			$this->addChild('modal/explore/favourite', 'modal_explore_favourite', 'modal/explore/favourite.tpl');
 		//END
 		
 		//START: set link

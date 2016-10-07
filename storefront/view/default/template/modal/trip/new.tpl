@@ -1,26 +1,25 @@
 <!-- START: Modal -->
-    <div class="modal fade" id="modal-trip-new" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">New Trip</h4>
+	<div class="modal modal-fixed-top" id="modal-trip-new" role="dialog">
+        <div class="modal-wrapper">
+            <div class="modal-header">
+                <div class="fixed-bar">
+                    <div class="col-xs-3 text-left">
+                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-trip-new">Cancel</a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <span class="btn-header modal-title">New Trip</span>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-trip-new">Create</a>
+                    </div>
                 </div>
-            <div class="modal-body">
-                <div id="modal-trip-new-form-alert"></div>
-                <?php echo $modal_component['form']; ?>
             </div>
-                <div class="modal-footer">
-                	<div class="row">
-                        <div class="col-xs-12 col-sm-3 col-md-2 pull-right">
-                            <button type="button" class="btn btn-block btn-primary">Create</button>
-                        </div>
-                        <div class="pull-right line-spacer">
-                        	<i class="fa fa-fw"></i>
-                        </div>
-                        <div class="col-xs-12 col-sm-3 col-md-2 pull-right">
-                            <button type="button" class="btn btn-block btn-default" data-dismiss="modal">Cancel</button>
-                        </div>
+            <div class="modal-dialog fixed-bar">
+                <div class="modal-header-shadow"></div>
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="modal-trip-new-form-alert"></div>
+                        <?php echo $modal_component['form']; ?>
                     </div>
                 </div>
             </div>

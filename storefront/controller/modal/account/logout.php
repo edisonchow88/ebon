@@ -22,7 +22,7 @@ class ControllerModalAccountLogout extends AController {
 		//END
 		
 		//START: set link
-			$modal_link['home'] = $this->html->getSecureURL('trip/itinerary');
+			$modal_link['home'] = $this->html->getSecureURL('main/home');
 		//END
 		
 		//START: set ajax

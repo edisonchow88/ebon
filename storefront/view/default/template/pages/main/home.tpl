@@ -27,6 +27,21 @@
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	}
 	
+	/* START: empty-list */
+		.empty-list {
+			color:#777;
+			margin-top:20vh;
+			padding:15px;
+			text-align:center;
+		}
+		
+		.empty-list .title {
+			background-color:transparent;
+			color:#777;
+			font-weight:bold;
+		}
+	/* END */
+	
 	/* START: section-tab */
 		#section-tab {
 			position:fixed;
@@ -110,6 +125,7 @@
 			width:100%;
 			min-height:100vh;
 			float:left;
+			background-color:#EEE;
 			padding-top:calc(40px);
 			padding-bottom:calc(40px);
 		}
@@ -118,6 +134,7 @@
 			width:100%;
 			min-height:100vh;
 			float:left;
+			background-color:#EEE;
 			padding-top:calc(40px);
 			padding-bottom:calc(40px);
 		}
@@ -163,11 +180,17 @@
 	/* END */
 	
 	/* START: modal */
+		.modal {
+			text-align:center;
+		}
+		
 		.modal-dialog {
 			margin:0 auto;
+			text-align:left;
 		}
 		
 		.modal-content {
+			position:relative;
 			border-radius:0;
 			border:none;
 		}
@@ -189,8 +212,173 @@
 			font-weight:bold;
 		}
 	/* END */
+	/* START: [modal form] */
+		.modal-body-footnote {
+			width:100%;
+			text-align:center;
+		}
+		
+		.modal-button {
+			border-radius:3px;
+			line-height:40px;
+			padding:0;
+		}
+		
+		.modal-form .form-group {
+			position:relative;
+		}
+		
+		.modal-form .form-control {
+			border:none;
+			border-bottom:solid thin #DDD;
+			height:40px;
+			margin-top:15px;
+			margin-bottom:15px;
+			box-shadow: 0 2px 0 0 #FFF;
+			padding:0;
+			color:#000;
+		}
+		
+		.modal-form .form-control:focus {
+			border-bottom:solid thin #e93578;
+			box-shadow: 0 2px 0 0 #e93578;
+		}
+		
+		.modal-form .form-control:focus ~label {
+			color:#e93578;
+		}
+		
+		.modal-form .form-group:first-child {
+			margin-top:15px;
+		}
+		
+		.modal-form .form-group:last-child {
+			margin-bottom:30px;
+		}
+		
+		.modal-form label {
+			position:absolute;
+			top:0;
+			left:0;
+			padding:0;
+			margin:0;
+			font-size:12px;
+			z-index:3;
+			color:#999;
+		}
+		.modal-form input:-webkit-autofill {
+			-webkit-box-shadow: 0 0 0 1000px white inset !important;
+		}
+		.modal-form input.form-control::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+		  color: #999;
+			}
+		.modal-form input.form-control::-moz-placeholder { /* Firefox 19+ */
+		  color: #999;
+		}
+		.modal-form input.form-control:-ms-input-placeholder { /* IE 10+ */
+		  color: #999;
+		}
+		.modal-form input.form-control:-moz-placeholder { /* Firefox 18- */
+		  color: #999;
+		}
+		
+		.modal-form input[type='date'] {
+			-webkit-appearance: none;
+		}
+	/* END */
+	/* START: [modal fixed-top] */
+		body.modal-open {
+			overflow: hidden;
+			position:fixed;
+			top:0;
+			bottom:0;
+			left:0;
+			right:0;
+		}
+		.modal.modal-fixed-top {
+			top: 0; 
+			right: 0; 
+			bottom: 0; 
+			left: 0;
+			-webkit-overflow-scrolling:auto;
+			overflow-x:hidden;
+			overflow-y:hidden;
+		}
+		.modal-fixed-top .modal-wrapper {
+			position:relative;
+		}
+		.modal-fixed-top .modal-header {
+			position:absolute;
+			top:0;
+			width:100%;
+			text-align:center;
+			border-radius:0;
+			padding:0;
+			z-index:10500;
+			background-color:transparent;
+			border-bottom:none;
+		}
+		.modal-fixed-top .modal-header > .fixed-bar {
+			height:40px;
+			margin:0 auto;
+			background-color:#DDD;
+			border-bottom:solid thin #CCC;
+		}
+		.modal-fixed-top .modal-header-shadow {
+			display:block;
+			height:40px;
+		}
+		.modal-fixed-top .modal-dialog {
+			background-color:#FFF;
+		}
+		.modal-fixed-top .modal-content {
+			overflow-y:scroll;
+			overflow-x:hidden;
+			-webkit-overflow-scrolling:touch;
+			height:calc(100vh - 40px);
+			padding-top:1px;
+			margin-top:-1px;
+		}
+		.modal-fixed-top .modal-body {
+			padding-bottom:70px;
+		}
+		.modal-fixed-top .modal-footer {
+			position:absolute;
+			bottom:0;
+			width:100%;
+			text-align:center;
+			border-radius:0;
+			padding:0;
+			z-index:10500;
+			background-color:transparent;
+			border-top:none;
+		}
+	/* END */
+	/* START: [popover hint] */	
+		#section-popover-hint {
+			position:fixed;
+			bottom:10px;
+			right:0;
+			left:0;
+			width:100%;
+			z-index:15000;
+		}
+		
+		#popover-hint{
+			margin:auto;
+			width:390px;
+			line-height:50px;
+			max-width:calc(100% - 10px);
+			height:auto;
+			background-color: rgba(0,0,0,0.9);
+			color:#FFF;
+			padding: 5px;
+			display: none;
+		}
+	/* END */	
 </style>
 
+<div id="section-popover-hint"><div id="popover-hint" class="fixed-bar" onclick="$(this).hide();"></div></div>
 <div id="section-body" class="fixed-bar">
 	<div class="row" id="section-content">
         <div class="content" id="content-explore">
@@ -198,24 +386,14 @@
         </div>
         <div class="content" id="content-trip">
         	<?php echo $section_content_trip; ?>
-            <?php 
-            	for($i=0;$i<100;$i++) {
-                	echo '<div>'.$i.'</div><br/>';
-            	}
-            ?>
         </div>
         <div class="content" id="content-account">
         	<?php echo $section_content_account; ?>
-            <?php 
-            	for($i=0;$i<100;$i++) {
-                	echo '<div>'.$i.'</div><br/>';
-            	}
-            ?>
         </div>
     </div>
     <div id="section-tab" class="fixed-bar">
     	<ul>
-        	<li id="section-tab-explore" class="section-tab-button active"><a onclick="showTab('explore');">Explore</a></li>
+        	<li id="section-tab-explore" class="section-tab-button"><a onclick="showTab('explore');">Explore</a></li>
             <li id="section-tab-trip" class="section-tab-button"><a onclick="showTab('trip');">Trips</a></li>
             <li id="section-tab-account" class="section-tab-button"><a onclick="showTab('account');">Account</a></li>
         </ul>
@@ -223,6 +401,13 @@
 </div>
 
 <script>
+	<!-- START: [popover hint] -->
+		function showHint(hint) {
+			$("#popover-hint").hide();
+			$("#popover-hint").html(hint).fadeIn(100);
+			setTimeout(function() { $("#popover-hint").delay(1000).fadeOut(300); }, 2000);
+		}
+	<!-- END -->
 	<!-- START: [tab] -->
 		function showTab(id) {
 			$('.section-tab-button').removeClass('active');
@@ -241,4 +426,8 @@
 		
 		initTab();
 	<!-- END -->
+	
+	<?php if($last_action != '') { ?>
+		showHint("<?php echo $last_action; ?>");
+	<?php } ?>
 </script>

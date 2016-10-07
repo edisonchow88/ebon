@@ -11,7 +11,7 @@ class ControllerModalAccountSignup extends AController {
 		//END
 		
 		//START: load component	
-			$this->loadComponent('database/modal');
+			$this->loadComponent('database/mobile_modal');
 		//END
 		
 		//START: set form
@@ -21,6 +21,7 @@ class ControllerModalAccountSignup extends AController {
 			//START: set input [ORDER IS IMPORTANT]
 				$i ='email';
 				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$input[$i]['placeholder'] = ucwords(str_replace("_"," ",$i));
 				$input[$i]['id'] = str_replace("_","-",$i);
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = true;
@@ -28,6 +29,7 @@ class ControllerModalAccountSignup extends AController {
 				
 				$i ='password';
 				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$input[$i]['placeholder'] = ucwords(str_replace("_"," ",$i));
 				$input[$i]['id'] = str_replace("_","-",$i);
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = true;
@@ -36,6 +38,7 @@ class ControllerModalAccountSignup extends AController {
 				
 				$i ='confirm_password';
 				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$input[$i]['placeholder'] = ucwords(str_replace("_"," ",$i));
 				$input[$i]['id'] = str_replace("_","-",$i);
 				$input[$i]['name'] = $i;
 				$input[$i]['required'] = true;
@@ -43,7 +46,7 @@ class ControllerModalAccountSignup extends AController {
 				$input[$i]['type'] = 'password';
 			//END
 			$setting['autocomplete'] = false;
-			$modal_component['form'] = $this->component_database_modal->writeForm($id,$action,$input,$setting);
+			$modal_component['form'] = $this->component_database_mobile_modal->writeForm($id,$action,$input,$setting);
 		//END
 		
 		//START: set ajax

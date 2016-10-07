@@ -1,30 +1,29 @@
 <!-- START: Modal -->
-    <div class="modal fade" id="modal-account-login" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Log In</h4>
-                </div>
-            <div class="modal-body">
-                <div id="modal-account-login-form-alert"></div>
-                <?php echo $modal_component['form']; ?>
-                <div class="modal-body-footnote">
-                	<span>Don't have an account? </span>
-                    <a data-dismiss="modal" data-toggle='modal' data-target="#modal-account-signup" >Sign up now</a>
+    <div class="modal modal-fixed-top" id="modal-account-login" role="dialog">
+        <div class="modal-wrapper">
+            <div class="modal-header">
+            	<div class="fixed-bar">
+                    <div class="col-xs-3 text-left">
+                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-account-login"><i class="fa fa-fw fa-lg fa-times-circle"></i><span class="sr-only">Cancel</span></a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <span class="btn-header modal-title">Log In</span>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                    </div>
                 </div>
             </div>
-                <div class="modal-footer">
-                	<div class="row">
-                        <div class="col-xs-12 col-sm-3 col-md-2 pull-right">
-                            <button type="button" class="btn btn-block btn-primary" onclick="login();">Log In</button>
-                        </div>
-                        <div class="pull-right line-spacer">
-                        	<i class="fa fa-fw"></i>
-                        </div>
-                        <div class="col-xs-12 col-sm-3 col-md-2 pull-right">
-                            <button type="button" class="btn btn-block btn-default" data-dismiss="modal">Cancel</button>
-                        </div>
+        </div>
+        <div class="modal-dialog fixed-bar">
+            <div class="modal-header-shadow"></div>
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="modal-account-login-form-alert"></div>
+                    <?php echo $modal_component['form']; ?>
+                    <button type="button" class="btn btn-block btn-primary modal-button" onclick="login();">Log In</button>
+                    <div class="modal-body-footnote">
+                        <span>New to Trevol? </span>
+                        <a data-dismiss="modal" data-toggle='modal' data-target="#modal-account-signup" >Sign up</a>
                     </div>
                 </div>
             </div>
@@ -75,5 +74,11 @@
 			$('#modal-account-login-form-alert').html('');
 		});
 	<!-- END -->
+	
+	$(".modal").on("show", function () {
+		$("body").addClass("modal-open");
+	}).on("hidden", function () {
+		$("body").removeClass("modal-open");
+	});
 </script>
 <!-- END -->

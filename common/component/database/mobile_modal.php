@@ -290,6 +290,7 @@
 													name="'.$i['name'].'"
 													value="'.$i['value'].'"
 													placeholder="'.$placeholder.'"
+													onchange="if($(this).val() == \'\') { $(this).siblings(\'label\').addClass(\'hidden\'); } else { $(this).siblings(\'label\').removeClass(\'hidden\'); }"
 													onkeyup="if($(this).val() == \'\') { $(this).siblings(\'label\').addClass(\'hidden\'); } else { $(this).siblings(\'label\').removeClass(\'hidden\'); }"
 													'.$disabled.'
 													'.$min.'

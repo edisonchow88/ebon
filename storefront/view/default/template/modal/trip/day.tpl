@@ -23,7 +23,7 @@
 </style>
 
 <!-- START: Modal -->
-    <div class="modal modal-fixed-top" id="modal-trip-day" role="dialog">
+    <div class="modal modal-fixed-top noselect" id="modal-trip-day" role="dialog">
         <div class="modal-wrapper">
             <div class="modal-header">
                 <div id="modal-trip-day-header-general" class="header fixed-bar fixed-width">
@@ -60,7 +60,7 @@
 			delay: 100,
 			axis: "y",
 			items: ">.result-row", 
-			handle: ".fa-arrows",
+			handle: ".sort-handle",
 			appendTo: "parent",	
 			containment: ".modal-content",
 			scrollSpeed: 10,
@@ -159,7 +159,7 @@
 			sort_order = $(this).find('input[name="sort_order"]').val();
 			content = ''
 				+ '<div class="modal-trip-day-result-row result-row row">'
-					+ '<div class="result-cell col-xs-4">'
+					+ '<div class="result-cell col-xs-4 sort-handle">'
 						+ '<i class="fa fa-fw fa-arrows grabbable"></i>'
 						+ '<i class="fa fa-fw"></i>'
 						+ '<span class="text-day">'

@@ -362,6 +362,7 @@
 		
 		.swiper-slide-content {
 			height:calc(100vh - 80px);
+			padding-bottom:80px;
 		}
 	/* END */
 	/* START: [itinerary] */

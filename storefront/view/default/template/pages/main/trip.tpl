@@ -112,7 +112,7 @@
 		var content = '';
 		content += ''
 			+ '<div class="row result-trip-row noselect">'
-				+ '<a href="'+data.url+'" target="_blank">'
+				+ '<a href="'+data.url+'">'
 					+ '<div class="col-xs-10 text-left">'
 						+ '<div class="result-trip-title line-clamp-1">'
 							+ data.name

@@ -1027,6 +1027,7 @@ class ModelTravelTrip extends Model{
 			
 			//START: run chain reaction
 				$this->deleteLineByDayId($day_id);
+				$this->sortDay($plan_id);
 			//END
 			
 			//START: clear cache
@@ -1062,6 +1063,16 @@ class ModelTravelTrip extends Model{
 			//END
 			
 			return true;
+		}
+		
+		public function sortDay($plan_id) {
+			$day = $this->getDayByPlanId($plan_id);
+			$i = 0;
+			foreach($day as $d) {
+				$i += 1;
+				$data['sort_order'] = $i;
+				$this->editDay($d['day_id'],$data);
+			}
 		}
 	//END
 	

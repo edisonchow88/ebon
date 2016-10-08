@@ -378,6 +378,11 @@
 	/* END */	
 </style>
 
+
+<!-- START: [splash] -->
+	<?php echo $modal_home_splash; ?>
+<!-- END -->
+
 <div id="section-popover-hint"><div id="popover-hint" class="fixed-bar" onclick="$(this).hide();"></div></div>
 <div id="section-body" class="fixed-bar">
 	<div class="row" id="section-content">
@@ -393,14 +398,19 @@
     </div>
     <div id="section-tab" class="fixed-bar">
     	<ul>
-        	<li id="section-tab-explore" class="section-tab-button"><a onclick="showTab('explore');">Explore</a></li>
-            <li id="section-tab-trip" class="section-tab-button"><a onclick="showTab('trip');">Trips</a></li>
-            <li id="section-tab-account" class="section-tab-button"><a onclick="showTab('account');">Account</a></li>
+        	<li id="section-tab-explore" class="section-tab-button"><a onclick="showTab('explore'); window.location.hash='tab=explore';">Explore</a></li>
+            <li id="section-tab-trip" class="section-tab-button"><a onclick="showTab('trip'); window.location.hash='tab=trip';">Trips</a></li>
+            <li id="section-tab-account" class="section-tab-button"><a onclick="showTab('account'); window.location.hash='tab=account';">Account</a></li>
         </ul>
     </div>
 </div>
 
 <script>
+	<!-- START: [splash] -->
+		setTimeout(function() {
+			$('#wrapper-splash').fadeOut(500);
+		},1000);
+	<!-- END -->
 	<!-- START: [popover hint] -->
 		function showHint(hint) {
 			$("#popover-hint").hide();
@@ -409,6 +419,14 @@
 		}
 	<!-- END -->
 	<!-- START: [tab] -->
+		function getHashTab() {
+			var hash = location.hash;
+			if(hash.indexOf('tab') > 0) {
+				hash = hash.replace('#tab=','');
+			}
+			return hash;
+		}
+		
 		function showTab(id) {
 			$('.section-tab-button').removeClass('active');
 			$('#section-tab-'+id).addClass('active');
@@ -420,8 +438,21 @@
 			<?php if($this->request->get_or_post('tab')) { ?>
 				showTab("<?php echo $this->request->get_or_post('tab'); ?>");
 			<?php } else { ?>
-				showTab('explore'); //default browser tab
+				var hashTab = getHashTab();
+				if(hashTab != '') {
+					showTab(hashTab);
+				}
+				else {
+					showTab('explore'); //default browser tab
+				}
 			<?php } ?>
+		}
+		
+		window.onhashchange = function() {
+			var hashTab = getHashTab();
+			if(hashTab != '') {
+				showTab(hashTab);
+			}
 		}
 		
 		initTab();

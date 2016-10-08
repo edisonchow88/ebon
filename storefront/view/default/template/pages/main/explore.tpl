@@ -382,6 +382,9 @@
 		if(hash.indexOf('gid') > 0) {
 			hash = hash.replace('#gid=','');
 		}
+		else {
+			hash = '';
+		}
 		return hash;
 	}
 	

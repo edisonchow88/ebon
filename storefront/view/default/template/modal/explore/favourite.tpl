@@ -301,6 +301,7 @@
 		$('#modal-explore-favourite-header-edit').show();
 		$('.result-favourite-button').html('<i class="fa fa-fw fa-lg fa-square-o"></i>');
 		$('.result-favourite-button').css('color','#CCC');
+		$('.result-favourite-row').removeClass('selected');
 		$('.result-favourite-row').off().on('click',function() { 
 			var button = $(this).find('.result-favourite-button');
 			if($(this).hasClass('selected')) {

@@ -418,7 +418,7 @@
 		}
 		
 		.button-set-date {
-			color:#333;
+			color:#e93578;
 			font-size:12px;
 			line-height:20px;
 			padding:0px;
@@ -562,6 +562,22 @@
 		margin-top:15px;
 		font-size:11px;
 	}
+	
+	/* START: [plan-btn-add-line] */
+		.plan-btn-add-line {
+			padding:15px;
+			text-align:center;
+		}
+		
+		.plan-btn-add-line div {
+			display:inline-block;
+			color:#333;
+			border:solid thin #999;
+			border-radius:20px;
+			padding:7px 15px;
+			font-size:12px;
+		}
+	/* END */
 </style>
 
 <!-- START: [splash] -->
@@ -591,7 +607,6 @@
 
 <!-- START: [modal] -->
 	<?php echo $modal_trip_day; ?>
-	<?php echo $modal_trip_date; ?>
     <?php echo $modal_trip_map; ?>
 <!-- END -->
 
@@ -935,7 +950,7 @@
 <script>
 	<!-- START: [date] -->
 		function initDateButton() {
-			$('.button-set-date').on('click',function() { $('#modal-trip-date').modal('show'); });
+			$('.button-set-date').on('click',function() { $('#modal-trip-day').modal('show'); });
 		}
 	<!-- END -->
 </script>
@@ -1095,7 +1110,7 @@
 						});
 					}
 				}
-				//printButtonAddLine(column, "#plan-day-" + this.day_id + "-content");
+				printButtonAddLine(this.day_id);
 			});
 			//printButtonAddDay(column);
 		<!-- END -->
@@ -1140,7 +1155,7 @@
 				data.date = day.date;
 			}
 			else {
-				data.date = 'Set Dates';
+				data.date = 'Set Date';
 			}
 		<!-- END -->
 		<!-- START: [content] -->
@@ -1238,7 +1253,7 @@
 		<!-- END -->
 		<!-- START: [content] -->
 			content = ''
-				+ '<div class="plan-line">'
+				+ '<div id="plan-line-' + line.line_id + '" class="plan-line">'
 					+ '<div class="row">'
 						+ '<div class="image">'
 							+ '<img class="noselect" src="resources/image/cropped/'+line.image_id+'.jpg" />'
@@ -1276,14 +1291,25 @@
 		<!-- END -->
 	}
 	
+	function printButtonAddLine(day_id) {
+		<!-- START: set output -->
+			var content = ""
+				+"<div class='plan-btn-add-line'>"
+					+ "<div class='text-center' data-toggle='modal' data-target='#modal-add-line'>"
+						+ "ADD SOMETHING NEW"
+					+ "</div>"
+				+"</div>"
+			;
+		<!-- END -->
+		<!-- START: print content -->
+			$("#plan-day-"+day_id+"-line").append(content); 
+		<!-- END -->
+	}
+	
 	refreshPlanTable();
 </script>
 <script>
 <!-- START: [day] -->
-	function selectDayByDayId() {
-		
-	}
-	
 	function addPlanDay() {
 		<!-- START: set common data -->
 			var sort_order = parseInt($('.plan-day').length) + 1;
@@ -1324,103 +1350,6 @@
 		<!-- END -->
 	}
 	
-	function deletePlanDay(day_id) {
-		sort_order = $('#plan-day-'+day_id+'-form-hidden input[name=sort_order]').val();
-		slide_index = parseInt(sort_order) - 1;
-		
-		<!-- START: select new day -->
-			var day_list = new Array;
-			var num_of_day = $('.plan-day-form-hidden').length;
-			$('.plan-day-form-hidden input[name=day_id]').each(function() {
-				value = $(this).val();
-				day_list.push(value);
-			});
-			var i = 0;
-			var target_day_id = false;
-			if(day_id == $('.plan-day-form-hidden input[name=day_id]').first().val()) {
-				<!-- START: select next day -->
-					while(target_day_id == false && i <= num_of_day) {
-						if(day_list[i] == day_id) {
-							target_day_id = day_list[i+1];
-						}
-						i = i + 1;
-					}
-				<!-- END -->
-			}
-			else {
-				<!-- START: select prev day -->
-					while(target_day_id == false && i <= num_of_day) {
-						if(day_list[i] == day_id) {
-							target_day_id = day_list[i-1];
-						}
-						i = i + 1;
-					}
-				<!-- END -->
-			}
-		<!-- END -->
-		
-		if (num_of_day < 2) {
-			content_text = "";
-			showHint("Cannot be deleted. There must be at least one day.");
-		}
-		else {
-			<?php if($this->session->data['memory'] == 'cookie') { ?>
-				var data = { "day_id":day_id ,"sort_order":sort_order };
-				mySwiper.removeSlide(slide_index);
-				runDeletePlanDay(data);
-				//selectDay(target_day_id);
-			<?php } else { ?>
-				<!-- START: set data -->
-					var data = {
-						"action":"delete_day",
-						"day_id":day_id,
-						"sort_order":sort_order
-					};
-				<!-- END -->
-			
-				<!-- START: send POST -->
-					$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-						if(typeof json.warning != 'undefined') {
-							showHint(json.warning);
-						}
-						else if(typeof json.success != 'undefined') {							
-							mySwiper.removeSlide(slide_index);
-							//runDeletePlanDay(data);
-							//selectDay(target_day_id);
-						}
-					}, "json");
-				<!-- END -->
-			<?php } ?>
-		}
-	}
-	
-	function deletePlanLine(line) {
-		line_id = $('#'+line+' .plan-line-form-hidden input[name=line_id]').val();
-		<?php if($this->session->data['memory'] == 'cookie') { ?>					
-			$("#"+ line).remove();
-			runDeletePlanLine();
-		<?php } else { ?>
-			<!-- START: set data -->
-				var data = {
-					"action":"delete_line",
-					"line_id":line_id
-				};
-			<!-- END -->
-		
-			<!-- START: send POST -->
-				$.post("<?php echo $ajax['trip/itinerary']; ?>", data, function(json) {
-					if(typeof json.warning != 'undefined') {
-						showHint(json.warning);
-					}
-					else if(typeof json.success != 'undefined') {
-						$("#"+ line).remove();
-						runDeletePlanLine();
-					}
-				}, "json");
-			<!-- END -->
-		<?php } ?>
-	}
-	
 	function runAddPlanDay(data) {
 		<!-- START: set variable -->
 			var column = <?php echo $column_json; ?>;
@@ -1459,32 +1388,37 @@
 			showHint('Day '+data.sort_order+' Added');
 		<!-- END -->
 	}
-	
-	function runDeletePlanDay(data) {
-		<!-- START: update hidden input -->
-			$('#plan-date-form-hidden input[name=num_of_day]').val(data.sort_order);
-		<!-- END -->
-		
+<!-- END -->
+</script>
+<script>
+<!-- START: [date] -->
+	function updateTravelDate() {
 		<?php if($this->session->data['memory'] == 'cookie') { ?>
 			updatePlanTableCookie();
-		<?php } ?>
-		
-		<!-- START: init function -->
-			refreshPlanTable();
+			showHint('Day Updated');
 			refreshDayList();
-			//refreshDateForm();
-			//updateDateFormButtonEvent();
-			//updatePlanTableButtonEvent();
-			//updatePlanTableDayDate();
-			//updatePlanTableDayDuration();
-			//updatePlanTableLineDayIdAndSortOrder();
-			//initSortableDay();
-			//initSortableLine();
-		<!-- END -->
-		
-		<!-- START: hint -->
-			showHint('Day '+data.sort_order+' Deleted');
-		<!-- END -->
+			refreshPlanTable();
+		<?php } else { ?>
+			<!-- START: set data -->
+				var data = {
+					"action":"edit_plan_date",
+					"plan_id":"<?php echo $plan_id; ?>",
+					"travel_date":$('#plan-date-form-hidden input[name=travel_date]').val()
+				};
+			<!-- END -->
+			<!-- START: send POST -->
+				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+					if(typeof json.warning != 'undefined') {
+						showHint(json.warning);
+					}
+					else if(typeof json.success != 'undefined') {
+						showHint('Day Updated');
+						refreshDayList();
+						refreshPlanTable();
+					}
+				}, "json");
+			<!-- END -->
+		<?php } ?>
 	}
 <!-- END -->
 </script>

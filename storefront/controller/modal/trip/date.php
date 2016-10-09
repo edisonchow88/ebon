@@ -19,15 +19,6 @@ class ControllerModalTripDate extends AController {
 			$action = 'set_date';
 			$input = array();
 			//START: set input [ORDER IS IMPORTANT]
-				$i ='number_of_days';
-				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
-				$input[$i]['placeholder'] = ucwords(str_replace("_"," ",$i));
-				$input[$i]['id'] = str_replace("_","-",$i);
-				$input[$i]['name'] = 'num_of_day';
-				$input[$i]['required'] = true;
-				$input[$i]['value'] = '';
-				$input[$i]['type'] = 'number';
-				
 				$i ='start_date';
 				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
 				$input[$i]['placeholder'] = ucwords(str_replace("_"," ",$i));
@@ -44,7 +35,16 @@ class ControllerModalTripDate extends AController {
 				$input[$i]['name'] = 'last_date';
 				$input[$i]['required'] = false;
 				$input[$i]['value'] = '';
-				$input[$i]['type'] = 'date';
+				$input[$i]['type'] = 'disabled';
+				
+				$i ='number_of_days';
+				$input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$input[$i]['placeholder'] = ucwords(str_replace("_"," ",$i));
+				$input[$i]['id'] = str_replace("_","-",$i);
+				$input[$i]['name'] = 'num_of_day';
+				$input[$i]['required'] = false;
+				$input[$i]['value'] = '';
+				$input[$i]['type'] = 'disabled';
 			//END
 			$setting['autocomplete'] = false;
 			$component['form'] = $this->component_database_mobile_modal->writeForm($id,$action,$input,$setting);

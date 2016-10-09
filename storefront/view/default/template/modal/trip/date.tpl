@@ -42,34 +42,3 @@
 	$("#modal-trip-date").on( "hide.bs.modal", function() {
 	});
 </script>
-<script>
-	function printDate(data) {
-		var travel_date;
-		var last_date;
-		var day;
-		var month;
-		var num_of_day;
-		
-		if(isset(data.travel_date)) {
-			date = new Date(data.travel_date);
-			num_of_day = data.day.length; 
-			
-			travel_date = date;
-			day = ("0" + travel_date.getDate()).slice(-2);
-			month = ("0" + (travel_date.getMonth() + 1)).slice(-2);
-			travel_date = travel_date.getFullYear() + "-" + (month) + "-" + (day) ;
-			
-			last_date = new Date(date.setDate(date.getDate() + num_of_day - 1));
-			day = ("0" + last_date.getDate()).slice(-2);
-			month = ("0" + (last_date.getMonth() + 1)).slice(-2);
-			last_date = last_date.getFullYear() + "-" + (month) + "-" + (day) ;
-			
-			$('#plan-date-form input[name=num_of_day]').val(data.day.length);
-			$('#plan-date-form input[name=travel_date]').val(travel_date);
-			$('#plan-date-form input[name=last_date]').val(last_date);
-			$('#plan-date-form-hidden input[name=travel_date]').val(travel_date);
-			$('#plan-date-form-hidden input[name=last_date]').val(last_date);
-			$('#plan-date-form-hidden input[name=num_of_day]').val(data.day.length);
-		}
-	}
-</script>

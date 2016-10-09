@@ -5,12 +5,42 @@
 		border-bottom:solid thin #DDD;
 	}
 	
+	#modal-trip-day .header label {
+		line-height:40px;
+		padding-left:15px;
+		color:#000;
+		font-weight:normal;
+	}
+	
+	#modal-trip-day .header input {
+		width:100%;
+		height:34px;
+		margin:3px;
+		padding:7px 15px;
+		border:solid thin #CCC;
+		outline:none;
+		color:#000;
+	}
+	
+	.modal-modal {
+		position:fixed;
+		top:40px;
+		left:0;
+		right:0;
+		height:calc(100vh - 40px);
+		margin:auto;
+		background-color:#000;
+		opacity:.5;
+		z-index:20;
+	}
+	
 	.result-row {
 		width:100%;
 		background-color:#FFF;
 		color:#000;
 		border-bottom:solid thin #DDD;
 		cursor:pointer;
+		font-size:12px;
 	}
 	
 	.result-row.active {
@@ -31,6 +61,7 @@
 		height:50px;
 		background-color:#EEE;
 		border-bottom:solid thin #DDD;
+		font-size:12px;
 	}
 	.ui-placeholder-day > div {
 		opacity:.5;
@@ -45,14 +76,29 @@
     <div class="modal modal-fixed-top noselect" id="modal-trip-day" role="dialog">
         <div class="modal-wrapper">
             <div class="modal-header">
-                <div class="header fixed-bar fixed-width row">
+            	<div class="modal-modal fixed-width"></div>
+                <div id="modal-trip-day-header-main" class="header fixed-bar fixed-width row">
                     <div class="col-xs-3 text-left">
                     </div>
                     <div class="col-xs-6 text-center">
                         <div class="title">All Days</div>
                     </div>
                     <div class="col-xs-3 text-right">
+                        <a class="btn btn-header" onclick="openEditDate();">Set Date</a>
                     </div>
+                </div>
+                <div id="modal-trip-day-header-date" class="header fixed-bar fixed-width row">
+                	<form id="plan-date-form-hidden">
+                        <div class="col-xs-3 text-left">
+                            <label for="travel_date">Start Date</label>
+                        </div>
+                        <div class="col-xs-6">
+                            <input class="empty" type="date" min="<?php echo date('Y-m-d'); ?>" name="travel_date" />
+                        </div>
+                        <div class="col-xs-3 text-right">
+                            <a class="btn btn-header" onclick="closeEditDate();">Done</a>
+                        </div>
+                    </form>
                 </div>
                 <div id="modal-trip-day-header-general" class="header header-secondary header-white fixed-bar fixed-width row">
                     <div class="col-xs-3 text-left">
@@ -145,7 +191,21 @@
 			var sort_order = parseInt(index) + 1;
 			var day_id = $(this).find('input[name="day_id"]').val();
 			$(this).find('input[name="sort_order"]').val(sort_order);
-			$(this).find('.text-day').fadeOut(speed).html('Day ' + sort_order).fadeIn(speed);
+			
+			<!-- START: set format for day/date -->
+				var travel_date = $('#plan-date-form-hidden input[name=travel_date]').val();
+				var daydate;
+				if(isset(travel_date)) {
+					var date = new Date(travel_date);
+					date = addDayToDate(date,(sort_order - 1));
+					daydate = formatDate(date);
+				}
+				else {
+					var daydate = 'Day ' + sort_order;
+				}
+			<!-- END -->
+			
+			$(this).find('.text-day').fadeOut(speed).html(daydate).fadeIn(speed);
 			$('#plan-day-'+day_id+'-form-hidden').find('input[name="sort_order"]').val(sort_order);
 		});
 	}
@@ -189,6 +249,34 @@
 		<?php } ?>
 	}
 	
+	Date.prototype.addDay = function(day) {
+		var dat = new Date(this.valueOf());
+		dat.setDate(dat.getDate() + day);
+		return dat;
+	}
+	
+	function addDayToDate(date, day) {
+		var result = new Date(date);
+		result = new Date(result.setDate(result.getDate() + parseInt(day)));
+		return result;
+	}
+	
+	function formatDate(date) {
+		var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		var weekday = new Array(7);
+			weekday[0]=  "Ｓ";
+			weekday[1] = "Ｍ";
+			weekday[2] = "Ｔ";
+			weekday[3] = "Ｗ";
+			weekday[4] = "Ｔ";
+			weekday[5] = "Ｆ";
+			weekday[6] = "Ｓ";
+		date = new Date(date.setDate(date.getDate()));
+		var myWeekday = weekday[date.getDay()];
+		date = ("0" + date.getDate()).slice(-2) + "&nbsp;" + monthNames[(date.getMonth())] + "&nbsp;&nbsp;&nbsp;(" + myWeekday + ")";
+		return date;
+	}
+	
 	function refreshDayList() {
 		var content = '';
 		var sort_order;
@@ -221,6 +309,15 @@
 			}
 			day_id = $(this).find('input[name="day_id"]').val();
 			sort_order = $(this).find('input[name="sort_order"]').val();
+			var travel_date = $('#plan-date-form-hidden input[name=travel_date]').val();
+			if(isset(travel_date)) {
+				var date = new Date(travel_date);
+				date = addDayToDate(date,(sort_order - 1));
+				daydate = formatDate(date);
+			}
+			else {
+				var daydate = 'Day ' + sort_order;
+			}
 			if($('#plan-day-'+day_id).hasClass('swiper-slide-active')) { active = 'active'; } else { active = ''; }
 			content = ''
 				+ '<div id="modal-trip-day-result-row-' + day_id + '" class="modal-trip-day-result-row result-row row ' + active + '">'
@@ -230,8 +327,7 @@
 							+ '<i class="fa fa-fw"></i>'
 						+ '</span>'
 						+ '<span class="text-day">'
-							+ 'Day '
-							+ sort_order
+							+ daydate
 						+ '</span>'
 						+ '<span>'
 							+ '<i class="fa fa-fw"></i>'
@@ -430,5 +526,51 @@
 <script>
 	$("#modal-trip-day").on( "show.bs.modal", function() {
 		closeEditDay();
+		closeEditDate();
+	});
+</script>
+<script>
+	function openEditDate() {
+		$('#modal-trip-day-header-main').hide();
+		$('#modal-trip-day-header-date').show();
+		$('#modal-trip-day .modal-modal').show();
+	}
+	
+	function closeEditDate() {
+		$('#modal-trip-day-header-main').show();
+		$('#modal-trip-day-header-date').hide();
+		$('#modal-trip-day .modal-modal').hide();
+	}
+	
+	function printDate(data) {
+		var travel_date;
+		var last_date;
+		var day;
+		var month;
+		var num_of_day;
+		
+		if(isset(data.travel_date)) {
+			date = new Date(data.travel_date);
+			num_of_day = data.day.length; 
+			
+			travel_date = date;
+			day = ("0" + travel_date.getDate()).slice(-2);
+			month = ("0" + (travel_date.getMonth() + 1)).slice(-2);
+			travel_date = travel_date.getFullYear() + "-" + (month) + "-" + (day) ;
+			
+			/*
+			last_date = new Date(date.setDate(date.getDate() + num_of_day - 1));
+			day = ("0" + last_date.getDate()).slice(-2);
+			month = ("0" + (last_date.getMonth() + 1)).slice(-2);
+			last_date = last_date.getFullYear() + "-" + (month) + "-" + (day) ;
+			*/
+			
+			$('#plan-date-form-hidden input[name=travel_date]').val(travel_date);
+		}
+	}
+</script>
+<script>
+	$('#plan-date-form-hidden input[name=travel_date]').on('change',function() {
+		updateTravelDate();
 	});
 </script>

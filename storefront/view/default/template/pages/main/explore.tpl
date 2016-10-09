@@ -380,7 +380,8 @@
 	function getHash() {
 		var hash = location.hash;
 		if(hash.indexOf('gid') > 0) {
-			hash = hash.replace('#gid=','');
+			hash = hash.replace('gid=','@');
+			hash = hash.substr(hash.indexOf("@") + 1);
 		}
 		else {
 			hash = '';
@@ -1043,6 +1044,10 @@
 	}
 	
 	window.onhashchange = function() {
+		var hashTab = getHashTab();
+		if(hashTab != '') {
+			showTab(hashTab);
+		}
 		initMap();
 	}
 </script>

@@ -423,6 +423,12 @@
 			var hash = location.hash;
 			if(hash.indexOf('tab') > 0) {
 				hash = hash.replace('#tab=','');
+				if(hash.indexOf('&') > 0) {
+					hash = hash.substring(0, hash.indexOf('&'));
+				}
+			}
+			else {
+				hash ='';
 			}
 			return hash;
 		}
@@ -446,13 +452,6 @@
 					showTab('explore'); //default browser tab
 				}
 			<?php } ?>
-		}
-		
-		window.onhashchange = function() {
-			var hashTab = getHashTab();
-			if(hashTab != '') {
-				showTab(hashTab);
-			}
 		}
 		
 		initTab();

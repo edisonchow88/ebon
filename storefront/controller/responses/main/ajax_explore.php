@@ -26,6 +26,8 @@ class ControllerResponsesMainAjaxExplore extends AController {
 		
 		if($action == 'init') { $this->init(); return; }
 		else if($action == 'search') { $this->search(); return; }
+		else if($action == 'get_place') { $this->getPlace(); return; }
+		else if($action == 'add_place') { $this->addPlace(); return; }
 		else { 
 		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 			$result['warning'][] = 'System Failure: Please contact Admin.'; 
@@ -125,5 +127,64 @@ class ControllerResponsesMainAjaxExplore extends AController {
 		}
 		$response = json_encode($result);
 		echo $response;
+	}
+	
+	public function getPlace() {
+		//START: set variable
+			$place_id = $this->data['place_id'];
+		//END
+		//START: set result
+			$result = $this->model_explore_place->getGoogleByPlaceId($place_id);
+		//END
+		//START: format result
+			$result['place_id'] = $result['g_place_id'];
+			$result['name'] = $result['g_name'];
+			$result['photo'] = $result['g_photo'];
+		//END
+		//START: set response
+			$response = json_encode($result);
+			echo $response;
+		//END
+		
+	}
+	
+	public function addPlace() {
+		//START: set variable
+			$place_id = $this->data['place_id'];
+			$user_id = $this->data['user_id'];
+		//END
+		//START: set data
+			$data['g_place_id'] = $place_id;
+			$data['g_name'] = $this->data['name'];
+			$data['g_photo'] = $this->data['photo'];
+			$data['country'] = $this->data['country'];
+			$data['region'] = $this->data['region'];
+			$data['city'] = $this->data['city'];
+		//END
+		//START: format data
+			foreach($data as $key => $value) {
+				if($value == '') { $data[$key] = 'NULL'; }
+			}
+		//END
+		//START: verify place_id if exist
+			$exist = $this->model_explore_place->verifyGoogleByPlaceId($place_id);
+		//END
+		//START: add place_id if not exist
+			if($exist == false) {
+				$google_id =  $this->model_explore_place->addGoogle($data);
+			}
+		//END
+		//START: add favourite if logged in
+			if($user_id != '') {
+				$result = true;
+			}
+			else {
+				$result = false;
+			}
+		//END
+		//START: set response
+			$response = json_encode($result);
+			echo $response;
+		//END
 	}
 }

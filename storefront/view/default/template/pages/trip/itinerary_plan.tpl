@@ -237,7 +237,8 @@
 		
 		.plan-btn-add-line {
 			padding:5px 15px;
-			height:48px;
+			height:70px;
+			line-height:50px;
 		}
 		
 		.plan-btn-add-line a {
@@ -545,7 +546,6 @@
 			<!-- START: end loading -->
 				swithMobileMode();
 				setDay();
-				initTab();
 				$('#wrapper-splash').fadeOut();
 			<!-- END -->
 		}
@@ -874,8 +874,7 @@
 				var output = ""
 					+"<div class='plan-btn-add-line plan-btn-tr'>"
 						+ "<a class='text-center btn-block' data-toggle='modal' data-target='#modal-edit-line'>"
-							+ "<i class='fa fa-plus' aria-hidden='true'></i> &nbsp;&nbsp;"
-							+ "Add New Activity"
+							+ "Add Something New"
 						+ "</a>"
 					+"</div>"
 				;

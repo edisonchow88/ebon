@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesTripItinerary extends AController {
+class ControllerPagesTestHome extends AController {
 	//START: set common variable
 		public $data = array();
 	//END
@@ -284,10 +284,7 @@ class ControllerPagesTripItinerary extends AController {
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/trip/splash', 'modal_trip_splash', 'modal/trip/splash.tpl');
-			$this->addChild('modal/trip/day', 'modal_trip_day', 'modal/trip/day.tpl');
-			$this->addChild('modal/trip/date', 'modal_trip_date', 'modal/trip/date.tpl');
-			$this->addChild('modal/trip/map', 'modal_trip_map', 'modal/trip/map.tpl');
+			$this->addChild('modal/home/splash', 'modal_home_splash', 'modal/home/splash.tpl');
 			$this->addChild('pages/trip/itinerary_guide', 'section_content_guide', 'pages/trip/itinerary_guide.tpl');
 			$this->addChild('pages/trip/itinerary_plan', 'section_content_plan', 'pages/trip/itinerary_plan.tpl');
 			$this->addChild('pages/trip/itinerary_map', 'section_content_map', 'pages/trip/itinerary_map.tpl');
@@ -299,7 +296,7 @@ class ControllerPagesTripItinerary extends AController {
 		//END
 		
 		//START: set link
-			$link['main/home'] = $this->html->getSecureURL('main/home','#tab=trip');
+			$link['main/home'] = $this->html->getSecureURL('main/home');
 		//END
 		
 		//START: set variable
@@ -312,7 +309,7 @@ class ControllerPagesTripItinerary extends AController {
 		//END
 		
 		//START: set template 
-			$this->processTemplate('pages/trip/itinerary.tpl');
+			$this->processTemplate('pages/test/home.tpl');
 		//END
 		
 		//START: init controller data

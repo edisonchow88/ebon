@@ -19,7 +19,7 @@ class ControllerModalAccountDetail extends AController {
 		//END
 		
 		//START: load component	
-			$this->loadComponent('database/modal');
+			$this->loadComponent('database/mobile_modal');
 		//END
 		
 		//START: set form
@@ -45,7 +45,7 @@ class ControllerModalAccountDetail extends AController {
 				$input[$i]['type'] = 'hidden';
 				$input[$i]['text'] = $this->data['email'];
 			//END
-			$modal_component['form'] = $this->component_database_modal->writeForm($id,$action,$input);
+			$modal_component['form'] = $this->component_database_mobile_modal->writeForm($id,$action,$input);
 		//END
 		
 		//START: set ajax

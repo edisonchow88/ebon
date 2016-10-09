@@ -1,6 +1,6 @@
 <style>
 	#modal-explore-review .modal-body {
-		padding:15px 15px 15px 0;
+		padding:15px 15px 70px 0;
 	}
 	
 	.review {
@@ -46,23 +46,34 @@
 </style>
 
 <!-- START: Modal -->
-    <div class="modal" id="modal-explore-review" role="dialog">
-        <div class="modal-dialog fixed-bar">
-            <div class="modal-content">
-                <div class="modal-header">
+    <div class="modal modal-fixed-top" id="modal-explore-review" role="dialog">
+        <div class="modal-wrapper">
+        	<div class="modal-header">
+            	<div class="fixed-bar">
                     <div class="col-xs-3 text-left">
                         <a class="btn btn-header" data-toggle="modal" data-target="#modal-explore-review">Back</a>
                     </div>
                     <div class="col-xs-6 text-center">
-                    	<span class="btn-header modal-title">Reviews</span>
+                        <span class="btn-header modal-title">Reviews</span>
                     </div>
                     <div class="col-xs-3 text-right">
                     </div>
                 </div>
-                <div class="modal-body">
-                	<div id="wrapper-explore-current-review"></div>
+            </div>
+            <div class="modal-dialog fixed-bar">
+                <div class="modal-header-shadow"></div>
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div id="wrapper-explore-current-review"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 <!-- END -->
+
+<script>
+	$("#modal-explore-review").on( "shown.bs.modal", function() {
+		$('#modal-explore-review .modal-content').scrollTop(0);
+	});
+</script>

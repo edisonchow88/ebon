@@ -3,11 +3,9 @@ if(!defined('DIR_CORE')){
 	header('Location: static_pages/');
 }
 
-class ModelExplorePlace extends Model{
+class ModelExploreFavourite extends Model{
 	//START: Set Table
-		private $table = "google";
-		private $table_destination = "destination_google";
-		private $table_poi = "poi_google";
+		private $table = "favourite";
 	//END
 	
 	//START: Set Common Function
@@ -31,74 +29,34 @@ class ModelExplorePlace extends Model{
 	//END
 	
 	//START: [General]
-		public function getPlaceByPlaceId($place_id) {
-			//START: run sql
-				$sql = "
-					(SELECT *, 'destination' as type, destination_id as type_id
-					FROM " . $this->db->table($this->table_destination) . "
-					WHERE g_place_id = '" . $place_id . "' )
-					UNION
-					(SELECT *, 'poi' as type, poi_id as type_id
-					FROM " . $this->db->table($this->table_poi) . "
-					WHERE g_place_id = '" . $place_id . "' )
-					LIMIT 1
-				";
-				$query = $this->db->query($sql);
-			//END
-			//START: Set Output
-				$result = $query->row;
-				$output = $query->row;
-				if($query->num_rows == 0) {
-					$output = false;
-				}
-			//END
-			return $output;
-		}
-	//END
-	
-	//START: [Google]
-		public function verifyGoogleByPlaceId($place_id) {
-			//START: run sql
-				$sql = "
-					SELECT g_place_id
-					FROM " . $this->db->table($this->table) . "
-					WHERE g_place_id = '" . $place_id . "'
-					LIMIT 1
-				";
-				$query = $this->db->query($sql);
-			//END
-			//START: Set Output
-				if($query->num_rows == 0) {
-					$output = false;
-				}
-				else {
-					$output = true;
-				}
-			//END
-			return $output;
-		}
-		
-		public function getGoogleByPlaceId($place_id) {
+		public function getFavouriteByUserId($user_id) {
 			//START: run sql
 				$sql = "
 					SELECT *
 					FROM " . $this->db->table($this->table) . "
-					WHERE g_place_id = '" . $place_id . "'
-					LIMIT 1
+					WHERE user_id = '" . (int)$user_id . "'
 				";
 				$query = $this->db->query($sql);
 			//END
 			//START: Set Output
-				$result = $query->row;
-				$output = $query->row;
+				$result = $query->rows;
+				$output = array();
 				if($query->num_rows == 0) {
-					$output = false;
+					return false;
+				}
+				foreach($result as $key => $value) {
+					$output[] = $result[$key]['place_id'];
 				}
 			//END
 			return $output;
 		}
 		
-		public function addGoogle($data) {
+		public function addFavourite($data) {
+			/*
+			//START: verify existance
+				if(hasFavourite($data)) { return; }
+			//END
+			*/
 			//START: Run SQL
 				$fields = $this->getFields($this->db->table($this->table));
 				
@@ -124,14 +82,59 @@ class ModelExplorePlace extends Model{
 				$query = $this->db->query($sql);
 			//END
 			
-			$google_id = $this->db->getLastId();
+			$favourite_id = $this->db->getLastId();
 			
 			//START: Run Chain Reaction
 			//END
 			
-			$this->cache->delete('google');
+			$this->cache->delete('favourite');
 			
-			return $google_id;
+			return $favourite_id;
+		}
+		
+		public function deleteFavouriteByPlaceIdAndUserId($place_id, $user_id) {
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table) . " 
+					WHERE place_id = '" . $place_id . "' AND user_id = '" . (int)$user_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: run chain reaction
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('favourite');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+		
+		public function hasFavourite($data) {
+			//START: Run SQL
+				$sql = "
+					SELECT *
+					FROM " . $this->db->table($this->table) . "
+					WHERE user_id = '" . (int)$user_id . "' AND place_id = '" . (int)$place_id . "'
+					LIMIT 1
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: Set Output
+				$result = $query->row;
+				$output = $query->row;
+				if($query->num_rows == 0) {
+					$output = false;
+				}
+				else {
+					$output = true;
+				}
+			//END
+			return $output;
 		}
 	//END
 }

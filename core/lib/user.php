@@ -81,7 +81,6 @@ final class AUser{
 					unset($this->session->data['email']);
 					unset($this->session->data['password']);
 				}
-				unset($this->session->data['account_action']);
 			}
 		//END
 		

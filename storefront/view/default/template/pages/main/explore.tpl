@@ -1,4 +1,11 @@
 <style>
+	#wrapper-explore-favourite-button .badge{
+		font-size:11px;
+		margin-right:5px;
+		border-radius:10px;
+		background-color:#900;
+	}
+	
 	#wrapper-explore-search {
 		position:fixed;
 		top:40px;
@@ -117,6 +124,11 @@
 		}
 		
 		/* START: [country] */
+			.result-country {
+				width:100%;
+				padding:5px 15px;
+			}
+		
 			.result-country-wrapper {
 				position:relative;
 				border-radius:5px;
@@ -124,7 +136,7 @@
 			}
 			
 			.result-country-image {
-				height:200px;
+				height:150px;
 				overflow:hidden;
 				border-radius:5px;
 			}
@@ -140,7 +152,7 @@
 				width:100%;
 				padding:7px 15px;
 				border-radius:0 0 5px 5px;
-				background-color:rgba(0, 0, 0, 0.5);
+				background:linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.8));
 				color: white;
 				text-shadow:
 				-1px -1px 0 #000,
@@ -271,7 +283,7 @@
             <h1>Explore</h1>
         </div>
         <div class="col-xs-3 text-right">
-            <a class="btn btn-header"><i class="fa fa-fw fa-lg fa-heart-o"></i></a>
+            <a id="wrapper-explore-favourite-button" class="btn btn-header" data-toggle="modal" data-target="#modal-explore-favourite"><i class="fa fa-fw fa-lg fa-heart-o"></i></a>
         </div>
     </div>
 
@@ -298,13 +310,20 @@
         </div>
         <div id="wrapper-explore-current-action">
         	<div id="wrapper-explore-current-favourite" class="row wrapper-explore-current-row">
-            	<a>
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-circle fa-stack-2x"></i>
-                        <i class="fa fa-heart fa-stack-1x fa-inverse"></i>
+            	<a class="button-add-favourite">
+                	<span class="fa-stack fa-lg">
+                        <i class="fa fa-heart fa-stack-1x"></i>
                     </span>
                  	<span>Add to My Favourite</span>
                  </a>
+                 <div class="button-show-favourite">
+                    <span class="fa-stack fa-lg" style="color:#e93578;">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-heart fa-stack-1x fa-inverse"></i>
+                    </span>
+                 	<span>Added. </span>
+                    <span><a data-toggle="modal" data-target="#modal-explore-favourite">(view my favourite)</a></span>
+                 </div>
             </div>
         </div>
         <div id="wrapper-explore-current-misc">
@@ -344,35 +363,27 @@
         </div>
     </div>
 <!-- END -->
-
-<!-- START: [modal] -->
-	<?php echo $modal_explore_search; ?>
-    <?php echo $modal_explore_map; ?>
-    <?php echo $modal_explore_review; ?>
+<!-- START: [form] -->
+	<div class="hidden">
+    	<form id="wrapper-explore-current-form">
+        	<input type="hidden" name="place_id"/>
+            <input type="hidden" name="name"/>
+            <input type="hidden" name="photo"/>
+            <input type="hidden" name="city"/>
+            <input type="hidden" name="region"/>
+            <input type="hidden" name="country"/>
+        </form>
+    </div>
 <!-- END -->
 
-<script>
-	function convertTime(time) {
-	  // Check correct time format and split into components
-	  time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
-	
-	  if (time.length > 1) { // If time format correct
-		time = time.slice (1);  // Remove full string match value
-		time[5] = +time[0] < 12 ? ' am' : ' pm'; // Set AM/PM
-		time[0] = +time[0] % 12 || 12; // Adjust hours
-	  }
-	  return time.join (''); // return adjusted time or original string
-	}
-	
-	function convertTitleCase(str) {
-		return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-	}
-</script>
 <script>
 	function getHash() {
 		var hash = location.hash;
 		if(hash.indexOf('gid') > 0) {
 			hash = hash.replace('#gid=','');
+		}
+		else {
+			hash = '';
 		}
 		return hash;
 	}
@@ -502,10 +513,21 @@
 				$('#wrapper-explore-current-website').hide();
 				$('.result-list-wrapper').hide();
 			<!-- END -->
+			<!-- START: reset form -->
+				$('#wrapper-explore-current-form input').val('');
+			<!-- END -->
 		<!-- END -->
 		
 		<!-- START: set hash -->
 			window.location.hash = '#gid='+current.place_id;
+		<!-- END -->
+		
+		<!-- START: [favourite] -->
+			updateWrapperExploreButtonAddFavourite(current.place_id);
+		<!-- END -->
+		
+		<!-- START: [place_id] -->
+			$('#wrapper-explore-current-form input[name=place_id]').val(current.place_id);
 		<!-- END -->
 		
 		//image
@@ -513,6 +535,7 @@
 			<!-- START: using own server -->
 				if(typeof current.image != 'undefined' && current.image != null && current.image != '') {
 					$('#wrapper-explore-current-image').html("<img src='"+current.image[0].path+"' onerror='$(this).hide();'>");
+					$('#wrapper-explore-current-form input[name=photo]').val(current.image[0].path);
 				}
 				
 			<!-- END -->
@@ -520,6 +543,7 @@
 				else {
 					if(current.photos.length > 0) {
 						$('#wrapper-explore-current-image').html("<img src='"+current.photos[0].url+"' onerror='$(this).hide();'>");
+						$('#wrapper-explore-current-form input[name=photo]').val(current.photos[0].url);
 					}
 				}
 			<!-- END -->
@@ -527,6 +551,30 @@
 		
 		//parent
 		<!-- START: [parent] -->
+			<!-- START: set city, region, country -->
+			if(current.address_components.length > 0) {
+				var city = 0;
+				var region = 0;
+				var country = 0;
+				
+				<!-- START: assign address component -->
+					$.each(current.address_components, function(index,value) {
+						if($.inArray('locality',value.types) != -1) {
+							city = value.long_name;
+							$('#wrapper-explore-current-form input[name=city]').val(city);
+						}
+						else if($.inArray('administrative_area_level_1',value.types) != -1) {
+							region = value.long_name;
+							$('#wrapper-explore-current-form input[name=region]').val(region);
+						}
+						else if($.inArray('country',value.types) != -1) {
+							country = value.long_name;
+							$('#wrapper-explore-current-form input[name=country]').val(country);
+						}
+					});
+				<!-- END -->
+			}
+			<!-- END -->
 			<!-- START: using own server -->
 				if(typeof current.parent != 'undefined' && current.parent != null && current.parent != '') {
 					if(typeof current.parent.g_place_id != 'undefined' && current.parent.g_place_id != null && current.parent.g_place_id != '') {
@@ -541,24 +589,6 @@
 			<!-- START: using Google -->
 				else {
 					if(current.address_components.length > 0) {
-						var city = 0;
-						var region = 0;
-						var country = 0;
-						
-						<!-- START: assign address component -->
-							$.each(current.address_components, function(index,value) {
-								if($.inArray('locality',value.types) != -1) {
-									city = value.long_name;
-								}
-								else if($.inArray('administrative_area_level_1',value.types) != -1) {
-									region = value.long_name;
-								}
-								else if($.inArray('country',value.types) != -1) {
-									country = value.long_name;
-								}
-							});
-						<!-- END -->
-						
 						<!-- START: set parent based on type -->
 							if(current.types.length > 0) {
 								if($.inArray('country',current.types) != -1) {
@@ -607,6 +637,7 @@
 		
 		//title
 		$('#wrapper-explore-current-title').html(current.name);
+		$('#wrapper-explore-current-form input[name=name]').val(current.name);
 		
 		//rating
 		if(current.rating != null) {
@@ -882,6 +913,39 @@
 		}, 500);
 	}
 	
+	function updateWrapperExploreButtonAddFavourite(place_id) {
+		<?php if($this->user->isLogged() == false) { ?>
+			if(inFavourite(place_id) == true) {
+				$('#wrapper-explore-current-favourite .button-add-favourite').hide();
+				$('#wrapper-explore-current-favourite .button-show-favourite').show();
+			}
+			else {
+				$('#wrapper-explore-current-favourite .button-add-favourite').show();
+				$('#wrapper-explore-current-favourite .button-show-favourite').hide();
+			}
+		<?php } else { ?>
+			<!-- START: set data -->
+				var data = {
+					"action"	: "get_favourite",
+					"user_id"	: "<?php echo $this->user->getUserId(); ?>"
+				};
+			<!-- END -->
+			<!-- START: send POST -->
+				$.post("<?php echo $ajax['main/ajax_favourite']; ?>", data, function(json) {
+					var favourite = json;
+					if($.inArray(place_id,favourite) != -1) {
+						$('#wrapper-explore-current-favourite .button-add-favourite').hide();
+						$('#wrapper-explore-current-favourite .button-show-favourite').show();
+					}
+					else {
+						$('#wrapper-explore-current-favourite .button-add-favourite').show();
+						$('#wrapper-explore-current-favourite .button-show-favourite').hide();
+					}
+				}, "json");
+			<!-- END -->
+		<?php } ?>
+	}
+	
 	function initExplore() {
 		<!-- START: replace variable from server -->
 			<!-- START: set data -->
@@ -915,7 +979,7 @@
 							<!-- END -->
 							<!-- START: write content -->
 								content = '';
-								content += '<div class="result row">';
+								content += '<div class="result-country row">';
 									content += '<div class="result-country-wrapper col-xs-12 box-shadow" ';
 									content += 'onclick="explorePlace(\''+json.destination[i].g_place_id+'\')";';
 									content += '>';
@@ -982,3 +1046,27 @@
 		initMap();
 	}
 </script>
+<script>
+	function convertTime(time) {
+	  // Check correct time format and split into components
+	  time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+	
+	  if (time.length > 1) { // If time format correct
+		time = time.slice (1);  // Remove full string match value
+		time[5] = +time[0] < 12 ? ' am' : ' pm'; // Set AM/PM
+		time[0] = +time[0] % 12 || 12; // Adjust hours
+	  }
+	  return time.join (''); // return adjusted time or original string
+	}
+	
+	function convertTitleCase(str) {
+		return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+	}
+</script>
+
+<!-- START: [modal] -->
+	<?php echo $modal_explore_search; ?>
+    <?php echo $modal_explore_map; ?>
+    <?php echo $modal_explore_review; ?>
+    <?php echo $modal_explore_favourite; ?>
+<!-- END -->

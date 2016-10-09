@@ -47,7 +47,7 @@ class ControllerResponsesAccountAjaxUser extends AController {
 		//END
 		
 		//START: set session (to pass information to refreshed page to trigger related function)
-			$this->session->data['account_action'] = 'login';
+			$this->session->data['account_action'] = 'signup';
 		//END
 		
 		//START: return responseText

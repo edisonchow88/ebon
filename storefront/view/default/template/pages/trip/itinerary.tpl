@@ -153,6 +153,7 @@
 	/* START: modal */
 		.modal {
 			text-align:center;
+			color:#000;
 		}
 		
 		.modal-dialog {
@@ -418,7 +419,7 @@
 		}
 		
 		.button-set-date {
-			color:#e93578;
+			color:#333;
 			font-size:12px;
 			line-height:20px;
 			padding:0px;
@@ -477,7 +478,6 @@
 	}
 	
 	.plan-day-line {
-		min-height:calc(100vh - 120px);
 	}
 	
 	.plan-line {
@@ -562,7 +562,15 @@
 		margin-top:15px;
 		font-size:11px;
 	}
-	
+	/* START: [plan-day-line-empty] */
+		.plan-day-line-empty {
+			width:100%;
+			color:#777;
+			padding-top:20vh;
+			font-weight:bold;
+			text-align:center;
+		}
+	/* END */
 	/* START: [plan-btn-add-line] */
 		.plan-btn-add-line {
 			padding:15px;
@@ -572,10 +580,11 @@
 		.plan-btn-add-line div {
 			display:inline-block;
 			color:#333;
-			border:solid thin #999;
+			border:solid 2px #EEE;
 			border-radius:20px;
 			padding:7px 15px;
 			font-size:12px;
+			cursor:pointer;
 		}
 	/* END */
 </style>
@@ -608,6 +617,7 @@
 <!-- START: [modal] -->
 	<?php echo $modal_trip_day; ?>
     <?php echo $modal_trip_map; ?>
+    <?php echo $modal_line_add; ?>
 <!-- END -->
 
 <script>
@@ -656,7 +666,8 @@
 <script>
 	var mySwiper = new Swiper ('.swiper-container', {
 		direction:'horizontal',
-		loop:false
+		loop:false,
+		threshold:30
 	})
 	
 	function initSwiperButton() {
@@ -706,6 +717,8 @@
 				$('.plan-line .transport-row').hide();
 				ui.placeholder.html(ui.item.html());
 				$(this).sortable('refreshPositions');
+				$('.plan-day-line').css('min-height','calc(100vh - 120px)');
+				$('.plan-day-footer').hide();
 			},
 			sort: function( event, ui ) {
 				if(collision($('.ui-helper'),$('#hidden-swiper-right-column')) == true) {
@@ -754,6 +767,10 @@
 				
 				$('.plan-line .detail').show();
 				$('.plan-line .transport-row').show();
+				$('.plan-day-line').css('min-height','0px');
+				$('.plan-day-footer').show();
+				
+				refreshPlanDayLineEmpty();
 				
 				$('#hidden-swiper-right-column').off();
 				$('#hidden-swiper-left-column').off();
@@ -1103,13 +1120,14 @@
 		<!-- START: print table -->
 			$.each(data_cooked.day, function(i) {
 				printDay(column, this, data_raw.day[i]);
-				if(typeof this.line != 'undefined' && this.line != null && this.line != '') {
+				if(isset(this.line)) {
 					if(this.line.length > 0) {
 						$.each(this.line, function(j) {
 							printLine(column, this, data_raw.day[i].line[j]);
 						});
 					}
 				}
+				printDayLineEmpty(this.day_id);
 				printButtonAddLine(this.day_id);
 			});
 			//printButtonAddDay(column);
@@ -1155,7 +1173,7 @@
 				data.date = day.date;
 			}
 			else {
-				data.date = 'Set Date';
+				data.date = '';
 			}
 		<!-- END -->
 		<!-- START: [content] -->
@@ -1179,6 +1197,8 @@
 							+ '<div class="col-xs-4 text-right"><div class="btn button-view-map">View Map</div></div>'
 						+ '</div>'
 						+ '<div class="plan-day-line" id="plan-day-'+day.day_id+'-line">'
+						+ '</div>'
+						+ '<div class="plan-day-footer" id="plan-day-'+day.day_id+'-footer">'
 						+ '</div>'
 					+ '</div>'
 					+ '<form class="plan-day-form-hidden plan-form-hidden" id="plan-day-' + day.day_id + '-form-hidden">'
@@ -1291,19 +1311,49 @@
 		<!-- END -->
 	}
 	
-	function printButtonAddLine(day_id) {
+	function printDayLineEmpty(day_id) {
+		<!-- START: set visibility -->
+			var hidden = '';
+			var line = $('#plan-day-'+day_id+'-line .plan-line').length;
+			if(line > 0) { hidden = 'hidden'; }
+		<!-- END -->
 		<!-- START: set output -->
-			var content = ""
-				+"<div class='plan-btn-add-line'>"
-					+ "<div class='text-center' data-toggle='modal' data-target='#modal-add-line'>"
-						+ "ADD SOMETHING NEW"
-					+ "</div>"
-				+"</div>"
+			var content = ''
+				+'<div class="plan-day-line-empty ' + hidden + '">'
+					+ 'No activity in this day'
+				+'</div>'
 			;
 		<!-- END -->
 		<!-- START: print content -->
-			$("#plan-day-"+day_id+"-line").append(content); 
+			$("#plan-day-"+day_id+"-footer").append(content); 
 		<!-- END -->
+	}
+	
+	function printButtonAddLine(day_id) {
+		<!-- START: set output -->
+			var content = ''
+				+'<div class="plan-btn-add-line">'
+					+ '<div class="text-center" data-toggle="modal" data-target="#modal-line-add">'
+						+ 'ADD SOMETHING NEW'
+					+ '</div>'
+				+'</div>'
+			;
+		<!-- END -->
+		<!-- START: print content -->
+			$("#plan-day-"+day_id+"-footer").append(content); 
+		<!-- END -->
+	}
+	
+	function refreshPlanDayLineEmpty() {
+		$('.plan-day-line-empty').addClass('hidden');
+		$('.plan-day').each(function() {
+			var day_id = $(this).find('.plan-day-form-hidden input[name=day_id]').val();
+			<!-- START: set visibility -->
+				var hidden = '';
+				var line = $(this).find('.plan-line').length;
+				if(line < 1) { $(this).find('.plan-day-line-empty').removeClass('hidden'); }
+			<!-- END -->
+		});
 	}
 	
 	refreshPlanTable();

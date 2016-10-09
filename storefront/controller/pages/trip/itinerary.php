@@ -286,7 +286,6 @@ class ControllerPagesTripItinerary extends AController {
 		//START: set modal
 			$this->addChild('modal/trip/splash', 'modal_trip_splash', 'modal/trip/splash.tpl');
 			$this->addChild('modal/trip/day', 'modal_trip_day', 'modal/trip/day.tpl');
-			$this->addChild('modal/trip/date', 'modal_trip_date', 'modal/trip/date.tpl');
 			$this->addChild('modal/trip/map', 'modal_trip_map', 'modal/trip/map.tpl');
 			$this->addChild('pages/trip/itinerary_guide', 'section_content_guide', 'pages/trip/itinerary_guide.tpl');
 			$this->addChild('pages/trip/itinerary_plan', 'section_content_plan', 'pages/trip/itinerary_plan.tpl');

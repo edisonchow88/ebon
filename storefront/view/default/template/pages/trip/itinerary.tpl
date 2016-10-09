@@ -562,6 +562,22 @@
 		margin-top:15px;
 		font-size:11px;
 	}
+	
+	/* START: [plan-btn-add-line] */
+		.plan-btn-add-line {
+			padding:15px;
+			text-align:center;
+		}
+		
+		.plan-btn-add-line div {
+			display:inline-block;
+			color:#333;
+			border:solid thin #999;
+			border-radius:20px;
+			padding:7px 15px;
+			font-size:12px;
+		}
+	/* END */
 </style>
 
 <!-- START: [splash] -->
@@ -1094,7 +1110,7 @@
 						});
 					}
 				}
-				//printButtonAddLine(column, "#plan-day-" + this.day_id + "-content");
+				printButtonAddLine(this.day_id);
 			});
 			//printButtonAddDay(column);
 		<!-- END -->
@@ -1237,7 +1253,7 @@
 		<!-- END -->
 		<!-- START: [content] -->
 			content = ''
-				+ '<div class="plan-line">'
+				+ '<div id="plan-line-' + line.line_id + '" class="plan-line">'
 					+ '<div class="row">'
 						+ '<div class="image">'
 							+ '<img class="noselect" src="resources/image/cropped/'+line.image_id+'.jpg" />'
@@ -1272,6 +1288,21 @@
 		<!-- END -->
 		<!-- START: print content -->
 			$("#plan-day-"+line.day_id+"-line").append(content); 
+		<!-- END -->
+	}
+	
+	function printButtonAddLine(day_id) {
+		<!-- START: set output -->
+			var content = ""
+				+"<div class='plan-btn-add-line'>"
+					+ "<div class='text-center' data-toggle='modal' data-target='#modal-add-line'>"
+						+ "ADD SOMETHING NEW"
+					+ "</div>"
+				+"</div>"
+			;
+		<!-- END -->
+		<!-- START: print content -->
+			$("#plan-day-"+day_id+"-line").append(content); 
 		<!-- END -->
 	}
 	

@@ -377,18 +377,6 @@
 <!-- END -->
 
 <script>
-	function getHash() {
-		var hash = location.hash;
-		if(hash.indexOf('gid') > 0) {
-			hash = hash.replace('gid=','@');
-			hash = hash.substr(hash.indexOf("@") + 1);
-		}
-		else {
-			hash = '';
-		}
-		return hash;
-	}
-	
 	function startLoadExplore() {
 		$(window).scrollTop(0);
 		$('#wrapper-explore-loading').show();
@@ -400,7 +388,7 @@
 	
 	function explorePlace(place_id) {
 		if(place_id != '') {
-			window.location.hash = '#gid='+place_id;
+			window.location.hash = '#tab=explore&gid='+place_id;
 		}
 		else {
 			window.location.hash = '';
@@ -520,7 +508,12 @@
 		<!-- END -->
 		
 		<!-- START: set hash -->
-			window.location.hash = '#gid='+current.place_id;
+			if(getHashTab() != '') {
+				window.location.hash = '#tab=' + getHashTab() + '&gid=' + current.place_id;
+			}
+			else {
+				window.location.hash = '#tab=explore&gid=' + current.place_id;
+			}
 		<!-- END -->
 		
 		<!-- START: [favourite] -->

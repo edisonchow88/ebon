@@ -163,7 +163,8 @@
 			margin:0;
 			padding:0 15px;
 			font-size:14px;
-			line-height:38px;
+			line-height:40px;
+			border:none;
 		}
 		
 		.btn-header:active {
@@ -398,9 +399,9 @@
     </div>
     <div id="section-tab" class="fixed-bar">
     	<ul>
-        	<li id="section-tab-explore" class="section-tab-button"><a onclick="showTab('explore'); window.location.hash='tab=explore';">Explore</a></li>
-            <li id="section-tab-trip" class="section-tab-button"><a onclick="showTab('trip'); window.location.hash='tab=trip';">Trips</a></li>
-            <li id="section-tab-account" class="section-tab-button"><a onclick="showTab('account'); window.location.hash='tab=account';">Account</a></li>
+        	<li id="section-tab-explore" class="section-tab-button"><a onclick="showTab('explore');">Explore</a></li>
+            <li id="section-tab-trip" class="section-tab-button"><a onclick="showTab('trip');">Trips</a></li>
+            <li id="section-tab-account" class="section-tab-button"><a onclick="showTab('account');">Account</a></li>
         </ul>
     </div>
 </div>
@@ -419,6 +420,18 @@
 		}
 	<!-- END -->
 	<!-- START: [tab] -->
+		function getHash() {
+			var hash = location.hash;
+			if(hash.indexOf('gid') > 0) {
+				hash = hash.replace('gid=','@');
+				hash = hash.substr(hash.indexOf("@") + 1);
+			}
+			else {
+				hash = '';
+			}
+			return hash;
+		}
+		
 		function getHashTab() {
 			var hash = location.hash;
 			if(hash.indexOf('tab') > 0) {
@@ -433,11 +446,21 @@
 			return hash;
 		}
 		
+		function setHashTab(id) {
+			if(getHash() != '') {
+				window.location.hash = '#tab=' + id + '&gid=' + getHash();
+			}
+			else {
+				window.location.hash = '#tab=' + id;
+			}
+		}
+		
 		function showTab(id) {
 			$('.section-tab-button').removeClass('active');
 			$('#section-tab-'+id).addClass('active');
 			$('.content').hide();
 			$('#content-'+id).show();
+			setHashTab(id);
 		}
 		
 		function initTab() {
@@ -445,6 +468,7 @@
 				showTab("<?php echo $this->request->get_or_post('tab'); ?>");
 			<?php } else { ?>
 				var hashTab = getHashTab();
+				var hash = getHash();
 				if(hashTab != '') {
 					showTab(hashTab);
 				}
@@ -461,3 +485,5 @@
 		showHint("<?php echo $last_action; ?>");
 	<?php } ?>
 </script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>

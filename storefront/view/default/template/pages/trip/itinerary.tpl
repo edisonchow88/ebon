@@ -480,11 +480,14 @@
 		min-height:calc(100vh - 120px);
 	}
 	
-	.plan-line {
+	.plan-line, .line-twins {
 		padding:7px 15px;
 		line-height:20px;
 		font-size:12px;
 		color:#000;
+	}
+	
+	.plan-line {
 		cursor: pointer; /* fallback if grab cursor is unsupported */
 		cursor: grab;
 		cursor: -moz-grab;
@@ -497,7 +500,7 @@
 		cursor: -webkit-grabbing;
 	}
 	
-	.plan-line .image {
+	.plan-line .image, .line-twins .image {
 		position:relative;
 		float:left;
 		height:60px;
@@ -520,20 +523,20 @@
 		font-size:12px;
 	}
 	
-	.plan-line .image img {
+	.plan-line .image img, .line-twins .image img {
 		height:60px;
 		width:60px;
 		border-radius:30px;
 	}
 	
-	.plan-line .description {
+	.plan-line .description, .line-twins .description {
 		display:block;
 		float:right;
 		width:calc(100% - 60px);
 		padding-left:15px;
 	}
 	
-	.plan-line .title {
+	.plan-line .title, .line-twins .title{
 		display:table-cell;
 		height:60px;
 		vertical-align:middle;
@@ -552,7 +555,7 @@
 		position:relative;
 	}
 	
-	.plan-line .transport {
+	.plan-line .transport, .line-twins .transport {
 		float:right;
 		width:calc(100% - 60px);
 		padding-left:15px;
@@ -703,7 +706,7 @@
 				mySwiper.endNow();
 				mySwiper.detachEvents();
 				$('.plan-line .detail').hide();
-				$('.plan-line .transport-row').hide();
+				$('.transport-row').hide();
 				ui.placeholder.html(ui.item.html());
 				$(this).sortable('refreshPositions');
 			},
@@ -753,7 +756,7 @@
 				mySwiper.attachEvents();
 				
 				$('.plan-line .detail').show();
-				$('.plan-line .transport-row').show();
+				$('.transport-row').show();
 				
 				$('#hidden-swiper-right-column').off();
 				$('#hidden-swiper-left-column').off();
@@ -1276,8 +1279,11 @@
 						+ '<div class="transport">'
 							+ '<span>'
 								+ '<i class="fa fa-fw fa-car"></i><i class="fa fa-fw"></i>'
+							+ '</span>'
+							+ '<span class="text">'
 								+ '3.7 km / 45 mins'
 							+ '</span>'
+							+ '<span class="path hidden"></span>'
 						+ '</div>'
 					+ '</div>' 
 					+ '<form class="plan-line-form-hidden plan-form-hidden hidden" id="plan-line-' + line.line_id + '-form-hidden">'

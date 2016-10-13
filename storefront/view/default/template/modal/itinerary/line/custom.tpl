@@ -81,11 +81,13 @@
 	}
 	#modal-line-custom .icon-disabled {
 		position:absolute;
+		background-color:#FFF;
 		color:#999;
 		height:50px;
 		padding:15px;
 		top:0;
 		right:0;
+		border-bottom:solid thin #DDD;
 	}
 </style>
 

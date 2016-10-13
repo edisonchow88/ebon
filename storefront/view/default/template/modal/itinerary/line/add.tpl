@@ -1,5 +1,5 @@
 <style>
-	#wrapper-explore-search {
+	.search-bar {
 		position:fixed;
 		top:40px;
 		height:40px;
@@ -8,14 +8,10 @@
 		border-bottom:solid thin #CCC;
 	}
 	
-	#wrapper-explore-search input {
+	.search-bar input {
 		text-align:center;
 		font-size:12px;
 		border-radius:5px;
-	}
-	
-	#wrapper-explore-search-shadow {
-		height:40px;
 	}
 	
 	.menu li {
@@ -31,6 +27,14 @@
 	
 	.menu li:hover {
 		background-color:#EEE;
+	}
+	
+	.menu li.text-danger {
+		color:#F00;
+	}
+	
+	.menu li.text-danger .fa {
+		color:#C00;
 	}
 </style>
 
@@ -51,16 +55,20 @@
             </div>
             <div class="modal-dialog fixed-width">
                 <div class="modal-header-shadow"></div>
-                <div class="modal-header-shadow"></div>
+                <div class="modal-header-shadow search-bar-shadow"></div>
                 <div class="modal-content">
                     <div class="modal-body nopadding">
-                    	<div class="fixed-bar fixed-width" id="wrapper-explore-search">
-                            <input class="form-control" placeholder="Search" data-toggle="modal" data-target="#modal-explore-search">
+                    	<div class="fixed-bar fixed-width search-bar">
+                            <input class="form-control" placeholder="Search" data-toggle="modal" data-target="#modal-line-search">
                         </div>
                     	<ul class="menu">
-                        	<li><i class="fa fa-fw fa-lg fa-location-arrow"></i><i class="fa fa-fw"></i>Explore Around</li>
+                        	<li data-toggle="modal" data-target="#modal-line-explore" onclick="closeModalLineAdd();">
+                            	<i class="fa fa-fw fa-lg fa-location-arrow"></i><i class="fa fa-fw"></i>Explore Around
+                            </li>
                         	<li><i class="fa fa-fw fa-lg fa-heart"></i><i class="fa fa-fw"></i>From My Favourites</li>
-                            <li><i class="fa fa-fw fa-lg fa-plus-circle"></i><i class="fa fa-fw"></i>Add Custom Activity</li>
+                            <li onclick="openModalLineCustom() ;">
+                            	<i class="fa fa-fw fa-lg fa-plus-circle"></i><i class="fa fa-fw"></i>Add Custom Activity
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -70,4 +78,15 @@
 <!-- END -->
 
 <script>
+	function closeModalLineAdd() {
+		$('#modal-line-add').modal('hide');
+	}
+	
+	function openModalLineCustom() {
+		closeModalLineAdd();
+		$('#modal-line-custom-form').trigger("reset");
+		$('#modal-line-custom-form input[type=hidden]').val('');
+		$('#modal-line-custom .image img').attr('src','resources/image/error/noimage.png');
+		$('#modal-line-custom').modal('show');
+	}
 </script>

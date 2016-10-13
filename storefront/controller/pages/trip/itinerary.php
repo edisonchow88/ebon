@@ -138,25 +138,6 @@ class ControllerPagesTripItinerary extends AController {
 			$column[$i]['thAlign'] = 'left';
 			$column[$i]['visible'] = 'true';
 			
-			$i = 'datetime';
-			$column[$i]['title'] = 'Date / Time';
-			$column[$i]['name'] = $i;
-			$column[$i]['id'] = str_replace("_","-",$i);
-			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
-			$j = 'date';
-			$column[$i]['dayName'] = $j;
-			$column[$i]['dayId'] = str_replace("_","-",$j);
-			$column[$i]['dayClass'] = 'plan-col-'.str_replace("_","-",$j);
-			$j = 'time';
-			$column[$i]['lineName'] = $j;
-			$column[$i]['lineId'] = str_replace("_","-",$j);
-			$column[$i]['lineClass'] = 'plan-col-'.str_replace("_","-",$j);
-			$column[$i]['width'] = '90px';
-			$column[$i]['align'] = '';
-			$column[$i]['headerAlign'] = '';
-			$column[$i]['thAlign'] = 'left';
-			$column[$i]['visible'] = 'true';
-			
 			$i = 'title';
 			$column[$i]['name'] = $i;
 			$column[$i]['id'] = str_replace("_","-",$i);
@@ -167,6 +148,29 @@ class ControllerPagesTripItinerary extends AController {
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['thAlign'] = 'left';
 			$column[$i]['visible'] = 'true';
+			
+			$i = 'description';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['width'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'true';
+			
+			$i = 'time';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['width'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['type'] = 'progress';
 			
 			$i = 'duration';
 			$column[$i]['name'] = $i;
@@ -192,6 +196,17 @@ class ControllerPagesTripItinerary extends AController {
 			$column[$i]['visible'] = 'false';
 			
 			$i = 'place';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['width'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'false';
+			
+			$i = 'place_id';
 			$column[$i]['name'] = $i;
 			$column[$i]['id'] = str_replace("_","-",$i);
 			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
@@ -246,17 +261,6 @@ class ControllerPagesTripItinerary extends AController {
 			$column[$i]['thAlign'] = 'left';
 			$column[$i]['visible'] = 'false';
 			
-			$i = 'description';
-			$column[$i]['name'] = $i;
-			$column[$i]['id'] = str_replace("_","-",$i);
-			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
-			$column[$i]['title'] = '';
-			$column[$i]['width'] = '30px';
-			$column[$i]['align'] = '';
-			$column[$i]['headerAlign'] = '';
-			$column[$i]['thAlign'] = 'left';
-			$column[$i]['visible'] = 'false';
-			
 			$i = 'note';
 			$column[$i]['name'] = $i;
 			$column[$i]['id'] = str_replace("_","-",$i);
@@ -288,6 +292,9 @@ class ControllerPagesTripItinerary extends AController {
 			$this->addChild('modal/trip/day', 'modal_trip_day', 'modal/trip/day.tpl');
 			$this->addChild('modal/trip/map', 'modal_trip_map', 'modal/trip/map.tpl');
 			$this->addChild('modal/itinerary/line/add', 'modal_line_add', 'modal/itinerary/line/add.tpl');
+			$this->addChild('modal/itinerary/line/explore', 'modal_line_explore', 'modal/itinerary/line/explore.tpl');
+			$this->addChild('modal/itinerary/line/custom', 'modal_line_custom', 'modal/itinerary/line/custom.tpl');
+			$this->addChild('modal/itinerary/line/delete', 'modal_line_delete', 'modal/itinerary/line/delete.tpl');
 			$this->addChild('pages/trip/itinerary_guide', 'section_content_guide', 'pages/trip/itinerary_guide.tpl');
 			$this->addChild('pages/trip/itinerary_plan', 'section_content_plan', 'pages/trip/itinerary_plan.tpl');
 			$this->addChild('pages/trip/itinerary_map', 'section_content_map', 'pages/trip/itinerary_map.tpl');
@@ -296,6 +303,7 @@ class ControllerPagesTripItinerary extends AController {
 		
 		//START: set ajax
 			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
+			$ajax['main/ajax_explore'] = $this->html->getSecureURL('main/ajax_explore');
 		//END
 		
 		//START: set link

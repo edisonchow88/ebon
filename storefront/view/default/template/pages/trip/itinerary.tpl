@@ -653,6 +653,7 @@
 	<?php echo $modal_trip_day; ?>
     <?php echo $modal_trip_map; ?>
     <?php echo $modal_line_add; ?>
+    <?php echo $modal_line_favourite; ?>
     <?php echo $modal_line_explore; ?>
     <?php echo $modal_line_custom; ?>
     <?php echo $modal_line_delete; ?>
@@ -852,7 +853,7 @@
 					<!-- START: send POST -->
 						$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 							if(typeof json.warning != 'undefined') {
-								showHint(json.warning);
+								showAlert(json.warning);
 							}
 							else if(typeof json.success != 'undefined') {
 								showHint('Activity Sorted');
@@ -1552,7 +1553,7 @@
 				<!-- START: send POST -->
 					$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 						if(typeof json.warning != 'undefined') {
-							showHint(json.warning);
+							showAlert(json.warning);
 						}
 						else if(typeof json.success != 'undefined') {
 							var day_id = json.day_id;
@@ -1624,7 +1625,7 @@
 			<!-- START: send POST -->
 				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 					if(typeof json.warning != 'undefined') {
-						showHint(json.warning);
+						showAlert(json.warning);
 					}
 					else if(typeof json.success != 'undefined') {
 						showHint('Day Updated');
@@ -1855,9 +1856,9 @@
 				<!-- END -->
 			
 				<!-- START: send POST -->
-					$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+					$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 						if(typeof json.warning != 'undefined') {
-							showHint(json.warning);
+							showAlert(json.warning);
 						}
 						else if(typeof json.success != 'undefined') {
 							line.line_id = json.line_id;
@@ -1869,6 +1870,54 @@
 			<?php } ?>
 		}
 	<!-- END -->
+	
+	function deletePlanLine() {
+		line_id = $('#modal-line-custom input[name=line_id]').val();
+		
+		<?php if($this->session->data['memory'] == 'cookie') { ?>					
+			$("#plan-line-" + line_id).remove();
+			$('#modal-line-delete').modal('hide');
+			$('#modal-line-custom').modal('hide');
+			runDeletePlanLine();
+		<?php } else { ?>
+			<!-- START: set data -->
+				var data = {
+					"action":"delete_line",
+					"line_id":line_id
+				};
+			<!-- END -->
+		
+			<!-- START: send POST -->
+				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+					if(typeof json.warning != 'undefined') {
+						showAlert(json.warning);
+					}
+					else if(typeof json.success != 'undefined') {
+						$("#plan-line-"+ line_id).remove();
+						$('#modal-line-delete').modal('hide');
+						$('#modal-line-custom').modal('hide');
+						runDeletePlanLine();
+					}
+				}, "json");
+			<!-- END -->
+		<?php } ?>
+	}
+	
+	function runDeletePlanLine() {
+		<!-- START: init function -->
+			//updatePlanTableDayDuration();
+			updatePlanTableLineDayIdAndSortOrder();
+			//updatePlanTableButtonEvent();
+		<!-- END -->
+		
+		<?php if($this->session->data['memory'] == 'cookie') { ?>
+			updatePlanTableCookie();
+		<?php } ?>
+		
+		<!-- START: hint -->
+			showHint('Activity Deleted');
+		<!-- END -->
+	}
 <!-- END -->
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>

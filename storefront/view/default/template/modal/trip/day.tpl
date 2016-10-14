@@ -47,10 +47,6 @@
 		background-color:#FFC;
 	}
 	
-	.result-row:hover {
-		background-color:#EEE;
-	}
-	
 	.result-cell {
 		padding:10px 15px;
 		line-height:28px;
@@ -141,7 +137,7 @@
 <script>
 	function initSortableDay() {
 		$('#modal-trip-day .modal-body').sortable({	
-			delay: 100,
+			delay: 300,
 			axis: "y",
 			items: ">.result-row", 
 			handle: ".sort-handle",

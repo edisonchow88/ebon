@@ -62,7 +62,9 @@
                         	<li data-toggle="modal" data-target="#modal-line-explore" onclick="closeModalLineAdd();">
                             	<i class="fa fa-fw fa-lg fa-location-arrow"></i><i class="fa fa-fw"></i>Explore Around
                             </li>
-                        	<li><i class="fa fa-fw fa-lg fa-heart"></i><i class="fa fa-fw"></i>From My Favourites</li>
+                        	<li data-toggle="modal" data-target="#modal-line-favourite" onclick="closeModalLineAdd();">
+                            	<i class="fa fa-fw fa-lg fa-heart"></i><i class="fa fa-fw"></i>From My Favourites
+                            </li>
                             <li onclick="openModalLineCustom() ;">
                             	<i class="fa fa-fw fa-lg fa-plus-circle"></i><i class="fa fa-fw"></i>Add Custom Activity
                             </li>

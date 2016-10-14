@@ -104,7 +104,7 @@
 	}
 	#modal-line-custom .icon-disabled {
 		position:absolute;
-		color:#999;
+		color:#000;
 		height:50px;
 		padding:15px;
 		top:0;
@@ -505,14 +505,14 @@
 					<!-- START: set data -->
 						var data = {
 							"action":"edit_line",
-							"line":line
+							"line":line_raw
 						};
 					<!-- END -->
 				
 					<!-- START: send POST -->
-						$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+						$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 							if(typeof json.warning != 'undefined') {
-								showHint(json.warning);
+								showAlert(json.warning);
 							}
 							else if(typeof json.success != 'undefined') {
 								runEditPlanLine(line,line_raw);
@@ -535,9 +535,9 @@
 					<!-- END -->
 				
 					<!-- START: send POST -->
-						$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+						$.post("<?php echo  $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 							if(typeof json.warning != 'undefined') {
-								showHint(json.warning);
+								showAlert(json.warning);
 							}
 							else if(typeof json.success != 'undefined') {
 								line.line_id = json.line_id;
@@ -579,12 +579,15 @@
 	
 	$('#modal-line-custom input[name=photo]').on('change',function() {
 		var url = $('#modal-line-custom input[name=photo]').val();
+		$('#modal-line-custom .image img').attr('src',url);
+		/*
 		if(checkPhotoUrl(url)) {
 			$('#modal-line-custom .image img').attr('src',url);
 		}
 		else {
 			$('#modal-line-custom .image img').attr('src','resources/image/error/noimage.png');
 		}
+		*/
 	});
 	
 	<!-- START: [tab-time] -->

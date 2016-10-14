@@ -23,7 +23,7 @@
 	.map-day-group {
 		position: absolute;
 		z-index: 99;
-		bottom: 50px;
+		bottom: 80px;
 		left:50%;
 		transform: translate(-50%);
 		background-color:#FFF;
@@ -89,8 +89,8 @@
                          <div class="btn-group map-center-group" role="group" aria-label="...">
                             <button type="button" class="btn btn-default" id="go-center"><i class="fa fa-bullseye" aria-hidden="true"></i></button>        		</div>
                         <div class="btn-group map-option-option-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-default map-option-option map-selected" value="day">Day</button>
-                            <button type="button" class="btn btn-default map-option-option" value="all">All</button>
+                            <button type="button" class="btn btn-default map-option-option map-selected" value="all">All</button>
+                            <button type="button" class="btn btn-default map-option-option" value="day">Day</button>
                         </div>
                         <div class="btn-group map-day-group" role="group" aria-label="...">
                              <button type="button" class="btn btn-default day-control map-day-left"><i class="fa fa-fw fa-chevron-left"></i></button>
@@ -421,27 +421,29 @@ var map;
 			
 			var ori_lat, ori_lng, des_lat, des_lng;
 			// get original latlng (must have)
+			if (is_twins) var parent_class = ".plan-line-twins";
+			else  var parent_class = ".plan-line";		
+			
 			if (this_haslatlng && is_twins) {
-				ori_lat = $(this).parents(".haslatlng").find(".plan-line-twins-lat").html();
-				ori_lng = $(this).parents(".haslatlng").find(".plan-line-twins-lng").html();
+				ori_lat = $(this).parents(parent_class).find(".plan-line-twins-lat").html();
+				ori_lng = $(this).parents(parent_class).find(".plan-line-twins-lng").html();
 			}else if (this_haslatlng && !is_twins) {
-				ori_lat = parseFloat($(this).parents(".haslatlng").find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
-				ori_lng = parseFloat($(this).parents(".haslatlng").find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
+				ori_lat = parseFloat($(this).parents(parent_class).find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
+				ori_lng = parseFloat($(this).parents(parent_class).find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
 			}else {
-				ori_lat = parseFloat($(this).parents(".haslatlng").prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
-				ori_lng = parseFloat($(this).parents(".haslatlng").prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
+				ori_lat = parseFloat($(this).parents(parent_class).prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
+				ori_lng = parseFloat($(this).parents(parent_class).prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
 			}
 			
 			if (next_haslatlng) {
-				des_lat = parseFloat($(this).parents(".haslatlng").next().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
-				des_lng = parseFloat($(this).parents(".haslatlng").next().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
+				des_lat = parseFloat($(this).parents(parent_class).next().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
+				des_lng = parseFloat($(this).parents(parent_class).next().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
 			}
 			
 			if ( ori_lat && ori_lng && des_lat && des_lng) {
 				var origin = ori_lat+","+ori_lng;
 				var destination = des_lat+","+des_lng;
-				var transport_id = $(this).attr("id");
-								
+				var transport_id = $(this).attr("id");				
 				var service = new google.maps.DistanceMatrixService();
 			
 				service.getDistanceMatrix({
@@ -461,6 +463,9 @@ var map;
 							
 					}
 				});
+			}else {
+				var transport_id = $(this).attr("id");
+				$("#"+ transport_id).html("");
 			}
 		
 			if ( !$("#"+ transport_id +" .path").html()) {
@@ -498,20 +503,22 @@ var map;
 		$(".transport:not(:hidden)").each(function(i) {
 			if ($(this).find(".path").html()) {
 				var routePath = JSON.parse($(this).find(".path").html());
-				var route = new google.maps.Polyline({
-					path: routePath,
-					icons: [{
-						icon: lineSymbol,
-						offset: '60%'
-					}],
-					strokeColor: '#000',
-					strokeOpacity: 1.0,
-					strokeWeight: 1.0
-				});		
-				
-				route.setMap(map);
-				route.setVisible(false);
-				routes.push(route);	
+				 if (routePath){
+					var route = new google.maps.Polyline({
+						path: routePath,
+						icons: [{
+							icon: lineSymbol,
+							offset: '60%'
+						}],
+						strokeColor: '#000',
+						strokeOpacity: 1.0,
+						strokeWeight: 1.5
+					});		
+					
+					route.setMap(map);
+					route.setVisible(false);
+					routes.push(route);	
+				}
 			}
 		});
 		

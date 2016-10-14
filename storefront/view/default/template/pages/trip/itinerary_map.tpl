@@ -243,7 +243,7 @@
 		};
 		return myIcon;	
 	}
-		
+	/*	
 	function mapEventListenResponse(markers, positions, bounds, route_type, routes ) {
 		//// Event : Toggle show Day or All Markers. 
 		$(".map-option").off().on('click',function() {
@@ -310,7 +310,7 @@
 		
 		return [markers, positions];
 	}
-	
+	*/
 	function createDrawRouteList (markers, positions) {
 		var routes = [];
 		var lineSymbol = {
@@ -345,7 +345,7 @@
 		}
 		return routes;	
 	}
-	
+/*	
 	function showMarkerRoute (markers, positions, route_type, routes) {
 		
 		var red_icon = getMarkerIcon("red","red");
@@ -468,7 +468,7 @@
 		
 		
 		
-	}
+	}*/
 </script>
 
 
@@ -479,6 +479,7 @@
 </script>
 	<script>
 // Get distance and time 
+/*
 	function getDistanceTime() {
 		
 		$(".traveltrans").each(function(i){
@@ -539,7 +540,8 @@
 		$(document).trigger("runroute");
 		//$(".haslatlng").removeClass("haslatlng");
 	}
-	
+	*/
+	/*
 	function createInfoWindow(markers) {
 		var infowindows = [];	
 		$.each(markers, function(i) {
@@ -566,7 +568,7 @@
 	}
 	
 	
-	
+	*/
 	
 	
 	function showData () {
@@ -582,7 +584,7 @@
 	
 	
 	
-	
+	/**/
 	////////////////////// DIrection Matrix route ///////////////////////
 	function createRouteListR (markers, positions) {
 		// Define a symbol using a predefined path (an arrow), supplied by the Google Maps JavaScript API.

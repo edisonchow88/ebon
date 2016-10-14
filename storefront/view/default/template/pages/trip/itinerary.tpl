@@ -480,7 +480,7 @@
 		min-height:calc(100vh - 120px);
 	}
 	
-	.plan-line, .line-twins {
+	.plan-line, .plan-line-twins {
 		padding:7px 15px;
 		line-height:20px;
 		font-size:12px;
@@ -500,7 +500,7 @@
 		cursor: -webkit-grabbing;
 	}
 	
-	.plan-line .image, .line-twins .image {
+	.plan-line .image, .plan-line-twins .image {
 		position:relative;
 		float:left;
 		height:60px;
@@ -523,20 +523,20 @@
 		font-size:12px;
 	}
 	
-	.plan-line .image img, .line-twins .image img {
+	.plan-line .image img, .plan-line-twins .image img {
 		height:60px;
 		width:60px;
 		border-radius:30px;
 	}
 	
-	.plan-line .description, .line-twins .description {
+	.plan-line .description, .plan-line-twins .description {
 		display:block;
 		float:right;
 		width:calc(100% - 60px);
 		padding-left:15px;
 	}
 	
-	.plan-line .title, .line-twins .title{
+	.plan-line .title, .plan-line-twins .title{
 		display:table-cell;
 		height:60px;
 		vertical-align:middle;
@@ -555,7 +555,7 @@
 		position:relative;
 	}
 	
-	.plan-line .transport, .line-twins .transport {
+	.plan-line .transport, .plan-line-twins .transport {
 		float:right;
 		width:calc(100% - 60px);
 		padding-left:15px;

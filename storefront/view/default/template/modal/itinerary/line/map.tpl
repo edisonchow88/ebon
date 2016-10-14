@@ -1,29 +1,29 @@
 <style>
-	#map {
+	#explore-map {
 		height:calc(100vh - 40px);
-	}
-	
-	#modal-explore-map .modal-body {
-		padding:0;
 	}
 </style>
 
 <!-- START: Modal -->
-    <div class="modal" id="modal-explore-map" role="dialog">
-        <div class="modal-dialog fixed-bar">
-            <div class="modal-content">
-                <div class="modal-header">
+    <div class="modal modal-fixed-top" id="modal-line-map" role="dialog" data-backdrop="false">
+        <div class="modal-wrapper">
+            <div class="modal-header">
+                <div id="modal-line-map-header-general" class="header fixed-bar fixed-width">
                     <div class="col-xs-3 text-left">
-                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-explore-map">Back</a>
+                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-line-map">Back</a>
                     </div>
                     <div class="col-xs-6 text-center">
-                    	<span class="btn-header modal-title">Map</span>
+                        <div class="title">Map</div>
                     </div>
                     <div class="col-xs-3 text-right">
                     </div>
                 </div>
-                <div class="modal-body">
-                    <div id="map">
+            </div>
+            <div class="modal-dialog fixed-width">
+                <div class="modal-header-shadow"></div>
+                <div class="modal-content">
+                    <div class="modal-body nopadding">
+                    	<div id="explore-map"></div>
                     </div>
                 </div>
             </div>
@@ -32,16 +32,23 @@
 <!-- END -->
 
 <script>
-	$("#modal-explore-map").on( "shown.bs.modal", function() {
-		initMap();
+	$("#modal-line-map").on( "shown.bs.modal", function() {
+		initExploreMap();
 	});
 </script>
 
 <script>
-	function initMap() {
+	function startLoadExplore() {
+		$(window).scrollTop(0);
+		$('#wrapper-explore-current').hide();
+		$('#wrapper-explore-child').hide();
+		$('#wrapper-explore-loading').show();
+	}
+	
+	function initExploreMap() {
 		startLoadExplore();
 		
-		var map = new google.maps.Map(document.getElementById('map'), {
+		var map = new google.maps.Map(document.getElementById('explore-map'), {
 			center: {lat: -3.1385059, lng: 101.6869895},
 			zoom: 0,
 			mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -49,7 +56,7 @@
         });
 		
 		<!-- START: link searchBox to UI element -->
-			var input = document.getElementById('modal-explore-search-input-keyword');
+			var input = document.getElementById('modal-line-search-input-keyword');
 			var searchBox = new google.maps.places.SearchBox(input);
 		<!-- END -->
 		
@@ -70,9 +77,9 @@
 		<!-- START: set init place based on hash -->
 			var bounds = new google.maps.LatLngBounds();
 			var service = new google.maps.places.PlacesService(map);
-			if(getHash() != null && getHash() != '') {
+			if(isset(getPlace())) {
 				service.getDetails({
-					placeId: getHash()
+					placeId: getPlace()
 					}, 
 					function(place, status) {
 					if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -124,11 +131,10 @@
 				explorePlace(place.place_id);
 				
 				//updateWrapperExploreResult(place);
-				$('#modal-explore-search').modal('hide');
+				$('#modal-line-explore').modal('show');
+				$('#modal-line-search').modal('hide');
+				$('#modal-line-add').modal('hide');
 			});
 		<!-- END -->
-	}
-	
-	function updateMap() {
 	}
 </script>

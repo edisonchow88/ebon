@@ -151,7 +151,6 @@ class ControllerResponsesMainAjaxExplore extends AController {
 	public function addPlace() {
 		//START: set variable
 			$place_id = $this->data['place_id'];
-			$user_id = $this->data['user_id'];
 		//END
 		//START: set data
 			$data['g_place_id'] = $place_id;

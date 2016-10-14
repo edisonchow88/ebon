@@ -1,5 +1,15 @@
 <style>
-	#wrapper-explore-favourite-button .badge{
+	#modal-line-explore .modal-content {
+		background-color:#EEE;
+	}
+	
+	#modal-line-explore .modal-body {
+		padding:0;
+		padding-bottom:80px;
+	}
+</style>
+<style>
+	#wrapper-explore-trip-button .badge{
 		font-size:11px;
 		margin-right:5px;
 		border-radius:10px;
@@ -27,7 +37,7 @@
 	
 	#wrapper-explore-loading {
 		text-align:center;
-		height:calc(100vh - 120px);
+		height:calc(100vh - 80px);
 		padding-top:30vh;
 	}
 	
@@ -275,135 +285,147 @@
 	/* END */
 </style>
 
-<!-- START: [header] -->
-    <div class="fixed-bar wrapper-header-main row">
-        <div class="col-xs-3 text-left">
-        </div>
-        <div class="col-xs-6">
-            <h1>Explore</h1>
-        </div>
-        <div class="col-xs-3 text-right">
-            <a id="wrapper-explore-favourite-button" class="btn btn-header" data-toggle="modal" data-target="#modal-explore-favourite"><i class="fa fa-fw fa-lg fa-heart-o"></i></a>
+<!-- START: Modal -->
+    <div class="modal modal-fixed-top" id="modal-line-explore" role="dialog">
+        <div class="modal-wrapper">
+            <div class="modal-header">
+                <div id="modal-line-explore-header-general" class="header fixed-bar fixed-width">
+                    <div class="col-xs-3 text-left">
+                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-line-explore">Back</a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <div class="title">Explore</div>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-dialog fixed-width">
+                <div class="modal-header-shadow"></div>
+                <div class="modal-header-shadow search-bar-shadow"></div>
+                <div class="modal-content">
+                    <div class="modal-body">
+                    	<div class="fixed-bar fixed-width search-bar">
+                            <input class="form-control" placeholder="Search" data-toggle="modal" data-target="#modal-line-search">
+                        </div>
+                        <div class="row" id="wrapper-explore-loading">
+                            <i class="fa fa-circle-o-notch fa-spin fa-4x fa-fw"></i> <span class="sr-only">Loading...</span>
+                        </div>
+                        <div id="wrapper-explore-current" class="box-shadow">
+                            <div id="wrapper-explore-current-image"></div>
+                            <div id="wrapper-explore-current-main">
+                                <div id="wrapper-explore-current-parent" class="row wrapper-explore-current-row-half"></div>
+                                <div id="wrapper-explore-current-title" class="row wrapper-explore-current-row"></div>
+                                <div id="wrapper-explore-current-rating" class="row wrapper-explore-current-row-half"></div>
+                                <div id="wrapper-explore-current-tag" class="row wrapper-explore-current-row"></div>
+                                <div id="wrapper-explore-current-description" class="row wrapper-explore-current-row"></div>
+                            </div>
+                            <div id="wrapper-explore-current-action">
+                                <div id="wrapper-explore-current-trip" class="row wrapper-explore-current-row">
+                                    <a class="button-add-trip" data-toggle="modal" data-target="#modal-line-explore" onclick="addPoiFromGuide();">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-plus fa-stack-1x"></i>
+                                        </span>
+                                        <span>Add to My Trip</span>
+                                     </a>
+                                     <div class="button-show-trip">
+                                        <span class="fa-stack fa-lg" style="color:#e93578;">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-heart fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        <span>Added. </span>
+                                        <span><a data-toggle="modal" data-target="#modal-explore-trip">(view my trip)</a></span>
+                                     </div>
+                                </div>
+                            </div>
+                            <div id="wrapper-explore-current-misc">
+                                <div id="wrapper-explore-current-hour" class="row wrapper-explore-current-row">
+                                    <div class="col-xs-2"><i class="fa fa-fw fa-clock-o"></i></div>
+                                    <div class="col-xs-10 detail"></div>
+                                </div>
+                                <div id="wrapper-explore-current-address" class="row wrapper-explore-current-row">
+                                    <div class="col-xs-2"><i class="fa fa-fw fa-map-marker"></i></div>
+                                    <div class="col-xs-10 detail"></div>
+                                </div>
+                                <div id="wrapper-explore-current-phone" class="row wrapper-explore-current-row">
+                                    <div class="col-xs-2"><i class="fa fa-fw fa-phone"></i></div>
+                                    <div class="col-xs-10 detail"></div>
+                                </div>
+                                <div id="wrapper-explore-current-website" class="row wrapper-explore-current-row">
+                                    <div class="col-xs-2"><i class="fa fa-fw fa-globe"></i></div>
+                                    <div class="col-xs-10 detail"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="wrapper-explore-child">
+                            <div class="result-list-wrapper" id="wrapper-explore-child-destination-country">
+                                <div class="result-list"></div>
+                            </div>
+                            <div class="result-list-wrapper" id="wrapper-explore-child-destination">
+                                <div class="result-subtitle">Top Destinations</div>
+                                <div class="result-list"></div>
+                            </div>
+                            <div class="result-list-wrapper" id="wrapper-explore-child-destination-national-park">
+                                <div class="result-subtitle">National Parks</div>
+                                <div class="result-list"></div>
+                            </div>
+                            <div class="result-list-wrapper" id="wrapper-explore-child-destination-airport">
+                                <div class="result-subtitle">International Airports</div>
+                                <div class="result-list"></div>
+                            </div>
+                        </div>
+                    <!-- END -->
+                    <!-- START: [form] -->
+                        <div class="hidden">
+                            <form id="wrapper-explore-current-form">
+                                <input type="hidden" name="place_id"/>
+                                <input type="hidden" name="name"/>
+                                <input type="hidden" name="photo"/>
+                                <input type="hidden" name="city"/>
+                                <input type="hidden" name="region"/>
+                                <input type="hidden" name="country"/>
+                                <input type="hidden" name="type"/>
+                                <input type="hidden" name="type_id"/>
+                                <input type="hidden" name="lat"/>
+                                <input type="hidden" name="lng"/>
+                                <input type="hidden" name="image"/>
+                                <input type="hidden" name="image_id"/>
+                            </form>
+                        </div>
+                    <!-- END -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-
-    <div class="fixed-bar" id="wrapper-explore-search">
-        <input class="form-control" placeholder="Search" data-toggle="modal" data-target="#modal-explore-search"/>
-    </div>
-    
-    <div id="wrapper-explore-search-shadow"></div>
 <!-- END -->
 
-<!-- START: [body] -->
-    <div class="row" id="wrapper-explore-loading">
-        <i class="fa fa-circle-o-notch fa-spin fa-4x fa-fw"></i> <span class="sr-only">Loading...</span>
-    </div>
-    <div id="wrapper-explore-current" class="box-shadow">
-        <div id="wrapper-explore-current-image"></div>
-        <div id="wrapper-explore-current-main">
-            <div id="wrapper-explore-current-parent" class="row wrapper-explore-current-row-half"></div>
-            <div id="wrapper-explore-current-title" class="row wrapper-explore-current-row"></div>
-            <div id="wrapper-explore-current-rating" class="row wrapper-explore-current-row-half"></div>
-        	<div id="wrapper-explore-current-tag" class="row wrapper-explore-current-row"></div>
-            <div id="wrapper-explore-current-description" class="row wrapper-explore-current-row"></div>
-        </div>
-        <div id="wrapper-explore-current-action">
-        	<div id="wrapper-explore-current-favourite" class="row wrapper-explore-current-row">
-            	<a class="button-add-favourite">
-                	<span class="fa-stack fa-lg">
-                        <i class="fa fa-heart fa-stack-1x"></i>
-                    </span>
-                 	<span>Add to My Favourite</span>
-                 </a>
-                 <div class="button-show-favourite">
-                    <span class="fa-stack fa-lg" style="color:#e93578;">
-                        <i class="fa fa-circle fa-stack-2x"></i>
-                        <i class="fa fa-heart fa-stack-1x fa-inverse"></i>
-                    </span>
-                 	<span>Added. </span>
-                    <span><a data-toggle="modal" data-target="#modal-explore-favourite">(view my favourite)</a></span>
-                 </div>
-            </div>
-        </div>
-        <div id="wrapper-explore-current-misc">
-            <div id="wrapper-explore-current-hour" class="row wrapper-explore-current-row">
-                <div class="col-xs-2"><i class="fa fa-fw fa-clock-o"></i></div>
-                <div class="col-xs-10 detail"></div>
-            </div>
-            <div id="wrapper-explore-current-address" class="row wrapper-explore-current-row">
-                <div class="col-xs-2"><i class="fa fa-fw fa-map-marker"></i></div>
-                <div class="col-xs-10 detail"></div>
-            </div>
-            <div id="wrapper-explore-current-phone" class="row wrapper-explore-current-row">
-                <div class="col-xs-2"><i class="fa fa-fw fa-phone"></i></div>
-                <div class="col-xs-10 detail"></div>
-            </div>
-            <div id="wrapper-explore-current-website" class="row wrapper-explore-current-row">
-                <div class="col-xs-2"><i class="fa fa-fw fa-globe"></i></div>
-                <div class="col-xs-10 detail"></div>
-            </div>
-        </div>
-    </div>
-    <div id="wrapper-explore-child">
-    	<div class="result-list-wrapper" id="wrapper-explore-child-destination-country">
-        	<div class="result-list"></div>
-        </div>
-    	<div class="result-list-wrapper" id="wrapper-explore-child-destination">
-        	<div class="result-subtitle">Top Destinations</div>
-        	<div class="result-list"></div>
-        </div>
-        <div class="result-list-wrapper" id="wrapper-explore-child-destination-national-park">
-        	<div class="result-subtitle">National Parks</div>
-        	<div class="result-list"></div>
-        </div>
-        <div class="result-list-wrapper" id="wrapper-explore-child-destination-airport">
-        	<div class="result-subtitle">International Airports</div>
-        	<div class="result-list"></div>
-        </div>
-    </div>
-<!-- END -->
-<!-- START: [form] -->
-	<div class="hidden">
-    	<form id="wrapper-explore-current-form">
-        	<input type="hidden" name="place_id"/>
-            <input type="hidden" name="name"/>
-            <input type="hidden" name="photo"/>
-            <input type="hidden" name="city"/>
-            <input type="hidden" name="region"/>
-            <input type="hidden" name="country"/>
-        </form>
-    </div>
+<!-- START: [modal] -->
+	<?php echo $modal_line_search; ?>
+    <?php echo $modal_line_map; ?>
+    <?php echo $modal_line_review; ?>
 <!-- END -->
 
 <script>
-	function startLoadExplore() {
-		$(window).scrollTop(0);
-		$('#wrapper-explore-loading').show();
-		$('#wrapper-explore-current').hide();
-		$('#wrapper-explore-child').hide();
+	function getPlace() {
+		return $('#wrapper-explore-current-form input[name=place_id]').val();
 	}
 	
-	startLoadExplore();
-	
 	function explorePlace(place_id) {
-		if(place_id != '') {
-			window.location.hash = '#tab=explore&gid='+place_id;
-		}
-		else {
-			window.location.hash = '';
-		}
+		$('#modal-line-explore').modal('show');
+		$('#wrapper-explore-current-form input[name=place_id]').val(place_id);
+		initExploreMap();
 	}
 	
 	function searchPlace(keyword) {
 		startLoadExplore();
-		$('#modal-explore-search-input-keyword').val(keyword);
-		var input = document.getElementById('modal-explore-search-input-keyword');
+		$('#modal-line-search-input-keyword').val(keyword);
+		var input = document.getElementById('modal-line-search-input-keyword');
 		google.maps.event.trigger(input, 'focus')
 		google.maps.event.trigger(input, 'keydown', {
 			keyCode: 13
 		});
-		$('#modal-explore-search-input-keyword').val('');
+		$('#modal-line-search-input-keyword').val('');
 	}
 
 	function updateWrapperExploreResult(place) {
@@ -452,6 +474,14 @@
             <!-- START: send POST -->
                 $.post("<?php echo $ajax['main/ajax_explore']; ?>", data, function(json) {
 					if(json != false) {
+						if(isset(json.current.destination_id)) {
+							current.type = 'destination';
+							current.type_id = json.current.destination_id;
+						}
+						if(isset(json.current.poi_id)) {
+							current.type = 'poi';
+							current.type_id = json.current.poi_id;
+						}
 						if(typeof json.current.parent != 'undefined' && json.current.parent != null && json.current.parent != '') {
 							current.parent = json.current.parent;
 						}
@@ -507,21 +537,17 @@
 			<!-- END -->
 		<!-- END -->
 		
-		<!-- START: set hash -->
-			if(getHashTab() != '') {
-				window.location.hash = '#tab=' + getHashTab() + '&gid=' + current.place_id;
-			}
-			else {
-				window.location.hash = '#tab=explore&gid=' + current.place_id;
-			}
-		<!-- END -->
-		
-		<!-- START: [favourite] -->
-			updateWrapperExploreButtonAddFavourite(current.place_id);
+		<!-- START: [trip] -->
+			updateWrapperExploreButtonAddTrip(current.place_id);
 		<!-- END -->
 		
 		<!-- START: [place_id] -->
 			$('#wrapper-explore-current-form input[name=place_id]').val(current.place_id);
+		<!-- END -->
+		
+		<!-- START: [type] -->
+			$('#wrapper-explore-current-form input[name=type]').val(current.type);
+			$('#wrapper-explore-current-form input[name=type_id]').val(current.type_id);
 		<!-- END -->
 		
 		//image
@@ -530,6 +556,7 @@
 				if(typeof current.image != 'undefined' && current.image != null && current.image != '') {
 					$('#wrapper-explore-current-image').html("<img src='"+current.image[0].path+"' onerror='$(this).hide();'>");
 					$('#wrapper-explore-current-form input[name=photo]').val(current.image[0].path);
+					$('#wrapper-explore-current-form input[name=image_id]').val(current.image[0].image_id);
 				}
 				
 			<!-- END -->
@@ -632,6 +659,8 @@
 		//title
 		$('#wrapper-explore-current-title').html(current.name);
 		$('#wrapper-explore-current-form input[name=name]').val(current.name);
+		$('#wrapper-explore-current-form input[name=lat]').val(current.geometry.location.lat().toFixed(7));
+		$('#wrapper-explore-current-form input[name=lng]').val(current.geometry.location.lng().toFixed(7));
 		
 		//rating
 		if(current.rating != null) {
@@ -650,7 +679,7 @@
 			}
 			$('#wrapper-explore-current-rating').append('<i class="fa fa-fw"></i>');
 			if(current.reviews != null) {
-				$('#wrapper-explore-current-rating').append('<a data-toggle="modal" data-target="#modal-explore-review">Read Reviews</a>');
+				$('#wrapper-explore-current-rating').append('<a data-toggle="modal" data-target="#modal-line-review">Read Reviews</a>');
 			}
 			$('#wrapper-explore-current-rating').show();
 		}
@@ -738,7 +767,7 @@
 		if(typeof current.formatted_address != 'undefined' && current.formatted_address != null) {
 			$('#wrapper-explore-current-address').show();
 			$('#wrapper-explore-current-address .detail').html(current.formatted_address);
-			$('#wrapper-explore-current-address .detail').append(' <a data-toggle="modal" data-target="#modal-explore-map">(see map)</a>');
+			$('#wrapper-explore-current-address .detail').append(' <a data-toggle="modal" data-target="#modal-line-map">(see map)</a>');
 		}
 		
 		//phone
@@ -907,33 +936,37 @@
 		}, 500);
 	}
 	
-	function updateWrapperExploreButtonAddFavourite(place_id) {
+	function inTrip() {
+		return false;
+	}
+	
+	function updateWrapperExploreButtonAddTrip(place_id) {
 		<?php if($this->user->isLogged() == false) { ?>
-			if(inFavourite(place_id) == true) {
-				$('#wrapper-explore-current-favourite .button-add-favourite').hide();
-				$('#wrapper-explore-current-favourite .button-show-favourite').show();
+			if(inTrip(place_id) == true) {
+				$('#wrapper-explore-current-trip .button-add-trip').hide();
+				$('#wrapper-explore-current-trip .button-show-trip').show();
 			}
 			else {
-				$('#wrapper-explore-current-favourite .button-add-favourite').show();
-				$('#wrapper-explore-current-favourite .button-show-favourite').hide();
+				$('#wrapper-explore-current-trip .button-add-trip').show();
+				$('#wrapper-explore-current-trip .button-show-trip').hide();
 			}
 		<?php } else { ?>
 			<!-- START: set data -->
 				var data = {
-					"action"	: "get_favourite",
+					"action"	: "get_trip",
 					"user_id"	: "<?php echo $this->user->getUserId(); ?>"
 				};
 			<!-- END -->
 			<!-- START: send POST -->
-				$.post("<?php echo $ajax['main/ajax_favourite']; ?>", data, function(json) {
-					var favourite = json;
-					if($.inArray(place_id,favourite) != -1) {
-						$('#wrapper-explore-current-favourite .button-add-favourite').hide();
-						$('#wrapper-explore-current-favourite .button-show-favourite').show();
+				$.post("<?php echo $ajax['main/ajax_trip']; ?>", data, function(json) {
+					var trip = json;
+					if($.inArray(place_id,trip) != -1) {
+						$('#wrapper-explore-current-trip .button-add-trip').hide();
+						$('#wrapper-explore-current-trip .button-show-trip').show();
 					}
 					else {
-						$('#wrapper-explore-current-favourite .button-add-favourite').show();
-						$('#wrapper-explore-current-favourite .button-show-favourite').hide();
+						$('#wrapper-explore-current-trip .button-add-trip').show();
+						$('#wrapper-explore-current-trip .button-show-trip').hide();
 					}
 				}, "json");
 			<!-- END -->
@@ -1036,13 +1069,7 @@
 		<!-- END -->
 	}
 	
-	window.onhashchange = function() {
-		var hashTab = getHashTab();
-		if(hashTab != '') {
-			showTab(hashTab);
-		}
-		initMap();
-	}
+	initExplore();
 </script>
 <script>
 	function convertTime(time) {
@@ -1061,10 +1088,3 @@
 		return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 	}
 </script>
-
-<!-- START: [modal] -->
-	<?php echo $modal_explore_search; ?>
-    <?php echo $modal_explore_map; ?>
-    <?php echo $modal_explore_review; ?>
-    <?php echo $modal_explore_favourite; ?>
-<!-- END -->

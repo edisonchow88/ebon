@@ -144,7 +144,7 @@ var map;
 		});
 
 		getDistanceTime();
-		
+		initExploreMap;
 	}
 	
 	function mapEventListenResponse(markers, positions, bounds, routes ) {
@@ -532,5 +532,3 @@ var map;
 		
 	}
 </script>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>

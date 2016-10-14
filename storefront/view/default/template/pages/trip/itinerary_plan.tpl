@@ -1294,6 +1294,7 @@
 							<!-- END -->
 						<?php } ?>
 						$(document).trigger("sortStop");
+						$(document).trigger("tableActionEnd");
 					}
 				}).disableSelection();
 			
@@ -1424,6 +1425,7 @@
 					<?php } ?>
 
 					$(document).trigger("sortStop");
+					$(document).trigger("tableActionEnd");
 				}
 			}).disableSelection();
 			
@@ -1850,6 +1852,7 @@
 			
 			<!-- START: hint -->
 				showHint('Day '+data.sort_order+' added');
+				$(document).trigger("tableActionEnd");
 			<!-- END -->
 		}
 		
@@ -1875,6 +1878,7 @@
 			
 			<!-- START: hint -->
 				showHint('Day '+data.sort_order+' deleted');
+				$(document).trigger("tableActionEnd");
 			<!-- END -->
 		}
 	<!-- END -->
@@ -2124,6 +2128,7 @@
 				
 				var hint = added_line + " added to Day " + day;
 				showHint(hint);
+				$(document).trigger("tableActionEnd");
 			<!-- END -->
 		}
 		
@@ -2270,6 +2275,7 @@
 			
 			<!-- START: show hint -->
 				showHint("Activity updated");
+				$(document).trigger("tableActionEnd");
 			<!-- END -->
 		}
 		
@@ -2338,6 +2344,7 @@
 			
 			<!-- START: hint -->
 				showHint('Activity deleted');
+				$(document).trigger("tableActionEnd");
 			<!-- END -->
 		}	
 	<!-- END -->

@@ -2253,7 +2253,9 @@
 	
 		
 	$(document).ready(function() {
+		alert ("123");
 		refreshPlanTable();
+		
 		$(".plan-day-form").first().trigger("click");
 	})
 	

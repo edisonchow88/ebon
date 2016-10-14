@@ -487,14 +487,14 @@
 	.plan-day-line {
 	}
 	
-	.plan-line {
+	.plan-line, .plan-line-twins {
 		padding:7px 15px;
 		line-height:20px;
 		font-size:12px;
 		color:#000;
 	}
 	
-	.plan-line .image {
+	.plan-line .image, .plan-line-twins .image {
 		position:relative;
 		float:left;
 		height:60px;
@@ -530,13 +530,13 @@
 		font-size:12px;
 	}
 	
-	.plan-line .image img {
+	.plan-line .image img, .plan-line-twins .image img {
 		height:60px;
 		width:60px;
 		border-radius:30px;
 	}
 	
-	.plan-line .info {
+	.plan-line .info, .plan-line-twins .description {
 		display:block;
 		float:right;
 		width:calc(100% - 60px);
@@ -544,7 +544,7 @@
 		cursor:pointer;
 	}
 	
-	.plan-line .title {
+	.plan-line .title, .plan-line-twins .title{
 		display:table-cell;
 		height:60px;
 		vertical-align:middle;
@@ -563,7 +563,7 @@
 		position:relative;
 	}
 	
-	.plan-line .transport {
+	.plan-line .transport, .plan-line-twins .transport {
 		float:right;
 		width:calc(100% - 60px);
 		padding-left:15px;
@@ -627,7 +627,7 @@
 
 <!-- START: [modal] -->
 	<?php echo $modal_trip_day; ?>
-    <?php //echo $modal_trip_map; ?>
+    <?php echo $modal_trip_map; ?>
     <?php echo $modal_line_add; ?>
     <?php echo $modal_line_explore; ?>
     <?php echo $modal_line_custom; ?>
@@ -728,7 +728,7 @@
 				mySwiper.endNow();
 				mySwiper.detachEvents();
 				$('.plan-line .detail').hide();
-				$('.plan-line .transport-row').hide();
+				$('.transport-row').hide();
 				ui.placeholder.html(ui.item.html());
 				$(this).sortable('refreshPositions');
 				$('.plan-day-line').css('min-height','calc(100vh - 120px)');
@@ -781,6 +781,7 @@
 				
 				$('.plan-line .detail').show();
 				$('.plan-line .transport-row').show();
+				$('.plan-line-twin .transport-row').show();
 				$('.plan-day-line').css('min-height','0px');
 				$('.plan-day-footer').show();
 				
@@ -1245,7 +1246,7 @@
 			initSwiperButton();
 			initDayButton();
 			initDateButton();
-			initMapButton()
+			initMapButton();
 		<!-- END -->
 		
 		<!-- START: end loading -->
@@ -1417,8 +1418,11 @@
 						+ '<div class="transport">'
 							+ '<span>'
 								+ '<i class="fa fa-fw fa-car"></i><i class="fa fa-fw"></i>'
+							+ '</span>'
+							+ '<span class="text">'
 								+ '3.7 km / 45 mins'
 							+ '</span>'
+							+ '<span class="path hidden"></span>'
 						+ '</div>'
 					+ '</div>' 
 					+ '<form class="plan-line-form-hidden plan-form-hidden hidden" id="plan-line-' + line.line_id + '-form-hidden">'
@@ -1832,5 +1836,4 @@
 	<!-- END -->
 <!-- END -->
 </script>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initExploreMap" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>

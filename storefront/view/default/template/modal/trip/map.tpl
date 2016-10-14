@@ -144,7 +144,6 @@ var map;
 		});
 
 		getDistanceTime();
-		initExploreMap;
 	}
 	
 	function mapEventListenResponse(markers, positions, bounds, routes ) {

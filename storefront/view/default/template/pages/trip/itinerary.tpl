@@ -363,6 +363,29 @@
 			display: none;
 		}
 	/* END */
+	
+	/* START: [popover alert] */	
+		#section-popover-alert {
+			position:fixed;
+			bottom:10px;
+			right:0;
+			left:0;
+			width:100%;
+			z-index:15000;
+		}
+		
+		#popover-alert{
+			margin:auto;
+			width:390px;
+			line-height:50px;
+			max-width:calc(100% - 10px);
+			height:auto;
+			background-color: rgba(139,0,0,0.9);
+			color:#FFF;
+			padding: 5px;
+			display: none;
+		}
+	/* END */
 </style>
 <style>
 	/* START: [swiper] */
@@ -605,6 +628,7 @@
 <!-- END -->
 
 <div id="section-popover-hint"><div id="popover-hint" class="fixed-width" onclick="$(this).hide();"></div></div>
+<div id="section-popover-alert"><div id="popover-alert" class="fixed-width" onclick="$(this).hide();"></div></div>
 <div class="header header-gray fixed-width fixed-bar noselect">
     <div class="col-xs-2 text-left">
         <a class="btn" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times-circle"></i></a>
@@ -664,6 +688,14 @@
 	<!-- END -->
 </script>
 <script>
+	<!-- START: [popover alert] -->
+		function showAlert(text) {
+			$("#popover-alert").hide();
+			$("#popover-alert").html(text).fadeIn(100);
+			setTimeout(function() { $("#popover-alert").delay(1000).fadeOut(300); }, 2000);
+		}
+	<!-- END -->
+	
 	<!-- START: [popover hint] -->
 		function showHint(hint) {
 			$("#popover-hint").hide();
@@ -1347,6 +1379,9 @@
 			if(isset(line['place_id'])) {
 				hidden_read = '';
 			}
+			if(isset(line['title']) == false) {
+				line.title = 'Untitled Activity';
+			}
 			if(isset(line['image_id'])) {
 				image = 'resources/image/cropped/'+line.image_id+'.jpg';
 			}
@@ -1645,7 +1680,7 @@
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=image_id]').val(line_raw.image_id);
 		<!-- END -->
 		<!-- START: update html -->
-			$('#plan-line-'+line.line_id+' .text-title').html(line.title);
+			$('#plan-line-'+line.line_id+' .text-title').html(line.title||'Untitled Activity');
 			$('#plan-line-'+line.line_id+' .text-description').html(line.description);
 			$('#plan-line-'+line.line_id+' .text-duration').html(line.duration);
 			$('#plan-line-'+line.line_id+' .text-time').html(line.time);

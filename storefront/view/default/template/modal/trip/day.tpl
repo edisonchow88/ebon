@@ -73,7 +73,7 @@
 </style>
 
 <!-- START: Modal -->
-    <div class="modal modal-fixed-top noselect" id="modal-trip-day" role="dialog">
+    <div class="modal modal-fixed-top noselect" id="modal-trip-day" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
             	<div class="modal-modal fixed-width"></div>

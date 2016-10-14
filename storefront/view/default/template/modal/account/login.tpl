@@ -1,5 +1,5 @@
 <!-- START: Modal -->
-    <div class="modal modal-fixed-top" id="modal-account-login" role="dialog">
+    <div class="modal modal-fixed-top" id="modal-account-login" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
             	<div class="fixed-bar">

@@ -39,7 +39,7 @@
 </style>
 
 <!-- START: Modal -->
-    <div class="modal fade" id="modal-account-upgrade" role="dialog">
+    <div class="modal fade" id="modal-account-upgrade" role="dialog" data-backdrop="false">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

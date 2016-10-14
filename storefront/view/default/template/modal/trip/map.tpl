@@ -68,7 +68,7 @@
 </style>
 
 <!-- START: Modal -->
-    <div class="modal modal-fixed-top" id="modal-trip-map" role="dialog">
+    <div class="modal modal-fixed-top" id="modal-trip-map" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
                 <div id="modal-trip-map-header-general" class="header fixed-bar fixed-width">

@@ -92,7 +92,7 @@
                             <button type="button" class="btn btn-default map-option-option map-selected" value="all">All</button>
                             <button type="button" class="btn btn-default map-option-option" value="day">Day</button>
                         </div>
-                        <div class="btn-group map-day-group" role="group" aria-label="...">
+                        <div class="btn-group map-day-group box-shadow" role="group" aria-label="...">
                              <button type="button" class="btn btn-default day-control map-day-left"><i class="fa fa-fw fa-chevron-left"></i></button>
                              <button type="button" class="btn btn-default nohover  disabled map-day-show">Day <span></span></button>
                              <button type="button" class="btn btn-default day-control map-day-right"><i class="fa fa-fw fa-chevron-right"></i></button>
@@ -339,8 +339,12 @@ var map;
 	}
 	
 	function updateTransportBox() {
+		// REFRESH: show all transport, delete all twins, clear all path 
 		$(".transport").show();
 		$(".transport .path").html("");
+		$(".plan-line-twins").remove();
+		$(this).removeAttr('id');
+		$(".has-route").removeClass("has-route");
 		
 		// add class to line with lat lng	
 		$(".plan-line").each(function(i) {
@@ -514,7 +518,7 @@ var map;
 		var routes = [];
 
 		$(".transport.has-route").each(function(i) {
-
+			
 			if ( $(this).hasClass("no-reach") && $(this).find(".path").html() ) {				
 				var icon_sequence = [{
 						icon: lineSymbol,
@@ -534,6 +538,7 @@ var map;
 			}
 			
 			var routePath = JSON.parse($(this).find(".path").html());			
+			
 			if (routePath){
 				var route = new google.maps.Polyline({
 					path: routePath,

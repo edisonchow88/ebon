@@ -9,7 +9,7 @@
 </style>
 
 <!-- START: Modal -->
-    <div class="modal" id="modal-explore-map" role="dialog">
+    <div class="modal" id="modal-explore-map" role="dialog" data-backdrop="false">
         <div class="modal-dialog fixed-bar">
             <div class="modal-content">
                 <div class="modal-header">

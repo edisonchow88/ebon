@@ -1,5 +1,5 @@
 <!-- START: Modal -->
-    <div class="modal fade" id="modal-trip-save" role="dialog">
+    <div class="modal fade" id="modal-trip-save" role="dialog" data-backdrop="false">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

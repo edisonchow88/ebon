@@ -293,6 +293,7 @@ class ControllerPagesTripItinerary extends AController {
 			$this->addChild('modal/trip/map', 'modal_trip_map', 'modal/trip/map.tpl');
 			$this->addChild('modal/itinerary/line/add', 'modal_line_add', 'modal/itinerary/line/add.tpl');
 			$this->addChild('modal/itinerary/line/explore', 'modal_line_explore', 'modal/itinerary/line/explore.tpl');
+			$this->addChild('modal/itinerary/line/favourite', 'modal_line_favourite', 'modal/itinerary/line/favourite.tpl');
 			$this->addChild('modal/itinerary/line/custom', 'modal_line_custom', 'modal/itinerary/line/custom.tpl');
 			$this->addChild('modal/itinerary/line/delete', 'modal_line_delete', 'modal/itinerary/line/delete.tpl');
 			$this->addChild('pages/trip/itinerary_guide', 'section_content_guide', 'pages/trip/itinerary_guide.tpl');

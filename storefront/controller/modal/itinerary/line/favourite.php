@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerModalItineraryLineCustom extends AController {
+class ControllerModalItineraryLineFavourite extends AController {
 
   	public function main() {
         //START: init controller data
@@ -11,7 +11,12 @@ class ControllerModalItineraryLineCustom extends AController {
 		//END
 		
 		//START: set ajax
-			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
+			$ajax['main/ajax_explore'] = $this->html->getSecureURL('main/ajax_explore');
+			$ajax['main/ajax_favourite'] = $this->html->getSecureURL('main/ajax_favourite');
+		//END
+		
+		//START: set link
+			$link['home'] = $this->html->getSecureURL('main/home');
 		//END
 		
 		//START: set variable
@@ -22,7 +27,7 @@ class ControllerModalItineraryLineCustom extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('modal/itinerary/line/custom.tpl' );
+			$this->processTemplate('modal/itinerary/line/favourite.tpl' );
 		//END
 
         //START: update controller data

@@ -47,10 +47,6 @@
 		background-color:#FFC;
 	}
 	
-	.result-row:hover {
-		background-color:#EEE;
-	}
-	
 	.result-cell {
 		padding:10px 15px;
 		line-height:28px;
@@ -73,7 +69,7 @@
 </style>
 
 <!-- START: Modal -->
-    <div class="modal modal-fixed-top noselect" id="modal-trip-day" role="dialog">
+    <div class="modal modal-fixed-top noselect" id="modal-trip-day" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
             	<div class="modal-modal fixed-width"></div>
@@ -141,7 +137,7 @@
 <script>
 	function initSortableDay() {
 		$('#modal-trip-day .modal-body').sortable({	
-			delay: 100,
+			delay: 300,
 			axis: "y",
 			items: ">.result-row", 
 			handle: ".sort-handle",
@@ -165,6 +161,7 @@
 			},
 			update: function(event,ui) {
 				updateDayList();
+				refreshRoute();
 			}
 		});
 	}

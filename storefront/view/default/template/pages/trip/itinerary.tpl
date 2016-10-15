@@ -363,6 +363,29 @@
 			display: none;
 		}
 	/* END */
+	
+	/* START: [popover alert] */	
+		#section-popover-alert {
+			position:fixed;
+			bottom:10px;
+			right:0;
+			left:0;
+			width:100%;
+			z-index:15000;
+		}
+		
+		#popover-alert{
+			margin:auto;
+			width:390px;
+			line-height:50px;
+			max-width:calc(100% - 10px);
+			height:auto;
+			background-color: rgba(139,0,0,0.9);
+			color:#FFF;
+			padding: 5px;
+			display: none;
+		}
+	/* END */
 </style>
 <style>
 	/* START: [swiper] */
@@ -605,6 +628,7 @@
 <!-- END -->
 
 <div id="section-popover-hint"><div id="popover-hint" class="fixed-width" onclick="$(this).hide();"></div></div>
+<div id="section-popover-alert"><div id="popover-alert" class="fixed-width" onclick="$(this).hide();"></div></div>
 <div class="header header-gray fixed-width fixed-bar noselect">
     <div class="col-xs-2 text-left">
         <a class="btn" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times-circle"></i></a>
@@ -629,6 +653,7 @@
 	<?php echo $modal_trip_day; ?>
     <?php echo $modal_trip_map; ?>
     <?php echo $modal_line_add; ?>
+    <?php echo $modal_line_favourite; ?>
     <?php echo $modal_line_explore; ?>
     <?php echo $modal_line_custom; ?>
     <?php echo $modal_line_delete; ?>
@@ -664,6 +689,14 @@
 	<!-- END -->
 </script>
 <script>
+	<!-- START: [popover alert] -->
+		function showAlert(text) {
+			$("#popover-alert").hide();
+			$("#popover-alert").html(text).fadeIn(100);
+			setTimeout(function() { $("#popover-alert").delay(1000).fadeOut(300); }, 2000);
+		}
+	<!-- END -->
+	
 	<!-- START: [popover hint] -->
 		function showHint(hint) {
 			$("#popover-hint").hide();
@@ -792,6 +825,7 @@
 			},
 			update:function(event,ui) {
 				updatePlanTableLineDayIdAndSortOrder();
+				refreshRoute();
 				
 				<?php if($this->session->data['memory'] == 'cookie') { ?>
 					updatePlanTableCookie();
@@ -820,7 +854,7 @@
 					<!-- START: send POST -->
 						$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 							if(typeof json.warning != 'undefined') {
-								showHint(json.warning);
+								showAlert(json.warning);
 							}
 							else if(typeof json.success != 'undefined') {
 								showHint('Activity Sorted');
@@ -1347,6 +1381,9 @@
 			if(isset(line['place_id'])) {
 				hidden_read = '';
 			}
+			if(isset(line['title']) == false) {
+				line.title = 'Untitled Activity';
+			}
 			if(isset(line['image_id'])) {
 				image = 'resources/image/cropped/'+line.image_id+'.jpg';
 			}
@@ -1517,7 +1554,7 @@
 				<!-- START: send POST -->
 					$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 						if(typeof json.warning != 'undefined') {
-							showHint(json.warning);
+							showAlert(json.warning);
 						}
 						else if(typeof json.success != 'undefined') {
 							var day_id = json.day_id;
@@ -1589,7 +1626,7 @@
 			<!-- START: send POST -->
 				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 					if(typeof json.warning != 'undefined') {
-						showHint(json.warning);
+						showAlert(json.warning);
 					}
 					else if(typeof json.success != 'undefined') {
 						showHint('Day Updated');
@@ -1622,6 +1659,7 @@
 			//updateDateFormButtonEvent();
 			//updatePlanTableDayDuration();
 			initSortableLine();
+			refreshRoute();
 		<!-- END -->
 		
 		<!-- START: show hint -->
@@ -1645,7 +1683,7 @@
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=image_id]').val(line_raw.image_id);
 		<!-- END -->
 		<!-- START: update html -->
-			$('#plan-line-'+line.line_id+' .text-title').html(line.title);
+			$('#plan-line-'+line.line_id+' .text-title').html(line.title||'Untitled Activity');
 			$('#plan-line-'+line.line_id+' .text-description').html(line.description);
 			$('#plan-line-'+line.line_id+' .text-duration').html(line.duration);
 			$('#plan-line-'+line.line_id+' .text-time').html(line.time);
@@ -1711,6 +1749,7 @@
 		
 		<!-- START: init function -->
 			//updatePlanTableDayDuration();
+			refreshRoute();
 		<!-- END -->
 		
 		<!-- START: show hint -->
@@ -1820,9 +1859,9 @@
 				<!-- END -->
 			
 				<!-- START: send POST -->
-					$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+					$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 						if(typeof json.warning != 'undefined') {
-							showHint(json.warning);
+							showAlert(json.warning);
 						}
 						else if(typeof json.success != 'undefined') {
 							line.line_id = json.line_id;
@@ -1834,6 +1873,55 @@
 			<?php } ?>
 		}
 	<!-- END -->
+	
+	function deletePlanLine() {
+		line_id = $('#modal-line-custom input[name=line_id]').val();
+		
+		<?php if($this->session->data['memory'] == 'cookie') { ?>					
+			$("#plan-line-" + line_id).remove();
+			$('#modal-line-delete').modal('hide');
+			$('#modal-line-custom').modal('hide');
+			runDeletePlanLine();
+		<?php } else { ?>
+			<!-- START: set data -->
+				var data = {
+					"action":"delete_line",
+					"line_id":line_id
+				};
+			<!-- END -->
+		
+			<!-- START: send POST -->
+				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+					if(typeof json.warning != 'undefined') {
+						showAlert(json.warning);
+					}
+					else if(typeof json.success != 'undefined') {
+						$("#plan-line-"+ line_id).remove();
+						$('#modal-line-delete').modal('hide');
+						$('#modal-line-custom').modal('hide');
+						runDeletePlanLine();
+					}
+				}, "json");
+			<!-- END -->
+		<?php } ?>
+	}
+	
+	function runDeletePlanLine() {
+		<!-- START: init function -->
+			//updatePlanTableDayDuration();
+			updatePlanTableLineDayIdAndSortOrder();
+			refreshRoute();
+			//updatePlanTableButtonEvent();
+		<!-- END -->
+		
+		<?php if($this->session->data['memory'] == 'cookie') { ?>
+			updatePlanTableCookie();
+		<?php } ?>
+		
+		<!-- START: hint -->
+			showHint('Activity Deleted');
+		<!-- END -->
+	}
 <!-- END -->
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>

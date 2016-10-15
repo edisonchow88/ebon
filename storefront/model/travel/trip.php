@@ -1131,7 +1131,7 @@ class ModelTravelTrip extends Model{
 						$update[$f] = $f . " = NULL";
 					}
 					else {
-						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
 					}
 				}
 			}

@@ -68,7 +68,7 @@
 </style>
 
 <!-- START: Modal -->
-    <div class="modal modal-fixed-top" id="modal-trip-map" role="dialog">
+    <div class="modal modal-fixed-top" id="modal-trip-map" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
                 <div id="modal-trip-map-header-general" class="header fixed-bar fixed-width">
@@ -146,12 +146,11 @@ var map;
 
 		getDistanceTime();
 		initExploreMap();
-		
-		//// Route Event : refresh distance,route path
-		$(document).off("refreshRoute").on("refreshRoute",function(){
-			updateTransportBox();
-			getDistanceTime();			
-		});
+	}
+	
+	function refreshRoute() {
+		updateTransportBox();
+		getDistanceTime();	
 	}
 	
 	function mapEventListenResponse(markers, positions, bounds, routes ) {

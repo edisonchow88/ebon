@@ -18,10 +18,32 @@
 	#modal-line-custom  .modal-body {
 		background-color:#EEE;
 	}
-	#modal-line-custom  #line-map {
-		height:calc(100vh - 180px);
-		background-color:#666;
+	#modal-line-custom .tab {
+		position:relative;
 	}
+	
+	/* START: map */
+		#modal-line-custom .button-reset {
+			left:0;
+		}
+		#modal-line-custom .button-recenter {
+			right:0;
+		}
+		#modal-line-custom .tab-location .btn-group {
+			padding:10px;
+			position:absolute;
+			z-index:20;
+		}
+		#modal-line-custom .tab-location .btn {
+			height:40px;
+			padding:10px;
+			border-radius:5px;
+		}
+		#modal-line-custom  #line-map {
+			width:100%;
+			height:calc(100vh - 180px);
+		}
+	/* END */
 	#modal-line-custom .form-spacer {
 		height:10px;
 		border-bottom:solid thin #DDD;
@@ -82,7 +104,7 @@
 	}
 	#modal-line-custom .icon-disabled {
 		position:absolute;
-		color:#999;
+		color:#000;
 		height:50px;
 		padding:15px;
 		top:0;
@@ -196,6 +218,8 @@
                                 </div>
                             </div>
                             <div class="tab tab-location">
+                            	<input type="hidden" name="origin_lat"/>
+                                <input type="hidden" name="origin_lng"/>
                             	<div class="row">
                                 	<div class="col-xs-4"><label for="lat">Latitude</label></div>
                                 	<div class="col-xs-8"><input type="number" name="lat"/></div>
@@ -204,8 +228,17 @@
                                 	<div class="col-xs-4"><label for="lng">Longitude</label></div>
                                 	<div class="col-xs-8"><input type="number" name="lng"/></div>
                                 </div>
-                                <div id="line-map">
+                                <div class="btn-group button-reset">
+                                    <div class="btn btn-default">
+                                        <span>Reset</span>
+                                    </div>
                                 </div>
+                                <div class="btn-group button-recenter">
+                                    <div class="btn btn-default">
+                                        <i class="fa fa-fw fa-bullseye"></i>
+                                    </div>
+                                </div>
+                                <div id="line-map"></div>
                             </div>
                             <div class="tab tab-photo">
                             	<div class="row">
@@ -247,6 +280,110 @@
 <!-- END -->
 
 <script>
+	function initLineMap() {
+		var lat = parseFloat($('#modal-line-custom-form input[name=lat]').val())||0;
+		var lng = parseFloat($('#modal-line-custom-form input[name=lng]').val())||0;
+		var origin_lat = parseFloat($('#modal-line-custom-form input[name=origin_lat]').val())||0;
+		var origin_lng = parseFloat($('#modal-line-custom-form input[name=origin_lng]').val())||0;
+		
+		var myLatLng = {"lat":lat,"lng":lng};
+		var originLatLng = {"lat":origin_lat,"lng":origin_lng};
+		
+		var map = new google.maps.Map(document.getElementById('line-map'), {
+			center: myLatLng,
+			zoom: 7,
+			mapTypeId: google.maps.MapTypeId.ROADMAP,
+			disableDefaultUI: true
+        });
+		
+		var marker = new google.maps.Marker({
+          position: myLatLng,
+          map: map,
+		  draggable:true,
+        });
+		
+		google.maps.event.addListener(marker, 'dragend', function() 
+		{
+			geocodePosition(marker.getPosition());
+		});
+		
+		$("#modal-line-custom-form input[name=lat]").on('change', function() {
+			lat = parseFloat($('#modal-line-custom-form input[name=lat]').val());
+			if(verifyLat(lat)) {
+				myLatLng = {"lat":lat,"lng":lng};
+				marker.setPosition( new google.maps.LatLng(myLatLng) );
+				map.setCenter(marker.getPosition());
+				$('#modal-line-custom-form input[name=lat]').val(lat.toFixed(7));
+			}
+			else {
+				showAlert('Latitude must between -90 and 90.');
+			}
+		});
+		
+		$("#modal-line-custom-form input[name=lng]").on('change', function() {
+			lng = parseFloat($('#modal-line-custom-form input[name=lng]').val());
+			if(verifyLng(lng)) {
+				myLatLng = {"lat":lat,"lng":lng};
+				marker.setPosition( new google.maps.LatLng(myLatLng) );
+				map.setCenter(marker.getPosition());
+				$('#modal-line-custom-form input[name=lng]').val(lng.toFixed(7));
+			}
+			else {
+				showAlert('Longitude must between -180 and 180.');
+			}
+		});
+		
+		$("#modal-line-custom .tab-location .button-recenter").off().on('click', function() {
+			map.setCenter(marker.getPosition());
+		});
+		
+		$("#modal-line-custom .tab-location .button-reset").off().on('click', function() {
+			marker.setPosition( new google.maps.LatLng(originLatLng) );
+			map.setCenter(marker.getPosition());
+		});	
+	}
+	
+	function geocodePosition(pos) {
+	   geocoder = new google.maps.Geocoder();
+	   geocoder.geocode
+		({
+			latLng: pos
+		}, 
+			function(results, status) 
+			{
+				if (status == google.maps.GeocoderStatus.OK) 
+				{
+					$('#modal-line-custom-form input[name=lat]').val(results[0].geometry.location.lat().toFixed(7));
+					$('#modal-line-custom-form input[name=lng]').val(results[0].geometry.location.lng().toFixed(7));
+				} 
+				else 
+				{
+					$('#modal-line-custom-form input[name=lat]').val('Error');
+					$('#modal-line-custom-form input[name=lng]').val('Error');
+				}
+			}
+		);
+	}
+	
+	function verifyLat(lat) {
+		if(isset(lat) && lat >= -85 && lat <= 85) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	function verifyLng(lng) {
+		if(isset(lng) && lng >= -180 && lng <= 180) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+</script>
+<script>
 	function setModalLineCustomForm(line_id) {
 		$('#modal-line-custom-form').trigger("reset");
 		$('#modal-line-custom-form input[type=hidden]').val('');
@@ -275,6 +412,9 @@
 		$('#modal-line-custom input[name=lng]').val(line.lng);
 		$('#modal-line-custom input[name=photo]').val(line.photo);
 		$('#modal-line-custom input[name=image_id]').val(line.image_id);
+		
+		$('#modal-line-custom input[name=origin_lat]').val(line.lat);
+		$('#modal-line-custom input[name=origin_lng]').val(line.lng);
 		
 		$('#modal-line-custom input[name=duration]').trigger('change');
 		$('#modal-line-custom input[name=duration]').trigger('blur');
@@ -320,6 +460,29 @@
 			image_id	: $('#modal-line-custom input[name=image_id]').val()||null
 		};
 		
+		<!-- START: verify input -->
+			if(verifyLat(line_raw.lat) == false) { 
+				var origin_lat = $('#modal-line-custom input[name=origin_lat]').val();
+				if(isset(origin_lat)) {
+					line_raw.lat = origin_lat;
+				}
+				else {
+					line_raw.lat = null;
+					line_raw.lng = null;
+				}
+			}
+			if(verifyLng(line_raw.lng) == false) {
+				var origin_lng = $('#modal-line-custom input[name=origin_lng]').val();
+				if(isset(origin_lng)) {
+					line_raw.lng = origin_lng;
+				}
+				else {
+					line_raw.lat = null;
+					line_raw.lng = null;
+				}
+			}
+		<!-- END -->
+		
 		var line = {
 			line_id		: line_raw.line_id,
 			day_id		: line_raw.day_id,
@@ -342,14 +505,14 @@
 					<!-- START: set data -->
 						var data = {
 							"action":"edit_line",
-							"line":line
+							"line":line_raw
 						};
 					<!-- END -->
 				
 					<!-- START: send POST -->
-						$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+						$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 							if(typeof json.warning != 'undefined') {
-								showHint(json.warning);
+								showAlert(json.warning);
 							}
 							else if(typeof json.success != 'undefined') {
 								runEditPlanLine(line,line_raw);
@@ -372,9 +535,9 @@
 					<!-- END -->
 				
 					<!-- START: send POST -->
-						$.post("<?php echo $ajax_itinerary; ?>", data, function(json) {
+						$.post("<?php echo  $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 							if(typeof json.warning != 'undefined') {
-								showHint(json.warning);
+								showAlert(json.warning);
 							}
 							else if(typeof json.success != 'undefined') {
 								line.line_id = json.line_id;
@@ -398,6 +561,9 @@
 		if(tab == 'more') { 
 			$('#modal-line-custom .modal-body').css('background-color','#FFF');
 		}
+		if(tab == 'location') {
+			initLineMap();
+		}
 	}
 	
 	$('#modal-line-custom label').click(function() {
@@ -413,12 +579,15 @@
 	
 	$('#modal-line-custom input[name=photo]').on('change',function() {
 		var url = $('#modal-line-custom input[name=photo]').val();
+		$('#modal-line-custom .image img').attr('src',url);
+		/*
 		if(checkPhotoUrl(url)) {
 			$('#modal-line-custom .image img').attr('src',url);
 		}
 		else {
 			$('#modal-line-custom .image img').attr('src','resources/image/error/noimage.png');
 		}
+		*/
 	});
 	
 	<!-- START: [tab-time] -->
@@ -450,7 +619,15 @@
 				
 				if((isset(time_from) && isNaN(time_from) != true) || time_from == 0) {
 					if(isset(duration)) {
-						value = convertMinuteToTime(time_from + parseInt(duration));
+						time_to = time_from + parseInt(duration);
+						if(time_to >= 1440) {
+							time_to = time_to - 1440;
+							$('#modal-line-custom-form .unit-time-to').css('color','#000');
+						}
+						else {
+							$('#modal-line-custom-form .unit-time-to').css('color','#FFF');
+						}
+						value = convertMinuteToTime(time_to);
 						$('#modal-line-custom-form input[name=time_to]').val(value);
 					}
 					else if((isset(time_to) && isNaN(time_to) != true) || time_to == 0) {
@@ -492,7 +669,16 @@
 						$('#modal-line-custom-form input[name=duration]').trigger('blur');
 					}
 					else if(isset(duration)) {
-						value = convertMinuteToTime(time_to - parseInt(duration));
+						time_from = time_to - parseInt(duration);
+						if(time_from < 0) {
+							time_from = time_from + 1440;
+							$('#modal-line-custom-form .unit-time-to').css('color','#000');
+						}
+						else {
+							$('#modal-line-custom-form .unit-time-to').css('color','#FFF');
+						}
+						value = convertMinuteToTime(time_from);
+						value = convertMinuteToTime(time_from);
 						$('#modal-line-custom-form input[name=time]').val(value);
 					}
 				}

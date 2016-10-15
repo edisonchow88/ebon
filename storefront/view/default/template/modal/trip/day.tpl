@@ -161,6 +161,7 @@
 			},
 			update: function(event,ui) {
 				updateDayList();
+				refreshRoute();
 			}
 		});
 	}

@@ -825,6 +825,7 @@
 			},
 			update:function(event,ui) {
 				updatePlanTableLineDayIdAndSortOrder();
+				refreshRoute();
 				
 				<?php if($this->session->data['memory'] == 'cookie') { ?>
 					updatePlanTableCookie();
@@ -1658,6 +1659,7 @@
 			//updateDateFormButtonEvent();
 			//updatePlanTableDayDuration();
 			initSortableLine();
+			refreshRoute();
 		<!-- END -->
 		
 		<!-- START: show hint -->
@@ -1747,6 +1749,7 @@
 		
 		<!-- START: init function -->
 			//updatePlanTableDayDuration();
+			refreshRoute();
 		<!-- END -->
 		
 		<!-- START: show hint -->
@@ -1907,6 +1910,7 @@
 		<!-- START: init function -->
 			//updatePlanTableDayDuration();
 			updatePlanTableLineDayIdAndSortOrder();
+			refreshRoute();
 			//updatePlanTableButtonEvent();
 		<!-- END -->
 		

@@ -109,7 +109,7 @@
 	$("#modal-trip-map").on( "shown.bs.modal", function() {
 		initMap();
 		
-		//create day select
+		//create day select control
 		createMapSelectDay ();
 			
 		var markersData = createDrawMarkerList();
@@ -130,9 +130,10 @@
 <script>
 var map;
 	$(document).ready(function(){
-		updateTransportBox();	
+		updateTransportBox();
 	});
-	
+
+
 	function initMap() {
 		var myLatlng = new google.maps.LatLng(3.139003, 101.686852); //Malaysia
 		map = new google.maps.Map(document.getElementById('map'), {
@@ -144,26 +145,23 @@ var map;
 		});
 
 		getDistanceTime();
+		initExploreMap();
+	}
+	
+	function refreshRoute() {
+		updateTransportBox();
+		getDistanceTime();	
 	}
 	
 	function mapEventListenResponse(markers, positions, bounds, routes ) {
-		//// Map Event : Toggle show Day or All Markers. 
+		//// Map Event : Map toggle show Day or All Markers. 
 		$(".map-option-option").off().on('click',function() {
 			$(".map-option-option").removeClass("map-selected");
 			$(this).addClass("map-selected");
 			showMarkerRoute(markers, positions, routes);
 		});
 		
-		//// Event : Change selected day temporary no use 
-		/*	
-		$(".plan-day-tr").off().on('selectedDayChanged',function(){ 
-			showMarkerRoute(markers, positions, routes);
-		});
-		*/
-		
-		//// Outstanding Event : refresh route,marker
-		
-		///////////////// Map Event : testing event Day option ////
+		//// Map Event : Map change day listener ////
 		$(".map-day-group .day-control").off().on('click',function() {
 			var current_day_no = parseInt($(".map-day-group .map-day-show").val())
 			var new_day_no;
@@ -236,25 +234,20 @@ var map;
 				
 		var selected_day_id = $(".swiper-slide-active").closest(".plan-day").attr("id");
 		
-		///////////////////////for map select day option TESTING ////////////////////////////////////////////////////////
-		
-		selected_day_id = "plan-day-"+ $(".map-day-show").val();
-		
-		
-		
-		
+		//// Selected day using map change day control
+		selected_day_id = "plan-day-"+ $(".map-day-show").val();	
 				
 		var prev_last_line_id =  $("#"+ selected_day_id).prevAll(".plan-day").has(".plan-line").first().find(".plan-line").last().attr("id");
 
 		var bounds = new google.maps.LatLngBounds(); 
 		
 		if (markers) {
-			// show markers
+			// show markers onto map
 			$.each(markers,function(i) {
 				markers[i].setVisible(false);
 				markers[i].setZIndex(10);
 
-				///set color
+				///set color for marker
 				if (markers[i].day == selected_day_id || markers[i].line == prev_last_line_id) {
 					markers[i].set("viewstatus", "red");
 					markers[i].setIcon(red_icon);	
@@ -277,13 +270,12 @@ var map;
 		}
 		
 		if (routes) {
-			//alert ("route loaded");
-			//show routes
+			//show routes onto map
 			$.each(routes,function(i) {
 				routes[i].setVisible(false);
 				routes[i].setOptions( {zIndex: 8});
 				
-				///set color
+				///set color for route
 				if (markers[i].viewstatus == "red" && markers[i+1].viewstatus == "red" ) {
 					routes[i].setOptions( {strokeColor: "red", zIndex: 9});
 					routes[i].set("viewstatus", "red");
@@ -311,10 +303,9 @@ var map;
 		if (bounds.isEmpty()) {
 			bounds = boundsAll;
 		}
-			//// Event : Return to center		
+		//// Map Event : Return to center		
 		$("#go-center").off().on('click', function() {
 			map.fitBounds(bounds);
-			ga('send', 'event', 'map','center');
 		});	
 		
 		
@@ -348,7 +339,6 @@ var map;
 	}
 	
 	function updateTransportBox() {
-		
 		$(".transport").show();
 		$(".transport .path").html("");
 		
@@ -414,7 +404,7 @@ var map;
 	
 	function getDistanceTime() {
 		
-		$(".transport:not(:hidden)").each(function(i){
+		$(".transport").each(function(i){
 			var this_haslatlng = $(this).parents().hasClass("haslatlng");
 			var next_haslatlng = $(this).parents().next(".plan-line").hasClass("haslatlng");
 			var is_twins = $(this).parents().hasClass("plan-line-twins");
@@ -443,35 +433,44 @@ var map;
 			if ( ori_lat && ori_lng && des_lat && des_lng) {
 				var origin = ori_lat+","+ori_lng;
 				var destination = des_lat+","+des_lng;
-				var transport_id = $(this).attr("id");				
+				var transport_id = $(this).attr("id");	
 				var service = new google.maps.DistanceMatrixService();
-			
-				service.getDistanceMatrix({
-						origins: [origin],
-						destinations:  [destination],
-						travelMode: 'DRIVING',
-						unitSystem: google.maps.UnitSystem.METRIC,
-						avoidHighways: false,
-						avoidTolls: false
-					}, function(response, status) {
-						if (status !== 'OK') {
-							alert('Error was: ' + status);
-						} else {
-							var distance = response.rows[0].elements[0].distance.text;
-							var duration = response.rows[0].elements[0].duration.text;
-							$("#"+ transport_id +" .text").html(distance + " , " + duration);
-							
-					}
-				});
+		
+				if ( origin == destination) {
+					$("#"+ transport_id).hide();
+				}else {
+					service.getDistanceMatrix({
+							origins: [origin],
+							destinations:  [destination],
+							travelMode: 'DRIVING',
+							unitSystem: google.maps.UnitSystem.METRIC,
+							avoidHighways: false,
+							avoidTolls: false
+						}, function(response, status) {
+							if (status !== 'OK') {
+								alert('Error was: ' + status);
+							} else {
+								if (response.rows[0].elements[0].status !== 'OK') {	
+									$("#"+ transport_id +" .text").html("Not reachable by DRIVING");									
+								}else {
+									var distance = response.rows[0].elements[0].distance.text;
+									var duration = response.rows[0].elements[0].duration.text;
+									$("#"+ transport_id +" .text").html(distance + " , " + duration);
+								}
+						}
+					});
+				}
 			}else {
 				var transport_id = $(this).attr("id");
-				$("#"+ transport_id).html("");
+				$("#"+ transport_id).hide();
 			}
 		
-			if ( !$("#"+ transport_id +" .path").html()) {
+			if ( ori_lat && ori_lng && des_lat && des_lng && !$("#"+ transport_id +" .path").html()) {
 				/////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!! TESTING !!!!!!!!!!!!!!!!!!!!!!////////////////////////////////
+				$("#"+ transport_id).addClass("has-route");
 				var ori = new google.maps.LatLng(ori_lat, ori_lng)
 				var des = new google.maps.LatLng(des_lat, des_lng)
+				
 				var request = {
 								origin: ori,
 								destination: des,
@@ -483,9 +482,17 @@ var map;
 					if (status == 'OK') {
 						var routePath = response.routes[0].overview_path;
 						var routeString = JSON.stringify (routePath);
-						$("#"+ transport_id +" .path").html(routeString);	
-								
-					}
+						$("#"+ transport_id +" .path").html(routeString);				
+					}else if (status == 'ZERO_RESULTS'){
+						var coordinates = new Array();
+						coordinates [0] = ori;
+						coordinates [1] = des;
+						
+						var routeString = JSON.stringify (coordinates);
+						
+						$("#"+ transport_id +" .path").html(routeString);
+						$("#"+ transport_id).addClass("no-reach");		
+					}					
 				})
 			}
 		});
@@ -494,32 +501,54 @@ var map;
 
 	function makeRouteTest () {
 		var lineSymbol = {
-          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+          path: 'M 0,-1 0,1',
 		  scale : 1.5
         };		
 		
+		var dashlineSymbol = {
+          path: 'M 0,-1 0,1',
+          strokeOpacity: 1.5,
+          scale: 2
+        };
+		
 		var routes = [];
 
-		$(".transport:not(:hidden)").each(function(i) {
-			if ($(this).find(".path").html()) {
-				var routePath = JSON.parse($(this).find(".path").html());
-				 if (routePath){
-					var route = new google.maps.Polyline({
-						path: routePath,
-						icons: [{
-							icon: lineSymbol,
-							offset: '60%'
-						}],
-						strokeColor: '#000',
-						strokeOpacity: 1.0,
-						strokeWeight: 1.5
-					});		
-					
-					route.setMap(map);
-					route.setVisible(false);
-					routes.push(route);	
-				}
+		$(".transport.has-route").each(function(i) {
+
+			if ( $(this).hasClass("no-reach") && $(this).find(".path").html() ) {				
+				var icon_sequence = [{
+						icon: lineSymbol,
+						offset: '60%'
+					},	{
+						icon: dashlineSymbol,
+						offset: '0',
+            			repeat: '15px'
+					}];
+				var route_opacity = 0;
+			}else if( $(this).find(".path").html() ) {
+				var icon_sequence = [{
+						icon: lineSymbol,
+						offset: '60%'
+					}];	
+				var route_opacity = 1;						
 			}
+			
+			var routePath = JSON.parse($(this).find(".path").html());			
+			if (routePath){
+				var route = new google.maps.Polyline({
+					path: routePath,
+					icons: icon_sequence,
+					geodesic: true,
+					strokeColor: '#000',
+					strokeOpacity: route_opacity,
+					strokeWeight: 1.5
+				});		
+				
+				route.setMap(map);
+				route.setVisible(false);
+				routes.push(route);	
+			}
+	
 		});
 		
 		return routes;

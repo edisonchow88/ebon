@@ -55,17 +55,16 @@
 			disableDefaultUI: true
         });
 		
-		<!-- START: set filter -->
-			var filter = {};
-			filter.country = $('#modal-line-filter-form select[name=country]').val();
-		<!-- END -->
-		
 		<!-- START: link searchBox to UI element -->
 			var input = document.getElementById('modal-line-search-input-keyword');
 			var option = {};
-			if(filter.country != 'all') {
+			
+			var filter = {};
+			filter.country = $('#modal-line-filter-form select[name=country]').val();
+			if(isset(filter.country) && filter.country != 'all') {
 				option.componentRestrictions = {'country':filter.country};
 			}
+			
 			var searchBox = new google.maps.places.Autocomplete(input, option);
 		<!-- END -->
 		
@@ -129,11 +128,11 @@
 		<!-- END -->
 		
 		<!-- START: select a result -->
-			searchBox.addListener('places_changed', function() {
-				var places = searchBox.getPlaces();
-				var place = places[0];
+			searchBox.addListener('place_changed', function() {
+				var place = searchBox.getPlace();
 				
-				if (places.length == 0) {
+				if(isset(place.place_id) == false) {
+					showAlert('No search result');
 					return;
 				}
 				

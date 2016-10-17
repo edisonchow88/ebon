@@ -1027,7 +1027,10 @@
 <script>
 	<!-- START: [date] -->
 		function initDateButton() {
-			$('.button-set-date').on('click',function() { $('#modal-trip-day').modal('show'); });
+			$('.button-set-date').on('click',function() { 
+				$('#modal-trip-day').modal('show');
+				openEditDate(); 
+			});
 		}
 	<!-- END -->
 </script>
@@ -1314,7 +1317,7 @@
 				data.date = day.date;
 			}
 			else {
-				data.date = '';
+				data.date = 'Set Dates';
 			}
 		<!-- END -->
 		<!-- START: [content] -->
@@ -1617,6 +1620,7 @@
 			showHint('Day Updated');
 			refreshDayList();
 			refreshPlanTable();
+			refreshRoute();
 		<?php } else { ?>
 			<!-- START: set data -->
 				var data = {
@@ -1634,6 +1638,7 @@
 						showHint('Day Updated');
 						refreshDayList();
 						refreshPlanTable();
+						refreshRoute();
 					}
 				}, "json");
 			<!-- END -->

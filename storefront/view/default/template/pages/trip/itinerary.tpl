@@ -414,6 +414,7 @@
 			height:40px;
 			text-align:center;
 			font-weight:bold;
+			text-overflow: ellipsis;
 		}
 		
 		#wrapper-title-input:focus {
@@ -652,6 +653,7 @@
 <!-- START: [modal] -->
 	<?php echo $modal_trip_day; ?>
     <?php echo $modal_trip_map; ?>
+    <?php echo $modal_line_filter; ?>
     <?php echo $modal_line_add; ?>
     <?php echo $modal_line_favourite; ?>
     <?php echo $modal_line_explore; ?>

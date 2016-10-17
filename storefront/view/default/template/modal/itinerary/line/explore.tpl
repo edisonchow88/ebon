@@ -297,6 +297,7 @@
                         <div class="title">Explore</div>
                     </div>
                     <div class="col-xs-3 text-right">
+                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-line-filter">Filter</a>
                     </div>
                 </div>
                 <div class="header header-secondary fixed-bar fixed-width search-bar">

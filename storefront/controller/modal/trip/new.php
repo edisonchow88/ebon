@@ -4,10 +4,28 @@ if (! defined ( 'DIR_CORE' )) {
 }
 
 class ControllerModalTripNew extends AController {
-
+	//START: set common variable
+		public $data = array();
+	//END
+	
   	public function main() {
         //START: init controller data
         	$this->extensions->hk_InitData($this,__FUNCTION__);
+		//END
+		
+		//START: set modal
+			$this->loadModel('localisation/country');
+		//END
+		
+		//START: set data
+			$country = $this->model_localisation_country->getCountries();
+			$country_available = array();
+			foreach($country as $key => $value) {
+				if($value['status'] != 0) {
+					$country_available[] = $country[$key];
+				}
+			}
+			$this->data['country'] = $country_available;
 		//END
 		
 		//START: load component	
@@ -84,12 +102,18 @@ class ControllerModalTripNew extends AController {
 		//END
 		
 		//START: set ajax
-			$modal_ajax = $this->html->getSecureURL('trip/ajax_itinerary');
+			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
+		//END
+		
+		//START: set redirect
+			$this->data['redirect'] = $this->html->getSecureURL('trip/itinerary');
 		//END
 		
 		//START: set variable
-			$this->view->assign('modal_ajax', $modal_ajax);
-			$this->view->assign('modal_component', $modal_component);
+			$this->view->batchAssign($this->data);
+			if(count($result) > 0) { $this->view->assign('result', $result); }
+			if(count($link) > 0) { $this->view->assign('link', $link); }
+			if(count($ajax) > 0) { $this->view->assign('ajax', $ajax); }
 		//END
 		
 		//START: set template

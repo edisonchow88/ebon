@@ -407,6 +407,10 @@
 		}
 	/* END */
 	/* START: [itinerary] */
+		.header .btn.button-save-trip {
+			color:#e93578;
+		}
+		
 		#wrapper-title-input {
 			background-color:transparent;
 			border:none;
@@ -638,7 +642,11 @@
         <input id="wrapper-title-input" type="text"/>
     </div>
     <div class="col-xs-2 text-right">
-    	<a class="btn"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
+    	<?php if($this->user->isLogged() == false) { ?>
+    		<a class="btn button-save-trip">Save</a>
+        <?php } else { ?>
+        	<a class="btn"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
+        <?php } ?>
     </div>
 </div>
 <div class="body fixed-width noselect">

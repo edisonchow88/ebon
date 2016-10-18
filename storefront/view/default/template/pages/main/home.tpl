@@ -355,6 +355,28 @@
 			border-top:none;
 		}
 	/* END */
+	/* START: [popover alert] */	
+		#section-popover-alert {
+			position:fixed;
+			bottom:10px;
+			right:0;
+			left:0;
+			width:100%;
+			z-index:15000;
+		}
+		
+		#popover-alert{
+			margin:auto;
+			width:390px;
+			line-height:50px;
+			max-width:calc(100% - 10px);
+			height:auto;
+			background-color: rgba(139,0,0,0.9);
+			color:#FFF;
+			padding: 5px;
+			display: none;
+		}
+	/* END */
 	/* START: [popover hint] */	
 		#section-popover-hint {
 			position:fixed;
@@ -379,11 +401,22 @@
 	/* END */	
 </style>
 
+<script>
+	function isset(x) {
+		if(typeof x != 'undefined' && x != null && x != '') {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+</script>
 
 <!-- START: [splash] -->
 	<?php echo $modal_home_splash; ?>
 <!-- END -->
 
+<div id="section-popover-alert"><div id="popover-alert" class="fixed-bar" onclick="$(this).hide();"></div></div>
 <div id="section-popover-hint"><div id="popover-hint" class="fixed-bar" onclick="$(this).hide();"></div></div>
 <div id="section-body" class="fixed-bar">
 	<div class="row" id="section-content">
@@ -411,6 +444,13 @@
 		setTimeout(function() {
 			$('#wrapper-splash').fadeOut(500);
 		},1000);
+	<!-- END -->
+	<!-- START: [popover alert] -->
+		function showAlert(text) {
+			$("#popover-alert").hide();
+			$("#popover-alert").html(text).fadeIn(100);
+			setTimeout(function() { $("#popover-alert").delay(1000).fadeOut(300); }, 2000);
+		}
 	<!-- END -->
 	<!-- START: [popover hint] -->
 		function showHint(hint) {

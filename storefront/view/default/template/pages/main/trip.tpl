@@ -17,44 +17,48 @@
 	}
 	
 	/* START: [list] */
-		.trip-list .result-trip-row {
+		.result-trip-row {
 			border-bottom:solid thin #DDD;
 			padding:15px 0 15px 15px;
 			cursor:pointer;
 		}
 		
-		.trip-list .result-trip-row a {
+		.result-trip-row a {
 			color:#000;
 		}
 		
-		.trip-list .result-trip-title {
+		.result-trip-title {
 			font-weight:bold;
 			overflow:hidden;
 		}
 		
-		.trip-list .result-trip-blurb {
+		.result-trip-blurb {
 			color:#777;
 			overflow:hidden;
 			font-size:12px;
 		}
 		
-		.trip-list .result-trip-button {
+		.result-trip-button {
 			text-align:right;
 			line-height:40px;
 			padding-right:16px;
+		}
+		
+		.result-trip-status {
+			line-height:40px;
 		}
 	/* END */
 </style>
 
 <div id="wrapper-trip-header-general" class="fixed-bar wrapper-header-main row">
     <div class="col-xs-3 text-left">
-        <a class="btn btn-header" onclick="openEditTrip();">Edit</a>
+        <a class="btn btn-header button-trip-edit" onclick="openEditTrip();">Edit</a>
     </div>
     <div class="col-xs-6">
         <h1>Trips</h1>
     </div>
     <div class="col-xs-3 text-right">
-        <a class="btn btn-header" data-toggle="modal" data-target="#modal-trip-new"><i class="fa fa-fw fa-lg fa-plus"></i></a>
+        <a class="btn btn-header" onclick="openModalNewTrip();"><i class="fa fa-fw fa-lg fa-plus"></i></a>
     </div>
 </div>
 <div id="wrapper-trip-header-edit" class="fixed-bar wrapper-header-main row">
@@ -67,7 +71,7 @@
     <div class="col-xs-3 text-right">
     </div>
 </div>
-    
+<div id="wrapper-trip-list-alert"></div>
 <?php if($this->user->isLogged() != false) { ?>
     <div id="wrapper-trip-archive-bar" class="fixed-bar row">
         <div class="col-xs-3 text-left">
@@ -79,6 +83,7 @@
         </div>
     </div>
 <?php } ?>
+<div id="wrapper-unsaved-trip-list" class="unsaved-trip-list"></div>
 <div id="wrapper-trip-list" class="trip-list"></div>
 <div id="wrapper-trip-list-empty" class="empty-list">
 	<div class="title">Your List is Empty</div>
@@ -87,12 +92,12 @@
 
 <div id="wrapper-trip-action" class="fixed-bar row">
     <div class="col-xs-3 text-left">
-        <a class="btn btn-header disabled" onclick="removeTrip(); closeEditTrip();">Archive</a>
+        <a class="btn btn-header button-archive-trip disabled" onclick="removeTrip(); closeEditTrip();">Archive</a>
     </div>
     <div class="col-xs-6">
     </div>
     <div class="col-xs-3 text-right">
-        <a class="btn btn-header disabled" onclick="deleteTrip(); closeEditTrip();">Delete</a>
+        <a class="btn btn-header button-delete-trip disabled" onclick="deleteTrip(); closeEditTrip();">Delete</a>
     </div>
 </div>
 
@@ -110,74 +115,140 @@
 <script>
 	function printTrip(data) {
 		var content = '';
-		content += ''
-			+ '<div class="row result-trip-row noselect">'
-				+ '<a href="'+data.url+'">'
-					+ '<div class="col-xs-10 text-left">'
-						+ '<div class="result-trip-title line-clamp-1">'
-							+ data.name
+		if(isset(data.storage) && data.storage == 'cookie') {
+			content += ''
+				+ '<div class="row result-trip-row noselect">'
+					+ '<a href="'+data.url+'">'
+						+ '<div class="col-xs-6 text-left">'
+							+ '<div class="result-trip-title line-clamp-1">'
+								+ data.name
+							+ '</div>'
+							+ '<div class="result-trip-blurb line-clamp-1">'
+								+ '<span class="small">Created by <b>'+data.username+'</b></span>'
+							+ '</div>'
 						+ '</div>'
-						+ '<div class="result-trip-blurb line-clamp-1">'
-							+ '<span class="small">Created by <b>'+data.username+'</b></span>'
+						+ '<div class="col-xs-4 text-right text-danger result-trip-status">'
+							+ 'NOT SAVED'
 						+ '</div>'
-					+ '</div>'
-					+ '<div class="col-xs-2 text-right result-trip-button">'
-						+ '<i class="fa fa-fw fa-lg fa-chevron-right"></i>'
-					+ '</div>'
-				+ '</a>'
-			+ '</div>'
-		;
-		$('#wrapper-trip-list').append(content);
+						+ '<div class="col-xs-2 text-right result-trip-button">'
+							+ '<i class="fa fa-fw fa-lg fa-chevron-right"></i>'
+						+ '</div>'
+					+ '</a>'
+					+ '<form class="result-trip-form hidden">'
+						+ '<input type="hidden" name="trip_id" value=""/>'
+					+ '</form>'
+				+ '</div>'
+			;
+			$('#wrapper-unsaved-trip-list').append(content);
+		}
+		else {
+			content += ''
+				+ '<div class="row result-trip-row noselect">'
+					+ '<a href="'+data.url+'">'
+						+ '<div class="col-xs-10 text-left">'
+							+ '<div class="result-trip-title line-clamp-1">'
+								+ data.name
+							+ '</div>'
+							+ '<div class="result-trip-blurb line-clamp-1">'
+								+ '<span class="small">Created by <b>'+data.username+'</b></span>'
+							+ '</div>'
+						+ '</div>'
+						+ '<div class="col-xs-2 text-right result-trip-button">'
+							+ '<i class="fa fa-fw fa-lg fa-chevron-right"></i>'
+						+ '</div>'
+					+ '</a>'
+					+ '<form class="result-trip-form hidden">'
+						+ '<input type="hidden" name="trip_id" value="' + data.trip_id + '"/>'
+					+ '</form>'
+				+ '</div>'
+			;
+			$('#wrapper-trip-list').append(content);
+		}
 	}
 	
 	function refreshTripList() {
-		<?php if($this->user->isLogged() != false) { ?>
-			<!-- START: [logged] -->
-				<!-- START: set data -->
-					var data = {
-						"action":"load_trip",
-						"user_id":"<?php echo $this->user->getUserId(); ?>"
-					};
+		<!-- START: clear wrapper -->
+			$('#wrapper-trip-list').html('');
+			$('#wrapper-unsaved-trip-list').html('');
+		<!-- END -->
+		
+		<!-- START: [unsaved trip] -->
+			var trip = {};
+			var unsaved_trip = getCookie('trip');
+			if(unsaved_trip == '') {
+				<!-- START: [first time] -->
+					trip.num_of_unsaved_trip = 0;
 				<!-- END -->
-				<!-- START: send POST -->
-					$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-						runRefreshTripList(json);
-					}, "json");
+			}
+			else {
+				<!-- START: [revisit] -->
+					trip.num_of_unsaved_trip = 1;
+					trip.unsaved_trip = new Array();
+					trip.unsaved_trip[0] = JSON.parse(unsaved_trip);
+					trip.unsaved_trip[0].username = 'Me';
+					trip.unsaved_trip[0].url = '<?php echo $link["trip/itinerary"]; ?>';
+					trip.unsaved_trip[0].storage = 'cookie';
 				<!-- END -->
-			<!-- END -->
-		<?php } else { ?>
-			<!-- START: [not logged] -->
-				var trip = getCookie('trip');
-				if(trip == '') {
-					<!-- START: [first time] -->
-						var trip = [];
-						trip = JSON.stringify(trip);
-						setCookie('trip',trip,7);
-						trip = JSON.parse(trip);
-						runRefreshTripList(trip);
+			}
+		<!-- END -->
+		
+		<!-- START: [saved trip] -->
+			<?php if($this->user->isLogged() != false) { ?>
+				<!-- START: [logged] -->
+					<!-- START: set data -->
+						var data = {
+							"action":"load_trip",
+							"user_id":"<?php echo $this->user->getUserId(); ?>"
+						};
 					<!-- END -->
-				}
-				else {
-					<!-- START: [revisit] -->
-						trip = JSON.parse(trip);
-						runRefreshTripList(trip);
+					<!-- START: send POST -->
+						$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+							
+							for (var attrname in trip) { json[attrname] = trip[attrname]; }
+							runRefreshTripList(json);
+						}, "json");
 					<!-- END -->
-				}
-			<!-- END -->
-		<?php } ?>
+				<!-- END -->
+			<?php } else { ?>
+				<!-- START: [not logged] -->
+					runRefreshTripList(trip);
+				<!-- END -->
+			<?php } ?>
+		<!-- END -->
 	}
 	
 	function runRefreshTripList(trip) {
-		if(trip.num_of_active_trip > 0) {
+		if(trip.num_of_active_trip > 0 && trip.num_of_unsaved_trip > 0) {
+			$('#wrapper-trip-list-empty').hide();
+			$('#content-trip').css('background-color','#FFF');
+			for(i=0;i<trip.num_of_unsaved_trip;i++) {
+				printTrip(trip.unsaved_trip[i]);
+			}
+			for(i=0;i<trip.num_of_active_trip;i++) {
+				printTrip(trip.active_trip[i]);
+			}
+			$('.button-trip-edit').removeClass('disabled');
+		}
+		else if(trip.num_of_active_trip > 0) {
 			$('#wrapper-trip-list-empty').hide();
 			$('#content-trip').css('background-color','#FFF');
 			for(i=0;i<trip.num_of_active_trip;i++) {
 				printTrip(trip.active_trip[i]);
 			}
+			$('.button-trip-edit').removeClass('disabled');
+		}
+		else if(trip.num_of_unsaved_trip > 0) {
+			$('#wrapper-trip-list-empty').hide();
+			$('#content-trip').css('background-color','#FFF');
+			for(i=0;i<trip.num_of_unsaved_trip;i++) {
+				printTrip(trip.unsaved_trip[i]);
+			}
+			$('.button-trip-edit').removeClass('disabled');
 		}
 		else {
 			$('#wrapper-trip-list-empty').show();
 			$('#content-trip').css('background-color','#EEE');
+			$('.button-trip-edit').addClass('disabled');
 		}
 	}
 	
@@ -200,6 +271,7 @@
 				selectTrip(button);
 			}
 		});
+		$('#wrapper-trip-list-alert').html('');
 	}
 	
 	function closeEditTrip() {
@@ -212,6 +284,8 @@
 		$('.result-trip-button').css('color','#000');
 		$('.result-trip-row a').css('pointer-events','auto');
 		$('.result-trip-row').off();
+		$('.button-archive-trip').addClass('disabled');
+		$('.button-delete-trip').addClass('disabled');
 	}
 	
 	function selectTrip(button) {
@@ -219,6 +293,15 @@
 		$(button).css('color','#e93578');
 		if($('.result-trip-row.selected').length > 0) {
 			$('#wrapper-trip-button-delete').removeClass('disabled');
+			$('.button-delete-trip').removeClass('disabled');
+		}
+		if($('.trip-list .result-trip-row.selected').length > 0) {
+			if($('.unsaved-trip-list .result-trip-row.selected').length > 0) {
+				$('.button-archive-trip').addClass('disabled');
+			}
+			else {
+				$('.button-archive-trip').removeClass('disabled');
+			}
 		}
 	}
 	
@@ -227,6 +310,18 @@
 		$(button).css('color','#CCC');
 		if($('.result-trip-row.selected').length < 1) {
 			$('#wrapper-trip-button-delete').addClass('disabled');
+			$('.button-delete-trip').addClass('disabled');
+		}
+		if($('.trip-list .result-trip-row.selected').length < 1) {
+			$('.button-archive-trip').addClass('disabled');
+		}
+		else {
+			if($('.unsaved-trip-list .result-trip-row.selected').length > 0) {
+				$('.button-archive-trip').addClass('disabled');
+			}
+			else {
+				$('.button-archive-trip').removeClass('disabled');
+			}
 		}
 	}
 	
@@ -246,6 +341,66 @@
 			$('#content-trip').css('background-color','#EEE');
 			$('#wrapper-trip-button-edit').addClass('disabled');
 		}
+	}
+	
+	function openModalNewTrip() {
+		var trip = JSON.parse(getCookie('trip'));
+		if($('.result-trip-status').length > 0) {
+			var content;
+			content = '<div class="alert alert-warning"><b>'+trip.name+' is not saved.</b><br/>Please save or delete it before create a new trip.</div>';
+			$('#wrapper-trip-list-alert').html(content);
+		}
+		else {
+			$('#wrapper-trip-list-alert').html('');
+			$('#modal-trip-new').modal('show');
+		}
+	}
+	
+	function deleteTrip() {
+		var num_of_deleted_trip = $('.result-trip-row.selected').length;
+		var num_of_deleted_unsaved_trip = $('.unsaved-trip-list .result-trip-row.selected').length;
+		<?php if($this->user->isLogged() == false) { ?>
+			<!-- START: set cookie -->
+				setCookie('trip','',0);
+				setCookie('plan','',0);
+			<!-- END -->
+			<!-- START: set view -->
+				refreshTripList();
+			<!-- END -->
+			<!-- START: show hint -->
+				showHint('Trip Deleted');
+			<!-- END -->
+		<?php } else { ?>
+			<!-- START: get data -->
+				var trip = new Array();
+				var trip_id = '';
+				var e;
+				for(i=0;i<$('.result-trip-row.selected').length;i++) {
+					e = $('.result-trip-row.selected .result-trip-form input[name=trip_id]').get(i);
+					trip_id = $(e).val();
+					trip.push(trip_id);
+				}
+			<!-- END -->
+			<!-- START: set data -->
+				var data = {
+					"action":"delete_trip",
+					"trip":trip
+				};
+			<!-- END -->
+			<!-- START: send POST -->
+				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+					$('.result-trip-row.selected').remove();
+					<!-- START: show hint -->
+						if(num_of_deleted_trip > 1) {
+							showHint('Trips Deleted');
+						}
+						else {
+							showHint('Trip Deleted');
+						}
+					<!-- END -->
+				}, "json");
+			<!-- END -->
+		<?php } ?>
 	}
 	
 	refreshTripList();

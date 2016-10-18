@@ -89,7 +89,7 @@
 	}
 </style>
 <!-- START: Modal -->
-    <div class="modal" id="modal-explore-search" role="dialog" data-backdrop="false">
+    <div class="modal" id="modal-explore-search" role="dialog">
         <div class="modal-dialog fixed-bar">
             <div class="modal-content">
                 <div class="modal-header">

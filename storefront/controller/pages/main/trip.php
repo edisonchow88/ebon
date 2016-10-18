@@ -32,6 +32,7 @@ class ControllerPagesMainTrip extends AController {
 		//END
 		
 		//START: set link
+			$link['trip/itinerary'] = $this->html->getSecureURL('trip/itinerary');
 		//END
 		
 		//START: set variable

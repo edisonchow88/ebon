@@ -159,6 +159,11 @@
 			color:#000;
 			background-color:transparent;
 		}
+		
+		.alert {
+			border-radius:0;
+			margin-bottom:0;
+		}
 	/* END */
 </style>
 <style>
@@ -407,6 +412,10 @@
 		}
 	/* END */
 	/* START: [itinerary] */
+		.header .btn.button-save-trip {
+			color:#e93578;
+		}
+		
 		#wrapper-title-input {
 			background-color:transparent;
 			border:none;
@@ -414,6 +423,7 @@
 			height:40px;
 			text-align:center;
 			font-weight:bold;
+			text-overflow: ellipsis;
 		}
 		
 		#wrapper-title-input:focus {
@@ -637,7 +647,11 @@
         <input id="wrapper-title-input" type="text"/>
     </div>
     <div class="col-xs-2 text-right">
-    	<a class="btn"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
+    	<?php if($this->session->data['memory'] == 'cookie') { ?>
+    		<a class="btn button-save-trip" data-toggle="modal" data-target="#modal-trip-save">Save</a>
+        <?php } else { ?>
+        	<a class="btn"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
+        <?php } ?>
     </div>
 </div>
 <div class="body fixed-width noselect">
@@ -650,8 +664,12 @@
 </div>
 
 <!-- START: [modal] -->
+    <?php echo $modal_account_signup; ?>
+    <?php echo $modal_account_login; ?>
+    <?php echo $modal_trip_save; ?>
 	<?php echo $modal_trip_day; ?>
     <?php echo $modal_trip_map; ?>
+    <?php echo $modal_line_filter; ?>
     <?php echo $modal_line_add; ?>
     <?php echo $modal_line_favourite; ?>
     <?php echo $modal_line_explore; ?>
@@ -825,7 +843,7 @@
 			},
 			update:function(event,ui) {
 				updatePlanTableLineDayIdAndSortOrder();
-				refreshRoute();
+				$(document).trigger("refreshRoute");
 				
 				<?php if($this->session->data['memory'] == 'cookie') { ?>
 					updatePlanTableCookie();
@@ -1025,7 +1043,10 @@
 <script>
 	<!-- START: [date] -->
 		function initDateButton() {
-			$('.button-set-date').on('click',function() { $('#modal-trip-day').modal('show'); });
+			$('.button-set-date').on('click',function() { 
+				$('#modal-trip-day').modal('show');
+				openEditDate(); 
+			});
 		}
 	<!-- END -->
 </script>
@@ -1312,7 +1333,7 @@
 				data.date = day.date;
 			}
 			else {
-				data.date = '';
+				data.date = 'Set Dates';
 			}
 		<!-- END -->
 		<!-- START: [content] -->
@@ -1615,6 +1636,7 @@
 			showHint('Day Updated');
 			refreshDayList();
 			refreshPlanTable();
+			$(document).trigger("refreshRoute");
 		<?php } else { ?>
 			<!-- START: set data -->
 				var data = {
@@ -1632,6 +1654,7 @@
 						showHint('Day Updated');
 						refreshDayList();
 						refreshPlanTable();
+						$(document).trigger("refreshRoute");
 					}
 				}, "json");
 			<!-- END -->
@@ -1659,7 +1682,7 @@
 			//updateDateFormButtonEvent();
 			//updatePlanTableDayDuration();
 			initSortableLine();
-			refreshRoute();
+			$(document).trigger("refreshRoute");
 		<!-- END -->
 		
 		<!-- START: show hint -->
@@ -1749,7 +1772,7 @@
 		
 		<!-- START: init function -->
 			//updatePlanTableDayDuration();
-			refreshRoute();
+			$(document).trigger("refreshRoute");
 		<!-- END -->
 		
 		<!-- START: show hint -->
@@ -1910,7 +1933,7 @@
 		<!-- START: init function -->
 			//updatePlanTableDayDuration();
 			updatePlanTableLineDayIdAndSortOrder();
-			refreshRoute();
+			$(document).trigger("refreshRoute");
 			//updatePlanTableButtonEvent();
 		<!-- END -->
 		
@@ -1923,5 +1946,13 @@
 		<!-- END -->
 	}
 <!-- END -->
+</script>
+<script>
+	<?php if($last_action != '') { ?>
+		showHint("<?php echo $last_action; ?>");
+		setTimeout(function() {
+			$('#modal-trip-save').modal('show');
+		}, 100);
+	<?php } ?>
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>

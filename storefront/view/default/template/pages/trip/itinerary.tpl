@@ -843,7 +843,7 @@
 			},
 			update:function(event,ui) {
 				updatePlanTableLineDayIdAndSortOrder();
-				refreshRoute();
+				$(document).trigger("refreshRoute");
 				
 				<?php if($this->session->data['memory'] == 'cookie') { ?>
 					updatePlanTableCookie();
@@ -1636,7 +1636,7 @@
 			showHint('Day Updated');
 			refreshDayList();
 			refreshPlanTable();
-			refreshRoute();
+			$(document).trigger("refreshRoute");
 		<?php } else { ?>
 			<!-- START: set data -->
 				var data = {
@@ -1654,7 +1654,7 @@
 						showHint('Day Updated');
 						refreshDayList();
 						refreshPlanTable();
-						refreshRoute();
+						$(document).trigger("refreshRoute");
 					}
 				}, "json");
 			<!-- END -->
@@ -1682,7 +1682,7 @@
 			//updateDateFormButtonEvent();
 			//updatePlanTableDayDuration();
 			initSortableLine();
-			refreshRoute();
+			$(document).trigger("refreshRoute");
 		<!-- END -->
 		
 		<!-- START: show hint -->
@@ -1772,7 +1772,7 @@
 		
 		<!-- START: init function -->
 			//updatePlanTableDayDuration();
-			refreshRoute();
+			$(document).trigger("refreshRoute");
 		<!-- END -->
 		
 		<!-- START: show hint -->
@@ -1933,7 +1933,7 @@
 		<!-- START: init function -->
 			//updatePlanTableDayDuration();
 			updatePlanTableLineDayIdAndSortOrder();
-			refreshRoute();
+			$(document).trigger("refreshRoute");
 			//updatePlanTableButtonEvent();
 		<!-- END -->
 		

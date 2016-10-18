@@ -7,12 +7,6 @@
 		background-color: #CCC !important;
 	}
 	
-	.map-option-option-group {
-		position: absolute;
-		z-index: 99;
-		padding: 5px;
-	}
-	
 	.map-center-group {
 		position: absolute;
 		z-index: 99;
@@ -64,7 +58,36 @@
     /* here copy default .btn class styles */
     cursor:default !important;
     /* or something like that */
-}
+	}
+
+	.map-setting {
+		position: absolute;
+		z-index: 99;
+		padding: 5px;
+		width: 200px;
+	}
+
+	.map-setting .list-group {
+		margin: 0px !important;
+		
+	}
+		
+	.map-setting .list-group .list-group-item{
+		margin: 0px !important;
+		padding: 5px !important;
+	}
+	
+	.map-option {
+		float:right;	
+	}
+	
+	.list-group-item {
+		height: 40px;
+	}
+	
+	.list-group-item button {
+		width: 50px;
+	}
 </style>
 
 <!-- START: Modal -->
@@ -86,12 +109,36 @@
                 <div class="modal-header-shadow"></div>
                 <div class="modal-content">
                     <div class="modal-body nopadding">
-                         <div class="btn-group map-center-group" role="group" aria-label="...">
+                        <div class="btn-group map-center-group" role="group" aria-label="...">
                             <button type="button" class="btn btn-default" id="go-center"><i class="fa fa-bullseye" aria-hidden="true"></i></button>        		</div>
-                        <div class="btn-group map-option-option-group" role="group" aria-label="...">
+                      <!--
+                       	<div class="btn-group map-option-option-group " role="group" aria-label="...">
                             <button type="button" class="btn btn-default map-option-option map-selected" value="all">All</button>
                             <button type="button" class="btn btn-default map-option-option" value="day">Day</button>
-                        </div>
+                        </div>  
+                         --> 							 
+                         <div class="map-setting">
+                   			<ul class="list-group">
+                                <button class="btn btn-default map-setting-button" type="button">
+                                    <i class="fa fa-cog" aria-hidden="true"></i> 
+                                </button> 
+                                <div class="map-setting-list hidden">
+                                    <li class="list-group-item"><span>Markers</span> 
+                                    	<div class="btn-group map-option map-option-option-group" role="group" aria-label="...">
+                            				<button type="button" class="btn btn-sm btn-default map-option-option map-selected" value="all">All</button>
+                            				<button type="button" class="btn btn-sm btn-default map-option-option" value="day">Day</button>
+                       					 </div>
+                                    </li>
+                                    <li class="list-group-item"><span>Routes</span>
+                                   		 <div class="btn-group map-option map-option-route-group" role="group" aria-label="...">
+                                         	<button type="button" class="btn btn-sm btn-default map-route-option" value="all"><i class="icon-curve-route"></i></button> 
+                                            <button type="button" class="btn btn-sm btn-default map-route-option" value="all"><i class="icon-straight-route"></i></button>                            
+                       					 </div> 
+                                    </li>               
+                                </div>
+      						</ul> 
+                      	</div>     
+     
                         <div class="btn-group map-day-group box-shadow" role="group" aria-label="...">
                              <button type="button" class="btn btn-default day-control map-day-left"><i class="fa fa-fw fa-chevron-left"></i></button>
                              <button type="button" class="btn btn-default nohover  disabled map-day-show">Day <span></span></button>
@@ -111,7 +158,8 @@
 		
 		//create day select control
 		createMapSelectDay ();
-			
+		
+		setupMapSettingMenu();	
 		var markersData = createDrawMarkerList();
 			
 		var markers = markersData [0];
@@ -135,22 +183,35 @@ var map;
 
 
 	function initMap() {
+		var map_style = getMapStyle();
 		var myLatlng = new google.maps.LatLng(3.139003, 101.686852); //Malaysia
 		map = new google.maps.Map(document.getElementById('map'), {
 			center: myLatlng,
 			zoom: 4,
 			minZoom: 1,
 			maxZoom: 12,
-			disableDefaultUI: true
+			disableDefaultUI: true,
+			styles: map_style
 		});
 
 		getDistanceTime();
 		initExploreMap();
 	}
 	
+	////callback function to refresh route after action (delete, add, move ,modify)
 	function refreshRoute() {
 		updateTransportBox();
 		getDistanceTime();	
+	}
+	
+	function setupMapSettingMenu () {
+		$(".map-setting-button").off().on("click", function(){
+			$(".map-setting-list").toggleClass("hidden");
+		});
+		
+		google.maps.event.addListener(map, 'click', function() {
+			$(".map-setting-list").addClass("hidden");
+  		});
 	}
 	
 	function mapEventListenResponse(markers, positions, bounds, routes ) {
@@ -505,8 +566,9 @@ var map;
 
 	function makeRouteTest () {
 		var lineSymbol = {
-          path: 'M 0,-1 0,1',
-		  scale : 1.5
+          path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+		  scale : 1.5,
+		  strokeWeight: 3.5
         };		
 		
 		var dashlineSymbol = {
@@ -561,14 +623,232 @@ var map;
 	}
 	
 	function createMapSelectDay () {
+		$(".day-control").removeClass("disabled");		
 		var selected_day_id = $(".swiper-slide-active").closest(".plan-day").attr("id");
 		var day_no =  parseInt(selected_day_id.match(/\d+/));
 		$(".map-day-group .map-day-show span").html(day_no);
 		$(".map-day-group .map-day-show").val(day_no);
 		
-		if (day_no == 1 )  $(".map-day-left").addClass("disabled");
-		if (day_no == $(".plan-day").length )  $(".map-day-right").addClass("disabled");
 		
+		if (day_no < 2 )  $(".map-day-left").addClass("disabled");
+		if (day_no > $(".plan-day").length -1 )  $(".map-day-right").addClass("disabled");
+	}
+	
+	/// Additional Map Style
+	function getMapStyle () {
+	var map_style = [
+  {
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#aef7a6"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#1115b0"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.country",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#21b011"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.country",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#1eb55a"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.country",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#1ba722"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.country",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.locality",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#004010"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.locality",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#84ffa3"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.province",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#054b1e"
+      },
+      {
+        "weight": 1
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.province",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#004010"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.province",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#75ff98"
+      },
+      {
+        "weight": 3
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#A3E4D7"
+      },
+      {
+        "lightness": 30
+      }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#A3E4D7"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#A3E4D7"
+      },
+      {
+        "weight": 0.5
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#BB8FCE "
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#bce2fe"
+      }
+    ]
+  }
+];
+	
+	return map_style;
 		
 	}
+	
+	
 </script>

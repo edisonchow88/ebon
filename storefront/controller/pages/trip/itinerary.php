@@ -13,6 +13,21 @@ class ControllerPagesTripItinerary extends AController {
 			$this->extensions->hk_InitData($this, __FUNCTION__);
 		//END
 		
+		//START: set popover hint
+			if($this->session->data['account_action'] != '') {
+				if($this->session->data['account_action'] == 'login') {
+					$this->data['last_action'] = 'Log In';
+				}
+				else if($this->session->data['account_action'] == 'signup') {
+					$this->data['last_action'] = 'Sign Up';
+				}
+				else if($this->session->data['account_action'] == 'logout') {
+					$this->data['last_action'] = 'Log Out';
+				}
+				unset($this->session->data['account_action']);
+			}
+		//END
+		
 		//START: set modal
 			$this->loadModel('travel/trip');
 		//END
@@ -288,7 +303,10 @@ class ControllerPagesTripItinerary extends AController {
 		//END
 		
 		//START: set modal
+			$this->addChild('modal/itinerary/account/signup', 'modal_account_signup', 'modal/itinerary/account/signup.tpl');
+			$this->addChild('modal/itinerary/account/login', 'modal_account_login', 'modal/itinerary/account/login.tpl');
 			$this->addChild('modal/trip/splash', 'modal_trip_splash', 'modal/trip/splash.tpl');
+			$this->addChild('modal/itinerary/trip/save', 'modal_trip_save', 'modal/itinerary/trip/save.tpl');
 			$this->addChild('modal/trip/day', 'modal_trip_day', 'modal/trip/day.tpl');
 			$this->addChild('modal/trip/map', 'modal_trip_map', 'modal/trip/map.tpl');
 			$this->addChild('modal/itinerary/line/add', 'modal_line_add', 'modal/itinerary/line/add.tpl');
@@ -297,10 +315,6 @@ class ControllerPagesTripItinerary extends AController {
 			$this->addChild('modal/itinerary/line/custom', 'modal_line_custom', 'modal/itinerary/line/custom.tpl');
 			$this->addChild('modal/itinerary/line/delete', 'modal_line_delete', 'modal/itinerary/line/delete.tpl');
 			$this->addChild('modal/itinerary/line/filter', 'modal_line_filter', 'modal/itinerary/line/filter.tpl');
-			$this->addChild('pages/trip/itinerary_guide', 'section_content_guide', 'pages/trip/itinerary_guide.tpl');
-			$this->addChild('pages/trip/itinerary_plan', 'section_content_plan', 'pages/trip/itinerary_plan.tpl');
-			$this->addChild('pages/trip/itinerary_map', 'section_content_map', 'pages/trip/itinerary_map.tpl');
-			$this->addChild('pages/trip/itinerary_footer', 'section_content_footer', 'pages/trip/itinerary_footer.tpl');
 		//END
 		
 		//START: set ajax

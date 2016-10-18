@@ -159,6 +159,11 @@
 			color:#000;
 			background-color:transparent;
 		}
+		
+		.alert {
+			border-radius:0;
+			margin-bottom:0;
+		}
 	/* END */
 </style>
 <style>
@@ -642,8 +647,8 @@
         <input id="wrapper-title-input" type="text"/>
     </div>
     <div class="col-xs-2 text-right">
-    	<?php if($this->user->isLogged() == false) { ?>
-    		<a class="btn button-save-trip">Save</a>
+    	<?php if($this->session->data['memory'] == 'cookie') { ?>
+    		<a class="btn button-save-trip" data-toggle="modal" data-target="#modal-trip-save">Save</a>
         <?php } else { ?>
         	<a class="btn"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
         <?php } ?>
@@ -659,6 +664,9 @@
 </div>
 
 <!-- START: [modal] -->
+    <?php echo $modal_account_signup; ?>
+    <?php echo $modal_account_login; ?>
+    <?php echo $modal_trip_save; ?>
 	<?php echo $modal_trip_day; ?>
     <?php echo $modal_trip_map; ?>
     <?php echo $modal_line_filter; ?>
@@ -1938,5 +1946,13 @@
 		<!-- END -->
 	}
 <!-- END -->
+</script>
+<script>
+	<?php if($last_action != '') { ?>
+		showHint("<?php echo $last_action; ?>");
+		setTimeout(function() {
+			$('#modal-trip-save').modal('show');
+		}, 100);
+	<?php } ?>
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>

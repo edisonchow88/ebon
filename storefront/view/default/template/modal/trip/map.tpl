@@ -196,12 +196,12 @@ var map;
 
 		getDistanceTime();
 		initExploreMap();
-	}
-	
-	////callback function to refresh route after action (delete, add, move ,modify)
-	function refreshRoute() {
-		updateTransportBox();
-		getDistanceTime();	
+		
+		////callback to refresh route after action (delete, add, move ,modify)
+		$(document).off("refreshRoute").on("refreshRoute",function(){
+			updateTransportBox();
+			getDistanceTime();	
+		});
 	}
 	
 	function setupMapSettingMenu () {

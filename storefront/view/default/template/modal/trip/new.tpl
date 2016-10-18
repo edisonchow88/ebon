@@ -155,8 +155,11 @@
 	}
 	
 	function newTripViaCookie() {
-		setCookie('trip','{"name":"Untitled Trip"}',7);
-		setCookie('plan','{"name":"Plan 1","travel_date":"","day":[{"day_id":1,"sort_order":1}]}',7);
+		var title = $('#modal-trip-new-form input[name=name]').val();
+		var trip = '{"name":"'+title+'"}';
+		var plan = '{"name":"Plan 1","travel_date":"","day":[{"day_id":1,"sort_order":1}]}';
+		setCookie('trip',trip,7);
+		setCookie('plan',plan,7);
 		window.location = '<?php echo $redirect; ?>';
 	}
 	

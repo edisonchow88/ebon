@@ -1,4 +1,16 @@
 <title><?php echo $title; ?></title>
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+// ga('create', 'UA-85789129-1', {'cookieDomain': 'none'}); // for localhost
+ ga('create', 'UA-85789129-1', 'auto');
+  ga('send', 'pageview');
+  </script>
+
 <meta charset="UTF-8">
 <!--[if IE]>
 	<meta http-equiv="x-ua-compatible" content="IE=Edge" />
@@ -35,6 +47,7 @@
 -->
 <link href="<?php echo $this->templateResource('/stylesheet/style.css'); ?>" rel="stylesheet" type='text/css' />
 <link href="<?php echo $this->templateResource('/stylesheet/swiper.min.css'); ?>" rel="stylesheet" type='text/css' />
+<link href="<?php echo $this->templateResource('/stylesheet/ownicon.css'); ?>" rel="stylesheet" type='text/css' />
 
 <?php if ( $template_debug_mode ) {  ?>
 <link href="<?php echo $this->templateResource('/stylesheet/template_debug.css'); ?>" rel="stylesheet" />

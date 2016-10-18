@@ -501,6 +501,7 @@
 			$('.content').hide();
 			$('#content-'+id).show();
 			setHashTab(id);
+			ga('send', 'event','main-tab','change', id);
 		}
 		
 		function initTab() {

@@ -17,6 +17,10 @@
 		background-color:white;
 	}
 	
+	.fixed-width {
+		max-width:400px;
+	}
+	
 	.fixed-bar {
 		width:100%;
 		max-width:400px;

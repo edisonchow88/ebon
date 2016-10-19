@@ -78,6 +78,10 @@
                     <div class="modal-body nopadding">
                         <div id="modal-trip-new-form-alert"></div>
                     	<form class="mobile-form" id="modal-trip-new-form">
+                        	<input type="hidden" name="action" value="new_trip" />
+                            <input type="hidden" name="user_id" value="<?php echo $this->user->getUserId(); ?>" />
+                            <input type="hidden" name="role_id" value="<?php echo $this->user->getRoleId(); ?>" />
+                            <input type="hidden" name="language_id" value="<?php echo $this->language->getLanguageId(); ?>" />
                         	<div class="row">
                                 <div class="col-xs-4"><label for="name" selected>Title</label></div>
                                 <div class="col-xs-8">

@@ -1,13 +1,14 @@
 <style>
 	.splash {
 		position:fixed;
+		top:0;
 		right:0;
 		left:0;
 		margin:auto;
 		height:100vh;
 		z-index:20000;
-		color:#000;
-		background-color:#DDD;
+		color:#FFF;
+		background-color:#000;
 		padding-top:30vh;
 		text-align:center;
 	}

@@ -73,7 +73,7 @@
 </div>
 <div id="wrapper-trip-list-alert"></div>
 <?php if($this->user->isLogged() != false) { ?>
-    <div id="wrapper-trip-archive-bar" class="fixed-bar row">
+    <div id="wrapper-trip-archive-bar" class="fixed-bar row hidden">
         <div class="col-xs-3 text-left">
             <a class="btn btn-header" data-toggle="modal" data-target="#modal-trip-archive">Archived Trips</a>
         </div>
@@ -92,7 +92,7 @@
 
 <div id="wrapper-trip-action" class="fixed-bar row">
     <div class="col-xs-3 text-left">
-        <a class="btn btn-header button-archive-trip disabled" onclick="removeTrip(); closeEditTrip();">Archive</a>
+        <a class="btn btn-header button-archive-trip disabled hidden" onclick="removeTrip(); closeEditTrip();">Archive</a>
     </div>
     <div class="col-xs-6">
     </div>
@@ -344,7 +344,9 @@
 	}
 	
 	function openModalNewTrip() {
-		var trip = JSON.parse(getCookie('trip'));
+		var trip = getCookie('trip');
+		if(isset(trip)) { trip = JSON.parse(trip); }
+		
 		if($('.result-trip-status').length > 0) {
 			var content;
 			content = '<div class="alert alert-warning"><b>'+trip.name+' is not saved.</b><br/>Please save or delete it before create a new trip.</div>';
@@ -358,7 +360,9 @@
 	
 	function deleteTrip() {
 		var num_of_deleted_trip = $('.result-trip-row.selected').length;
+		var num_of_deleted_saved_trip = $('.trip-list .result-trip-row.selected').length;
 		var num_of_deleted_unsaved_trip = $('.unsaved-trip-list .result-trip-row.selected').length;
+		
 		<?php if($this->user->isLogged() == false) { ?>
 			<!-- START: set cookie -->
 				setCookie('trip','',0);
@@ -371,12 +375,18 @@
 				showHint('Trip Deleted');
 			<!-- END -->
 		<?php } else { ?>
+			<!-- START: set cookie -->
+				if(num_of_deleted_unsaved_trip > 0) {
+					setCookie('trip','',0);
+					setCookie('plan','',0);
+				}
+			<!-- END -->
 			<!-- START: get data -->
 				var trip = new Array();
 				var trip_id = '';
 				var e;
-				for(i=0;i<$('.result-trip-row.selected').length;i++) {
-					e = $('.result-trip-row.selected .result-trip-form input[name=trip_id]').get(i);
+				for(i=0;i<num_of_deleted_saved_trip;i++) {
+					e = $('.trip-list .result-trip-row.selected .result-trip-form input[name=trip_id]').get(i);
 					trip_id = $(e).val();
 					trip.push(trip_id);
 				}
@@ -390,6 +400,9 @@
 			<!-- START: send POST -->
 				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 					$('.result-trip-row.selected').remove();
+					<!-- START: set view -->
+						refreshTripList();
+					<!-- END -->
 					<!-- START: show hint -->
 						if(num_of_deleted_trip > 1) {
 							showHint('Trips Deleted');

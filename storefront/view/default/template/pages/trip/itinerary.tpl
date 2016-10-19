@@ -412,9 +412,11 @@
 		}
 	/* END */
 	/* START: [itinerary] */
+		/*
 		.header .btn.button-save-trip {
 			color:#e93578;
 		}
+		*/
 		
 		#wrapper-title-input {
 			background-color:transparent;
@@ -639,9 +641,9 @@
 
 <div id="section-popover-hint"><div id="popover-hint" class="fixed-width" onclick="$(this).hide();"></div></div>
 <div id="section-popover-alert"><div id="popover-alert" class="fixed-width" onclick="$(this).hide();"></div></div>
-<div class="header header-gray fixed-width fixed-bar noselect">
+<div class="header header-black fixed-width fixed-bar noselect">
     <div class="col-xs-2 text-left">
-        <a class="btn" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times-circle"></i></a>
+        <a class="btn" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times"></i></a>
     </div>
     <div class="col-xs-8 text-left">
         <input id="wrapper-title-input" type="text"/>
@@ -1681,6 +1683,7 @@
 			//updatePlanTableButtonEvent();
 			//updateDateFormButtonEvent();
 			//updatePlanTableDayDuration();
+			refreshPlanDayLineEmpty();
 			initSortableLine();
 			$(document).trigger("refreshRoute");
 		<!-- END -->
@@ -1933,6 +1936,7 @@
 		<!-- START: init function -->
 			//updatePlanTableDayDuration();
 			updatePlanTableLineDayIdAndSortOrder();
+			refreshPlanDayLineEmpty();
 			$(document).trigger("refreshRoute");
 			//updatePlanTableButtonEvent();
 		<!-- END -->

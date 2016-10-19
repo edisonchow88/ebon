@@ -87,7 +87,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$trip_data['user_id'] = $this->data['user_id'];
 			$trip_data['status_id'] = 1;
 			$trip_data['language_id'] = $this->data['language_id'];
-			$trip_data['name'] = 'Untitled Trip';
+			$trip_data['name'] = $this->data['name'];
 			$trip_id = $this->model_travel_trip->addTrip($trip_data);
 		//END
 		
@@ -285,20 +285,26 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	
 	public function delete_trip() {
 		//START: run verification
-			if($this->verify_delete_trip() == 'failed') { return; }
+			//if($this->verify_delete_trip() == 'failed') { return; }
 		//END
 		
-		//START: excute function
-			$execution = $this->model_travel_trip->deleteTrip($this->data['trip_id']);
+		//START: set variable
+			$trip = $this->data['trip'];
+		//END
+		
+		//START: execute
+			foreach($trip as $trip_id) {
+				$execution = $this->model_travel_trip->deleteTrip($trip_id);
+				if($execution == true) {
+					$result['success'][] = 'Trip deleted';
+				}
+				else {
+					$result['warning'][] = '<b>SYSTEM ERROR: Trip cannot be deleted.</b><br/>Please contact admin.'; 
+				}
+			}
 		//END
 		
 		//START: set response
-			if($execution == true) {
-				$result['success'][] = 'Trip deleted';
-			}
-			else {
-				$result['warning'][] = '<b>SYSTEM ERROR: Trip cannot be deleted.</b><br/>Please contact admin.'; 
-			}
 			$response = json_encode($result);
 			echo $response;
 		//END

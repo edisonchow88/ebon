@@ -625,7 +625,8 @@ var map;
 	function createMapSelectDay () {
 		$(".day-control").removeClass("disabled");		
 		var selected_day_id = $(".swiper-slide-active").closest(".plan-day").attr("id");
-		var day_no =  parseInt(selected_day_id.match(/\d+/));
+		var selected_sort_order = $('.swiper-slide-active .plan-day-form-hidden input[name=sort_order]').val();
+		var day_no =  parseInt(selected_sort_order.match(/\d+/));
 		$(".map-day-group .map-day-show span").html(day_no);
 		$(".map-day-group .map-day-show").val(day_no);
 		

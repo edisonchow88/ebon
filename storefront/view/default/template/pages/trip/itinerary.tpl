@@ -1299,11 +1299,26 @@
 			//updatePlanTableButtonEvent();
 			//updateDateFormButtonEvent();
 			//initSortableDay();
-			initSortableLine();
 			initSwiperButton();
-			initDayButton();
 			initDateButton();
+			initDayButton();
 			initMapButton();
+			<?php if($this->session->data['mode'] == 'view') { ?>
+				$('.button-move').hide();
+				$('.plan-btn-add-line').hide();
+				$('.button-set-date.nodate').hide();
+				$('.plan-line .info').prop('onclick',null).off('click');
+				$('.plan-line .info').attr('data-toggle',null);
+				$('.plan-line .info').attr('data-target',null);
+				$('.plan-line .btn-secondary').attr('data-toggle',null);
+				$('.plan-line .btn-secondary').attr('data-target',null);
+				$('#wrapper-explore-current-action').hide();
+				$('#modal-trip-day-header-general').addClass('hidden');
+				$('#modal-trip-day .modal-header-shadow').first().addClass('hidden');
+				$('#modal-trip-day .btn-header').hide();
+			<?php } else { ?>
+				initSortableLine();
+			<?php } ?>
 		<!-- END -->
 		
 		<!-- START: end loading -->
@@ -1331,11 +1346,13 @@
 		<!-- END -->
 		<!-- START: [info] -->
 			var data = {};
+			var nodate = '';
 			if(isset(day.date)) {
 				data.date = day.date;
 			}
 			else {
 				data.date = 'Set Dates';
+				nodate = 'nodate';
 			}
 		<!-- END -->
 		<!-- START: [content] -->
@@ -1354,7 +1371,7 @@
 					+ '</div>'
 					+ '<div class="swiper-slide-content scrollable-y">'
 						+ '<div class="swiper-slide-content-header fixed-width fixed-bar">'
-							+ '<div class="col-xs-4 text-left"><div class="btn button-set-date">'+data.date+'</div></div>'
+							+ '<div class="col-xs-4 text-left"><div class="btn button-set-date '+nodate+'">'+data.date+'</div></div>'
 							+ '<div class="col-xs-4 text-center"></div>'
 							+ '<div class="col-xs-4 text-right"><div class="btn button-view-map">View Map</div></div>'
 						+ '</div>'
@@ -1480,7 +1497,7 @@
 								+ '<i class="fa fa-fw fa-car"></i><i class="fa fa-fw"></i>'
 							+ '</span>'
 							+ '<span class="text">'
-								+ '3.7 km / 45 mins'
+								+ '? km / ? mins'
 							+ '</span>'
 							+ '<span class="path hidden"></span>'
 						+ '</div>'
@@ -1789,8 +1806,8 @@
 				addGooglePlace();
 			<!-- END -->
 			<!-- START: update button -->
-				$('#wrapper-explore-current-trip .button-add-trip').hide();
-				$('#wrapper-explore-current-trip .button-show-trip').show();
+				//$('#wrapper-explore-current-trip .button-add-trip').hide();
+				//$('#wrapper-explore-current-trip .button-show-trip').show();
 			<!-- END -->
 			<!-- START: get form data -->
 				var line_id = '';

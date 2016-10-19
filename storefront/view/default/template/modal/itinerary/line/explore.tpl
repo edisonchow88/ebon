@@ -329,7 +329,7 @@
                                         </span>
                                         <span>Add to My Trip</span>
                                      </a>
-                                     <div class="button-show-trip">
+                                     <div class="button-show-trip hidden">
                                         <span class="fa-stack fa-lg" style="color:#e93578;">
                                             <i class="fa fa-circle fa-stack-2x"></i>
                                             <i class="fa fa-heart fa-stack-1x fa-inverse"></i>

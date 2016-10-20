@@ -164,6 +164,8 @@
 	}
 	
 	function verify_new_trip_condition() {
+		//Google Analytics Event
+		ga('send', 'event','trip','create-new-trip');
 		<?php if($this->user->isLogged() == false) { ?>
 			<!-- START: [not logged] -->
 				newTripViaCookie();

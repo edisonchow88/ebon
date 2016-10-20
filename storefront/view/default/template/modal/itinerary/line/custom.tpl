@@ -523,6 +523,8 @@
 			<!-- END -->
 		}
 		else {
+			//Google Analytics Event
+			ga('send', 'event','line', 'add-line-custom');
 			<!-- START: add new line -->
 				<?php if($this->session->data['memory'] == 'cookie') { ?>
 					runAddPlanLine(line,line_raw);

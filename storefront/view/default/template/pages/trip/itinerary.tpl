@@ -842,6 +842,8 @@
 				$('#hidden-swiper-left-column').off();
 			},
 			update:function(event,ui) {
+				//Google Analytics Event
+				ga('send', 'event','line', 'sort-line');
 				updatePlanTableLineDayIdAndSortOrder();
 				$(document).trigger("refreshRoute");
 				
@@ -1589,6 +1591,8 @@
 	}
 	
 	function runAddPlanDay(data) {
+		//Google Analytics Event
+		ga('send', 'event','day', 'new-day');
 		<!-- START: set variable -->
 			var column = <?php echo $column_json; ?>;
 		<!-- END -->
@@ -1631,6 +1635,8 @@
 <script>
 <!-- START: [date] -->
 	function updateTravelDate() {
+		//Google Analytics Event
+		ga('send', 'event','date', 'update-date');		
 		<?php if($this->session->data['memory'] == 'cookie') { ?>
 			updatePlanTableCookie();
 			showHint('Day Updated');
@@ -1696,6 +1702,8 @@
 	}
 	
 	function runEditPlanLine(line,line_raw) {
+		//Google Analytics Event
+		ga('send', 'event','line', 'edit-line');
 		<!-- START: update hidden value -->
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=title]').val(line_raw.title);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=description]').val(line_raw.description);
@@ -1870,7 +1878,8 @@
 					}
 				;
 			<!-- END -->
-			
+			//Google Analytics Event
+			ga('send', 'event','line', 'add-line-explore');
 			<?php if($this->session->data['memory'] == 'cookie') { ?>
 				runAddPlanLine(line,line_raw);
 			<?php } else { ?>
@@ -1930,6 +1939,8 @@
 	}
 	
 	function runDeletePlanLine() {
+		//Google Analytics Event
+		ga('send', 'event','line', 'delete-line');
 		<!-- START: init function -->
 			//updatePlanTableDayDuration();
 			updatePlanTableLineDayIdAndSortOrder();

@@ -33,6 +33,8 @@
 
 <script>
 	$("#modal-explore-map").on( "shown.bs.modal", function() {
+		//Google Analytics Event
+		ga('send', 'event','explore-map', 'open-map');
 		initMap();
 	});
 </script>

@@ -88,6 +88,7 @@
 	}
 	
 	function verify_save_trip_condition() {
+		alert();
 		<?php if($this->user->isLogged() == false) { ?>
 			$('#modal-account-login').modal('show');
 			$('#modal-account-login-form-alert').html('<div class="alert alert-info">You need to log in to perform this action.</div>');

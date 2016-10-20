@@ -161,7 +161,9 @@
 			},
 			update: function(event,ui) {
 				updateDayList();
-				$(document).trigger("refreshRoute");;
+				$(document).trigger("refreshRoute");
+				//Google Analytics Event
+				ga('send', 'event','day', 'sort-day');
 			}
 		});
 	}
@@ -507,6 +509,8 @@
 	}
 	
 	function runDeleteDay(day) {
+		//Google Analytics Event
+		ga('send', 'event','day', 'delete-day');
 		<!-- START: chain reaction -->
 			refreshPlanTable();
 		<!-- END -->

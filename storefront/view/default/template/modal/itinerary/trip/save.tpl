@@ -54,6 +54,8 @@
 	}
 	
 	function saveTrip() {
+		//Google Analytics Event
+		ga('send', 'event','trip','save-trip');
 		var form_element = document.querySelector("#modal-trip-save-form");
 		var form_data = new FormData(form_element);
 		var xmlhttp = new XMLHttpRequest();
@@ -99,6 +101,8 @@
 	
 	<!-- START: clear alert when closed -->
 		$("#modal-trip-save").on( "show.bs.modal", function() { 
+			//Google Analytics Event
+			ga('send', 'event','trip','open-modal-save-trip');
 			$('#modal-trip-save-form input[name=name]').val($('#wrapper-title-input').val());
 			$('#modal-trip-save-form input[name=name]').trigger('change');
 			$('#modal-trip-save-form input[name=plan]').val(getCookie('plan'));

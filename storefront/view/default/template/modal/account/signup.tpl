@@ -58,6 +58,8 @@
 				}
 				else if(typeof json.success != 'undefined') {
 					<!-- if success -->
+					//Google Analytics Event
+					ga('send', 'event','account', 'main-signup');
 					var content;
 					content = "<div class='alert alert-success'><ul>";
 					content += "<li><b>Success! Your account has been created.</b></li>";
@@ -85,5 +87,9 @@
 			$('#modal-account-signup-form-alert').html('');
 		});
 	<!-- END -->
+		$("#modal-account-signup").on( "show.bs.modal", function() { 
+			//Google Analytics Event
+			ga('send', 'event','account', 'open-modal-main-signup');
+		});
 </script>
 <!-- END -->

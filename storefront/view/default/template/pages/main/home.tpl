@@ -505,6 +505,7 @@
 			$('.content').hide();
 			$('#content-'+id).show();
 			setHashTab(id);
+			//Google Analytics Event
 			ga('send', 'event','main-tab','change', id);
 		}
 		

@@ -58,6 +58,8 @@
 				}
 				else if(typeof json.success != 'undefined') {
 					<!-- if success -->
+					//Google Analytics Event
+					ga('send', 'event','account', 'main-login');
 					window.location.reload(true);
 				}
 				document.getElementById('modal-account-login-form-alert').innerHTML = alert_text;
@@ -74,6 +76,11 @@
 			$('#modal-account-login-form-alert').html('');
 		});
 	<!-- END -->
+	
+		$("#modal-account-login").on( "show.bs.modal", function() { 
+			//Google Analytics Event
+			ga('send', 'event','account', 'open-modal-main-login');
+		});
 	
 	$(".modal").on("show", function () {
 		$("body").addClass("modal-open");

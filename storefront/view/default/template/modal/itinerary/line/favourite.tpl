@@ -134,6 +134,11 @@
 			+ '</div>'
 		;
 		$('#modal-line-favourite-list').append(content);
+	
+		$(".result-favourite-row").on("click",function(){
+			//Google Analytics Event
+			ga('send', 'event','line', 'add-line-favourite');
+		});
 	}
 	
 	function refreshFavouriteList() {
@@ -226,4 +231,6 @@
 	$("#modal-line-favourite").on( "shown.bs.modal", function() {
 		$('#modal-line-favourite .modal-content').scrollTop(0);
 	});
+	
+	
 </script>

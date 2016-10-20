@@ -49,12 +49,12 @@
 	
 	.result-cell {
 		padding:10px 15px;
-		line-height:28px;
+		line-height:30px;
 		overflow:hidden;
 	}
 	
 	.ui-placeholder-day {
-		height:50px;
+		height:51px;
 		background-color:#EEE;
 		border-bottom:solid thin #DDD;
 		font-size:12px;
@@ -142,7 +142,7 @@
 			items: ">.result-row", 
 			handle: ".sort-handle",
 			appendTo: "parent",	
-			containment: ".modal-content",
+			containment: "#modal-trip-day .modal-content",
 			scrollSpeed: 10,
 			cursorAt: {
 				top: 15
@@ -344,7 +344,9 @@
 			$('#modal-trip-day .modal-body').append(content);
 		});
 		
-		initSortableDay();
+		<?php if($this->session->data['mode'] == 'edit') { ?>
+			initSortableDay();
+		<?php } ?>
 		initDayListButton();
 		closeEditDay();
 	}

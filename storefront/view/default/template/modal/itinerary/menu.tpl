@@ -1,0 +1,44 @@
+<style>
+	#modal-itinerary-menu .modal-modal {
+		height:100vh;
+		top:0;
+	}
+	
+	#modal-itinerary-menu .modal-footer {
+		position:fixed;
+		bottom:0;
+		left:0;
+		right:0;
+		margin:auto;
+		padding:0;
+		background-color:#FFF;
+		color:#000;
+		z-index:30;
+		text-align:left;
+	}
+</style>
+
+<!-- START: Modal -->
+    <div class="modal" id="modal-itinerary-menu" role="dialog" data-backdrop="false">
+        <div class="modal-wrapper">
+        	<div class="modal-modal fixed-width" data-dismiss="modal"></div>
+            <div class="modal-dialog fixed-width">
+            </div>
+            <div class="modal-footer fixed-width">
+            	<ul class="menu menu-white">
+                	<li data-dismiss="modal" data-toggle="modal" data-target="#modal-trip-share"><i class="fa fa-fw fa-lg fa-share"></i><i class="fa fa-fw"></i>Share Trip</li>
+                    <li><i class="fa fa-fw fa-lg fa-times"></i><i class="fa fa-fw"></i>Cancel</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+<!-- END -->
+
+<script>
+	$("#modal-itinerary-menu").on("shown.bs.modal", function () {
+		$('modal-itinerary-menu .modal-footer').slideUp('slow');
+	});
+	$("#modal-itinerary-menu").on("hide.bs.modal", function () {
+		$('modal-itinerary-menu .modal-footer').slideDown();
+	});
+</script>

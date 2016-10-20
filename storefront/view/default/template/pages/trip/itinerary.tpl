@@ -652,7 +652,7 @@
     	<?php if($this->session->data['memory'] == 'cookie') { ?>
     		<a class="btn button-save-trip" data-toggle="modal" data-target="#modal-trip-save">Save</a>
         <?php } else { ?>
-        	<a class="btn"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
+        	<a class="btn" data-toggle="modal" data-target="#modal-itinerary-menu"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
         <?php } ?>
     </div>
 </div>
@@ -666,9 +666,11 @@
 </div>
 
 <!-- START: [modal] -->
+	<?php echo $modal_itinerary_menu; ?>
     <?php echo $modal_account_signup; ?>
     <?php echo $modal_account_login; ?>
     <?php echo $modal_trip_save; ?>
+    <?php echo $modal_trip_share; ?>
 	<?php echo $modal_trip_day; ?>
     <?php echo $modal_trip_map; ?>
     <?php echo $modal_line_filter; ?>

@@ -470,6 +470,11 @@ var map;
 		});
 	}
 	
+	
+	Number.prototype.toRad = function() {
+		return this * Math.PI / 180;
+	}
+	
 	function getDistanceTime() {
 		
 		$(".transport").each(function(i){
@@ -515,15 +520,68 @@ var map;
 							avoidHighways: false,
 							avoidTolls: false
 						}, function(response, status) {
+							var R = 6371; // km
+							var dLat = (des_lat - ori_lat).toRad();
+							var dLon = (des_lng - ori_lng).toRad();
+							var lat1 = parseFloat(ori_lat).toRad();
+							var lat2 = parseFloat(des_lat).toRad();
+							var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+									Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+							var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+							var d = parseInt(R * c);
+							
 							if (status !== 'OK') {
 								alert('Error was: ' + status);
 							} else {
-								if (response.rows[0].elements[0].status !== 'OK') {	
-									$("#"+ transport_id +" .text").html("Not reachable by DRIVING");									
-								}else {
+								if (response.rows[0].elements[0].status !== 'OK') {
+									var speed = 600;
+									if(d > 7200) {
+										speed = 870;
+									}
+									else if(d > 4800) {
+										speed = 770;
+									}
+									else if(d > 2400) {
+										speed = 720;
+									}
+									else if(d > 1600) {
+										speed = 650;
+									}
+									
+									var duration_number = parseInt(d / speed * 60);
+									var t = convertLineDurationFormat(duration_number);
+									$("#"+ transport_id +" .icon").html("<i class='fa fa-fw fa-plane'></i><i class='fa fa-fw'></i>");
+									$("#"+ transport_id +" .text").html('about ' + d + ' km , ' + t);								
+								}
+								else {
 									var distance = response.rows[0].elements[0].distance.text;
 									var duration = response.rows[0].elements[0].duration.text;
-									$("#"+ transport_id +" .text").html(distance + " , " + duration);
+									
+									var distance_number = parseInt(distance.substring(0, distance.length-3).replace(',',''));
+									var speed = 600;
+									
+									if(distance_number > 800) {
+										if(d > 7200) {
+											speed = 870;
+										}
+										else if(d > 4800) {
+											speed = 770;
+										}
+										else if(d > 2400) {
+											speed = 720;
+										}
+										else if(d > 1600) {
+											speed = 650;
+										}
+										var duration_number = parseInt(d / speed * 60);
+										var t = convertLineDurationFormat(duration_number);
+										$("#"+ transport_id +" .icon").html("<i class='fa fa-fw fa-plane'></i><i class='fa fa-fw'></i>");
+										$("#"+ transport_id +" .text").html('about ' + d + ' km , ' + t);	
+									}
+									else {
+										$("#"+ transport_id +" .icon").html("<i class='fa fa-fw fa-car'></i><i class='fa fa-fw'></i>");
+										$("#"+ transport_id +" .text").html(distance + " , " + duration);
+									}
 								}
 						}
 					});

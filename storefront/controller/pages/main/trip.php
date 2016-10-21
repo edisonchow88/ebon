@@ -22,7 +22,6 @@ class ControllerPagesMainTrip extends AController {
 		
 		//START: set modal
 			$this->addChild('modal/trip/archive', 'modal_trip_archive', 'modal/trip/archive.tpl');
-			$this->addChild('modal/trip/new', 'modal_trip_new', 'modal/trip/new.tpl');
 			$this->addChild('modal/trip/load', 'modal_trip_load', 'modal/trip/load.tpl');
 			$this->addChild('modal/trip/save', 'modal_trip_save', 'modal/trip/save.tpl');
 			$this->addChild('modal/trip/delete', 'modal_trip_delete', 'modal/trip/delete.tpl');

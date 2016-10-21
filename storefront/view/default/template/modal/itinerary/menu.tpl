@@ -27,7 +27,7 @@
             <div class="modal-footer fixed-width">
             	<ul class="menu menu-white">
                 	<li data-dismiss="modal" data-toggle="modal" data-target="#modal-trip-share"><i class="fa fa-fw fa-lg fa-share"></i><i class="fa fa-fw"></i>Share Trip</li>
-                    <li><i class="fa fa-fw fa-lg fa-times"></i><i class="fa fa-fw"></i>Cancel</li>
+                    <li data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times"></i><i class="fa fa-fw"></i>Cancel</li>
                 </ul>
             </div>
         </div>

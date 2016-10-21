@@ -168,6 +168,10 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$result['redirect'] = $this->html->getSecureURL('trip/itinerary','&trip='.$code);
 		//END
 		
+		//START: set session
+			$this->session->data['trip_action'] = 'save_trip';
+		//END
+		
 		//START: set response
 			$result['success'][] = 'Trip saved'; 
 			$response = json_encode($result);

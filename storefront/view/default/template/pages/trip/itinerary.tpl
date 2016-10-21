@@ -1307,6 +1307,7 @@
 			initDateButton();
 			initDayButton();
 			initMapButton();
+			$(document).trigger("refreshRoute");
 			<?php if($this->session->data['mode'] == 'view') { ?>
 				$('.button-move').hide();
 				$('.plan-btn-add-line').hide();
@@ -1984,9 +1985,11 @@
 <script>
 	<?php if($last_action != '') { ?>
 		showHint("<?php echo $last_action; ?>");
-		setTimeout(function() {
-			$('#modal-trip-save').modal('show');
-		}, 100);
-	<?php } ?>
+		<?php if($last_action == 'Log In' || $last_action == 'Sign Up') { ?>
+			setTimeout(function() {
+				$('#modal-trip-save').modal('show');
+			}, 100);
+		<?php }
+	} ?>
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>

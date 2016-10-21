@@ -503,7 +503,8 @@ var map;
 				des_lng = parseFloat($(this).parents(parent_class).next().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
 			}
 			
-			if ( ori_lat && ori_lng && des_lat && des_lng) {
+			
+			if ( ori_lat && ori_lng && des_lat && des_lng && ori_lat !="NaN" && ori_lng !="NaN" && des_lat !="NaN" && des_lng !="NaN" ) {
 				var origin = ori_lat+","+ori_lng;
 				var destination = des_lat+","+des_lng;
 				var transport_id = $(this).attr("id");	
@@ -591,8 +592,8 @@ var map;
 				$("#"+ transport_id).hide();
 			}
 		
-			if ( ori_lat && ori_lng && des_lat && des_lng && !$("#"+ transport_id +" .path").html()) {
-				/////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!! TESTING !!!!!!!!!!!!!!!!!!!!!!////////////////////////////////
+			if ( ori_lat && ori_lng && des_lat && des_lng && ori_lat !="NaN" && ori_lng !="NaN" && des_lat !="NaN" && des_lng !="NaN" &&  !$("#"+ transport_id +" .path").html()) {
+				
 				$("#"+ transport_id).addClass("has-route");
 				var ori = new google.maps.LatLng(ori_lat, ori_lng)
 				var des = new google.maps.LatLng(des_lat, des_lng)

@@ -243,6 +243,7 @@
                             </div>
                             <div class="tab tab-photo">
                             	<div class="row">
+                                	<input type="hidden" name="photo_hidden"/>
                                 	<div class="col-xs-12 hidden"><input type="text" name="image_id"/></div>
                                     <?php if($this->session->data['memory'] == 'server') { ?>
                                         <div class="col-xs-12">
@@ -271,7 +272,7 @@
                                         <i class="fa fa-fw"></i>
                                         Photo
                                     </li>
-                                    <li class="button-duplicate-activity" onclick="duplicateLine();">
+                                    <li class="button-duplicate-activity" data-dismiss="modal" onclick="duplicateLine();">
                                     	<i class="fa fa-fw fa-lg fa-clone"></i>
                                         <i class="fa fa-fw"></i>
                                         Duplicate Activity
@@ -410,7 +411,8 @@
 			time		: $('#plan-line-'+line_id+'-form-hidden input[name=time]').val(),
 			lat			: $('#plan-line-'+line_id+'-form-hidden input[name=lat]').val(),
 			lng			: $('#plan-line-'+line_id+'-form-hidden input[name=lng]').val(),
-			photo		: $('#plan-line-'+line_id+' .image img').attr('src'),
+			photo		: $('#plan-line-'+line_id+'-form-hidden input[name=photo]').val(),
+			photo_hidden	: $('#plan-line-'+line_id+' .image img').attr('src'),
 			image_id	: $('#plan-line-'+line_id+'-form-hidden input[name=image_id]').val()
 		};
 		
@@ -425,6 +427,7 @@
 		$('#modal-line-custom input[name=lat]').val(line.lat);
 		$('#modal-line-custom input[name=lng]').val(line.lng);
 		$('#modal-line-custom input[name=photo]').val(line.photo);
+		$('#modal-line-custom input[name=photo_hidden]').val(line.photo_hidden);
 		$('#modal-line-custom input[name=image_id]').val(line.image_id);
 		
 		$('#modal-line-custom input[name=origin_lat]').val(line.lat);
@@ -694,7 +697,12 @@
 	}
 	
 	$('#modal-line-custom input[name=photo]').on('change',function() {
-		var url = $('#modal-line-custom input[name=photo]').val();
+		if(isset($('#modal-line-custom input[name=photo]').val())) {
+			var url = $('#modal-line-custom input[name=photo]').val();
+		}
+		else {
+			var url = $('#modal-line-custom input[name=photo_hidden]').val();
+		}
 		$('#modal-line-custom .image img').attr('src',url);
 		/*
 		if(checkPhotoUrl(url)) {

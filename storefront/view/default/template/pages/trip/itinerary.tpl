@@ -1831,7 +1831,7 @@
 				var image_id = $('#wrapper-explore-current-form input[name=image_id]').val()||null;
 				var sort_order = $('.swiper-slide-active .plan-line').length + 1;
 				var time = null;
-				var duration  = 60;
+				var duration  = null;
 				var activity = 'Visit';
 				var place = $('#wrapper-explore-current-form input[name=name]').val();
 				var place_id = $('#wrapper-explore-current-form input[name=place_id]').val();

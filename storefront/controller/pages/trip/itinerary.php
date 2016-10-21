@@ -26,6 +26,12 @@ class ControllerPagesTripItinerary extends AController {
 				}
 				unset($this->session->data['account_action']);
 			}
+			if($this->session->data['trip_action'] != '') {
+				if($this->session->data['trip_action'] == 'save_trip') {
+					$this->data['last_action'] = 'Trip Saved';
+				}
+				unset($this->session->data['trip_action']);
+			}
 		//END
 		
 		//START: set modal

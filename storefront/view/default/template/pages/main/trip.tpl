@@ -355,10 +355,14 @@
 		else {
 			$('#wrapper-trip-list-alert').html('');
 			$('#modal-trip-new').modal('show');
+			//Google Analytics Event
+			ga('send', 'event','trip','open-modal-new-trip');
 		}
 	}
 	
 	function deleteTrip() {
+		//Google Analytics Event
+		ga('send', 'event','trip','delete-trip');
 		var num_of_deleted_trip = $('.result-trip-row.selected').length;
 		var num_of_deleted_saved_trip = $('.trip-list .result-trip-row.selected').length;
 		var num_of_deleted_unsaved_trip = $('.unsaved-trip-list .result-trip-row.selected').length;

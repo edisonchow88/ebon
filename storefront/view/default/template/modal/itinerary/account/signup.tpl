@@ -57,6 +57,8 @@
 				}
 				else if(typeof json.success != 'undefined') {
 					<!-- if success -->
+					//Google Analytics Event
+					ga('send', 'event','account', 'trip-signup');
 					window.location.reload(true);
 				}
 				document.getElementById('modal-account-signup-form-alert').innerHTML = alert_text;
@@ -73,4 +75,8 @@
 			$('#modal-account-signup-form-alert').html('');
 		});
 	<!-- END -->
+		$("#modal-account-signup").on( "show.bs.modal", function() { 
+			//Google Analytics Event
+			ga('send', 'event','account', 'open-modal-trip-signup');
+		});
 </script>

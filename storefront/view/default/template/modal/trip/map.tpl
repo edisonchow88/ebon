@@ -231,6 +231,8 @@ var map;
 			}else {
 				new_day_no = current_day_no + 1;
 				};
+			
+			//$(".plan-day")
 						
 			if (current_day_no > 0 && current_day_no < $(".plan-day").length + 1 && !$(this).hasClass("disabled")) {
 				$(".map-day-group .map-day-show span").html(new_day_no);
@@ -296,8 +298,9 @@ var map;
 		var selected_day_id = $(".swiper-slide-active").closest(".plan-day").attr("id");
 		
 		//// Selected day using map change day control
-		selected_day_id = "plan-day-"+ $(".map-day-show").val();	
-				
+		var day_no = $(".map-day-show").val();	// show on bottom
+		selected_day_id	= $(".plan-day").eq(day_no -1).attr("id"); //day id
+	
 		var prev_last_line_id =  $("#"+ selected_day_id).prevAll(".plan-day").has(".plan-line").first().find(".plan-line").last().attr("id");
 
 		var bounds = new google.maps.LatLngBounds(); 

@@ -129,6 +129,8 @@
 			$('#modal-explore-search-button-clear').show();
 		}
 		else {
+			//Google Analytics Event
+			ga('send', 'event','search', 'search');
 			$('.pac-container').addClass('hidden');
 			$('#modal-explore-search-button-clear').hide();
 		}

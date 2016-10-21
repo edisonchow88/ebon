@@ -204,6 +204,8 @@
 	}
 	
 	function addFavourite() {
+		//Google Analytics Event
+		ga('send', 'event','favourite', 'add-favourite');
 		<!-- START: update button -->
 			$('#wrapper-explore-current-favourite .button-add-favourite').hide();
 			$('#wrapper-explore-current-favourite .button-show-favourite').show();
@@ -344,6 +346,8 @@
 	}
 	
 	function deleteFavourite() {
+		//Google Analytics Event
+		ga('send', 'event','favourite', 'delete-favourite');
 		<?php if($this->user->isLogged() == false) { ?>
 			$('.result-favourite-row.selected').remove();
 			saveFavouriteViaCookie();
@@ -449,6 +453,8 @@
 		$('body').css('overflow-y','hidden');
 	});
 	$("#modal-explore-favourite").on( "shown.bs.modal", function() {
+		//Google Analytics Event
+		ga('send', 'event','favourite', 'open-modal-favourite');
 		$('#modal-explore-favourite .modal-content').scrollTop(0);
 	});
 	$("#modal-explore-favourite").on( "hide.bs.modal", function() {

@@ -41,7 +41,7 @@
     <div class="modal modal-fixed-top" id="modal-line-filter" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
-                <div id="modal-line-map-header-add" class="header fixed-bar fixed-width">
+                <div id="modal-line-filter-header-add" class="header fixed-bar fixed-width">
                     <div class="col-xs-3 text-left">
                     </div>
                     <div class="col-xs-6 text-center">

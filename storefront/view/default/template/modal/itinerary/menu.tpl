@@ -39,7 +39,7 @@
 		$('#modal-itinerary-menu .modal-footer').hide();
 	});
 	$("#modal-itinerary-menu").on("shown.bs.modal", function () {
-		$('#modal-itinerary-menu .modal-footer').slideDown();
+		$('#modal-itinerary-menu .modal-footer').slideDown('fast');
 	});
 	$("#modal-itinerary-menu").on("hide.bs.modal", function () {
 		$('#modal-itinerary-menu .modal-footer').slideUp();

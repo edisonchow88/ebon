@@ -54,6 +54,8 @@
 					alert_text = content;
 				}
 				else if(typeof json.success != 'undefined') {
+					//Google Analytics Event
+					ga('send', 'event','trip', 'share-trip');
 					<!-- if success -->
 					window.location.reload(true);
 				}

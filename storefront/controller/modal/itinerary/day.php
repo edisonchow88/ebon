@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerModalTripDay extends AController {
+class ControllerModalItineraryDay extends AController {
 
   	public function main() {
         //START: init controller data
@@ -22,7 +22,7 @@ class ControllerModalTripDay extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('modal/trip/day.tpl' );
+			$this->processTemplate('modal/itinerary/day.tpl' );
 		//END
 
         //START: update controller data

@@ -636,7 +636,7 @@
 </style>
 
 <!-- START: [splash] -->
-	<?php echo $modal_trip_splash; ?>
+	<?php echo $modal_itinerary_splash; ?>
 <!-- END -->
 
 <div id="section-popover-hint"><div id="popover-hint" class="fixed-width" onclick="$(this).hide();"></div></div>
@@ -667,12 +667,12 @@
 
 <!-- START: [modal] -->
 	<?php echo $modal_itinerary_menu; ?>
+    <?php echo $modal_itinerary_map; ?>
+	<?php echo $modal_itinerary_day; ?>
     <?php echo $modal_account_signup; ?>
     <?php echo $modal_account_login; ?>
     <?php echo $modal_trip_save; ?>
     <?php echo $modal_trip_share; ?>
-	<?php echo $modal_trip_day; ?>
-    <?php echo $modal_trip_map; ?>
     <?php echo $modal_line_filter; ?>
     <?php echo $modal_line_add; ?>
     <?php echo $modal_line_favourite; ?>

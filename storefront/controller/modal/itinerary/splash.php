@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerModalTripMap extends AController {
+class ControllerModalItinerarySplash extends AController {
 
   	public function main() {
         //START: init controller data
@@ -11,7 +11,7 @@ class ControllerModalTripMap extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('modal/trip/map.tpl' );
+			$this->processTemplate('modal/itinerary/splash.tpl' );
 		//END
 
         //START: update controller data

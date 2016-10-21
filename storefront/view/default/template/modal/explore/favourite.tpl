@@ -1,4 +1,15 @@
 <style>
+	#modal-explore-favourite-button-trip-new-wrapper {
+		padding:15px;
+		border-bottom:solid thin #DDD;
+	}
+	
+	#modal-explore-favourite-button-trip-new-wrapper .btn {
+		border-radius:5px;
+		height:50px;
+		line-height:38px;
+	}
+	
 	#modal-explore-favourite .modal-body {
 		padding:0;
 		padding-bottom:70px;
@@ -72,6 +83,9 @@
                 <div class="modal-header-shadow"></div>
                 <div class="modal-content">
                     <div class="modal-body">
+                    	<div id="modal-explore-favourite-button-trip-new-wrapper">
+                        	<a class="btn btn-block btn-success box-shadow" data-toggle="modal" data-target="#modal-trip-new">Create Trip</a>
+                        </div>
                         <div id="modal-explore-favourite-list"></div>
                         <div id="modal-explore-favourite-list-empty" class="empty-list">
                         	<div class="title">Your List is Empty</div>
@@ -315,6 +329,7 @@
 				selectFavourite(button);
 			}
 		});
+		$('#modal-explore-favourite-button-trip-new-wrapper').hide();
 	}
 	
 	function closeEditFavourite() {
@@ -327,6 +342,7 @@
 			explorePlace($(this).find('.result-favourite-form input[name=place_id]').val());
 			$('#modal-explore-favourite').modal('hide');
 		});
+		$('#modal-explore-favourite-button-trip-new-wrapper').show();
 	}
 	
 	function selectFavourite(button) {

@@ -36,6 +36,7 @@ class ControllerPagesMainHome extends AController {
 			$this->addChild('pages/main/explore', 'section_content_explore', 'pages/main/explore.tpl');
 			$this->addChild('pages/main/trip', 'section_content_trip', 'pages/main/trip.tpl');
 			$this->addChild('pages/main/account', 'section_content_account', 'pages/main/account.tpl');
+			$this->addChild('modal/trip/new', 'modal_trip_new', 'modal/trip/new.tpl');
 		//END
 		
 		//START: set link

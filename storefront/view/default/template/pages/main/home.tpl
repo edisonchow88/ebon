@@ -443,6 +443,10 @@
     </div>
 </div>
 
+<!-- START: [modal] -->
+	<?php echo $modal_trip_new; ?>
+<!-- END -->
+
 <script>
 	<!-- START: [splash] -->
 		setTimeout(function() {

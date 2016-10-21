@@ -19,7 +19,7 @@
 </style>
 
 <!-- START: Modal -->
-    <div class="modal" id="modal-itinerary-menu" role="dialog" data-backdrop="false">
+    <div class="modal fade" id="modal-itinerary-menu" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
         	<div class="modal-modal fixed-width" data-dismiss="modal"></div>
             <div class="modal-dialog fixed-width">
@@ -35,10 +35,13 @@
 <!-- END -->
 
 <script>
+	$("#modal-itinerary-menu").on("show.bs.modal", function () {
+		$('#modal-itinerary-menu .modal-footer').hide();
+	});
 	$("#modal-itinerary-menu").on("shown.bs.modal", function () {
-		$('modal-itinerary-menu .modal-footer').slideUp('slow');
+		$('#modal-itinerary-menu .modal-footer').slideDown();
 	});
 	$("#modal-itinerary-menu").on("hide.bs.modal", function () {
-		$('modal-itinerary-menu .modal-footer').slideDown();
+		$('#modal-itinerary-menu .modal-footer').slideUp();
 	});
 </script>

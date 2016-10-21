@@ -103,7 +103,6 @@
 
 <!-- START: [modal] -->
 	<?php echo $modal_trip_archive; ?>
-    <?php echo $modal_trip_new; ?>
     <?php echo $modal_trip_load; ?>
     <?php echo $modal_trip_save; ?>
     <?php echo $modal_trip_delete; ?>

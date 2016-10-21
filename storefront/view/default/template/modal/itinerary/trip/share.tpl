@@ -59,6 +59,8 @@
 		if(iOS == false) {
 			showHint('Link Copied');
 		}
+		//Google Analytics Event
+		ga('send', 'event','trip', 'share-trip-via-link');
 	}
 	
 	function shareViaWhatsapp() {
@@ -67,6 +69,8 @@
 		else {
 			showAlert('Limited to Mobile');
 		}
+		//Google Analytics Event
+		ga('send', 'event','trip', 'share-trip-via-whatsapp');
 	}
 	
 	$("#modal-trip-share").on("show.bs.modal", function () {
@@ -74,5 +78,7 @@
 		var url = window.location.href;
 		var text = encodeURIComponent('*' + title + '*') + '%0A' + encodeURIComponent(url);
 		$('#modal-trip-share-button-whatsapp').attr('href','whatsapp://send?text='+text);
+		//Google Analytics Event
+		ga('send', 'event','trip', 'open-modal-trip-share');
 	});
 </script>

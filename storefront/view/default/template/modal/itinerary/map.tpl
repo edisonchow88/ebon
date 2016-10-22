@@ -481,6 +481,7 @@ var map;
 			var this_haslatlng = $(this).parents().hasClass("haslatlng");
 			var next_haslatlng = $(this).parents().next(".plan-line").hasClass("haslatlng");
 			var is_twins = $(this).parents().hasClass("plan-line-twins");
+			var prev_is_twins = $(this).parents().prev().hasClass("plan-line-twins");
 			
 			var ori_lat, ori_lng, des_lat, des_lng;
 			// get original latlng (must have)
@@ -493,9 +494,12 @@ var map;
 			}else if (this_haslatlng && !is_twins) {
 				ori_lat = parseFloat($(this).parents(parent_class).find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
 				ori_lng = parseFloat($(this).parents(parent_class).find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
-			}else {
+			}else if (!this_haslatlng && !prev_is_twins){
 				ori_lat = parseFloat($(this).parents(parent_class).prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
 				ori_lng = parseFloat($(this).parents(parent_class).prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
+			}else if (!this_haslatlng && prev_is_twins){
+				ori_lat = $(this).parents(parent_class).prevAll(".haslatlng").first().find(".plan-line-twins-lat").html();
+				ori_lng = $(this).parents(parent_class).prevAll(".haslatlng").first().find(".plan-line-twins-lng").html();
 			}
 			
 			if (next_haslatlng) {

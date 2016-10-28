@@ -1439,6 +1439,7 @@
 				image = 'resources/image/error/noimage.png';
 			}
 			if(isset(line['description'])) {
+				hidden_detail = '';
 				hidden_description = '';
 			}
 			if(isset(line['time'])) {

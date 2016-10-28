@@ -700,8 +700,11 @@
 		if(isset($('#modal-line-custom input[name=photo]').val())) {
 			var url = $('#modal-line-custom input[name=photo]').val();
 		}
-		else {
+		else if(isset($('#modal-line-custom input[name=photo_hidden]').val())) {
 			var url = $('#modal-line-custom input[name=photo_hidden]').val();
+		}
+		else {
+			var url = 'resources/image/error/noimage.png';
 		}
 		$('#modal-line-custom .image img').attr('src',url);
 		/*

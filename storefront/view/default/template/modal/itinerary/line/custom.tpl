@@ -168,6 +168,7 @@
                         	<input type="hidden" name="line_id"/>
                             <input type="hidden" name="day_id"/>
                             <input type="hidden" name="sort_order"/>
+                            <input type="hidden" name="place_id"/>
                         	<div class="tab tab-general">
                                 <div class="row">
                                 	<div class="col-xs-12"><input type="text" name="title" placeholder="Title" /></div>
@@ -242,11 +243,18 @@
                             </div>
                             <div class="tab tab-photo">
                             	<div class="row">
+                                	<input type="hidden" name="photo_hidden"/>
                                 	<div class="col-xs-12 hidden"><input type="text" name="image_id"/></div>
-                                	<div class="col-xs-12">
-                                    	<input type="text" name="photo" placeholder="Place your photo url here" disabled/>
-                                        <div class="icon-disabled"><i class="fa fa-fw fa-lock"></i></div>
-                                    </div>
+                                    <?php if($this->session->data['memory'] == 'server') { ?>
+                                        <div class="col-xs-12">
+                                        	<input type="text" name="photo" placeholder="Place your photo url here"/>
+                                        </div>
+                                    <?php } else { ?>
+                                        <div class="col-xs-12">
+                                            <input type="text" name="photo" placeholder="Place your photo url here" disabled/>
+                                            <div class="icon-disabled"><i class="fa fa-fw fa-lock"></i></div>
+                                        </div>
+                                    <?php } ?>
                                 </div>
                                 <div class="image">
                                 	<img src="" onerror="this.onerror = '';this.src = 'resources/image/error/noimage.png';" />
@@ -263,6 +271,11 @@
                                     	<i class="fa fa-fw fa-lg fa-picture-o"></i>
                                         <i class="fa fa-fw"></i>
                                         Photo
+                                    </li>
+                                    <li class="button-duplicate-activity" data-dismiss="modal" onclick="duplicateLine();">
+                                    	<i class="fa fa-fw fa-lg fa-clone"></i>
+                                        <i class="fa fa-fw"></i>
+                                        Duplicate Activity
                                     </li>
                                     <li class="button-delete-activity text-danger" data-toggle="modal" data-target="#modal-line-delete">
                                     	<i class="fa fa-fw fa-lg fa-trash"></i>
@@ -391,19 +404,22 @@
 		var line = {
 			day_id		: $('#plan-line-'+line_id+'-form-hidden input[name=day_id]').val(),
 			sort_order	: $('#plan-line-'+line_id+'-form-hidden input[name=sort_order]').val(),
+			place_id	: $('#plan-line-'+line_id+'-form-hidden input[name=place_id]').val(),
 			title		: $('#plan-line-'+line_id+'-form-hidden input[name=title]').val(),
 			description	: $('#plan-line-'+line_id+'-form-hidden input[name=description]').val(),
 			duration	: $('#plan-line-'+line_id+'-form-hidden input[name=duration]').val(),
 			time		: $('#plan-line-'+line_id+'-form-hidden input[name=time]').val(),
 			lat			: $('#plan-line-'+line_id+'-form-hidden input[name=lat]').val(),
 			lng			: $('#plan-line-'+line_id+'-form-hidden input[name=lng]').val(),
-			photo		: $('#plan-line-'+line_id+' .image img').attr('src'),
+			photo		: $('#plan-line-'+line_id+'-form-hidden input[name=photo]').val(),
+			photo_hidden	: $('#plan-line-'+line_id+' .image img').attr('src'),
 			image_id	: $('#plan-line-'+line_id+'-form-hidden input[name=image_id]').val()
 		};
 		
 		$('#modal-line-custom input[name=line_id]').val(line_id);
 		$('#modal-line-custom input[name=day_id]').val(line.day_id);
 		$('#modal-line-custom input[name=sort_order]').val(line.sort_order);
+		$('#modal-line-custom input[name=place_id]').val(line.place_id);
 		$('#modal-line-custom input[name=title]').val(line.title);
 		$('#modal-line-custom textarea[name=description]').val(line.description);
 		$('#modal-line-custom input[name=duration]').val(line.duration);
@@ -411,6 +427,7 @@
 		$('#modal-line-custom input[name=lat]').val(line.lat);
 		$('#modal-line-custom input[name=lng]').val(line.lng);
 		$('#modal-line-custom input[name=photo]').val(line.photo);
+		$('#modal-line-custom input[name=photo_hidden]').val(line.photo_hidden);
 		$('#modal-line-custom input[name=image_id]').val(line.image_id);
 		
 		$('#modal-line-custom input[name=origin_lat]').val(line.lat);
@@ -552,6 +569,106 @@
 			<!-- END -->
 		}
 	}
+	
+	function duplicateLine() {
+		var line_id;
+		var day_id = $('.swiper-slide-active .plan-day-form-hidden input[name=day_id]').val();
+		var sort_order = $('.swiper-slide-active .plan-line').length + 1; 
+		
+		<!-- START: set line_id for Cookie -->
+		  <?php if($this->session->data['memory'] == 'cookie') { ?>
+			  var line_id = 0;
+			  var i = 1;
+			  while(line_id < 1) {
+				  var check_id = $("#plan-line-" + i + "-form-hidden").length;
+				  if (check_id < 1) { line_id = i; }
+				  i ++;
+				  if(i > 100) { break; }
+			  };
+		  <?php } ?>
+		<!-- END -->
+	  
+		var line_raw = {
+			line_id		: line_id,
+			day_id		: day_id,
+			sort_order	: sort_order,
+			place_id	: $('#modal-line-custom input[name=place_id]').val()||null,
+			title 		: $('#modal-line-custom input[name=title]').val()||null,
+			description	: $('#modal-line-custom textarea[name=description]').val()||null,
+			duration	: $('#modal-line-custom input[name=duration]').val()||null,
+			time		: $('#modal-line-custom input[name=time]').val()||null,
+			lat			: $('#modal-line-custom input[name=lat]').val()||null,
+			lng			: $('#modal-line-custom input[name=lng]').val()||null,
+			photo		: $('#modal-line-custom input[name=photo]').val()||null,
+			image_id	: $('#modal-line-custom input[name=image_id]').val()||null
+		};
+		
+		<!-- START: verify input -->
+			if(verifyLat(line_raw.lat) == false) { 
+				var origin_lat = $('#modal-line-custom input[name=origin_lat]').val();
+				if(isset(origin_lat)) {
+					line_raw.lat = origin_lat;
+				}
+				else {
+					line_raw.lat = null;
+					line_raw.lng = null;
+				}
+			}
+			if(verifyLng(line_raw.lng) == false) {
+				var origin_lng = $('#modal-line-custom input[name=origin_lng]').val();
+				if(isset(origin_lng)) {
+					line_raw.lng = origin_lng;
+				}
+				else {
+					line_raw.lat = null;
+					line_raw.lng = null;
+				}
+			}
+		<!-- END -->
+		
+		var line = {
+			line_id		: line_raw.line_id,
+			day_id		: line_raw.day_id,
+			sort_order	: line_raw.sort_order,
+			place_id	: line_raw.place_id,
+			title		: line_raw.title,
+			description : line_raw.description,
+			duration	: convertLineDurationFormat(line_raw.duration),
+			time		: convertLineTimeFormat(line_raw.time),
+			lat			: line_raw.lat,
+			lng			: line_raw.lng,
+			photo		: line_raw.photo,
+			image_id	: line_raw.image_id
+		}
+		
+		//Google Analytics Event
+		ga('send', 'event','line', 'duplicate-line');
+		<!-- START: add new line -->
+			<?php if($this->session->data['memory'] == 'cookie') { ?>
+				runAddPlanLine(line,line_raw);
+			<?php } else { ?>
+				<!-- START: set data -->
+					var data = {
+						"action":"add_line",
+						"line":line_raw
+					};
+				<!-- END -->
+			
+				<!-- START: send POST -->
+					$.post("<?php echo  $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+						if(typeof json.warning != 'undefined') {
+							showAlert(json.warning);
+						}
+						else if(typeof json.success != 'undefined') {
+							line.line_id = json.line_id;
+							line_raw.line_id = json.line_id;
+							runAddPlanLine(line,line_raw);
+						}
+					}, "json");
+				<!-- END -->
+			<?php } ?>
+		<!-- END -->
+	}
 </script>
 <script>
 	function selectModalLineCustomTab(tab) {
@@ -580,7 +697,15 @@
 	}
 	
 	$('#modal-line-custom input[name=photo]').on('change',function() {
-		var url = $('#modal-line-custom input[name=photo]').val();
+		if(isset($('#modal-line-custom input[name=photo]').val())) {
+			var url = $('#modal-line-custom input[name=photo]').val();
+		}
+		else if(isset($('#modal-line-custom input[name=photo_hidden]').val())) {
+			var url = $('#modal-line-custom input[name=photo_hidden]').val();
+		}
+		else {
+			var url = 'resources/image/error/noimage.png';
+		}
 		$('#modal-line-custom .image img').attr('src',url);
 		/*
 		if(checkPhotoUrl(url)) {

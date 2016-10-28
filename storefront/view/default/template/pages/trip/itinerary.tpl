@@ -1432,10 +1432,14 @@
 			if(isset(line['image_id'])) {
 				image = 'resources/image/cropped/'+line.image_id+'.jpg';
 			}
+			else if(isset(line['photo'])) {
+				image = line.photo;
+			}
 			else {
 				image = 'resources/image/error/noimage.png';
 			}
 			if(isset(line['description'])) {
+				hidden_detail = '';
 				hidden_description = '';
 			}
 			if(isset(line['time'])) {
@@ -1515,7 +1519,7 @@
 			$("#plan-day-"+line.day_id+"-line").append(content); 
 		<!-- END -->
 		<!-- START: replace image -->
-			if(isset(line['image_id']) == false && isset(line.place_id)) {
+			if(isset(line['image_id']) == false && isset(line['photo']) == false && isset(line.place_id)) {
 				replaceGoogleImage(line.line_id, line.place_id);
 			}
 		<!-- END -->
@@ -1733,12 +1737,14 @@
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=duration]').val(line_raw.duration);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=time]').val(line_raw.time);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=image_id]').val(line_raw.image_id);
+			$('#plan-line-'+line.line_id+'-form-hidden input[name=photo]').val(line_raw.photo);
 		<!-- END -->
 		<!-- START: update html -->
 			$('#plan-line-'+line.line_id+' .text-title').html(line.title||'Untitled Activity');
 			$('#plan-line-'+line.line_id+' .text-description').html(line.description);
 			$('#plan-line-'+line.line_id+' .text-duration').html(line.duration);
 			$('#plan-line-'+line.line_id+' .text-time').html(line.time);
+			$('#plan-line-'+line.line_id+' .image img').attr('src',line_raw.photo);
 			
 			<!-- START: set visibility -->
 				var detail = 0;
@@ -1826,7 +1832,7 @@
 				var image_id = $('#wrapper-explore-current-form input[name=image_id]').val()||null;
 				var sort_order = $('.swiper-slide-active .plan-line').length + 1;
 				var time = null;
-				var duration  = 60;
+				var duration  = null;
 				var activity = 'Visit';
 				var place = $('#wrapper-explore-current-form input[name=name]').val();
 				var place_id = $('#wrapper-explore-current-form input[name=place_id]').val();

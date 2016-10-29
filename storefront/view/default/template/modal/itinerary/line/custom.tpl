@@ -260,12 +260,39 @@
                                 	<img src="" onerror="this.onerror = '';this.src = 'resources/image/error/noimage.png';" />
                                 </div>
                             </div>
+                            <div class="tab tab-contact">
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="company">Company</label></div>
+                                	<div class="col-xs-8"><input type="text" name="company"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="address">Address</label></div>
+                                	<div class="col-xs-8"><input type="text" name="address"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="phone">Phone</label></div>
+                                	<div class="col-xs-8"><input type="text" name="phone"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="fax">Fax</label></div>
+                                	<div class="col-xs-8"><input type="text" name="fax"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="website">Website</label></div>
+                                	<div class="col-xs-8"><input type="text" name="website"/></div>
+                                </div>
+                            </div>
                             <div class="tab tab-more">
                             	<ul class="menu menu-white">
                                 	<li onclick="selectModalLineCustomTab('location');">
                                     	<i class="fa fa-fw fa-lg fa-map-marker"></i>
                                         <i class="fa fa-fw"></i>
                                         Location
+                                    </li>
+                                    <li onclick="selectModalLineCustomTab('contact');">
+                                    	<i class="fa fa-fw fa-lg fa-phone"></i>
+                                        <i class="fa fa-fw"></i>
+                                        Contact
                                     </li>
                                     <li class="hidden" onclick="selectModalLineCustomTab('photo');">
                                     	<i class="fa fa-fw fa-lg fa-picture-o"></i>
@@ -413,7 +440,12 @@
 			lng			: $('#plan-line-'+line_id+'-form-hidden input[name=lng]').val(),
 			photo		: $('#plan-line-'+line_id+'-form-hidden input[name=photo]').val(),
 			photo_hidden	: $('#plan-line-'+line_id+' .image img').attr('src'),
-			image_id	: $('#plan-line-'+line_id+'-form-hidden input[name=image_id]').val()
+			image_id	: $('#plan-line-'+line_id+'-form-hidden input[name=image_id]').val(),
+			company		: $('#plan-line-'+line_id+'-form-hidden input[name=company]').val(),
+			address		: $('#plan-line-'+line_id+'-form-hidden input[name=address]').val(),
+			phone		: $('#plan-line-'+line_id+'-form-hidden input[name=phone]').val(),
+			fax			: $('#plan-line-'+line_id+'-form-hidden input[name=fax]').val(),
+			website		: $('#plan-line-'+line_id+'-form-hidden input[name=website]').val()
 		};
 		
 		$('#modal-line-custom input[name=line_id]').val(line_id);
@@ -429,6 +461,11 @@
 		$('#modal-line-custom input[name=photo]').val(line.photo);
 		$('#modal-line-custom input[name=photo_hidden]').val(line.photo_hidden);
 		$('#modal-line-custom input[name=image_id]').val(line.image_id);
+		$('#modal-line-custom input[name=company]').val(line.company);
+		$('#modal-line-custom input[name=address]').val(line.address);
+		$('#modal-line-custom input[name=phone]').val(line.phone);
+		$('#modal-line-custom input[name=fax]').val(line.fax);
+		$('#modal-line-custom input[name=website]').val(line.website);
 		
 		$('#modal-line-custom input[name=origin_lat]').val(line.lat);
 		$('#modal-line-custom input[name=origin_lng]').val(line.lng);
@@ -474,7 +511,12 @@
 			lat			: $('#modal-line-custom input[name=lat]').val()||null,
 			lng			: $('#modal-line-custom input[name=lng]').val()||null,
 			photo		: $('#modal-line-custom input[name=photo]').val()||null,
-			image_id	: $('#modal-line-custom input[name=image_id]').val()||null
+			image_id	: $('#modal-line-custom input[name=image_id]').val()||null,
+			company		: $('#modal-line-custom input[name=company]').val()||null,
+			address		: $('#modal-line-custom input[name=address]').val()||null,
+			phone		: $('#modal-line-custom input[name=phone]').val()||null,
+			fax			: $('#modal-line-custom input[name=fax]').val()||null,
+			website		: $('#modal-line-custom input[name=website]').val()||null
 		};
 		
 		<!-- START: verify input -->
@@ -511,7 +553,12 @@
 			lat			: line_raw.lat,
 			lng			: line_raw.lng,
 			photo		: line_raw.photo,
-			image_id	: line_raw.image_id
+			image_id	: line_raw.image_id,
+			company		: line_raw.company,
+			address		: line_raw.address,
+			phone		: line_raw.phone,
+			fax			: line_raw.fax,
+			website		: line_raw.website
 		}
 		
 		if(mode=='edit') {
@@ -600,7 +647,12 @@
 			lat			: $('#modal-line-custom input[name=lat]').val()||null,
 			lng			: $('#modal-line-custom input[name=lng]').val()||null,
 			photo		: $('#modal-line-custom input[name=photo]').val()||null,
-			image_id	: $('#modal-line-custom input[name=image_id]').val()||null
+			image_id	: $('#modal-line-custom input[name=image_id]').val()||null,
+			company		: $('#modal-line-custom input[name=company]').val()||null,
+			address		: $('#modal-line-custom input[name=address]').val()||null,
+			phone		: $('#modal-line-custom input[name=phone]').val()||null,
+			fax			: $('#modal-line-custom input[name=fax]').val()||null,
+			website		: $('#modal-line-custom input[name=website]').val()||null
 		};
 		
 		<!-- START: verify input -->
@@ -638,7 +690,12 @@
 			lat			: line_raw.lat,
 			lng			: line_raw.lng,
 			photo		: line_raw.photo,
-			image_id	: line_raw.image_id
+			image_id	: line_raw.image_id,
+			company		: line_raw.company,
+			address		: line_raw.address,
+			phone		: line_raw.phone,
+			fax			: line_raw.fax,
+			website		: line_raw.website
 		}
 		
 		//Google Analytics Event

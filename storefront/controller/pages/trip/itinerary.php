@@ -293,6 +293,61 @@ class ControllerPagesTripItinerary extends AController {
 			$column[$i]['thAlign'] = 'left';
 			$column[$i]['visible'] = 'false';
 			
+			$i = 'company';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'false';
+			
+			$i = 'address';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'false';
+			
+			$i = 'phone';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'false';
+			
+			$i = 'fax';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'false';
+			
+			$i = 'website';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'false';
+			
 			$i = 'note';
 			$column[$i]['name'] = $i;
 			$column[$i]['id'] = str_replace("_","-",$i);

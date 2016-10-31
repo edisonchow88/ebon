@@ -361,6 +361,10 @@
         	<div class="result-subtitle">International Airports</div>
         	<div class="result-list"></div>
         </div>
+        <div class="result-list-wrapper" id="wrapper-explore-child-poi">
+        	<div class="result-subtitle">Point of Interests</div>
+        	<div class="result-list"></div>
+        </div>
     </div>
 <!-- END -->
 <!-- START: [form] -->
@@ -452,21 +456,32 @@
             <!-- START: send POST -->
                 $.post("<?php echo $ajax['main/ajax_explore']; ?>", data, function(json) {
 					if(json != false) {
-						if(typeof json.current.parent != 'undefined' && json.current.parent != null && json.current.parent != '') {
-							current.parent = json.current.parent;
-						}
-						if(typeof json.current.image != 'undefined' && json.current.image != null && json.current.image != '') {
-							current.image = json.current.image;
-						}
-						if(typeof json.current.description != 'undefined' && json.current.description != null && json.current.description != '') {
-							current.description = json.current.description;
-						}
-						if(typeof json.destination != 'undefined' && json.destination != null && json.destination != '') {
-							current.destination = json.destination;
-						}
-						if(typeof json.poi != 'undefined' && json.poi != null && json.poi != '') {
-							current.poi = json.poi;
-						}
+						<!-- START: replace google variable via server data -->
+							if(isset(json.current.name)) {
+								current.name = json.current.name;
+							}
+							if(isset(json.current.tag)) {
+								current.tag = json.current.tag;
+							}
+							if(typeof json.current.parent != 'undefined' && json.current.parent != null && json.current.parent != '') {
+								current.parent = json.current.parent;
+							}
+							if(typeof json.current.image != 'undefined' && json.current.image != null && json.current.image != '') {
+								current.image = json.current.image;
+							}
+							if(typeof json.current.description != 'undefined' && json.current.description != null && json.current.description != '') {
+								current.description = json.current.description;
+							}
+							if(isset(json.current.type)) {
+								current.type = json.current.type;
+							}
+							if(isset(json.destination)) {
+								current.destination = json.destination;
+							}
+							if(typeof json.poi != 'undefined' && json.poi != null && json.poi != '') {
+								current.poi = json.poi;
+							}
+						<!-- END -->
 					}
 					runUpdateWrapperExploreResult(current, json);
                 }, "json");
@@ -570,13 +585,15 @@
 			}
 			<!-- END -->
 			<!-- START: using own server -->
-				if(typeof current.parent != 'undefined' && current.parent != null && current.parent != '') {
-					if(typeof current.parent.g_place_id != 'undefined' && current.parent.g_place_id != null && current.parent.g_place_id != '') {
-						$('#wrapper-explore-current-parent').html('<a onclick="explorePlace(\''+current.parent.g_place_id+'\');">'+current.parent.name+' /</a>');
-					}
-					else {
-						$('#wrapper-explore-current-parent').html('<a onclick="explorePlace(\'\');">'+current.parent.name+' /</a>');
-					}
+				if(isset(current.type)) {
+						if(typeof current.parent != 'undefined' && current.parent != null && current.parent != '') {
+							if(typeof current.parent.g_place_id != 'undefined' && current.parent.g_place_id != null && current.parent.g_place_id != '') {
+								$('#wrapper-explore-current-parent').html('<a onclick="explorePlace(\''+current.parent.g_place_id+'\');">'+current.parent.name+' /</a>');
+							}
+							else {
+								$('#wrapper-explore-current-parent').html('<a onclick="explorePlace(\'\');">'+current.parent.name+' /</a>');
+							}
+						}
 					$('#wrapper-explore-current-parent').show();
 				}
 			<!-- END -->
@@ -685,12 +702,19 @@
 					tag.push(value);
 				}
 			});
-			
-			if(tag.length > 0) {
-				$.each(tag, function(index,value) {
-					$('#wrapper-explore-current-tag').append('<div class="label label-pill label-warning tag">'+value+'</div>');
+			if(isset(current.tag)) {
+				$.each(current.tag, function(index,value) {
+					$('#wrapper-explore-current-tag').append('<div class="label label-pill label-warning tag">'+value.name+'</div>');
 				});
 				$('#wrapper-explore-current-tag').show();
+			}
+			else {
+				if(tag.length > 0) {
+					$.each(tag, function(index,value) {
+						$('#wrapper-explore-current-tag').append('<div class="label label-pill label-warning tag">'+value+'</div>');
+					});
+					$('#wrapper-explore-current-tag').show();
+				}
 			}
 		}
 		
@@ -825,6 +849,7 @@
 			$('#wrapper-explore-child-destination').hide();
 			$('#wrapper-explore-child-destination-airport').hide();
 			$('#wrapper-explore-child-destination-national-park').hide();
+			$('#wrapper-explore-child-poi').hide();
 		<!-- END -->
 		
 		<!-- START: [child destination] -->
@@ -897,6 +922,61 @@
 		<!-- END -->
 		
 		<!-- START: [child poi] -->
+			if(current.poi.length > 0) {
+				count = parseFloat(count) + parseFloat(json.count.poi);
+				var ranking = { text:'' };
+				for(i=0;i<json.count.poi;i++) {
+					var tag_name = json.poi[i].tag[0].name.replace(/\s+/g, '-').toLowerCase();
+					<!-- START: assign ranking -->
+						if(typeof ranking['poi'] == 'undefined') { 
+							ranking['poi'] = 1;
+							$('.result-subtitle.poi-'+tag_name).show();
+						}
+						else {
+							ranking['poi'] = parseInt(ranking['poi']) + 1;
+						}
+						ranking.text = ranking['poi'];
+					<!-- END -->
+					<!-- START: write content -->
+						content = '';
+						content += '<div class="result row">';
+							content += '<div class="result-wrapper col-xs-12 box-shadow" ';
+							content += 'onclick="explorePlace(\''+json.poi[i].g_place_id+'\')";';
+							content += '>';
+								content += '<div class="result-image-wrapper">';
+									content += '<div class="result-image">';
+										content += json.poi[i].image;
+									content += '</div>';
+									content += '<div class="result-ranking">';
+										content += ranking.text;
+									content += '</div>';
+								content += '</div>';
+								content += '<div class="result-description">';
+									content += '<div class="result-name line-clamp-1">';
+										content += json.poi[i].name;
+									content += '</div>';
+									content += '<small><div class="result-blurb line-clamp-2">';
+										content += json.poi[i].blurb;
+									content += '</div></small>';
+									content += '<div class="result-tag">';
+										if(typeof json.poi[i].tag != 'undefined') {
+											for(t=0;t<Math.min(json.poi[i].tag.length,3);t++) {
+												var name = json.poi[i].tag[t].name;
+												var color = json.poi[i].tag[t].type_color;
+												content += '<a class="label label-pill" data-row-name="'+name+'" style="background-color:'+color+'; margin-right:5px;">'+name+'</a>';
+											}
+										}
+									content += '</div>';
+								content += '</div>';
+							content += '</div>';
+						content += '</div>';
+					<!-- END -->
+					<!-- START: assign wrapper -->
+						$('#wrapper-explore-child-poi .result-list').append(content);
+						$('#wrapper-explore-child-poi').show();
+					<!-- END -->
+				}
+			}
 		<!-- END -->
 		
 		setTimeout(function() {

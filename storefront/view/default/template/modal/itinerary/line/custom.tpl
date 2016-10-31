@@ -183,6 +183,13 @@
                             <input type="hidden" name="sort_order"/>
                             <input type="hidden" name="place_id"/>
                         	<div class="tab tab-general">
+                            	<div class="row">
+                                    <select name="activity">
+                                    	<option value="visit">Visit</option>
+                                    	<option value="eat">Eat</option>
+                                    	<option value="stay">Stay</option>
+                                    </select>
+                                </div>
                                 <div class="row">
                                 	<div class="col-xs-12"><input type="text" name="title" placeholder="Title" /></div>
                                 </div>
@@ -491,7 +498,8 @@
 			address		: $('#plan-line-'+line_id+'-form-hidden input[name=address]').val(),
 			phone		: $('#plan-line-'+line_id+'-form-hidden input[name=phone]').val(),
 			fax			: $('#plan-line-'+line_id+'-form-hidden input[name=fax]').val(),
-			website		: $('#plan-line-'+line_id+'-form-hidden input[name=website]').val()
+			website		: $('#plan-line-'+line_id+'-form-hidden input[name=website]').val(),
+			activity	: $('#plan-line-'+line_id+'-form-hidden input[name=activity]').val(),
 		};
 		
 		$('#modal-line-custom input[name=line_id]').val(line_id);
@@ -512,6 +520,7 @@
 		$('#modal-line-custom input[name=phone]').val(line.phone);
 		$('#modal-line-custom input[name=fax]').val(line.fax);
 		$('#modal-line-custom input[name=website]').val(line.website);
+		$('#modal-line-custom select[name=activity]').val(line.activity);
 		
 		$('#modal-line-custom input[name=origin_lat]').val(line.lat);
 		$('#modal-line-custom input[name=origin_lng]').val(line.lng);
@@ -562,7 +571,8 @@
 			address		: $('#modal-line-custom input[name=address]').val()||null,
 			phone		: $('#modal-line-custom input[name=phone]').val()||null,
 			fax			: $('#modal-line-custom input[name=fax]').val()||null,
-			website		: $('#modal-line-custom input[name=website]').val()||null
+			website		: $('#modal-line-custom input[name=website]').val()||null,
+			activity	: $('#modal-line-custom select[name=activity]').val()||null
 		};
 		
 		<!-- START: verify input -->
@@ -610,7 +620,8 @@
 			address		: line_raw.address,
 			phone		: line_raw.phone,
 			fax			: line_raw.fax,
-			website		: line_raw.website
+			website		: line_raw.website,
+			activity	: line_raw.activity
 		}
 		
 		if(mode=='edit') {

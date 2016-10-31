@@ -1862,6 +1862,7 @@
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=phone]').val(line_raw.phone);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=fax]').val(line_raw.fax);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=website]').val(line_raw.website);
+			$('#plan-line-'+line.line_id+'-form-hidden input[name=activity]').val(line_raw.activity);
 		<!-- END -->
 		<!-- START: update html -->
 			<!-- START: set format -->
@@ -2038,7 +2039,7 @@
 				var sort_order = $('.swiper-slide-active .plan-line').length + 1;
 				var time = null;
 				var duration  = null;
-				var activity = 'Visit';
+				var activity = 'visit';
 				var place = $('#wrapper-explore-current-form input[name=name]').val();
 				var place_id = $('#wrapper-explore-current-form input[name=place_id]').val();
 				var lat = $('#wrapper-explore-current-form input[name=lat]').val()||null;

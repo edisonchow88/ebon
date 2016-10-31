@@ -17,7 +17,7 @@
 	.map-day-group {
 		position: absolute;
 		z-index: 99;
-		bottom: 100px;
+		bottom: 105px;
 		left:50%;
 		transform: translate(-50%);
 		background-color:#FFF;
@@ -103,6 +103,7 @@
    	 	height: 21px;
 		text-align:center;
 		font-size:1.3em;
+
 	}
 	
 	div.map-seq-icon {
@@ -114,7 +115,8 @@
 	}
 	
 	.marker-label-active .fa-flag {
-		color: #FF0;	
+		color: #FF0;
+		z-index: 100 !important;	
 	}
 </style>
 
@@ -234,16 +236,16 @@ function initOverlayPrototype () { // must be after or inside initMap()
       var position = overlayProjection.fromLatLngToDivPixel(this.pos);
       div.style.left = position.x + 'px';
       div.style.top = position.y + 'px';
-	  
+	 
       // We add an overlay to a map via one of the map's panes.
 
       var panes = this.getPanes();
-      panes.floatPane.appendChild(div);
+
+     // panes.floatPane.appendChild(div);
+	panes.overlayMouseTarget.appendChild(div);
 	 /// panes.floatPane.appendChild(div_seq);
     }
     MarkerIconOverlay.prototype.draw = function() {
-
-
         var overlayProjection = this.getProjection();
 
         // Retrieve the southwest and northeast coordinates of this overlay
@@ -255,7 +257,6 @@ function initOverlayPrototype () { // must be after or inside initMap()
         div.style.left = position.x - 14 + 'px' ;
         div.style.top = position.y - 40 + 'px';
 		div.style.position = 'absolute';
-
 		/*
 		var div_seq = this.div_seq_;
         div_seq.style.left = position.x + 8  + 'px' ;
@@ -293,8 +294,15 @@ function initOverlayPrototype () { // must be after or inside initMap()
 			this.div_.className = "marker-label-active map-font-icon";
       }
 	}
+	
+	MarkerIconOverlay.prototype.onc = function(label) {
+		google.maps.event.addDomListener(this.div_, 'click', function () {
+			alert();
+		});
+	}
 };
-
+	
+	
 
 
 	// Update the MAP 
@@ -313,7 +321,7 @@ function initOverlayPrototype () { // must be after or inside initMap()
 		var positions = markersData [1];
 		var marker_labels = markersData [2];
 		
-		createInfoWindow(markers);	
+		createInfoWindow(markers, marker_labels);	
 		
 		//create route from path or markers and hide them
 		var routesData = makeRoutebyPath(markers, positions);
@@ -338,7 +346,7 @@ function initOverlayPrototype () { // must be after or inside initMap()
 		}
 			
 		var count_active_transport_box = $(".transport:not(:hidden)").length;
-		var transport_box_not_empty  =  $(".transport:not(:hidden) .path:not(:empty)").length;
+		var transport_box_not_empty  =  $(".transport:not(:hidden) .path:not(:empty), .transport:not(:hidden) .orindes:not(:empty)").length;
 		if (transport_box_not_empty == count_active_transport_box) {
 			runMapUpdate();	
 		}else {
@@ -406,7 +414,6 @@ var map;
 			$(".map-option-option").removeClass("map-selected");
 			$(this).addClass("map-selected");
 			showMarkerRoute(markers, marker_labels, positions, routes, routesP);
-			map.fitBounds(bounds);
 		});
 		
 		//// Map Event : Map routes or routesP. 
@@ -465,7 +472,7 @@ var map;
 					$(".map-day-line-no").append(output);
 				});
 			}else {
-				$(".map-day-line-no").append("Empty!");
+				$(".map-day-line-no").append("Empty Day!");
 			}
 	}
 	
@@ -525,8 +532,10 @@ var map;
 				});
 				
 				if (day_id == $(".swiper-slide-active").closest(".plan-day").attr("id")) {
-				var txt = new MarkerIconOverlay(position, marker_index + 1 , map, "", "active");
-				}else {
+					var txt = new MarkerIconOverlay(position, marker_index + 1 , map, "", "active");
+				}
+				//else if (day_id == $(".swiper-slide-active").closest(".plan-day").prev().attr("id")) {}
+				else {
 				var txt = new MarkerIconOverlay(position, marker_index + 1 , map, "");
 				}
 				
@@ -570,14 +579,14 @@ var map;
 			$.each(markers,function(i) {				
 				markers[i].setVisible(false);
 				markers[i].setZIndex(10);
-				marker_labels[i].hide();
+				if (marker_labels[i]) marker_labels[i].hide();
 			
 				///set color for marker
 				if (markers[i].day == selected_day_id || markers[i].line == prev_last_line_id) {
 					markers[i].set("viewstatus", "red");
 					markers[i].setIcon(red_icon);	
 					markers[i].setZIndex(11);
-					marker_labels[i].activate();
+					if (marker_labels[i]) marker_labels[i].activate();
 				}else {
 					markers[i].setIcon(grey_icon);	
 					markers[i].set("viewstatus", "grey");
@@ -588,12 +597,13 @@ var map;
 						markers[i].setVisible(true);
 						bounds.extend(positions[i]);
 						map.fitBounds(bounds);
-						marker_labels[i].show();
+						if (marker_labels[i]) marker_labels[i].show();
 					}else return;
 				}else {
 					markers[i].setVisible(true);					
 					bounds.extend(positions[i]);
-					marker_labels[i].show();
+					map.fitBounds(bounds);
+					if (marker_labels[i]) marker_labels[i].show();
 				}
 			});
 		}
@@ -640,12 +650,12 @@ var map;
 		$("#go-center").off().on('click', function() {
 			map.fitBounds(bounds);
 		});	
-		
+
 		updateIconZoom (markers);
 		return boundsAll;	
 	}
 	
-	function createInfoWindow(markers) {
+	function createInfoWindow(markers,marker_labels) {
 		var infowindows = [];	
 		$.each(markers, function(i) {
 		
@@ -660,6 +670,7 @@ var map;
 			markers[i].addListener('click', function() {
 				$.each(infowindows,function(i) {infowindows[i].close();});
 				infowindow.open(map, markers[i]);
+				marker_labels[i].onc();
 			});
 						
 			infowindows.push(infowindow);	
@@ -668,15 +679,25 @@ var map;
 		google.maps.event.addListener(map, 'click', function() {
 			$.each(infowindows,function(i) {infowindows[i].close();});
   		});
+		
+		/*if (marker_labels[1].div) {
+		google.maps.event.addDomListener(marker_labels[1].div, 'click', function () {
+					alert();
+				});	
+		}*/
 	}
 	
 	function updateTransportBox() {
 		// REFRESH: show all transport, delete all twins, clear all path 
 		$(".transport").show();
 		$(".transport .path").html("");
+		$(".orindes").remove(); //maybe change the output code in itinerary later
+		$(".transport").append('<span class="orindes hidden"></span>');
+		$(".transport .orindes").html("");
 		$(".plan-line-twins").remove();
 		$(this).removeAttr('id');
-		$(".has-route").removeClass("has-route");
+		$(".has-route").removeClass("has-route mode-flight mode-drive no-reach");
+
 		
 		// add class to line with lat lng	
 		$(".plan-line").each(function(i) {
@@ -690,12 +711,12 @@ var map;
 			//if ( $(this).prevAll(".plan-day").has(".plan-line.haslatlng").length > 0 && $(this).find(".plan-line").length > 0){
 			if ( $(this).prevAll(".plan-day").has(".plan-line.haslatlng").length > 0 ){	
 			
-				var twins_master_id = $(this).prevAll(".plan-day").has(".plan-line.haslatlng").first().find(".plan-line").last().attr("id");
+				var twins_master_id = $(this).prevAll(".plan-day").has(".plan-line.haslatlng").first().find(".plan-line.haslatlng").last().attr("id");
 				var info_name = $("#"+twins_master_id).find(".title span").html();
 				var info_lat = parseFloat($("#"+twins_master_id).find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
 				var info_lng = parseFloat($("#"+twins_master_id).find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
 				var info_img = $("#"+twins_master_id).find(".image img").attr("src");
-
+				
 				var twins_content = ''
 				+ '<div class="plan-line-twins haslatlng">'
 					+ '<div class="row">'
@@ -720,6 +741,7 @@ var map;
 								+ '3.7 km / 45 mins'
 							+ '</span>'
 							+ '<span class="path hidden"></span>'
+							+ '<span class="orindes hidden"></span>'
 						+ '</div>'
 					+ '</div>' 
 				+ '</div>'
@@ -749,7 +771,7 @@ var map;
 			var this_haslatlng = $(this).parents().hasClass("haslatlng");
 			var next_haslatlng = $(this).parents().next(".plan-line").hasClass("haslatlng");
 			var is_twins = $(this).parents().hasClass("plan-line-twins");
-			var prev_is_twins = $(this).parents().prev().hasClass("plan-line-twins");
+			var prev_is_twins = $(this).parents().prevAll(".haslatlng").first().hasClass("plan-line-twins");
 			
 			var ori_lat, ori_lng, des_lat, des_lng;
 			// get original latlng (must have)
@@ -823,6 +845,8 @@ var map;
 									
 									var duration_number = parseInt(d / speed * 60);
 									var t = convertLineDurationFormat(duration_number);
+									var mode = "flight";
+									$("#"+ transport_id).addClass("mode-"+mode);
 									$("#"+ transport_id +" .icon").html("<i class='fa fa-fw fa-plane'></i><i class='fa fa-fw'></i>");
 									$("#"+ transport_id +" .text").html('about ' + d + ' km , ' + t);								
 								}
@@ -848,10 +872,14 @@ var map;
 										}
 										var duration_number = parseInt(d / speed * 60);
 										var t = convertLineDurationFormat(duration_number);
+										var mode = "flight";
+										$("#"+ transport_id).addClass("mode-"+mode);
 										$("#"+ transport_id +" .icon").html("<i class='fa fa-fw fa-plane'></i><i class='fa fa-fw'></i>");
 										$("#"+ transport_id +" .text").html('about ' + d + ' km , ' + t);	
 									}
 									else {
+										var mode = "drive";
+										$("#"+ transport_id).addClass("mode-"+mode);
 										$("#"+ transport_id +" .icon").html("<i class='fa fa-fw fa-car'></i><i class='fa fa-fw'></i>");
 										$("#"+ transport_id +" .text").html(distance + " , " + duration);
 									}
@@ -876,6 +904,14 @@ var map;
 								travelMode: 'DRIVING'
 					};	
 				
+				var coordinates = new Array();
+						coordinates [0] = ori;
+						coordinates [1] = des;
+						
+						var orindesString = JSON.stringify (coordinates);
+						
+						$("#"+ transport_id +" .orindes").html(orindesString);
+				
 				var directionsService = new google.maps.DirectionsService();			
 				directionsService.route(request, function(response, status) {
 					if (status == 'OK') {
@@ -883,14 +919,15 @@ var map;
 						var routeString = JSON.stringify (routePath);
 						$("#"+ transport_id +" .path").html(routeString);				
 					}else if (status == 'ZERO_RESULTS'){
-						var coordinates = new Array();
+					/*	var coordinates = new Array();
 						coordinates [0] = ori;
 						coordinates [1] = des;
 						
 						var routeString = JSON.stringify (coordinates);
 						
-						$("#"+ transport_id +" .path").html(routeString);
-						$("#"+ transport_id).addClass("no-reach");		
+						$("#"+ transport_id +" .path").html(routeString);*/
+						$("#"+ transport_id).addClass("no-reach");	
+							
 					}					
 				})
 			}
@@ -915,7 +952,7 @@ var map;
 		var routesP = [];
 		$(".transport.has-route").each(function(i) {
 			
-			if ( $(this).hasClass("no-reach") && $(this).find(".path").html() ) {				
+			if ( $(this).hasClass("no-reach") ||  $(this).hasClass("mode-flight")  ) {				
 				var icon_sequence = [{
 						icon: lineSymbol,
 						offset: '60%'
@@ -925,17 +962,17 @@ var map;
             			repeat: '15px'
 					}];
 				var route_opacity = 0;
-			}else if( $(this).find(".path").html() ) {
+				var routePath = JSON.parse($(this).find(".orindes").html());
+			}else {
 				var icon_sequence = [{
 						icon: lineSymbol,
 						offset: '60%'
 					}];	
-				var route_opacity = 1;						
+				var route_opacity = 1;	
+				var routePath = JSON.parse($(this).find(".path").html());					
 			}
-			
-			var routePath = JSON.parse($(this).find(".path").html());			
-			
 			if (routePath){
+			
 				var route = new google.maps.Polyline({
 					path: routePath,
 					icons: icon_sequence,

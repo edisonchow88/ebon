@@ -83,8 +83,9 @@
                 <div class="modal-header-shadow"></div>
                 <div class="modal-content">
                     <div class="modal-body">
+                        <div id="modal-explore-favourite-alert"></div>
                     	<div id="modal-explore-favourite-button-trip-new-wrapper">
-                        	<a class="btn btn-block btn-success box-shadow" data-toggle="modal" data-target="#modal-trip-new">Create Trip</a>
+                        	<a class="btn btn-block btn-success box-shadow" onclick="openModalNewTripViaFavouriteTab();">Create Trip</a>
                         </div>
                         <div id="modal-explore-favourite-list"></div>
                         <div id="modal-explore-favourite-list-empty" class="empty-list">
@@ -457,6 +458,24 @@
 	refreshFavouriteList();
 </script>
 <script>
+	function openModalNewTripViaFavouriteTab() {
+		var trip = getCookie('trip');
+		if(isset(trip)) { trip = JSON.parse(trip); }
+		
+		if($('.result-trip-status').length > 0) {
+			var content;
+			content = '<div class="alert alert-warning"><b>You have ONE unsaved trip.</b><br/>Please <a data-dismiss="modal" onclick="showTab(\'trip\');">save or delete it</a> before create a new trip.</div>';
+			$('#modal-explore-favourite-alert').html(content);
+		}
+		else {
+			$('#modal-explore-favourite-alert').html('');
+			$('#modal-trip-new').modal('show');
+			//Google Analytics Event
+			ga('send', 'event','trip','open-modal-new-trip-via-favourite-tab');
+		}
+	}
+</script>
+<script>
 	$("#modal-explore-favourite").on("show", function () {
 		$("body").addClass("modal-open");
 	}).on("hidden", function () {
@@ -467,6 +486,7 @@
 		closeEditFavourite();
 		sortFavourite();
 		$('body').css('overflow-y','hidden');
+		$('#modal-explore-favourite-alert').html('');
 	});
 	$("#modal-explore-favourite").on( "shown.bs.modal", function() {
 		//Google Analytics Event

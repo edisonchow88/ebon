@@ -98,7 +98,7 @@ class ControllerResponsesMainAjaxExplore extends AController {
 				//END
 				//START: get child poi
 					//START: set data
-						$destination_id = $this->data['destination_id'];
+						$destination_id = $place['type_id'];
 						$data = $this->model_guide_poi->getPoiByDestinationId($destination_id);
 					//END
 					//END
@@ -117,9 +117,31 @@ class ControllerResponsesMainAjaxExplore extends AController {
 						}
 					//END
 				//END
+				$result['current']['type'] = 'destination';
 			}
 			else if($place['type'] == 'poi') {
-				$result = $this->model_guide_poi->getPoi($place['type_id']);
+				$poi_id = $place['type_id'];
+				
+				//START: set data
+					$data = $this->model_guide_poi->getPoi($place['type_id']);
+				//END
+				
+				//START: set result
+					if(count($data) > 0) {
+						foreach($data as $key => $value) { $result['current'][$key] = $data[$key]; }
+					}
+				//END
+				
+				//START: get parent destination
+					//START: set data
+						$data = $this->model_guide_destination->getDestination($result['current']['destination']['destination_id']);
+					//END
+					//START: set result
+						$result['current']['parent'] = $data;
+					//END
+				//END
+				
+				$result['current']['type'] = 'poi';
 			}
 		}
 		else {

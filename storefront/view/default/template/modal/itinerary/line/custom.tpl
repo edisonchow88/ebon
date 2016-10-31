@@ -23,11 +23,24 @@
 	}
 	
 	/* START: map */
-		#modal-line-custom .button-reset {
+		#modal-line-custom .button-left {
 			left:0;
 		}
 		#modal-line-custom .button-recenter {
 			right:0;
+		}
+		#modal-line-custom .button-reset {
+			border-radius:5px 0 0 5px;
+			color:#000;
+		}
+		#modal-line-custom .button-remove {
+			border-radius:0 5px 5px 0;
+			color:#000;
+		}
+		#modal-line-custom .button-left .disabled {
+			pointer-events:none;
+			cursor:not-allowed;
+			color:#999;
 		}
 		#modal-line-custom .tab-location .btn-group {
 			padding:10px;
@@ -170,6 +183,13 @@
                             <input type="hidden" name="sort_order"/>
                             <input type="hidden" name="place_id"/>
                         	<div class="tab tab-general">
+                            	<div class="row">
+                                    <select name="activity">
+                                    	<option value="visit">Visit</option>
+                                    	<option value="eat">Eat</option>
+                                    	<option value="stay">Stay</option>
+                                    </select>
+                                </div>
                                 <div class="row">
                                 	<div class="col-xs-12"><input type="text" name="title" placeholder="Title" /></div>
                                 </div>
@@ -229,11 +249,10 @@
                                 	<div class="col-xs-4"><label for="lng">Longitude</label></div>
                                 	<div class="col-xs-8"><input type="number" name="lng"/></div>
                                 </div>
-                                <div class="btn-group button-reset">
-                                    <div class="btn btn-default">
-                                        <span>Reset</span>
-                                    </div>
-                                </div>
+                                <ul class="pagination btn-group button-left">
+                                	<li><a class="button-reset disabled">Reset</a></li>
+                                    <li><a class="button-remove">Remove</a></li>
+                                </ul>
                                 <div class="btn-group button-recenter">
                                     <div class="btn btn-default">
                                         <i class="fa fa-fw fa-bullseye"></i>
@@ -260,12 +279,39 @@
                                 	<img src="" onerror="this.onerror = '';this.src = 'resources/image/error/noimage.png';" />
                                 </div>
                             </div>
+                            <div class="tab tab-contact">
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="company">Company</label></div>
+                                	<div class="col-xs-8"><input type="text" name="company"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="address">Address</label></div>
+                                	<div class="col-xs-8"><input type="text" name="address"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="phone">Phone</label></div>
+                                	<div class="col-xs-8"><input type="text" name="phone"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="fax">Fax</label></div>
+                                	<div class="col-xs-8"><input type="text" name="fax"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="website">Website</label></div>
+                                	<div class="col-xs-8"><input type="text" name="website"/></div>
+                                </div>
+                            </div>
                             <div class="tab tab-more">
                             	<ul class="menu menu-white">
                                 	<li onclick="selectModalLineCustomTab('location');">
                                     	<i class="fa fa-fw fa-lg fa-map-marker"></i>
                                         <i class="fa fa-fw"></i>
                                         Location
+                                    </li>
+                                    <li onclick="selectModalLineCustomTab('contact');">
+                                    	<i class="fa fa-fw fa-lg fa-phone"></i>
+                                        <i class="fa fa-fw"></i>
+                                        Contact
                                     </li>
                                     <li class="hidden" onclick="selectModalLineCustomTab('photo');">
                                     	<i class="fa fa-fw fa-lg fa-picture-o"></i>
@@ -294,10 +340,19 @@
 
 <script>
 	function initLineMap() {
+		$('#modal-line-custom-form .button-reset').addClass('disabled');
+		
 		var lat = parseFloat($('#modal-line-custom-form input[name=lat]').val())||0;
 		var lng = parseFloat($('#modal-line-custom-form input[name=lng]').val())||0;
 		var origin_lat = parseFloat($('#modal-line-custom-form input[name=origin_lat]').val())||0;
 		var origin_lng = parseFloat($('#modal-line-custom-form input[name=origin_lng]').val())||0;
+		
+		if(origin_lat == 0 && origin_lng == 0) {
+			$('#modal-line-custom-form .button-remove').addClass('disabled');
+		}
+		else {
+			$('#modal-line-custom-form .button-remove').removeClass('disabled');
+		}
 		
 		var myLatLng = {"lat":lat,"lng":lng};
 		var originLatLng = {"lat":origin_lat,"lng":origin_lng};
@@ -318,6 +373,7 @@
 		google.maps.event.addListener(marker, 'dragend', function() 
 		{
 			geocodePosition(marker.getPosition());
+			$('#modal-line-custom-form .button-reset').removeClass('disabled');
 		});
 		
 		$("#modal-line-custom-form input[name=lat]").on('change', function() {
@@ -327,6 +383,7 @@
 				marker.setPosition( new google.maps.LatLng(myLatLng) );
 				map.setCenter(marker.getPosition());
 				$('#modal-line-custom-form input[name=lat]').val(lat.toFixed(7));
+				$('#modal-line-custom-form .button-reset').removeClass('disabled');
 			}
 			else {
 				showAlert('Latitude must between -90 and 90.');
@@ -340,6 +397,7 @@
 				marker.setPosition( new google.maps.LatLng(myLatLng) );
 				map.setCenter(marker.getPosition());
 				$('#modal-line-custom-form input[name=lng]').val(lng.toFixed(7));
+				$('#modal-line-custom-form .button-reset').removeClass('disabled');
 			}
 			else {
 				showAlert('Longitude must between -180 and 180.');
@@ -353,6 +411,28 @@
 		$("#modal-line-custom .tab-location .button-reset").off().on('click', function() {
 			marker.setPosition( new google.maps.LatLng(originLatLng) );
 			map.setCenter(marker.getPosition());
+			var reset_lat = origin_lat;
+			var reset_lng = origin_lng;
+			if(origin_lat == 0) { reset_lat = ''; }
+			if(origin_lng == 0) { reset_lng = ''; }
+			$('#modal-line-custom-form input[name=lat]').val(reset_lat);
+			$('#modal-line-custom-form input[name=lng]').val(reset_lng);
+			$('#modal-line-custom-form .button-reset').addClass('disabled');
+			if(origin_lat == 0 && origin_lng == 0) {
+				$('#modal-line-custom-form .button-remove').addClass('disabled');
+			}
+			else {
+				$('#modal-line-custom-form .button-remove').removeClass('disabled');
+			}
+		});
+		
+		$("#modal-line-custom .tab-location .button-remove").off().on('click', function() {
+			marker.setPosition( new google.maps.LatLng({"lat":0,"lng":0}) );
+			map.setCenter(marker.getPosition());
+			$('#modal-line-custom-form input[name=lat]').val('');
+			$('#modal-line-custom-form input[name=lng]').val('');
+			$('#modal-line-custom-form .button-reset').removeClass('disabled');
+			$('#modal-line-custom-form .button-remove').addClass('disabled');
 		});	
 	}
 	
@@ -413,7 +493,13 @@
 			lng			: $('#plan-line-'+line_id+'-form-hidden input[name=lng]').val(),
 			photo		: $('#plan-line-'+line_id+'-form-hidden input[name=photo]').val(),
 			photo_hidden	: $('#plan-line-'+line_id+' .image img').attr('src'),
-			image_id	: $('#plan-line-'+line_id+'-form-hidden input[name=image_id]').val()
+			image_id	: $('#plan-line-'+line_id+'-form-hidden input[name=image_id]').val(),
+			company		: $('#plan-line-'+line_id+'-form-hidden input[name=company]').val(),
+			address		: $('#plan-line-'+line_id+'-form-hidden input[name=address]').val(),
+			phone		: $('#plan-line-'+line_id+'-form-hidden input[name=phone]').val(),
+			fax			: $('#plan-line-'+line_id+'-form-hidden input[name=fax]').val(),
+			website		: $('#plan-line-'+line_id+'-form-hidden input[name=website]').val(),
+			activity	: $('#plan-line-'+line_id+'-form-hidden input[name=activity]').val(),
 		};
 		
 		$('#modal-line-custom input[name=line_id]').val(line_id);
@@ -429,6 +515,12 @@
 		$('#modal-line-custom input[name=photo]').val(line.photo);
 		$('#modal-line-custom input[name=photo_hidden]').val(line.photo_hidden);
 		$('#modal-line-custom input[name=image_id]').val(line.image_id);
+		$('#modal-line-custom input[name=company]').val(line.company);
+		$('#modal-line-custom input[name=address]').val(line.address);
+		$('#modal-line-custom input[name=phone]').val(line.phone);
+		$('#modal-line-custom input[name=fax]').val(line.fax);
+		$('#modal-line-custom input[name=website]').val(line.website);
+		$('#modal-line-custom select[name=activity]').val(line.activity);
 		
 		$('#modal-line-custom input[name=origin_lat]').val(line.lat);
 		$('#modal-line-custom input[name=origin_lng]').val(line.lng);
@@ -474,28 +566,40 @@
 			lat			: $('#modal-line-custom input[name=lat]').val()||null,
 			lng			: $('#modal-line-custom input[name=lng]').val()||null,
 			photo		: $('#modal-line-custom input[name=photo]').val()||null,
-			image_id	: $('#modal-line-custom input[name=image_id]').val()||null
+			image_id	: $('#modal-line-custom input[name=image_id]').val()||null,
+			company		: $('#modal-line-custom input[name=company]').val()||null,
+			address		: $('#modal-line-custom input[name=address]').val()||null,
+			phone		: $('#modal-line-custom input[name=phone]').val()||null,
+			fax			: $('#modal-line-custom input[name=fax]').val()||null,
+			website		: $('#modal-line-custom input[name=website]').val()||null,
+			activity	: $('#modal-line-custom select[name=activity]').val()||null
 		};
 		
 		<!-- START: verify input -->
-			if(verifyLat(line_raw.lat) == false) { 
-				var origin_lat = $('#modal-line-custom input[name=origin_lat]').val();
-				if(isset(origin_lat)) {
-					line_raw.lat = origin_lat;
-				}
-				else {
-					line_raw.lat = null;
-					line_raw.lng = null;
-				}
+			if(isset(line_raw.lat) == false && isset(line_raw.lng) == false) {
+				line_raw.lat = null;
+				line_raw.lng = null;
 			}
-			if(verifyLng(line_raw.lng) == false) {
-				var origin_lng = $('#modal-line-custom input[name=origin_lng]').val();
-				if(isset(origin_lng)) {
-					line_raw.lng = origin_lng;
+			else {
+				if(verifyLat(line_raw.lat) == false) { 
+					var origin_lat = $('#modal-line-custom input[name=origin_lat]').val();
+					if(isset(origin_lat)) {
+						line_raw.lat = origin_lat;
+					}
+					else {
+						line_raw.lat = null;
+						line_raw.lng = null;
+					}
 				}
-				else {
-					line_raw.lat = null;
-					line_raw.lng = null;
+				if(verifyLng(line_raw.lng) == false) {
+					var origin_lng = $('#modal-line-custom input[name=origin_lng]').val();
+					if(isset(origin_lng)) {
+						line_raw.lng = origin_lng;
+					}
+					else {
+						line_raw.lat = null;
+						line_raw.lng = null;
+					}
 				}
 			}
 		<!-- END -->
@@ -511,7 +615,13 @@
 			lat			: line_raw.lat,
 			lng			: line_raw.lng,
 			photo		: line_raw.photo,
-			image_id	: line_raw.image_id
+			image_id	: line_raw.image_id,
+			company		: line_raw.company,
+			address		: line_raw.address,
+			phone		: line_raw.phone,
+			fax			: line_raw.fax,
+			website		: line_raw.website,
+			activity	: line_raw.activity
 		}
 		
 		if(mode=='edit') {
@@ -600,7 +710,12 @@
 			lat			: $('#modal-line-custom input[name=lat]').val()||null,
 			lng			: $('#modal-line-custom input[name=lng]').val()||null,
 			photo		: $('#modal-line-custom input[name=photo]').val()||null,
-			image_id	: $('#modal-line-custom input[name=image_id]').val()||null
+			image_id	: $('#modal-line-custom input[name=image_id]').val()||null,
+			company		: $('#modal-line-custom input[name=company]').val()||null,
+			address		: $('#modal-line-custom input[name=address]').val()||null,
+			phone		: $('#modal-line-custom input[name=phone]').val()||null,
+			fax			: $('#modal-line-custom input[name=fax]').val()||null,
+			website		: $('#modal-line-custom input[name=website]').val()||null
 		};
 		
 		<!-- START: verify input -->
@@ -638,7 +753,12 @@
 			lat			: line_raw.lat,
 			lng			: line_raw.lng,
 			photo		: line_raw.photo,
-			image_id	: line_raw.image_id
+			image_id	: line_raw.image_id,
+			company		: line_raw.company,
+			address		: line_raw.address,
+			phone		: line_raw.phone,
+			fax			: line_raw.fax,
+			website		: line_raw.website
 		}
 		
 		//Google Analytics Event

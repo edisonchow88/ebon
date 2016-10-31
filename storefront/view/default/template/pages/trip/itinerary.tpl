@@ -1057,6 +1057,31 @@
 	<!-- END -->
 </script>
 <script>
+	<!-- START: common function -->
+		function convertTimeToMinute(time) {
+			var hrs = parseInt(time.substring(0, time.indexOf(':')));
+			var mins =  parseInt(time.substring(time.indexOf(':')+1));
+			return (hrs * 60 + mins);
+		}
+		
+		function convertMinuteToTime(minute) {
+			var hrs = Math.floor(minute / 60);          
+			var mins = minute % 60;
+			hrs = ("0" + hrs).slice(-2);
+			mins = ("0" + mins).slice(-2);
+			var string = hrs + ':' + mins;
+			return (string);
+		}
+		
+		function addDurationToTime(time,duration) {
+			time = convertTimeToMinute(time);
+			duration = parseInt(duration);
+			var new_time = time + duration;
+			new_time = convertMinuteToTime(new_time);
+			return new_time;
+		}
+	<!-- END -->
+	
 	function setPlanTableDataFormatForDayDay(plan) {
 		for (i=0; i<plan.day.length; i++) {
 			plan.day[i].day = 'D'+plan.day[i].sort_order;
@@ -1108,13 +1133,20 @@
 		}
 		return plan;
 	}
-	
+		
 	function setPlanTableDataFormatForLineTime(plan) {
 		for(i=0; i<plan.day.length; i++) {
 			if(isset(plan.day[i].line) && plan.day[i].line.length > 0) {
 				for(j=0; j<plan.day[i].line.length; j++) {
 					var time = plan.day[i].line[j].time;
-					plan.day[i].line[j].time = convertLineTimeFormat(time);
+					var duration = plan.day[i].line[j].duration;
+					if(isset(time) && isset(duration) && duration != 0) {
+						var end_time = addDurationToTime(time,duration);
+						plan.day[i].line[j].time = convertLineTimeFormat(time) + ' ~ ' + convertLineTimeFormat(end_time);
+					}
+					else {
+						plan.day[i].line[j].time = convertLineTimeFormat(time);
+					}
 				}
 			}
 		}
@@ -1172,6 +1204,26 @@
 			formatted_duration = '';
 		}
 		return formatted_duration;
+	}
+	
+	function convertUrlToText(url) {
+		var text = url;
+		if(isset(url)) {
+			if(url.indexOf('http') >= 0) {
+				var text = url.substring(url.indexOf('//')+2||0);
+			}
+		}
+    	return text;
+	}
+	
+	function convertTextToUrl(text) {
+		var url = text;
+		if(isset(text)) {
+			if(text.indexOf('http') < 0) {
+				var url = 'http://' + text;
+			}
+		}
+    	return url;
 	}
 </script>
 <script>
@@ -1421,6 +1473,11 @@
 			var hidden_bullet = 'hidden';
 			var hidden_time = 'hidden';
 			var hidden_duration = 'hidden';
+			var hidden_company = 'hidden';
+			var hidden_address = 'hidden';
+			var hidden_phone = 'hidden';
+			var hidden_fax = 'hidden';
+			var hidden_website = 'hidden';
 			var note = '';
 			var image = '';
 			if(isset(line['place_id'])) {
@@ -1446,11 +1503,37 @@
 				hidden_detail = '';
 				hidden_bullet = '';
 				hidden_time = '';
+				
 			}
 			if(isset(line['duration']) && line_raw['duration'] != 0) {
 				hidden_detail = '';
 				hidden_bullet = '';
 				hidden_duration = '';
+			}
+			if(isset(line['company'])) {
+				hidden_detail = '';
+				hidden_bullet = '';
+				hidden_company = '';
+			}
+			if(isset(line['address'])) {
+				hidden_detail = '';
+				hidden_bullet = '';
+				hidden_address = '';
+			}
+			if(isset(line['phone'])) {
+				hidden_detail = '';
+				hidden_bullet = '';
+				hidden_phone = '';
+			}
+			if(isset(line['fax'])) {
+				hidden_detail = '';
+				hidden_bullet = '';
+				hidden_fax = '';
+			}
+			if(isset(line['website'])) {
+				hidden_detail = '';
+				hidden_bullet = '';
+				hidden_website = '';
 			}
 			if(isset(line['note'])) {
 				note = ''
@@ -1488,6 +1571,36 @@
 										+ '<span>'
 											+ '<i class="fa fa-fw fa-history"></i><i class="fa fa-fw"></i>'
 											+ '<span class="text-duration">' + line['duration'] + '</span>'
+										+ '</span>'
+									+ '</div>'
+									+ '<div class="company ' + hidden_company + '">'
+										+ '<span>'
+											+ '<i class="fa fa-fw">By</i><i class="fa fa-fw"></i>'
+											+ '<span class="text-company">' + line['company'] + '</span>'
+										+ '</span>'
+									+ '</div>'
+									+ '<div class="address ' + hidden_address + '">'
+										+ '<span>'
+											+ '<i class="fa fa-fw fa-map-marker"></i><i class="fa fa-fw"></i>'
+											+ '<span class="text-address">' + line['address'] + '</span>'
+										+ '</span>'
+									+ '</div>'
+									+ '<div class="phone ' + hidden_phone + '">'
+										+ '<span>'
+											+ '<i class="fa fa-fw fa-phone"></i><i class="fa fa-fw"></i>'
+											+ '<span class="text-phone">' + line['phone'] + '</span>'
+										+ '</span>'
+									+ '</div>'
+									+ '<div class="fax ' + hidden_fax + '">'
+										+ '<span>'
+											+ '<i class="fa fa-fw fa-fax"></i><i class="fa fa-fw"></i>'
+											+ '<span class="text-fax">' + line['fax'] + '</span>'
+										+ '</span>'
+									+ '</div>'
+									+ '<div class="website ' + hidden_website + '">'
+										+ '<span>'
+											+ '<i class="fa fa-fw fa-globe"></i><i class="fa fa-fw"></i>'
+											+ '<span data-toggle="modal" data-target="#modal-line-custom"><a class="text-website" href="' + convertTextToUrl(line['website']) + '" target="blank">' + convertUrlToText(line['website']) + '</a></span>'
 										+ '</span>'
 									+ '</div>'
 								+ '</div>'
@@ -1699,6 +1812,12 @@
 			var column = <?php echo $column_json; ?>;
 		<!-- END -->
 		
+		<!-- START: set format -->
+			if(isset(line_raw.time) && isset(line_raw.duration) && line_raw.duration != 0) {
+				line.time = convertLineTimeFormat(line_raw.time) + ' ~ ' + convertLineTimeFormat(addDurationToTime(line_raw.time,line_raw.duration));
+			}
+		<!-- END -->
+		
 		<!-- START: print -->
 			printLine(column,line,line_raw);
 		<!-- END -->
@@ -1738,20 +1857,52 @@
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=time]').val(line_raw.time);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=image_id]').val(line_raw.image_id);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=photo]').val(line_raw.photo);
+			$('#plan-line-'+line.line_id+'-form-hidden input[name=company]').val(line_raw.company);
+			$('#plan-line-'+line.line_id+'-form-hidden input[name=address]').val(line_raw.address);
+			$('#plan-line-'+line.line_id+'-form-hidden input[name=phone]').val(line_raw.phone);
+			$('#plan-line-'+line.line_id+'-form-hidden input[name=fax]').val(line_raw.fax);
+			$('#plan-line-'+line.line_id+'-form-hidden input[name=website]').val(line_raw.website);
+			$('#plan-line-'+line.line_id+'-form-hidden input[name=activity]').val(line_raw.activity);
 		<!-- END -->
 		<!-- START: update html -->
+			<!-- START: set format -->
+				if(isset(line_raw.time) && isset(line_raw.duration) && line_raw.duration != 0) {
+					line.time = convertLineTimeFormat(line_raw.time) + ' ~ ' + convertLineTimeFormat(addDurationToTime(line_raw.time,line_raw.duration));
+				}
+			<!-- END -->
+			
 			$('#plan-line-'+line.line_id+' .text-title').html(line.title||'Untitled Activity');
 			$('#plan-line-'+line.line_id+' .text-description').html(line.description);
 			$('#plan-line-'+line.line_id+' .text-duration').html(line.duration);
 			$('#plan-line-'+line.line_id+' .text-time').html(line.time);
-			$('#plan-line-'+line.line_id+' .image img').attr('src',line_raw.photo);
+			$('#plan-line-'+line.line_id+' .text-company').html(line.company);
+			$('#plan-line-'+line.line_id+' .text-address').html(line.address);
+			$('#plan-line-'+line.line_id+' .text-phone').html(line.phone);
+			$('#plan-line-'+line.line_id+' .text-fax').html(line.fax);
+			$('#plan-line-'+line.line_id+' .text-website').html(convertUrlToText(line.website));
+			$('#plan-line-'+line.line_id+' .text-website').attr('href',convertTextToUrl(line.website));
+			
+			if($('#plan-line-'+line.line_id+' .image img').attr('src') != line_raw.photo || isset(line_raw.photo)) {
+				if(isset(line_raw.photo)) {
+					$('#plan-line-'+line.line_id+' .image img').attr('src',line_raw.photo);
+				}
+				else {
+					var photo = 'resources/image/error/noimage.png';
+					$('#plan-line-'+line.line_id+' .image img').attr('src',photo);
+				}
+			}
 			
 			<!-- START: set visibility -->
 				var detail = 0;
 				var description = 0;
 				var bullet = 0;
 				var duration = 0;
-				var time = 0
+				var time = 0;
+				var company = 0;
+				var address = 0;
+				var phone = 0;
+				var fax = 0;
+				var website = 0;
 				
 				if(isset(line.description)) {
 					detail += 1;
@@ -1766,6 +1917,31 @@
 					detail += 1;
 					bullet += 1;
 					time += 1;
+				}
+				if(isset(line.company)) {
+					detail += 1;
+					bullet += 1;
+					company += 1;
+				}
+				if(isset(line.address)) {
+					detail += 1;
+					bullet += 1;
+					address += 1;
+				}
+				if(isset(line.phone)) {
+					detail += 1;
+					bullet += 1;
+					phone += 1;
+				}
+				if(isset(line.fax)) {
+					detail += 1;
+					bullet += 1;
+					fax += 1;
+				}
+				if(isset(line.website)) {
+					detail += 1;
+					bullet += 1;
+					website += 1;
 				}
 				
 				if(detail > 0) {
@@ -1797,6 +1973,36 @@
 				}
 				else {
 					$('#plan-line-'+line.line_id+' .time').addClass('hidden');
+				}
+				if(company > 0) {
+					$('#plan-line-'+line.line_id+' .company').removeClass('hidden');
+				}
+				else {
+					$('#plan-line-'+line.line_id+' .company').addClass('hidden');
+				}
+				if(address > 0) {
+					$('#plan-line-'+line.line_id+' .address').removeClass('hidden');
+				}
+				else {
+					$('#plan-line-'+line.line_id+' .address').addClass('hidden');
+				}
+				if(phone > 0) {
+					$('#plan-line-'+line.line_id+' .phone').removeClass('hidden');
+				}
+				else {
+					$('#plan-line-'+line.line_id+' .phone').addClass('hidden');
+				}
+				if(fax > 0) {
+					$('#plan-line-'+line.line_id+' .fax').removeClass('hidden');
+				}
+				else {
+					$('#plan-line-'+line.line_id+' .fax').addClass('hidden');
+				}
+				if(website > 0) {
+					$('#plan-line-'+line.line_id+' .website').removeClass('hidden');
+				}
+				else {
+					$('#plan-line-'+line.line_id+' .website').addClass('hidden');
 				}
 			<!-- END -->
 		<!-- END -->
@@ -1833,7 +2039,7 @@
 				var sort_order = $('.swiper-slide-active .plan-line').length + 1;
 				var time = null;
 				var duration  = null;
-				var activity = 'Visit';
+				var activity = 'visit';
 				var place = $('#wrapper-explore-current-form input[name=name]').val();
 				var place_id = $('#wrapper-explore-current-form input[name=place_id]').val();
 				var lat = $('#wrapper-explore-current-form input[name=lat]').val()||null;

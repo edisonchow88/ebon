@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesTripItinerary extends AController {
+class ControllerPagesTripView extends AController {
 	//START: set common variable
 		public $data = array();
 	//END
@@ -410,7 +410,7 @@ class ControllerPagesTripItinerary extends AController {
 		//END
 		
 		//START: set template 
-			$this->processTemplate('pages/trip/itinerary.tpl');
+			$this->processTemplate('pages/trip/view.tpl');
 		//END
 		
 		//START: init controller data

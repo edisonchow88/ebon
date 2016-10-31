@@ -80,7 +80,7 @@ class ControllerModalGuidePoiEditTag extends AController {
 			$modal_input[$i]['name'] = $i;
 			$modal_input[$i]['required'] = false;
 			$modal_input[$i]['type'] = 'select';
-			$modal_input[$i]['option'] = $this->model_resource_tag->getTagByTypeName('Action'); 
+			$modal_input[$i]['option'] = $this->model_resource_tag->getTagByTypeName('Poi'); 
 			
 			$i = 'sort_order';
 			$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));

@@ -2044,7 +2044,6 @@ class ModelGuidePoi extends Model{
 	
 	//START: Child
 		public function getPoiByDestinationId($destination_id,$limit='',$offset='') {
-			
 			//START: Run SQL
 				$sql = "
 					SELECT *, t1.poi_id, GROUP_CONCAT(DISTINCT t5.tag_id) as tags
@@ -2069,10 +2068,12 @@ class ModelGuidePoi extends Model{
 					ON t1.poi_id = t5.poi_id 
 					LEFT JOIN ".$this->db->table($this->table)." t6
 					ON t1.poi_id = t6.poi_id 
+					LEFT JOIN ".$this->db->table($this->table_google)." t7
+					ON t1.poi_id = t7.poi_id 
 					WHERE t1.destination_id = '" . (int)$destination_id . "' 
 					AND t6.status = '1'
 					GROUP BY t1.poi_id 
-					ORDER BY t2.name asc 
+					ORDER BY t6.popularity desc, t2.name asc 
 				";
 				if($limit != '') {
 					$sql .= "LIMIT ".$limit." ";
@@ -2106,7 +2107,7 @@ class ModelGuidePoi extends Model{
 							$google_image = $this->getPoiGoogleImageByPoiId($result['poi_id']);
 							$image['path'] = $google_image[0]['url'];
 							$image['name'] = ucwords($result['name']);
-							$image['width'] = $this->image_child_width;
+							$image['width'] = '100%';
 							$image['image'] = '<img src="'.$image['path'].'" title="'.$image['name'].'" width="'.$image['width'].'" height="'.$image['width'].'"/>';
 							$output[$result['poi_id']]['image'] = $image;
 						}
@@ -2116,7 +2117,7 @@ class ModelGuidePoi extends Model{
 			
 			//START: Run SQL
 				$sql = "
-					SELECT COUNT(DISTINCT t1.poi_id) AS count
+					SELECT COUNT(DISTINCT t2.poi_id) AS count
 					FROM " . $this->db->table($this->table_destination) . " t1
 					LEFT JOIN ".$this->db->table($this->table)." t2
 					ON t1.poi_id = t2.poi_id 
@@ -2131,7 +2132,6 @@ class ModelGuidePoi extends Model{
 			//END
 			
 			return $output;
-			
 		}
 	//END
 

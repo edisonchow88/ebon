@@ -38,6 +38,21 @@
 	.result-favourite-row.selected > .result-favourite-button {
 		color:#e93578;
 	}
+	
+	/* START: empty-list */
+		.empty-list {
+			color:#777;
+			margin-top:20vh;
+			padding:15px;
+			text-align:center;
+		}
+		
+		.empty-list .title {
+			background-color:transparent;
+			color:#777;
+			font-weight:bold;
+		}
+	/* END */
 </style>
 
 <!-- START: Modal -->
@@ -62,7 +77,7 @@
                     	<div id="modal-line-favourite-list"></div>
                         <div id="modal-line-favourite-list-empty" class="empty-list">
                         	<div class="title">Your List is Empty</div>
-                            <div class="cta">Click to <a href="<?php echo $link['home']; ?>">line new places</a>.</div>
+                            <div class="cta">Click to <a data-toggle="modal" data-target="#modal-line-explore" data-dismiss="modal">explore new places</a>.</div>
                         </div>
                     </div>
                 </div>
@@ -182,6 +197,7 @@
 	}
 	
 	function runRefreshFavouriteList(favourite) {
+		updateFavouriteButton(favourite.length);
 		for(i=0;i<favourite.length;i++) {
 			<!-- START: set data -->
 				var data = {
@@ -195,7 +211,6 @@
 				}, "json");
 			<!-- END -->
 		}
-		updateFavouriteButton(favourite.length);
 	}
 	
 	function sortFavourite() {

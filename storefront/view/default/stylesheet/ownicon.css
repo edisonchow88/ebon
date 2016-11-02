@@ -44,3 +44,12 @@
 .icon-curve-route:before {
   content: "\62";
 }
+.icon-plane-down:before {
+  content: "\63";
+}
+.icon-plane-up:before {
+  content: "\64";
+}
+.icon-food-icon:before {
+  content: "\65";
+}

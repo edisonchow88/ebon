@@ -55,6 +55,11 @@
                                         <i class="fa fa-fw fa-picture-o"></i> Image
                                     </a>
                                 </li>
+								<li>
+                                	<a href="<?php echo $link['resource/photo']; ?>">
+                                        <i class="fa fa-fw fa-camera"></i> Photo
+                                    </a>
+                                </li>
                                 <li>
                                 	<a href="<?php echo $link['resource/dataset']; ?>">
                                         <i class="fa fa-fw fa-book"></i> Dataset

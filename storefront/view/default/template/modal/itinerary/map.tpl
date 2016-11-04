@@ -346,7 +346,8 @@ function initOverlayPrototype () { // must be after or inside initMap()
 		}
 			
 		var count_active_transport_box = $(".transport:not(:hidden)").length;
-		var transport_box_not_empty  =  $(".transport:not(:hidden) .path:not(:empty), .transport:not(:hidden) .orindes:not(:empty)").length;
+		var transport_box_not_empty = $(".transport:not(:hidden) .path:not(:empty)").length + $(".transport:not(:hidden) .path:empty").siblings(".orindes:not(:empty)").length;
+		
 		if (transport_box_not_empty == count_active_transport_box) {
 			runMapUpdate();	
 		}else {
@@ -947,7 +948,7 @@ var map;
           strokeOpacity: 1.5,
           scale: 2
         };
-		
+	
 		var routes = [];
 		var routesP = [];
 		$(".transport.has-route").each(function(i) {
@@ -971,6 +972,7 @@ var map;
 				var route_opacity = 1;	
 				var routePath = JSON.parse($(this).find(".path").html());					
 			}
+			
 			if (routePath){
 			
 				var route = new google.maps.Polyline({
@@ -985,6 +987,7 @@ var map;
 				route.setMap(map);
 				route.setVisible(false);
 				routes.push(route);	
+		
 			}
 			
 		/**/		// polyline route

@@ -13,6 +13,7 @@ class ModelTravelTrip extends Model{
 	private $table_plan = "trip_plan";
 	private $table_day = "trip_day";
 	private $table_line = "trip_line";
+	private $table_photo = "trip_photo";
 	
 	public function getFields($table) {
 		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
@@ -217,6 +218,7 @@ class ModelTravelTrip extends Model{
 			
 			//START: run chain reaction
 				$this->deletePlanByTripId($trip_id);
+				$this->deleteTripPhotoByTripId($trip_id);
 			//END
 			
 			//START: clear cache
@@ -1371,6 +1373,143 @@ class ModelTravelTrip extends Model{
 			//START: return
 				return true;
 			//END
+		}
+	//END
+	
+	//START: [photo]
+		public function getTripPhoto($trip_photo_id='',$trip_id='') {
+			$photo = array();
+			
+			if($trip_photo_id == '') {
+				$sql = "
+					SELECT * 
+					FROM " . $this->db->table($this->table_photo) . " 
+				";
+				if($trip_id != '') { 
+					$sql .= " 
+						WHERE trip_id = '" . (int)$this->db->escape($trip_id) . "' 
+					"; 
+				}
+				$sql .= "
+					ORDER BY sort_order ASC 
+				";
+			}
+			else {
+				$sql = "
+					SELECT * 
+					FROM " . $this->db->table($this->table_photo) . " 
+					WHERE trip_photo_id = '" . (int)$trip_photo_id . "' 
+				";
+	
+			}
+			$query = $this->db->query($sql);
+			
+			if($trip_photo_id == '') {
+				foreach($query->rows as $result){
+					$output[$result['trip_photo_id']] = $result;
+				}
+			}
+			else {
+				$output = $result = $query->row;
+			}
+			
+			return $output;
+		}
+		
+		public function getTripPhotoByTripId($trip_id) {
+			return $this->getTripPhoto('',$trip_id);
+		}
+		
+		public function addTripPhoto($data) {
+			//START: table
+			$fields = $this->getFields($this->db->table($this->table_photo));
+			
+			$update = array();
+			foreach($fields as $f){
+				if(isset($data[$f])) {
+					if($data[$f] == 'NULL') {
+						$update[$f] = $f . " = NULL";
+					}
+					else {
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+				}
+			}
+			if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			
+			$sql = "
+				INSERT INTO `" . $this->db->table($this->table_photo) . "` 
+				SET " . implode(',', $update) . "
+			";
+			$query = $this->db->query($sql);
+			//END
+			
+			$trip_photo_id = $this->db->getLastId();
+			
+			$this->cache->delete('photo');
+			
+			return $trip_photo_id;
+		}
+		
+		public function editTripPhoto($trip_photo_id, $data) {
+			//START: table
+			$fields = $this->getFields($this->db->table($this->table_photo));
+			
+			$update = array();
+			foreach($fields as $f){
+				if(isset($data[$f])) {
+					if($data[$f] == 'NULL') {
+						$update[$f] = $f . " = NULL";
+					}
+					else {
+						$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+					}
+				}
+			}
+			if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			
+			if(!empty($update)){
+				$sql = "
+					UPDATE " . $this->db->table($this->table_photo) . " 
+					SET " . implode(',', $update) . "
+					WHERE trip_photo_id = '" . (int)$trip_photo_id . "'
+				";
+				$query = $this->db->query($sql);
+			}
+			//END
+			
+			$this->cache->delete('photo');
+			return true;
+		}
+		
+		public function deleteTripPhoto($trip_photo_id) {
+			//START: table
+			$sql = "
+				DELETE FROM " . $this->db->table($this->table_photo) . " 
+				WHERE trip_photo_id = '" . (int)$trip_photo_id . "'
+			";
+			$query = $this->db->query($sql);
+			//END
+			
+			$this->cache->delete('photo');
+			return true;
+		}
+		
+		public function deleteTripPhotoByTripId($trip_id) {
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_photo) . " 
+					WHERE trip_id = '" . (int)$trip_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('photo');
+			//END
+			
+			return true;
 		}
 	//END
 }

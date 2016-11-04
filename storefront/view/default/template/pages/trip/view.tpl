@@ -46,7 +46,6 @@
 		.header.header-black {
 			background-color:#000;
 			color:#FFF;
-			border-bottom:solid thin #333;
 		}
 		
 		.header.header-black .btn {
@@ -60,6 +59,7 @@
 			margin:auto;
 			text-align:left;
 			background-color:white;
+			color:#000;
 		}
 		
 		.body {
@@ -427,6 +427,10 @@
 			text-overflow: ellipsis;
 		}
 		
+		#trip-description {
+			padding:20px;
+		}
+		
 		.bar-day {
 			height:40px;
 			color:#000;
@@ -626,6 +630,45 @@
 		}
 	/* END */
 </style>
+<style>
+	.swiper-container {
+		background-color:#000;
+		margin-top:-2px;
+		border-bottom:solid thin #DDD;
+	}
+	
+	.swiper-slide:first-child {
+		border-left:none; !important
+	}
+	
+	.swiper-slide {
+		border:none; !important
+	}
+	
+	.swiper-pagination-bullet {
+	}
+	
+	.trip-photo-wrapper {
+		position:relative;
+		vertical-align:middle;
+		overflow:hidden;
+	}
+	
+	.trip-photo-background {
+		width:100%;
+		height:300px;
+	}
+	
+	.trip-photo {
+		position:absolute;
+		top:0;
+		bottom:0;
+		left:0;
+		margin:auto;
+		width:100%;
+		height:300px;
+	}
+</style>
 
 <!-- START: [splash] -->
 	<?php echo $modal_itinerary_splash; ?>
@@ -645,6 +688,13 @@
     </div>
 </div>
 <div class="body fixed-width noselect">
+	<div class="swiper-container">
+        <div class="swiper-wrapper">
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+	<div id="trip-description" class="hidden">
+    </div>
 	<div class="itinerary">
     </div>
 </div>
@@ -882,6 +932,10 @@
 			<!-- START: send POST -->
 				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(trip) {
 					$("#trip-title").val(trip.name);
+					if(isset(trip.description)) {
+						$("#trip-description").removeClass('hidden');
+						$("#trip-description").html(trip.description);
+					}
 				}, "json");
 			<!-- END -->
 		<?php } ?>
@@ -1042,4 +1096,53 @@
 	
 	refreshTrip();
 	refreshPlanTable();
+</script>
+<script type="text/javascript" src="<?php echo $this->templateResource('/javascript/swiper.jquery.min.js'); ?>"></script>
+<script>
+	function initSwiper() {
+		var mySwiper = new Swiper ('.swiper-container', {
+			autoplay:5000,
+			direction:'horizontal',
+			loop:true,
+			threshold:30,
+			pagination:'.swiper-pagination',
+			paginationClickable:true
+		})
+	}
+</script>
+<script>
+	function refreshTripPhoto() {
+		<!-- START: set POST data -->
+			var data = {
+				"action":"refresh_trip_photo",
+				"trip_id":"<?php echo $trip_id; ?>"
+			};
+		<!-- END -->
+		<!-- START: send POST -->
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				$('#album .trip-photo-col').remove();
+				if(isset(json)) {
+					$.each(json.photo, function() {
+						printTripPhoto(this);
+					});
+					initSwiper();
+				}
+			}, "json");
+		<!-- END -->
+	}
+	
+	function printTripPhoto(photo) {
+		var content = '';
+		content = ''
+			+ '<div class="swiper-slide">'
+				+ '<div class="trip-photo-wrapper">'
+					+ '<img class="trip-photo-background" src="resources/image/black_rectangle.png"/>'
+					+ '<img class="trip-photo" src="'+photo.path+'"/>'
+				+ '</div>'
+			+ '</div>'
+		;
+		$('.swiper-wrapper').append(content);
+	}
+	
+	refreshTripPhoto();
 </script>

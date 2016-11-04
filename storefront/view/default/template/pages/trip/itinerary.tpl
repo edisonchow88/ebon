@@ -673,6 +673,7 @@
     <?php echo $modal_account_login; ?>
     <?php echo $modal_trip_save; ?>
     <?php echo $modal_trip_share; ?>
+    <?php echo $modal_trip_info; ?>
     <?php echo $modal_line_filter; ?>
     <?php echo $modal_line_add; ?>
     <?php echo $modal_line_favourite; ?>
@@ -996,6 +997,8 @@
 			<!-- START: send POST -->
 				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(trip) {
 					$("#wrapper-title-input").val(trip.name);
+					$('#modal-trip-info-form input[name=name]').val(trip.name);
+					$('#modal-trip-info-form textarea[name=description]').val(trip.description);
 				}, "json");
 			<!-- END -->
 		<?php } else { ?>
@@ -1045,6 +1048,26 @@
 	});
 	
 	refreshTrip();
+</script>
+<script>
+	function saveTripInfo() {
+		<!-- START: set POST data -->
+			var data = {
+				"action":"save_trip_info",
+				"trip_id":"<?php echo $trip_id; ?>",
+				"name":$('#modal-trip-info-form input[name=name]').val(),
+				"description":$('#modal-trip-info-form textarea[name=description]').val()
+			};
+		<!-- END -->
+		
+		<!-- START: send POST -->
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				showHint('Trip Info Updated');
+			}, "json");
+		<!-- END -->
+	}
+	
+	$('#modal-trip-info input[name=trip_id]').val('<?php echo $trip_id; ?>');
 </script>
 <script>
 	<!-- START: [date] -->
@@ -1373,6 +1396,7 @@
 				$('#modal-trip-day-header-general').addClass('hidden');
 				$('#modal-trip-day .modal-header-shadow').first().addClass('hidden');
 				$('#modal-trip-day .btn-header').hide();
+				$('#modal-itinerary-menu .button-edit-trip-info').hide();
 			<?php } else { ?>
 				initSortableLine();
 			<?php } ?>

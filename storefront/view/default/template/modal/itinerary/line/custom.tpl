@@ -188,6 +188,8 @@
                                     	<option value="visit">Visit</option>
                                     	<option value="eat">Eat</option>
                                     	<option value="stay">Stay</option>
+                                        <option value="fly_in">Fly In</option>
+                                        <option value="fly_out">Fly Out</option>
                                     </select>
                                 </div>
                                 <div class="row">

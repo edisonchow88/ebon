@@ -200,6 +200,18 @@
 			color:#000;
 			font-weight:bold;
 		}
+	
+		.modal-modal {
+			position:fixed;
+			top:40px;
+			left:0;
+			right:0;
+			height:calc(100vh - 40px);
+			margin:auto;
+			background-color:#000;
+			opacity:.5;
+			z-index:20;
+		}
 	/* END */
 	/* START: [modal form] */
 		.modal-body-footnote {
@@ -345,6 +357,32 @@
 	/* END */
 </style>
 <style>
+	/* START: [menu] */
+		.menu li {
+			height:50px;
+			padding:15px;
+			border-bottom:solid thin #DDD;
+			cursor:pointer;
+		}
+		
+		.menu li .fa {
+			color:#666;
+		}
+		
+		.menu li:hover {
+			background-color:#EEE;
+		}
+		
+		.menu li.text-danger {
+			color:#F00;
+		}
+		
+		.menu li.text-danger .fa {
+			color:#C00;
+		}
+	/* END */
+</style>
+<style>
 	/* START: [popover hint] */	
 		#section-popover-hint {
 			position:fixed;
@@ -429,6 +467,7 @@
 		
 		#trip-description {
 			padding:20px;
+			border-bottom:solid thin #DDD;
 		}
 		
 		.bar-day {
@@ -647,6 +686,23 @@
 	
 	.swiper-pagination-bullet {
 	}
+</style>
+<style>
+	.trip-itinerary-bar {
+		padding:15px;
+	}
+	
+	.trip-itinerary-bar .title {
+		font-size:18px;
+		line-height:50px;
+	}
+	
+	.trip-itinerary-bar .btn {
+		margin:10px 0;
+		padding:0 12px;
+		line-height:30px;
+		border-radius:15px;
+	}
 	
 	.trip-photo-wrapper {
 		position:relative;
@@ -668,6 +724,31 @@
 		width:100%;
 		height:300px;
 	}
+	
+	.plan-line-description .fa {
+		color:#999;
+	}
+	
+	.plan-line-description a {
+		color:#000;
+		text-decoration:underline;
+	}
+	
+	.plan-line-description {
+	}
+	
+	.text-line-description {
+		margin:15px 0;
+	}
+</style>
+<style>
+	/* START: disable exisiting style and function */
+		.button-edit-trip-info,
+		.button-preview-trip
+		{
+			display:none;
+		}
+	/* END */
 </style>
 
 <!-- START: [splash] -->
@@ -684,7 +765,7 @@
         <input id="trip-title" disabled/>
     </div>
     <div class="col-xs-2 text-right">
-    	<a class="btn"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
+    	<a class="btn" data-toggle="modal" data-target="#modal-itinerary-menu"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
     </div>
 </div>
 <div class="body fixed-width noselect">
@@ -695,9 +776,22 @@
     </div>
 	<div id="trip-description" class="hidden">
     </div>
+    <div class="trip-itinerary-bar row">
+    	<div class="col-xs-8">
+        	<span class="title">Itinerary</span>
+        </div>
+    	<div class="col-xs-4 text-right">
+    		<a class="btn btn-default btn-block button-show-detail" onclick="toggleLineDetail();">Show Details</a>
+        </div>
+    </div>
 	<div class="itinerary">
     </div>
 </div>
+
+<!-- START: [modal] -->
+	<?php echo $modal_itinerary_menu; ?>
+    <?php echo $modal_trip_share; ?>
+<!-- END -->
 
 <script>
 	function isset(x) {
@@ -1072,9 +1166,34 @@
 		<!-- END -->
 		<!-- START: [set variable] -->
 			var bullet = '<i class="fa fa-fw bullet">&bull;</i>';
-			if(line_raw['activity'] == 'stay') {
+			if(line_raw['activity'] == 'fly_out') {
+				bullet = '<i class="fa fa-fw bullet icon-plane-up"></i>';
+			}
+			else if(line_raw['activity'] == 'fly_in') {
+				bullet = '<i class="fa fa-fw bullet icon-plane-down"></i>';
+			}
+			else if(line_raw['activity'] == 'stay') {
 				bullet = '<i class="fa fa-fw bullet fa-bed"></i>';
 			}
+		<!-- END -->
+		<!-- START: [] -->
+			var hidden_time = 'hidden';
+			var hidden_duration = 'hidden';
+			var hidden_company = 'hidden';
+			var hidden_address = 'hidden';
+			var hidden_phone = 'hidden';
+			var hidden_fax = 'hidden';
+			var hidden_website = 'hidden';
+			var hidden_description = 'hidden';
+						
+			if(isset(line_raw.time)) { hidden_time = ''; }
+			if(isset(line_raw.duration) && line_raw.duration != 0) { hidden_duration = ''; }
+			if(isset(line_raw.company)) { hidden_company = ''; }
+			if(isset(line_raw.address)) { hidden_address = ''; }
+			if(isset(line_raw.phone)) { hidden_phone = ''; }
+			if(isset(line_raw.fax)) { hidden_fax = ''; }
+			if(isset(line_raw.website)) { hidden_website = ''; }
+			if(isset(line_raw.description)) { hidden_description = ''; }
 		<!-- END -->
 		<!-- START: [content] -->
 			content = ''
@@ -1084,6 +1203,62 @@
 							+ bullet
 							+ '<i class="fa fa-fw"></i>'
 							+'<span class="text-title">'+line.title+'</span>'
+						+ '</div>'
+						+ '<div class="plan-line-detail hidden">'
+							+ '<div class="plan-line-description '+hidden_time+'">'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw fa-clock-o"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.time
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_duration+'">'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw fa-history"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.duration
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_company+'">'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw">By</i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.company
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_address+'">'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw fa-map-marker"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.address
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_phone+'">'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw fa-phone"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.phone
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_fax+'">'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw fa-fax"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.fax
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_website+'">'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw fa-globe"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<a href="' + convertTextToUrl(line.website) + '" target="blank">' + convertUrlToText(line.website) + '</a>'
+							+ '</div>'
+							+ '<div class="plan-line-description text-line-description '+hidden_description+'">'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.description
+							+ '</div>'
 						+ '</div>'
 					+ '</div>'
 				+ '</div>'
@@ -1145,4 +1320,16 @@
 	}
 	
 	refreshTripPhoto();
+</script>
+<script>
+	function toggleLineDetail() {
+		if($('.button-show-detail').html() == 'Show Details') {
+			$('.plan-line-detail').removeClass('hidden');
+			$('.button-show-detail').html('Hide Details');
+		}
+		else if($('.button-show-detail').html() == 'Hide Details') {
+			$('.plan-line-detail').addClass('hidden');
+			$('.button-show-detail').html('Show Details');
+		}
+	}
 </script>

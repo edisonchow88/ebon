@@ -13,6 +13,11 @@ class ControllerModalItineraryTripShare extends AController {
         	$this->extensions->hk_InitData($this,__FUNCTION__);
 		//END
 		
+		//START: set link
+			$code = $this->trip->hasCode();
+			$link['preview'] = $this->html->getSEOURL('trip/view','&trip='.$code);
+		//END
+		
 		//START: set ajax
 		//END
 		

@@ -1397,7 +1397,6 @@
 				$('#modal-trip-day .modal-header-shadow').first().addClass('hidden');
 				$('#modal-trip-day .btn-header').hide();
 				$('#modal-itinerary-menu .button-edit-trip-info').hide();
-				$('#modal-itinerary-menu .button-preview-trip').hide();
 			<?php } else { ?>
 				initSortableLine();
 			<?php } ?>

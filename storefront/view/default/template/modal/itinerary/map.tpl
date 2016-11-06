@@ -520,7 +520,7 @@ var map;
 			var lat, lng, position, marker, title, imarker;
 			lat = parseFloat($(this).find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
 			lng = parseFloat($(this).find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);				
-			title =	$(this).find('.plan-line-form-hidden input[name=place]').val();
+			title =	$(this).find('.plan-line-form-hidden input[name=title]').val();
 			var day_id = $(this).closest(".plan-day").attr("id");
 			var line_id = $(this).attr("id");
 			

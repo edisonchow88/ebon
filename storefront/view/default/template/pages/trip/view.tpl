@@ -455,7 +455,7 @@
 		}
 		*/
 		
-		#trip-title {
+		#wrapper-title-input {
 			background-color:transparent;
 			border:none;
 			width:100%;
@@ -463,6 +463,8 @@
 			text-align:center;
 			font-weight:bold;
 			text-overflow: ellipsis;
+			opacity:1;
+			-webkit-text-fill-color:#FFF;
 		}
 		
 		#trip-description {
@@ -725,20 +727,32 @@
 		height:300px;
 	}
 	
+	.plan-line .fa-link {
+		color:#e93578;
+	}
+	
+	.plan-line-detail {
+		margin-bottom:15px;
+		font-size:13px;
+		color:#666;
+	}
+	
 	.plan-line-description .fa {
 		color:#999;
 	}
 	
 	.plan-line-description a {
-		color:#000;
+		color:#666;
 		text-decoration:underline;
 	}
 	
 	.plan-line-description {
+		margin-left:36px;
+		margin-right:36px;
 	}
 	
 	.text-line-description {
-		margin:15px 0;
+		margin-bottom:15px;
 	}
 </style>
 <style>
@@ -762,7 +776,7 @@
         <a class="btn" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times"></i></a>
     </div>
     <div class="col-xs-8 text-left">
-        <input id="trip-title" disabled/>
+        <input id="wrapper-title-input" disabled/>
     </div>
     <div class="col-xs-2 text-right">
     	<a class="btn" data-toggle="modal" data-target="#modal-itinerary-menu"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
@@ -781,7 +795,8 @@
         	<span class="title">Itinerary</span>
         </div>
     	<div class="col-xs-4 text-right">
-    		<a class="btn btn-default btn-block button-show-detail" onclick="toggleLineDetail();">Show Details</a>
+    		<!-- <a class="btn btn-default btn-block button-show-detail" onclick="toggleAllLineDetail();">Show Details</a> -->
+    		<a class="btn btn-default btn-block" data-toggle="modal" data-target="#modal-itinerary-map">Show Map</a>
         </div>
     </div>
 	<div class="itinerary">
@@ -790,6 +805,7 @@
 
 <!-- START: [modal] -->
 	<?php echo $modal_itinerary_menu; ?>
+    <?php echo $modal_itinerary_map; ?>
     <?php echo $modal_trip_share; ?>
 <!-- END -->
 
@@ -1025,7 +1041,7 @@
 			
 			<!-- START: send POST -->
 				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(trip) {
-					$("#trip-title").val(trip.name);
+					$("#wrapper-title-input").val(trip.name);
 					if(isset(trip.description)) {
 						$("#trip-description").removeClass('hidden');
 						$("#trip-description").html(trip.description);
@@ -1169,14 +1185,23 @@
 			if(line_raw['activity'] == 'fly_out') {
 				bullet = '<i class="fa fa-fw bullet icon-plane-up"></i>';
 			}
+			else if(line_raw['activity'] == 'fly') {
+				bullet = '<i class="fa fa-fw bullet fa-plane"></i>';
+			}
 			else if(line_raw['activity'] == 'fly_in') {
 				bullet = '<i class="fa fa-fw bullet icon-plane-down"></i>';
+			}
+			else if(line_raw['activity'] == 'eat') {
+				bullet = '<i class="fa fa-fw bullet icon-food-icon"></i>';
 			}
 			else if(line_raw['activity'] == 'stay') {
 				bullet = '<i class="fa fa-fw bullet fa-bed"></i>';
 			}
 		<!-- END -->
 		<!-- START: [] -->
+			var hidden_button_show_detail = 'hidden';
+			var action = '';
+			var hidden_button_link = 'hidden';
 			var hidden_time = 'hidden';
 			var hidden_duration = 'hidden';
 			var hidden_company = 'hidden';
@@ -1194,73 +1219,73 @@
 			if(isset(line_raw.fax)) { hidden_fax = ''; }
 			if(isset(line_raw.website)) { hidden_website = ''; }
 			if(isset(line_raw.description)) { hidden_description = ''; }
+			
+			if(isset(line_raw.time) || isset(line_raw.duration) && line_raw.duration != 0 || isset(line_raw.company) || isset(line_raw.address) || isset(line_raw.phone) || isset(line_raw.fax) || isset(line_raw.website) || isset(line_raw.description)) {
+				hidden_button_show_detail = '';
+				action = 'onclick="toggleLineDetail('+line.line_id+');"';
+			}
 		<!-- END -->
 		<!-- START: [content] -->
 			content = ''
 				+ '<div id="plan-line-' + line.line_id + '" class="plan-line">'
 					+ '<div class="row">'
-						+ '<div>'
+						+ '<div class="col-xs-11" '+action+'>'
 							+ bullet
 							+ '<i class="fa fa-fw"></i>'
-							+'<span class="text-title">'+line.title+'</span>'
+							+ '<span class="text-title">'+line.title+'</span>'
+							+ '<span class="button-show-detail-'+line.line_id+' '+hidden_button_show_detail+'" >'
+								+ ' <i class="fa fa-fw fa-caret-down"></i>'
+							+ '</span>'
 						+ '</div>'
-						+ '<div class="plan-line-detail hidden">'
+						+ '<div class="col-xs-1 text-right button-link-'+line.line_id+' '+hidden_button_link+'" onclick="explore('+line.line_id+');">'
+							+ ' <i class="fa fa-fw fa-link"></i>'
+						+ '</div>'
+					+ '</div>'
+					+ '<div class="row">'
+						+ '<div class="plan-line-detail plan-line-detail-'+line.line_id+' hidden">'
+							+ '<div class="plan-line-description text-line-description '+hidden_description+'">'
+								+ line.description
+							+ '</div>'
 							+ '<div class="plan-line-description '+hidden_time+'">'
-								+ '<i class="fa fa-fw"></i>'
-								+ '<i class="fa fa-fw"></i>'
 								+ '<i class="fa fa-fw fa-clock-o"></i>'
 								+ '<i class="fa fa-fw"></i>'
 								+ line.time
 							+ '</div>'
 							+ '<div class="plan-line-description '+hidden_duration+'">'
-								+ '<i class="fa fa-fw"></i>'
-								+ '<i class="fa fa-fw"></i>'
 								+ '<i class="fa fa-fw fa-history"></i>'
 								+ '<i class="fa fa-fw"></i>'
 								+ line.duration
 							+ '</div>'
 							+ '<div class="plan-line-description '+hidden_company+'">'
-								+ '<i class="fa fa-fw"></i>'
-								+ '<i class="fa fa-fw"></i>'
 								+ '<i class="fa fa-fw">By</i>'
 								+ '<i class="fa fa-fw"></i>'
 								+ line.company
 							+ '</div>'
 							+ '<div class="plan-line-description '+hidden_address+'">'
-								+ '<i class="fa fa-fw"></i>'
-								+ '<i class="fa fa-fw"></i>'
 								+ '<i class="fa fa-fw fa-map-marker"></i>'
 								+ '<i class="fa fa-fw"></i>'
 								+ line.address
 							+ '</div>'
 							+ '<div class="plan-line-description '+hidden_phone+'">'
-								+ '<i class="fa fa-fw"></i>'
-								+ '<i class="fa fa-fw"></i>'
 								+ '<i class="fa fa-fw fa-phone"></i>'
 								+ '<i class="fa fa-fw"></i>'
 								+ line.phone
 							+ '</div>'
 							+ '<div class="plan-line-description '+hidden_fax+'">'
-								+ '<i class="fa fa-fw"></i>'
-								+ '<i class="fa fa-fw"></i>'
 								+ '<i class="fa fa-fw fa-fax"></i>'
 								+ '<i class="fa fa-fw"></i>'
 								+ line.fax
 							+ '</div>'
 							+ '<div class="plan-line-description '+hidden_website+'">'
-								+ '<i class="fa fa-fw"></i>'
-								+ '<i class="fa fa-fw"></i>'
 								+ '<i class="fa fa-fw fa-globe"></i>'
 								+ '<i class="fa fa-fw"></i>'
 								+ '<a href="' + convertTextToUrl(line.website) + '" target="blank">' + convertUrlToText(line.website) + '</a>'
 							+ '</div>'
-							+ '<div class="plan-line-description text-line-description '+hidden_description+'">'
-								+ '<i class="fa fa-fw"></i>'
-								+ '<i class="fa fa-fw"></i>'
-								+ line.description
-							+ '</div>'
 						+ '</div>'
-					+ '</div>'
+					+ '</div>' 
+					+ '<form class="plan-line-form-hidden plan-form-hidden hidden" id="plan-line-' + line.line_id + '-form-hidden">'
+						+ hidden_form
+					+ '</form>'
 				+ '</div>'
 			;
 		<!-- END -->
@@ -1322,7 +1347,7 @@
 	refreshTripPhoto();
 </script>
 <script>
-	function toggleLineDetail() {
+	function toggleAllLineDetail() {
 		if($('.button-show-detail').html() == 'Show Details') {
 			$('.plan-line-detail').removeClass('hidden');
 			$('.button-show-detail').html('Hide Details');
@@ -1332,4 +1357,16 @@
 			$('.button-show-detail').html('Show Details');
 		}
 	}
+	
+	function toggleLineDetail(line_id) {
+		if($('.plan-line-detail-'+line_id).hasClass('hidden')) {
+			$('.plan-line-detail-'+line_id).removeClass('hidden');
+			$('.button-show-detail-'+line_id+' .fa').addClass('fa-flip-vertical');
+		}
+		else {
+			$('.plan-line-detail-'+line_id).addClass('hidden');
+			$('.button-show-detail-'+line_id+' .fa').removeClass('fa-flip-vertical');
+		}
+	}
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>

@@ -377,18 +377,8 @@ class ControllerPagesTripView extends AController {
 		//START: set modal
 			$this->addChild('modal/itinerary/splash', 'modal_itinerary_splash', 'modal/itinerary/splash.tpl');
 			$this->addChild('modal/itinerary/menu', 'modal_itinerary_menu', 'modal/itinerary/menu.tpl');
-			$this->addChild('modal/itinerary/map', 'modal_itinerary_map', 'modal/itinerary/map.tpl');
-			$this->addChild('modal/itinerary/day', 'modal_itinerary_day', 'modal/itinerary/day.tpl');
-			$this->addChild('modal/itinerary/account/signup', 'modal_account_signup', 'modal/itinerary/account/signup.tpl');
-			$this->addChild('modal/itinerary/account/login', 'modal_account_login', 'modal/itinerary/account/login.tpl');
-			$this->addChild('modal/itinerary/trip/save', 'modal_trip_save', 'modal/itinerary/trip/save.tpl');
+			$this->addChild('modal/itinerary/view/map', 'modal_itinerary_map', 'modal/itinerary/view/map.tpl');
 			$this->addChild('modal/itinerary/trip/share', 'modal_trip_share', 'modal/itinerary/trip/share.tpl');
-			$this->addChild('modal/itinerary/line/add', 'modal_line_add', 'modal/itinerary/line/add.tpl');
-			$this->addChild('modal/itinerary/line/explore', 'modal_line_explore', 'modal/itinerary/line/explore.tpl');
-			$this->addChild('modal/itinerary/line/favourite', 'modal_line_favourite', 'modal/itinerary/line/favourite.tpl');
-			$this->addChild('modal/itinerary/line/custom', 'modal_line_custom', 'modal/itinerary/line/custom.tpl');
-			$this->addChild('modal/itinerary/line/delete', 'modal_line_delete', 'modal/itinerary/line/delete.tpl');
-			$this->addChild('modal/itinerary/line/filter', 'modal_line_filter', 'modal/itinerary/line/filter.tpl');
 		//END
 		
 		//START: set ajax

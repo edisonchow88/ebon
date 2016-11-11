@@ -36,7 +36,7 @@
 <!-- END -->
 
 <script>
-	$('#modal-trip-share .modal-body textarea').val(window.location.href);
+	$('#modal-trip-share .modal-body textarea').val("<?php echo $link['preview']; ?>");
 	
 	function ifMobileAndTablet() {
 		var check = false;
@@ -75,7 +75,7 @@
 	
 	$("#modal-trip-share").on("show.bs.modal", function () {
 		var title = $('#wrapper-title-input').val();
-		var url = window.location.href;
+		var url = "<?php echo $link['preview']; ?>";
 		var text = encodeURIComponent('*' + title + '*') + '%0A' + encodeURIComponent(url);
 		$('#modal-trip-share-button-whatsapp').attr('href','whatsapp://send?text='+text);
 		//Google Analytics Event

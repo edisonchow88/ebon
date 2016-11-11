@@ -46,7 +46,6 @@
 		.header.header-black {
 			background-color:#000;
 			color:#FFF;
-			border-bottom:solid thin #333;
 		}
 		
 		.header.header-black .btn {
@@ -60,6 +59,7 @@
 			margin:auto;
 			text-align:left;
 			background-color:white;
+			color:#000;
 		}
 		
 		.body {
@@ -199,6 +199,18 @@
 		.modal-title {
 			color:#000;
 			font-weight:bold;
+		}
+	
+		.modal-modal {
+			position:fixed;
+			top:40px;
+			left:0;
+			right:0;
+			height:calc(100vh - 40px);
+			margin:auto;
+			background-color:#000;
+			opacity:.5;
+			z-index:20;
 		}
 	/* END */
 	/* START: [modal form] */
@@ -345,6 +357,32 @@
 	/* END */
 </style>
 <style>
+	/* START: [menu] */
+		.menu li {
+			height:50px;
+			padding:15px;
+			border-bottom:solid thin #DDD;
+			cursor:pointer;
+		}
+		
+		.menu li .fa {
+			color:#666;
+		}
+		
+		.menu li:hover {
+			background-color:#EEE;
+		}
+		
+		.menu li.text-danger {
+			color:#F00;
+		}
+		
+		.menu li.text-danger .fa {
+			color:#C00;
+		}
+	/* END */
+</style>
+<style>
 	/* START: [popover hint] */	
 		#section-popover-hint {
 			position:fixed;
@@ -417,7 +455,7 @@
 		}
 		*/
 		
-		#trip-title {
+		#wrapper-title-input {
 			background-color:transparent;
 			border:none;
 			width:100%;
@@ -425,6 +463,13 @@
 			text-align:center;
 			font-weight:bold;
 			text-overflow: ellipsis;
+			opacity:1;
+			-webkit-text-fill-color:#FFF;
+		}
+		
+		#trip-description {
+			padding:20px;
+			border-bottom:solid thin #DDD;
 		}
 		
 		.bar-day {
@@ -626,6 +671,99 @@
 		}
 	/* END */
 </style>
+<style>
+	.swiper-container {
+		background-color:#000;
+		margin-top:-2px;
+		border-bottom:solid thin #DDD;
+	}
+	
+	.swiper-slide:first-child {
+		border-left:none; !important
+	}
+	
+	.swiper-slide {
+		border:none; !important
+	}
+	
+	.swiper-pagination-bullet {
+	}
+</style>
+<style>
+	.trip-itinerary-bar {
+		padding:15px;
+	}
+	
+	.trip-itinerary-bar .title {
+		font-size:18px;
+		line-height:50px;
+	}
+	
+	.trip-itinerary-bar .btn {
+		margin:10px 0;
+		padding:0 12px;
+		line-height:30px;
+		border-radius:15px;
+	}
+	
+	.trip-photo-wrapper {
+		position:relative;
+		vertical-align:middle;
+		overflow:hidden;
+	}
+	
+	.trip-photo-background {
+		width:100%;
+		height:300px;
+	}
+	
+	.trip-photo {
+		position:absolute;
+		top:0;
+		bottom:0;
+		left:0;
+		margin:auto;
+		width:100%;
+		height:300px;
+	}
+	
+	.plan-line .fa-link {
+		color:#e93578;
+	}
+	
+	.plan-line-detail {
+		margin-bottom:15px;
+		font-size:13px;
+		color:#666;
+	}
+	
+	.plan-line-description .fa {
+		color:#999;
+	}
+	
+	.plan-line-description a {
+		color:#666;
+		text-decoration:underline;
+	}
+	
+	.plan-line-description {
+		margin-left:36px;
+		margin-right:36px;
+	}
+	
+	.text-line-description {
+		margin-bottom:15px;
+	}
+</style>
+<style>
+	/* START: disable exisiting style and function */
+		.button-edit-trip-info,
+		.button-preview-trip
+		{
+			display:none;
+		}
+	/* END */
+</style>
 
 <!-- START: [splash] -->
 	<?php echo $modal_itinerary_splash; ?>
@@ -638,16 +776,38 @@
         <a class="btn" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times"></i></a>
     </div>
     <div class="col-xs-8 text-left">
-        <input id="trip-title" disabled/>
+        <input id="wrapper-title-input" disabled/>
     </div>
     <div class="col-xs-2 text-right">
-    	<a class="btn"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
+    	<a class="btn" data-toggle="modal" data-target="#modal-itinerary-menu"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
     </div>
 </div>
 <div class="body fixed-width noselect">
+	<div class="swiper-container">
+        <div class="swiper-wrapper">
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+	<div id="trip-description" class="hidden">
+    </div>
+    <div class="trip-itinerary-bar row">
+    	<div class="col-xs-8">
+        	<span class="title">Itinerary</span>
+        </div>
+    	<div class="col-xs-4 text-right">
+    		<!-- <a class="btn btn-default btn-block button-show-detail" onclick="toggleAllLineDetail();">Show Details</a> -->
+    		<a class="btn btn-default btn-block" data-toggle="modal" data-target="#modal-itinerary-map">Show Map</a>
+        </div>
+    </div>
 	<div class="itinerary">
     </div>
 </div>
+
+<!-- START: [modal] -->
+	<?php echo $modal_itinerary_menu; ?>
+    <?php echo $modal_itinerary_map; ?>
+    <?php echo $modal_trip_share; ?>
+<!-- END -->
 
 <script>
 	function isset(x) {
@@ -881,7 +1041,11 @@
 			
 			<!-- START: send POST -->
 				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(trip) {
-					$("#trip-title").val(trip.name);
+					$("#wrapper-title-input").val(trip.name);
+					if(isset(trip.description)) {
+						$("#trip-description").removeClass('hidden');
+						$("#trip-description").html(trip.description);
+					}
 				}, "json");
 			<!-- END -->
 		<?php } ?>
@@ -1018,20 +1182,110 @@
 		<!-- END -->
 		<!-- START: [set variable] -->
 			var bullet = '<i class="fa fa-fw bullet">&bull;</i>';
-			if(line_raw['activity'] == 'stay') {
+			if(line_raw['activity'] == 'fly_out') {
+				bullet = '<i class="fa fa-fw bullet icon-plane-up"></i>';
+			}
+			else if(line_raw['activity'] == 'fly') {
+				bullet = '<i class="fa fa-fw bullet fa-plane"></i>';
+			}
+			else if(line_raw['activity'] == 'fly_in') {
+				bullet = '<i class="fa fa-fw bullet icon-plane-down"></i>';
+			}
+			else if(line_raw['activity'] == 'eat') {
+				bullet = '<i class="fa fa-fw bullet icon-food-icon"></i>';
+			}
+			else if(line_raw['activity'] == 'stay') {
 				bullet = '<i class="fa fa-fw bullet fa-bed"></i>';
+			}
+		<!-- END -->
+		<!-- START: [] -->
+			var hidden_button_show_detail = 'hidden';
+			var action = '';
+			var hidden_button_link = 'hidden';
+			var hidden_time = 'hidden';
+			var hidden_duration = 'hidden';
+			var hidden_company = 'hidden';
+			var hidden_address = 'hidden';
+			var hidden_phone = 'hidden';
+			var hidden_fax = 'hidden';
+			var hidden_website = 'hidden';
+			var hidden_description = 'hidden';
+						
+			if(isset(line_raw.time)) { hidden_time = ''; }
+			if(isset(line_raw.duration) && line_raw.duration != 0) { hidden_duration = ''; }
+			if(isset(line_raw.company)) { hidden_company = ''; }
+			if(isset(line_raw.address)) { hidden_address = ''; }
+			if(isset(line_raw.phone)) { hidden_phone = ''; }
+			if(isset(line_raw.fax)) { hidden_fax = ''; }
+			if(isset(line_raw.website)) { hidden_website = ''; }
+			if(isset(line_raw.description)) { hidden_description = ''; }
+			
+			if(isset(line_raw.time) || isset(line_raw.duration) && line_raw.duration != 0 || isset(line_raw.company) || isset(line_raw.address) || isset(line_raw.phone) || isset(line_raw.fax) || isset(line_raw.website) || isset(line_raw.description)) {
+				hidden_button_show_detail = '';
+				action = 'onclick="toggleLineDetail('+line.line_id+');"';
 			}
 		<!-- END -->
 		<!-- START: [content] -->
 			content = ''
 				+ '<div id="plan-line-' + line.line_id + '" class="plan-line">'
 					+ '<div class="row">'
-						+ '<div>'
+						+ '<div class="col-xs-11" '+action+'>'
 							+ bullet
 							+ '<i class="fa fa-fw"></i>'
-							+'<span class="text-title">'+line.title+'</span>'
+							+ '<span class="text-title">'+line.title+'</span>'
+							+ '<span class="button-show-detail-'+line.line_id+' '+hidden_button_show_detail+'" >'
+								+ ' <i class="fa fa-fw fa-caret-down"></i>'
+							+ '</span>'
+						+ '</div>'
+						+ '<div class="col-xs-1 text-right button-link-'+line.line_id+' '+hidden_button_link+'" onclick="explore('+line.line_id+');">'
+							+ ' <i class="fa fa-fw fa-link"></i>'
 						+ '</div>'
 					+ '</div>'
+					+ '<div class="row">'
+						+ '<div class="plan-line-detail plan-line-detail-'+line.line_id+' hidden">'
+							+ '<div class="plan-line-description text-line-description '+hidden_description+'">'
+								+ line.description
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_time+'">'
+								+ '<i class="fa fa-fw fa-clock-o"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.time
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_duration+'">'
+								+ '<i class="fa fa-fw fa-history"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.duration
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_company+'">'
+								+ '<i class="fa fa-fw">By</i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.company
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_address+'">'
+								+ '<i class="fa fa-fw fa-map-marker"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.address
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_phone+'">'
+								+ '<i class="fa fa-fw fa-phone"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.phone
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_fax+'">'
+								+ '<i class="fa fa-fw fa-fax"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ line.fax
+							+ '</div>'
+							+ '<div class="plan-line-description '+hidden_website+'">'
+								+ '<i class="fa fa-fw fa-globe"></i>'
+								+ '<i class="fa fa-fw"></i>'
+								+ '<a href="' + convertTextToUrl(line.website) + '" target="blank">' + convertUrlToText(line.website) + '</a>'
+							+ '</div>'
+						+ '</div>'
+					+ '</div>' 
+					+ '<form class="plan-line-form-hidden plan-form-hidden hidden" id="plan-line-' + line.line_id + '-form-hidden">'
+						+ hidden_form
+					+ '</form>'
 				+ '</div>'
 			;
 		<!-- END -->
@@ -1043,3 +1297,76 @@
 	refreshTrip();
 	refreshPlanTable();
 </script>
+<script type="text/javascript" src="<?php echo $this->templateResource('/javascript/swiper.jquery.min.js'); ?>"></script>
+<script>
+	function initSwiper() {
+		var mySwiper = new Swiper ('.swiper-container', {
+			autoplay:5000,
+			direction:'horizontal',
+			loop:true,
+			threshold:30,
+			pagination:'.swiper-pagination',
+			paginationClickable:true
+		})
+	}
+</script>
+<script>
+	function refreshTripPhoto() {
+		<!-- START: set POST data -->
+			var data = {
+				"action":"refresh_trip_photo",
+				"trip_id":"<?php echo $trip_id; ?>"
+			};
+		<!-- END -->
+		<!-- START: send POST -->
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				$('#album .trip-photo-col').remove();
+				if(isset(json)) {
+					$.each(json.photo, function() {
+						printTripPhoto(this);
+					});
+					initSwiper();
+				}
+			}, "json");
+		<!-- END -->
+	}
+	
+	function printTripPhoto(photo) {
+		var content = '';
+		content = ''
+			+ '<div class="swiper-slide">'
+				+ '<div class="trip-photo-wrapper">'
+					+ '<img class="trip-photo-background" src="resources/image/black_rectangle.png"/>'
+					+ '<img class="trip-photo" src="'+photo.path+'"/>'
+				+ '</div>'
+			+ '</div>'
+		;
+		$('.swiper-wrapper').append(content);
+	}
+	
+	refreshTripPhoto();
+</script>
+<script>
+	function toggleAllLineDetail() {
+		if($('.button-show-detail').html() == 'Show Details') {
+			$('.plan-line-detail').removeClass('hidden');
+			$('.button-show-detail').html('Hide Details');
+		}
+		else if($('.button-show-detail').html() == 'Hide Details') {
+			$('.plan-line-detail').addClass('hidden');
+			$('.button-show-detail').html('Show Details');
+		}
+	}
+	
+	function toggleLineDetail(line_id) {
+		if($('.plan-line-detail-'+line_id).hasClass('hidden')) {
+			$('.plan-line-detail-'+line_id).removeClass('hidden');
+			$('.button-show-detail-'+line_id+' .fa').addClass('fa-flip-vertical');
+		}
+		else {
+			$('.plan-line-detail-'+line_id).addClass('hidden');
+			$('.button-show-detail-'+line_id+' .fa').removeClass('fa-flip-vertical');
+		}
+	}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>

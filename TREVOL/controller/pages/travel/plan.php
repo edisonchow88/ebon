@@ -212,7 +212,12 @@ class ControllerPagesTravelPlan extends AController {
 				$i = 'line';
 				$related[$i]['title'] = $i;
 				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
-				$i = '';
+				$i = '1';
+				$related[$i]['divider'] = $i;
+				$i = 'photo';
+				$related[$i]['title'] = $i;
+				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
+				$i = '2';
 				$related[$i]['divider'] = $i;
 				$i = 'status';
 				$related[$i]['title'] = $i;

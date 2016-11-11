@@ -14,6 +14,8 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			}
 			
 			$this->loadModel('account/user');	
+			$this->loadModel('resource/photo');
+			$this->loadModel('localisation/country');
 			$this->loadModel('travel/trip');	
 			
 			if($this->data['action'] == 'refresh_trip') { $this->refresh_trip(); return; }
@@ -27,6 +29,13 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'delete_trip') { $this->delete_trip(); return; }
 			else if($this->data['action'] == 'clean_archive') { $this->clean_archive(); return; }
 			else if($this->data['action'] == 'edit_trip_name') { $this->edit_trip_name(); return; }
+			else if($this->data['action'] == 'save_trip_info') { $this->save_trip_info(); return; }
+			else if($this->data['action'] == 'refresh_trip_photo') { $this->refresh_trip_photo(); return; }
+			else if($this->data['action'] == 'upload_trip_photo') { $this->upload_trip_photo(); return; }
+			else if($this->data['action'] == 'get_country') { $this->get_country(); return; }
+			else if($this->data['action'] == 'refresh_country') { $this->refresh_country(); return; }
+			else if($this->data['action'] == 'add_country') { $this->add_country(); return; }
+			else if($this->data['action'] == 'delete_country') { $this->delete_country(); return; }
 			else if($this->data['action'] == 'edit_plan_date') { $this->edit_plan_date(); return; }
 			else if($this->data['action'] == 'add_day') { $this->add_day(); return; }
 			else if($this->data['action'] == 'delete_day') { $this->delete_day(); return; }
@@ -88,6 +97,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$trip_data['status_id'] = 1;
 			$trip_data['language_id'] = $this->data['language_id'];
 			$trip_data['name'] = $this->data['name'];
+			$trip_data['country_id'] = $this->data['country_id'];
 			$trip_id = $this->model_travel_trip->addTrip($trip_data);
 		//END
 		
@@ -495,6 +505,172 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			}
 			else {
 				$result['warning'][] = '<b>SYSTEM ERROR: Title cannot be updated.</b><br/>Please contact admin.'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function save_trip_info() {
+		//START: set data
+			$trip_id = $this->data['trip_id'];
+			$data['name'] = $this->data['name'];
+			$data['description'] = $this->data['description'];
+		//END
+		
+		//START: execute function
+			$execution = $this->model_travel_trip->editTrip($trip_id, $data);
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'][] = 'Trip Info Updated';
+			}
+			else {
+				$result['warning'][] = '<b>SYSTEM ERROR: Trip Info cannot be updated.</b><br/>Please contact admin.'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function refresh_trip_photo() {
+		//START: set data
+			$trip_id = $this->data['trip_id'];
+		//END
+		
+		//START: get result
+			$photo = $this->model_travel_trip->getTripPhotoByTripId($trip_id);
+			foreach($photo as $k => $p) {
+				$result['photo'][] = $this->model_resource_photo->getPhoto($p['photo_id']);
+			}
+		//END
+		
+		//START: set response
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function upload_trip_photo() {
+		//START: set data
+			$data = $this->data;
+			$data['trip_id'] = $this->data['trip_id'];
+			$data['user_id'] = $this->data['user_id'];
+			$data['size'] = $_FILES['file']['size'];
+			$data['photo_type'] = $_FILES['file']['type'];
+		//END
+		
+		//verify file type
+		$file_type = $_FILES['file']['type'];
+		if($file_type == "image/jpeg") {
+			$photo_type = ".jpg";
+		}
+		else if($file_type == "image/png") {
+			$photo_type = ".png";
+		}
+		else if($file_type == "image/gif") {
+			$photo_type = ".gif";
+		}
+		else {
+			$result['warning'][] = "Error: Fail to upload new photo due to invalid file type.";
+			$response = json_encode($result);
+			echo $response;	
+			return;
+		}
+		$data['photo_type'] = $photo_type;
+		
+		//START: add photo
+			$photo_id = $this->model_resource_photo->addPhoto($data); 
+		//END
+		//START: add photo to trip
+			$data['photo_id'] = $photo_id;
+			$trip_photo_id = $this->model_travel_trip->addTripPhoto($data);
+		//END
+		//START: name the photo
+			$ds = DIRECTORY_SEPARATOR;
+			$upload_directory = DIR_RESOURCE . "photo" . $ds . "cropped" . $ds;
+			$upload_file = $upload_directory . $photo_id . $photo_type;
+			
+			$tmp_name = $_FILES['file']['tmp_name'];
+		//END
+		
+		//START: move the photo
+			if (move_uploaded_file($tmp_name, $upload_file)) {
+				$result['success'][] = "Success: New <b>Photo #".$photo_id."</b> has been added";
+			} else {
+				$result['warning'][] = "Error: Please check the folder permission";
+			}
+		//END
+		$response = json_encode($result);
+		echo $response;	
+		return;	
+	}
+	
+	public function get_country() {
+		//START: set data
+			$country_id = $this->data['country_id'];
+			$trip_country_id = $this->data['trip_country_id'];
+		//END
+		
+		//START: execute function
+			$result = $this->model_localisation_country->getCountry($country_id);
+		//END
+		
+		//START: set response
+			$result['country_id'] = $country_id;
+			$result['trip_country_id'] = $trip_country_id;
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function refresh_country() {
+		$result = $this->model_travel_trip->getCountryByTripId($this->data['trip_id']);
+		$result = array_values($result);
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function add_country() {
+		//START: set data
+			$data['trip_id'] = $this->data['trip_id'];
+			$data['country_id'] = $this->data['country_id'];
+		//END
+		
+		//START: execute function
+			$result['trip_country_id'] = $this->model_travel_trip->addCountry($data);
+		//END
+		
+		//START: set response
+			if($result['trip_country_id'] != '') {
+				$result['success'] = 'Country Added';
+			}
+			else {
+				$result['warning'] = 'System Error'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function delete_country() {
+		//START: set data
+			$country = $this->data['country'];
+		//END
+		
+		//START: execute function
+			foreach($country as $trip_country_id) {
+				$execution = $this->model_travel_trip->deleteCountry($trip_country_id);
+			}
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'] = 'Country Removed';
+			}
+			else {
+				$result['warning'] = 'System Error'; 
 			}
 			$response = json_encode($result);
 			echo $response;

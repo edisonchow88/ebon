@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesTravelMode extends AController {
+class ControllerPagesTravelPhoto extends AController {
 
   	public function main() {
         //START: init controller data
@@ -11,7 +11,7 @@ class ControllerPagesTravelMode extends AController {
 		//END
 		
 		//START: set title
-			$title = "Mode";
+			$title = "Photo";
 			$this->document->setTitle($title);
 		//END
 		
@@ -27,21 +27,23 @@ class ControllerPagesTravelMode extends AController {
 		//END
 		
 		//START: set model
-			$this->loadModel('travel/trip');		//END
+			$this->loadModel('travel/trip');		
+		//END
 		
 		//START: set data
-			$data = $this->model_travel_trip->getMode();
+			$data = $this->model_travel_trip->getTripPhoto();
 		//END
 		
 		//START: process data and set result
 			if(count($data) > 0 ) {
 				foreach($data as $row) {
-					$mode_id = $row['mode_id'];
+					$trip_photo_id = $row['trip_photo_id'];
 			
 					//following sequence is important
-					$result[$mode_id]['mode_id'] = $row['mode_id'];
-					$result[$mode_id]['icon'] = $row['icon'];
-					$result[$mode_id]['name'] = $row['name'];
+					$result[$trip_photo_id]['trip_photo_id'] = $row['trip_photo_id'];
+					$result[$trip_photo_id]['trip_id'] = $row['trip_id'];
+					$result[$trip_photo_id]['photo_id'] = $row['photo_id'];
+					$result[$trip_photo_id]['sort_order'] = $row['sort_order'];
 				}
 			}
 		//END
@@ -61,7 +63,7 @@ class ControllerPagesTravelMode extends AController {
 			$column[$i]['searchable'] = 'true';
 			*/
 			
-			$i = 'mode_id';
+			$i = 'trip_photo_id';
 			$column[$i]['name'] = 'id';
 			$column[$i]['title'] = 'Id';
 			$column[$i]['type'] = 'numeric';
@@ -70,19 +72,7 @@ class ControllerPagesTravelMode extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
 			
-			$i = 'icon';
-			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['type'] = '';
-			$column[$i]['width'] = '';
-			$column[$i]['order'] = '';
-			$column[$i]['align'] = '';
-			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'true';
-			$column[$i]['sortable'] = 'false';
-			$column[$i]['searchable'] = 'false';
-			
-			$i = 'name';
+			$i = 'trip_id';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
@@ -92,7 +82,31 @@ class ControllerPagesTravelMode extends AController {
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';
 			$column[$i]['sortable'] = 'true';
-			$column[$i]['searchable'] = 'true';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'photo_id';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'false';
+			
+			$i = 'sort_order';
+			$column[$i]['name'] = $i;
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+			$column[$i]['type'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['order'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['visible'] = 'true';
+			$column[$i]['sortable'] = 'true';
+			$column[$i]['searchable'] = 'false';
 			
 			$i = 'commands';
 			$column[$i]['name'] = $i;
@@ -105,14 +119,14 @@ class ControllerPagesTravelMode extends AController {
 		
 		//START: set component
 			$this->loadComponent('database/table');
-			$object = 'mode';
+			$object = 'photo';
 			$table['column'] = $column;
 			$table['row'] = $result;
 			//START: [action]
-				$action['review'] = true;
-				$action['add'] = true;
-				$action['edit'] = true;
-				$action['delete'] = true;
+				$action['review'] = false;
+				$action['add'] = false;
+				$action['edit'] = false;
+				$action['delete'] = false;
 			//END
 			//START: [related]
 				$related = array();
@@ -153,16 +167,16 @@ class ControllerPagesTravelMode extends AController {
 		
 		//START: set modal
 			if($action['review'] == true) {
-				$this->addChild('modal/travel/mode/review_mode', 'modal_review_mode', 'modal/travel/mode/review_mode.tpl');
+				$this->addChild('modal/travel/photo/review_photo', 'modal_review_photo', 'modal/travel/photo/review_photo.tpl');
 			}
 			if($action['add'] == true) {
-				$this->addChild('modal/travel/mode/add_mode', 'modal_add_mode', 'modal/travel/mode/add_mode.tpl');
+				$this->addChild('modal/travel/photo/add_photo', 'modal_add_photo', 'modal/travel/photo/add_photo.tpl');
 			}
 			if($action['edit'] == true) {
-				$this->addChild('modal/travel/mode/edit_mode', 'modal_edit_mode', 'modal/travel/mode/edit_mode.tpl');
+				$this->addChild('modal/travel/photo/edit_photo', 'modal_edit_photo', 'modal/travel/photo/edit_photo.tpl');
 			}
 			if($action['delete'] == true) {
-				$this->addChild('modal/travel/mode/delete_mode', 'modal_delete_mode', 'modal/travel/mode/delete_mode.tpl');
+				$this->addChild('modal/travel/photo/delete_photo', 'modal_delete_photo', 'modal/travel/photo/delete_photo.tpl');
 			}
 		//END
 		
@@ -171,7 +185,7 @@ class ControllerPagesTravelMode extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('pages/travel/mode.tpl' );
+			$this->processTemplate('pages/travel/photo.tpl' );
 		//END
 		
         //START: update controller data
@@ -180,8 +194,6 @@ class ControllerPagesTravelMode extends AController {
 	}
 }
 ?>
-
-
 
 
 

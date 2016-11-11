@@ -89,13 +89,13 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="country" selected>Destination</label></div>
+                                <div class="col-xs-4"><label for="country_id" selected>Destination</label></div>
                                 <div class="col-xs-8">
-                                    <select name="country">
+                                    <select name="country_id">
                                         <?php
                                         	foreach($country as $key => $value) {
                                             	if($value['iso_code_2'] == 'MY') { $selected = 'selected'; } else { $selected = ''; }
-                                            	echo '<option value="'.$value['iso_code_2'].'" '.$selected.'>'.$value['name'].'</option>';
+                                            	echo '<option value="'.$value['country_id'].'" '.$selected.'>'.$value['name'].'</option>';
                                                 
                                             }
                                         ?>

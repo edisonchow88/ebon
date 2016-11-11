@@ -22,6 +22,10 @@
 			top:40px;
 		}
 		
+		.header-tertiary {
+			top:80px;
+		}
+		
 		.header .btn {
 			padding:10px 15px;
 			line-height:20px;
@@ -51,6 +55,12 @@
 		
 		.header.header-black .btn {
 			color:#FFF;
+		}
+		
+		.header.header-white {
+			background-color:#FFF !important;
+			color:#000 !important;
+			border-bottom:solid thin #DDD !important;
 		}
 		
 		.body {
@@ -342,6 +352,42 @@
 			z-index:10500;
 			background-color:transparent;
 			border-top:none;
+		}
+	/* END */
+</style>
+<style>
+	/* START: [mobile form] */	
+		.mobile-form label {
+			background-color:#FFF;
+			color:#999;
+			height:50px;
+			width:100%;
+			margin:0;
+			padding:15px;
+			border:none;
+			border-radius:0;
+			border-bottom:solid thin #DDD;
+			outline:none;
+			font-weight:normal;
+		}
+		.mobile-form input, .mobile-form select {
+			background-color:#FFF;
+			color:#000;
+			height:50px;
+			width:100%;
+			padding:15px;
+			border:none;
+			border-radius:0;
+			border-bottom:solid thin #DDD;
+			outline:none;
+			-webkit-appearance: none;
+		}
+		.mobile-form input:disabled {
+			color:#999;
+		}
+		.mobile-form select {
+			-webkit-appearance: none;
+			-webkit-border-radius: 0px;
 		}
 	/* END */
 </style>
@@ -674,6 +720,7 @@
     <?php echo $modal_trip_save; ?>
     <?php echo $modal_trip_share; ?>
     <?php echo $modal_trip_info; ?>
+    <?php echo $modal_country_add; ?>
     <?php echo $modal_line_filter; ?>
     <?php echo $modal_line_add; ?>
     <?php echo $modal_line_favourite; ?>

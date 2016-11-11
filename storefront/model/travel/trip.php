@@ -10,6 +10,7 @@ class ModelTravelTrip extends Model{
 	private $table_status_description = "trip_status_description";
 	private $table_mode = "trip_mode";
 	private $table_mode_description = "trip_mode_description";
+	private $table_country = "trip_country";
 	private $table_plan = "trip_plan";
 	private $table_day = "trip_day";
 	private $table_line = "trip_line";
@@ -158,6 +159,13 @@ class ModelTravelTrip extends Model{
 					$plan['travel_date'] = NULL;
 				//END
 				$this->addPlan($plan);
+				
+				//START: set data
+					$country['trip_id'] = $trip_id;
+					$country['country_id'] = $data['country_id'];
+				//END
+				
+				$this->addCountry($country);
 			//END
 			
 			//START: clear cache
@@ -219,6 +227,7 @@ class ModelTravelTrip extends Model{
 			//START: run chain reaction
 				$this->deletePlanByTripId($trip_id);
 				$this->deleteTripPhotoByTripId($trip_id);
+				$this->deleteCountryByTripId($trip_id);
 			//END
 			
 			//START: clear cache
@@ -1510,6 +1519,176 @@ class ModelTravelTrip extends Model{
 			//END
 			
 			return true;
+		}
+	//END
+	
+	//START: [country]
+		public function getCountry($trip_country_id='') {
+			if($trip_country_id == '') {
+				$sql = "
+					SELECT * 
+					FROM " . $this->db->table($this->table_country) . "
+					ORDER BY priority DESC, country_id ASC
+				";
+			}
+			else {
+				$sql = "
+					SELECT * 
+					FROM " . $this->db->table($this->table_country) . "
+					WHERE trip_country_id = '" . (int)$trip_country_id . "' 
+				";
+	
+			}
+			$query = $this->db->query($sql);
+			
+			if($trip_country_id == '') {
+				foreach($query->rows as $result){
+					$output[$result['trip_country_id']] = $result;
+				}
+			}
+			else {
+				$result = $query->row;
+				$output = $query->row;
+			}
+			
+			return $output;
+		}
+        
+        public function getCountryByTripId($trip_id) {
+        	//START: run sql
+                $sql = "
+                    SELECT * 
+                    FROM " . $this->db->table($this->table_country) . "
+                    WHERE trip_id = '" . (int)$trip_id . "' 
+					ORDER BY priority DESC, country_id ASC
+                ";
+				$query = $this->db->query($sql);
+            //END
+            
+            //START: set output
+            	foreach($query->rows as $result){
+					$output[$result['trip_country_id']] = $result;
+				}
+            //END
+            
+            //START: return output
+            	return $output;
+            //END
+        }
+		
+		public function addCountry($data) {
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_country));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f]))
+						$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+				}
+				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			//END
+			
+			//START: run sql
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_country) . "` 
+					SET " . implode(',', $update) . "
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: get id
+				$trip_country_id = $this->db->getLastId();
+			//END
+			
+			//START: run chain reaction
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('trip_country');
+			//END
+			
+			//START: return
+				return $trip_country_id;
+			//END
+		}
+		
+		public function editCountry($trip_country_id, $data) {
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_country));
+				
+				$update = array();
+				foreach($fields as $f) {
+					if(isset($data[$f])) {
+						$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+					}
+				}
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			//END
+			
+			//START: run sql
+				if(!empty($update)) {
+					$sql = "
+						UPDATE " . $this->db->table($this->table_country) . " 
+						SET " . implode(',', $update) . "
+						WHERE trip_country_id = '" . (int)$trip_country_id . "'
+					";
+					$query = $this->db->query($sql);
+				}
+			//END
+			
+			//START: run chain reaction
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('trip_country');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+		
+		public function deleteCountry($trip_country_id) {
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_country) . " 
+					WHERE trip_country_id = '" . (int)$trip_country_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: run chain reaction
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('trip_country');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+		
+		public function deleteCountryByTripId($trip_id) {
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_country) . " 
+					WHERE trip_id = '" . (int)$trip_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: run chain reaction
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('trip_country');
+			//END
+			
+			//START: return
+				return true;
+			//END
 		}
 	//END
 }

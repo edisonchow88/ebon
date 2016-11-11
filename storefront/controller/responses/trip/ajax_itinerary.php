@@ -15,6 +15,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			
 			$this->loadModel('account/user');	
 			$this->loadModel('resource/photo');
+			$this->loadModel('localisation/country');
 			$this->loadModel('travel/trip');	
 			
 			if($this->data['action'] == 'refresh_trip') { $this->refresh_trip(); return; }
@@ -31,6 +32,10 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'save_trip_info') { $this->save_trip_info(); return; }
 			else if($this->data['action'] == 'refresh_trip_photo') { $this->refresh_trip_photo(); return; }
 			else if($this->data['action'] == 'upload_trip_photo') { $this->upload_trip_photo(); return; }
+			else if($this->data['action'] == 'get_country') { $this->get_country(); return; }
+			else if($this->data['action'] == 'refresh_country') { $this->refresh_country(); return; }
+			else if($this->data['action'] == 'add_country') { $this->add_country(); return; }
+			else if($this->data['action'] == 'delete_country') { $this->delete_country(); return; }
 			else if($this->data['action'] == 'edit_plan_date') { $this->edit_plan_date(); return; }
 			else if($this->data['action'] == 'add_day') { $this->add_day(); return; }
 			else if($this->data['action'] == 'delete_day') { $this->delete_day(); return; }
@@ -92,6 +97,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$trip_data['status_id'] = 1;
 			$trip_data['language_id'] = $this->data['language_id'];
 			$trip_data['name'] = $this->data['name'];
+			$trip_data['country_id'] = $this->data['country_id'];
 			$trip_id = $this->model_travel_trip->addTrip($trip_data);
 		//END
 		
@@ -599,6 +605,76 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		$response = json_encode($result);
 		echo $response;	
 		return;	
+	}
+	
+	public function get_country() {
+		//START: set data
+			$country_id = $this->data['country_id'];
+			$trip_country_id = $this->data['trip_country_id'];
+		//END
+		
+		//START: execute function
+			$result = $this->model_localisation_country->getCountry($country_id);
+		//END
+		
+		//START: set response
+			$result['country_id'] = $country_id;
+			$result['trip_country_id'] = $trip_country_id;
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function refresh_country() {
+		$result = $this->model_travel_trip->getCountryByTripId($this->data['trip_id']);
+		$result = array_values($result);
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function add_country() {
+		//START: set data
+			$data['trip_id'] = $this->data['trip_id'];
+			$data['country_id'] = $this->data['country_id'];
+		//END
+		
+		//START: execute function
+			$result['trip_country_id'] = $this->model_travel_trip->addCountry($data);
+		//END
+		
+		//START: set response
+			if($result['trip_country_id'] != '') {
+				$result['success'] = 'Country Added';
+			}
+			else {
+				$result['warning'] = 'System Error'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function delete_country() {
+		//START: set data
+			$country = $this->data['country'];
+		//END
+		
+		//START: execute function
+			foreach($country as $trip_country_id) {
+				$execution = $this->model_travel_trip->deleteCountry($trip_country_id);
+			}
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'] = 'Country Removed';
+			}
+			else {
+				$result['warning'] = 'System Error'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
 	}
 	
 	public function edit_plan_date() {

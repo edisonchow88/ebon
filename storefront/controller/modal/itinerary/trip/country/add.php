@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerModalItineraryTripShare extends AController {
+class ControllerModalItineraryTripCountryAdd extends AController {
 	//START: set common variable
 		public $data = array();
 	//END
@@ -13,9 +13,19 @@ class ControllerModalItineraryTripShare extends AController {
         	$this->extensions->hk_InitData($this,__FUNCTION__);
 		//END
 		
+		//START: set modal
+			$this->loadModel('localisation/country');
+		//END
+		
 		//START: set link
-			$code = $this->trip->hasCode();
-			$link['preview'] = $this->html->getSEOURL('trip/view','&trip='.$code);
+			$country = $this->model_localisation_country->getCountries();
+			$country_available = array();
+			foreach($country as $key => $value) {
+				if($value['status'] != 0) {
+					$country_available[] = $country[$key];
+				}
+			}
+			$this->data['country'] = $country_available;
 		//END
 		
 		//START: set ajax
@@ -30,7 +40,7 @@ class ControllerModalItineraryTripShare extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('modal/itinerary/trip/share.tpl' );
+			$this->processTemplate('modal/itinerary/trip/country/add.tpl' );
 		//END
 
         //START: update controller data

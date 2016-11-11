@@ -94,6 +94,7 @@ class ControllerCommonHeader extends AController {
 			$link['guide/poi'] = $this->html->getSecureURL('guide/poi');
 			$link['resource/tag'] = $this->html->getSecureURL('resource/tag_list');
 			$link['resource/image'] = $this->html->getSecureURL('resource/image_list');
+			$link['resource/photo'] = $this->html->getSecureURL('resource/photo');
 			$link['resource/dataset'] = $this->html->getSecureURL('resource/dataset');
 			$link['account/user'] = $this->html->getSecureURL('account/user');
 			$link['account/admin'] = $this->html->getSecureURL('account/admin');

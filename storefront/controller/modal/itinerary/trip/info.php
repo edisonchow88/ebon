@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerModalItineraryTripShare extends AController {
+class ControllerModalItineraryTripInfo extends AController {
 	//START: set common variable
 		public $data = array();
 	//END
@@ -13,12 +13,8 @@ class ControllerModalItineraryTripShare extends AController {
         	$this->extensions->hk_InitData($this,__FUNCTION__);
 		//END
 		
-		//START: set link
-			$code = $this->trip->hasCode();
-			$link['preview'] = $this->html->getSEOURL('trip/view','&trip='.$code);
-		//END
-		
 		//START: set ajax
+			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
 		//END
 		
 		//START: set variable
@@ -30,7 +26,7 @@ class ControllerModalItineraryTripShare extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('modal/itinerary/trip/share.tpl' );
+			$this->processTemplate('modal/itinerary/trip/info.tpl' );
 		//END
 
         //START: update controller data

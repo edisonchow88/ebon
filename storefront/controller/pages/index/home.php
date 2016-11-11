@@ -21,7 +21,7 @@ class ControllerPagesIndexHome extends AController {
 		//END
 		
 		//START: set redirect
-			$redirect = $this->html->getSEOURL('trip/itinerary');
+			$redirect = $this->html->getSEOURL('main/home');
 		//END
 		
 		//START: set modal

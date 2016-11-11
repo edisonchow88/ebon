@@ -13,6 +13,11 @@ class ControllerModalItineraryMenu extends AController {
         	$this->extensions->hk_InitData($this,__FUNCTION__);
 		//END
 		
+		//START: set link
+			$code = $this->trip->hasCode();
+			$link['preview'] = $this->html->getSEOURL('trip/view','&trip='.$code);
+		//END
+		
 		//START: set variable
 			$this->view->batchAssign($this->data);
 			if(count($component) > 0) { $this->view->assign('component', $component); }

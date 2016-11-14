@@ -27,32 +27,32 @@
                 <div class="modal-header-shadow"></div>
                 <div class="modal-header-shadow search-bar-shadow"></div>
                 <div class="modal-content">
-                    <div class="modal-body nopadding">
-                    	<div class="modal-section-title small modal-background-grey">You may invite existing user by using the search or add a new member manually by filing up the following form.</div>
+                    <div class="modal-body nopadding modal-background-grey">
+                    	<div class="modal-section-title small modal-background-grey">You may invite existing user by using the search or add a new member manually by filing up the form.</div>
                     	<div class="modal-member-add-alert">
                         </div>
                         <form class="mobile-form" id="modal-member-add-form">
                         	<div class="row">
-                                <div class="col-xs-4"><label for="fullname" selected>Full Name</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="fullname" selected>Full Name</label></div>
+                                <div class="col-xs-7">
                                 	<input type="text" name="fullname"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="passport" selected>Passport</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="passport" selected>Passport</label></div>
+                                <div class="col-xs-7">
                                 	<input type="text" name="passport"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="dob" selected>Date of Birth</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="dob" selected>Date of Birth</label></div>
+                                <div class="col-xs-7">
                                 	<input type="date" name="dob"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="gender" selected>Gender</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="gender" selected>Gender</label></div>
+                                <div class="col-xs-7">
                                 	<select name="gender"/>
                                     	<option value="1">Male</option>
                                     	<option value="2">Female</option>
@@ -60,18 +60,19 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="mobile" selected>Mobile</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="mobile" selected>Mobile</label></div>
+                                <div class="col-xs-7">
                                 	<input type="text" name="mobile"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="email" selected>Email</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="email" selected>Email</label></div>
+                                <div class="col-xs-7">
                                 	<input type="text" name="email"/>
                                 </div>
                             </div>
                         </form>
+                    	<div class="modal-header-shadow"></div>
                     </div>
                 </div>
             </div>
@@ -128,6 +129,19 @@
 			}, "json");
 		<!-- END -->
 	}
+	
+	$('#modal-member-add-form label').click(function() {
+       name = $(this).attr('for');
+	   if($('#modal-member-add-form input[name='+name+']').length > 0) {
+		   $('#modal-member-add-form input[name='+name+']').focus();
+	   }
+	   else if($('#modal-member-add-form textarea[name='+name+']').length > 0) {
+		   $('#modal-member-add-form textarea[name='+name+']').focus();
+	   }
+	   else if($('#modal-member-add-form select[name='+name+']').length > 0) {
+		   $('#modal-member-add-form select[name='+name+']').focus();
+	   }
+	});
 	
 	$('#modal-member-add-form').on('change keydown',function() {
 		$('#modal-member-add .button-save-new-member').removeClass('disabled');

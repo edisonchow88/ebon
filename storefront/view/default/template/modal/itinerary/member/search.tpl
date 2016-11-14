@@ -91,13 +91,13 @@
                 <div class="modal-header">
                 	<div class="modal-modal fixed-width" data-toggle="modal" data-target="#modal-member-search"></div>
                 	<div id="modal-member-search-input-keyword-wrapper" class="header row">
-                    	<div class="col-xs-10">
+                    	<div class="col-xs-9">
                         	<form id="modal-member-search-keyword-form">
                                 <input name="keyword" class="form-control" placeholder="Search"/>
                                 <a class="button-clear" class="btn btn-header"><div><i class="fa fa-fw fa-times-circle"></i><span class="sr-only">x</span></div></a>
                             </form>
                         </div>
-                        <div class="col-xs-2 text-right">
+                        <div class="col-xs-3 text-right">
                         	<a class="btn btn-header" data-toggle="modal" data-target="#modal-member-search">Cancel</a>
                         </div>
                     </div>

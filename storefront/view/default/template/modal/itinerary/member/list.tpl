@@ -96,12 +96,27 @@
 			photo = '<img src="' + data.photo + '" onerror="this.onerror = \'\';this.src = \'resources/image/error/noimage.png\';" />';
 		}
 		else {
+			var letter = '';
+			if(isset(data.fullname)) {
+				letter = data.fullname.substring(0,1);
+			}
+			else {
+				letter = data.email.substring(0,1);
+			}
 			photo = ''
 				+ '<span class="fa-stack">'
 					+ '<i class="fa fa-circle fa-stack-2x"></i>'
-					+ '<i class="fa fa-stack-1x fa-inverse">'+data.fullname.substring(0,1)+'</i>'
+					+ '<i class="fa fa-stack-1x fa-inverse">'+letter+'</i>'
 				+ '</span>'
 			;
+		}
+		
+		var name = '';
+		if(isset(data.fullname)) {
+			name = data.fullname;
+		}
+		else {
+			name = data.email.substring(0,data.email.indexOf('@'));
 		}
 		
 		content += ''
@@ -111,7 +126,7 @@
 				+ '</div>'
 				+ '<div class="col-xs-8 text-left">'
 					+ '<div class="result-member-title line-clamp-1">'
-						+ data.fullname
+						+ name
 					+ '</div>'
 					+ '<div class="result-member-blurb line-clamp-1">'
 						+ data.description

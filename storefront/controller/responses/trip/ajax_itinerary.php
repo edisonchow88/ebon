@@ -32,8 +32,14 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'save_trip_info') { $this->save_trip_info(); return; }
 			else if($this->data['action'] == 'refresh_trip_photo') { $this->refresh_trip_photo(); return; }
 			else if($this->data['action'] == 'upload_trip_photo') { $this->upload_trip_photo(); return; }
-			else if($this->data['action'] == 'get_country') { $this->get_country(); return; }
+			else if($this->data['action'] == 'search_user') { $this->search_user(); return; }
+			else if($this->data['action'] == 'refresh_member') { $this->refresh_member(); return; }
+			else if($this->data['action'] == 'get_member') { $this->get_member(); return; }
+			else if($this->data['action'] == 'add_member') { $this->add_member(); return; }
+			else if($this->data['action'] == 'edit_member') { $this->edit_member(); return; }
+			else if($this->data['action'] == 'delete_member') { $this->delete_member(); return; }
 			else if($this->data['action'] == 'refresh_country') { $this->refresh_country(); return; }
+			else if($this->data['action'] == 'get_country') { $this->get_country(); return; }
 			else if($this->data['action'] == 'add_country') { $this->add_country(); return; }
 			else if($this->data['action'] == 'delete_country') { $this->delete_country(); return; }
 			else if($this->data['action'] == 'edit_plan_date') { $this->edit_plan_date(); return; }
@@ -607,6 +613,99 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		return;	
 	}
 	
+	public function search_user() {
+		$result = $this->model_account_user->getUserByKeyword($this->data['keyword']);
+		$result = array_values($result);
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function refresh_member() {
+		$result = $this->model_travel_trip->getMemberByTripId($this->data['trip_id']);
+		$result = array_values($result);
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function get_member() {
+		$result = $this->model_travel_trip->getMember($this->data['trip_member_id']);
+		$result = array_values($result);
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function add_member() {
+		//START: set data
+			$data = $this->data;
+		//END
+		
+		//START: execute function
+			$result['trip_member_id'] = $this->model_travel_trip->addMember($data);
+		//END
+		
+		//START: set response
+			if($result['trip_member_id'] != '') {
+				$result['success'] = 'Member Added';
+			}
+			else {
+				$result['warning'] = 'System Error'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+    public function edit_member() {
+		//START: set data
+			$data = $this->data;
+		//END
+		
+		//START: execute function
+			$execution = $this->model_travel_trip->editMember($data['trip_member_id'], $data);
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'] = 'Member Updated';
+			}
+			else {
+				$result['warning'] = 'System Error'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+    }
+    
+	public function delete_member() {
+		//START: set data
+			$member = $this->data['member'];
+		//END
+		
+		//START: execute function
+			foreach($member as $trip_member_id) {
+				$execution = $this->model_travel_trip->deleteMember($trip_member_id);
+			}
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'] = 'Member Removed';
+			}
+			else {
+				$result['warning'] = 'System Error'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function refresh_country() {
+		$result = $this->model_travel_trip->getCountryByTripId($this->data['trip_id']);
+		$result = array_values($result);
+		$response = json_encode($result);
+		echo $response;
+	}
+	
 	public function get_country() {
 		//START: set data
 			$country_id = $this->data['country_id'];
@@ -623,13 +722,6 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$response = json_encode($result);
 			echo $response;
 		//END
-	}
-	
-	public function refresh_country() {
-		$result = $this->model_travel_trip->getCountryByTripId($this->data['trip_id']);
-		$result = array_values($result);
-		$response = json_encode($result);
-		echo $response;
 	}
 	
 	public function add_country() {

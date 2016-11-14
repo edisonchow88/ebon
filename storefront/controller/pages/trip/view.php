@@ -379,6 +379,8 @@ class ControllerPagesTripView extends AController {
 			$this->addChild('modal/itinerary/menu', 'modal_itinerary_menu', 'modal/itinerary/menu.tpl');
 			$this->addChild('modal/itinerary/view/map', 'modal_itinerary_map', 'modal/itinerary/view/map.tpl');
 			$this->addChild('modal/itinerary/trip/share', 'modal_trip_share', 'modal/itinerary/trip/share.tpl');
+			$this->addChild('modal/itinerary/member/list', 'modal_member_list', 'modal/itinerary/member/list.tpl');
+			$this->addChild('modal/itinerary/member/view', 'modal_member_view', 'modal/itinerary/member/view.tpl');
 		//END
 		
 		//START: set ajax

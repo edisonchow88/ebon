@@ -207,9 +207,19 @@
 			min-height:calc(100vh - 40px);
 		}
 		
+		.modal-section-title {
+			color:#999;
+			padding:15px;
+			border-bottom:solid thin #DDD;
+		}
+		
 		.modal-title {
 			color:#000;
 			font-weight:bold;
+		}
+		
+		.modal-background-grey {
+			background-color:#EEE;
 		}
 	/* END */
 	/* START: [modal form] */
@@ -720,6 +730,11 @@
     <?php echo $modal_trip_save; ?>
     <?php echo $modal_trip_share; ?>
     <?php echo $modal_trip_info; ?>
+    <?php echo $modal_member_list; ?>
+    <?php echo $modal_member_view; ?>
+    <?php echo $modal_member_add; ?>
+    <?php echo $modal_member_search; ?>
+    <?php echo $modal_member_invite; ?>
     <?php echo $modal_country_add; ?>
     <?php echo $modal_line_filter; ?>
     <?php echo $modal_line_add; ?>

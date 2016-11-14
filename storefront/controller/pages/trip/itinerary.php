@@ -384,6 +384,11 @@ class ControllerPagesTripItinerary extends AController {
 			$this->addChild('modal/itinerary/trip/save', 'modal_trip_save', 'modal/itinerary/trip/save.tpl');
 			$this->addChild('modal/itinerary/trip/share', 'modal_trip_share', 'modal/itinerary/trip/share.tpl');
 			$this->addChild('modal/itinerary/trip/info', 'modal_trip_info', 'modal/itinerary/trip/info.tpl');
+			$this->addChild('modal/itinerary/member/list', 'modal_member_list', 'modal/itinerary/member/list.tpl');
+			$this->addChild('modal/itinerary/member/view', 'modal_member_view', 'modal/itinerary/member/view.tpl');
+			$this->addChild('modal/itinerary/member/add', 'modal_member_add', 'modal/itinerary/member/add.tpl');
+			$this->addChild('modal/itinerary/member/search', 'modal_member_search', 'modal/itinerary/member/search.tpl');
+			$this->addChild('modal/itinerary/member/invite', 'modal_member_invite', 'modal/itinerary/member/invite.tpl');
 			$this->addChild('modal/itinerary/trip/country/add', 'modal_country_add', 'modal/itinerary/trip/country/add.tpl');
 			$this->addChild('modal/itinerary/line/add', 'modal_line_add', 'modal/itinerary/line/add.tpl');
 			$this->addChild('modal/itinerary/line/explore', 'modal_line_explore', 'modal/itinerary/line/explore.tpl');

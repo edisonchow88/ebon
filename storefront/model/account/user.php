@@ -66,6 +66,28 @@
 				return $output;
 			}
 			
+			public function getUserByKeyword($keyword) {
+				//START: run SQL
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table) . " 
+						WHERE email LIKE '%" . $keyword . "%' 
+						OR fullname LIKE '%" . $keyword . "%'
+						LIMIT 10 
+					";
+					$query = $this->db->query($sql);
+				//END
+				//START: Set Output
+					$output = array();
+					foreach($query->rows as $result){
+						$output[$result['user_id']] = $result;
+						$output[$result['user_id']]['fullname'] = ucwords($result['fullname']);
+					}
+				//END
+				
+				return $output;
+			}
+			
 			public function addUser($data) {
 				//START: Run SQL
 					$fields = $this->getFields($this->db->table($this->table));

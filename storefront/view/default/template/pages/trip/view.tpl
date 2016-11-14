@@ -383,6 +383,42 @@
 	/* END */
 </style>
 <style>
+	/* START: [mobile form] */	
+		.mobile-form label {
+			background-color:#FFF;
+			color:#999;
+			height:50px;
+			width:100%;
+			margin:0;
+			padding:15px;
+			border:none;
+			border-radius:0;
+			border-bottom:solid thin #DDD;
+			outline:none;
+			font-weight:normal;
+		}
+		.mobile-form input, .mobile-form select {
+			background-color:#FFF;
+			color:#000;
+			height:50px;
+			width:100%;
+			padding:15px;
+			border:none;
+			border-radius:0;
+			border-bottom:solid thin #DDD;
+			outline:none;
+			-webkit-appearance: none;
+		}
+		.mobile-form input:disabled {
+			color:#999;
+		}
+		.mobile-form select {
+			-webkit-appearance: none;
+			-webkit-border-radius: 0px;
+		}
+	/* END */
+</style>
+<style>
 	/* START: [popover hint] */	
 		#section-popover-hint {
 			position:fixed;
@@ -762,6 +798,17 @@
 		{
 			display:none;
 		}
+		
+		#modal-member-list-header-general {
+			display:none;
+		}
+		#modal-member-list .modal-header-shadow:first-child {
+			display:none;
+		}
+		
+		#modal-member-view .button-edit-member {
+			display:none;
+		}
 	/* END */
 </style>
 
@@ -807,6 +854,8 @@
 	<?php echo $modal_itinerary_menu; ?>
     <?php echo $modal_itinerary_map; ?>
     <?php echo $modal_trip_share; ?>
+    <?php echo $modal_member_list; ?>
+    <?php echo $modal_member_view; ?>
 <!-- END -->
 
 <script>

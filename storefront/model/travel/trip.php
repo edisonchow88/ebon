@@ -10,6 +10,9 @@ class ModelTravelTrip extends Model{
 	private $table_status_description = "trip_status_description";
 	private $table_mode = "trip_mode";
 	private $table_mode_description = "trip_mode_description";
+	private $table_member = "trip_member";
+	private $table_member_status = "trip_member_status";
+	private $table_member_status_description = "trip_member_status_description";
 	private $table_country = "trip_country";
 	private $table_plan = "trip_plan";
 	private $table_day = "trip_day";
@@ -228,6 +231,7 @@ class ModelTravelTrip extends Model{
 				$this->deletePlanByTripId($trip_id);
 				$this->deleteTripPhotoByTripId($trip_id);
 				$this->deleteCountryByTripId($trip_id);
+				$this->deleteMemberByTripId($trip_id);
 			//END
 			
 			//START: clear cache
@@ -698,6 +702,191 @@ class ModelTravelTrip extends Model{
 				return true;
 			//END
 		}
+	//END
+	
+	//START: [member]
+		public function getMember($trip_member_id='') {
+			$member = array();
+			
+			if($member_id == '') {
+				$sql = "
+					SELECT * 
+					FROM " . $this->db->table($this->table_member) . " t1 
+					LEFT JOIN ".$this->db->table($this->table_member_status)." t2 
+					ON t1.status_id = t2.status_id
+					LEFT JOIN ".$this->db->table($this->table_member_status_description)." t3 
+					ON t1.status_id = t3.status_id
+					ORDER BY t2.priority DESC, t1.fullname ASC
+				";
+			}
+			else {
+				$sql = "
+					SELECT * 
+					FROM " . $this->db->table($this->table_member) . " t1 
+					LEFT JOIN ".$this->db->table($this->table_member_status)." t2 
+					ON t1.status_id = t2.status_id 
+					LEFT JOIN ".$this->db->table($this->table_member_status_description)." t3 
+					ON t1.status_id = t3.status_id 
+					WHERE t1.trip_member_id = '" . (int)$trip_member_id . "' 
+				";
+	
+			}
+			$query = $this->db->query($sql);
+			
+			if($member_id == '') {
+				foreach($query->rows as $result){
+					$output[$result['trip_member_id']] = $result;
+					$output[$result['trip_member_id']]['fullname'] = $result['fullname'];
+				}
+			}
+			else {
+				$result = $query->row;
+				$output = $query->row;
+				$output['fullname'] = $result['fullname'];
+			}
+			
+			return $output;
+		}
+		
+		public function getMemberByTripId($trip_id='') {
+			//START: run sql
+				$sql = "
+					SELECT * 
+					FROM " . $this->db->table($this->table_member) . " t1 
+					LEFT JOIN ".$this->db->table($this->table_member_status)." t2 
+					ON t1.status_id = t2.status_id 
+					LEFT JOIN ".$this->db->table($this->table_member_status_description)." t3 
+					ON t1.status_id = t3.status_id 
+					WHERE t1.trip_id = '" . (int)$trip_id . "' 
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				foreach($query->rows as $result){
+					$output[$result['trip_member_id']] = $result;
+					$output[$result['trip_member_id']]['fullname'] = $result['fullname'];
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function addMember($data) {
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_member));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f]))
+						$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+				}
+				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			//END
+			
+			//START: run sql
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_member) . "` 
+					SET " . implode(',', $update) . "
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: get id
+				$trip_member_id = $this->db->getLastId();
+				$data['trip_member_id'] = $trip_member_id;
+			//END
+			
+			//START: run chain reaction
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('member');
+			//END
+			
+			//START: return
+				return $trip_member_id;
+			//END
+		}
+		
+		public function editMember($trip_member_id, $data) {
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_member));
+				
+				$update = array();
+				foreach($fields as $f) {
+					if(isset($data[$f])) {
+						$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+					}
+				}
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			//END
+			
+			//START: run sql
+				if(!empty($update)) {
+					$sql = "
+						UPDATE " . $this->db->table($this->table_member) . " 
+						SET " . implode(',', $update) . "
+						WHERE trip_member_id = '" . (int)$trip_member_id . "'
+					";
+					$query = $this->db->query($sql);
+				}
+			//END
+			
+			//START: run chain reaction
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('member');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+		
+		public function deleteMember($trip_member_id) {
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_member) . " 
+					WHERE trip_member_id = '" . (int)$trip_member_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: run chain reaction
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('member');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+        
+        public function deleteMemberByTripId($trip_id) {
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_member) . " 
+					WHERE trip_id = '" . (int)$trip_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: run chain reaction
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('member');
+			//END
+			
+			//START: return
+				return true;
+			//END
+        }
 	//END
 	
 	//START: [plan]

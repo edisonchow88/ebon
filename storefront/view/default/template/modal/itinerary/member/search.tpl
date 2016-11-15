@@ -196,8 +196,15 @@
 			name = data.email.substring(0,data.email.indexOf('@'));
 		}
 		
+		var order = '';
+		if(isset(data.fullname)) {
+			order = data.fullname.toLowerCase();
+		}
+		else {
+			order = data.email.toLowerCase();
+		}
 		content += ''
-			+ '<div class="row result-user-row" data-order="'+data.fullname.toLowerCase()+'" data-toggle="modal" data-target="#modal-member-invite" onclick="showUser('+data.user_id+');">'
+			+ '<div class="row result-user-row" data-order="'+order+'" data-toggle="modal" data-target="#modal-member-invite" onclick="showUser('+data.user_id+');">'
 				+ '<div class="col-xs-2 text-center result-user-image">'
 					+ photo
 				+ '</div>'

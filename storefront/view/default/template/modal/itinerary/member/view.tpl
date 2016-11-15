@@ -27,7 +27,7 @@
                         <div class="title"></div>
                     </div>
                     <div class="col-xs-3 text-right">
-                        <a class="btn btn-header button-save-edit-member disabled" onclick="saveEditMember();">Done</a>
+                        <a class="btn btn-header button-save-edit-member disabled" onclick="saveEditMemberForm();">Done</a>
                     </div>
                 </div>
             </div>
@@ -202,6 +202,7 @@
 			$('#modal-member-view-header-main').show();
 			$('#modal-member-view-header-edit').hide();
 			$('#modal-member-view .modal-member-view-alert').html('');
+			$('#modal-member-view .button-save-edit-member').removeClass('disabled');
 		<!-- END -->
 	}
 	
@@ -236,7 +237,7 @@
 		<!-- END -->
 	}
 	
-	function saveEditMember() {
+	function saveEditMemberForm() {
 		<!-- START: get data -->
 			var trip_id = <?php echo $this->trip->getTripId(); ?>;
 		<!-- END -->

@@ -8,7 +8,8 @@ class ControllerResponsesAccountAjaxUser extends AController {
 	public $data = array();
 
 	public function main() {
-		$this->loadModel('account/user');
+		$this->loadModel('account/user');	
+		$this->loadModel('resource/photo');
 		
 		foreach($_POST as $key => $value) {
 			$this->data[$key] = $value;
@@ -20,6 +21,9 @@ class ControllerResponsesAccountAjaxUser extends AController {
 		if($action == 'login') { $this->login(); }
 		else if($action == 'logout') { $this->logout(); }
 		else if($action == 'signup') { $this->signup(); }
+		else if($action == 'get_user') { $this->get_user(); }
+		else if($action == 'edit_user') { $this->edit_user(); }
+		else if($action == 'upload_user_photo') { $this->upload_user_photo(); return; }
 		else { 
 		//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 			$result['warning'][] = '[System Error] Invalid action'; 
@@ -154,5 +158,97 @@ class ControllerResponsesAccountAjaxUser extends AController {
 			echo $response;	
 			return 'failed';
 		}
+	}
+	
+	public function get_user() {
+		$user_id = $this->data['user_id'];
+		$result = $this->model_account_user->getUser($user_id);
+		if(isset($result['photo_id'])) {
+			$result['photo'] = $this->model_resource_photo->getPhoto($result['photo_id']);
+		}
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function edit_user() {
+		//START: set data
+			$data = $this->data;
+		//END
+		
+		//START: process data
+			foreach($data as $key => $value) {
+				if($value == '') {
+					$data[$key] = 'NULL';
+				}
+			}
+		//END
+		
+		//START: execute function
+			$execution = $this->model_account_user->editUser($data['user_id'], $data);
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'] = 'User Updated';
+			}
+			else {
+				$result['warning'] = 'System Error'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+    }
+	
+	public function upload_user_photo() {
+		//START: set data
+			$data = $this->data;
+			$data['user_id'] = $this->data['user_id'];
+			$data['size'] = $_FILES['file']['size'];
+			$data['photo_type'] = $_FILES['file']['type'];
+		//END
+		//verify file type
+			$file_type = $_FILES['file']['type'];
+			if($file_type == "image/jpeg") {
+				$photo_type = ".jpg";
+			}
+			else if($file_type == "image/png") {
+				$photo_type = ".png";
+			}
+			else if($file_type == "image/gif") {
+				$photo_type = ".gif";
+			}
+			else {
+				$result['warning'][] = "Error: Fail to upload new photo due to invalid file type.";
+				$response = json_encode($result);
+				echo $response;	
+				return;
+			}
+			$data['photo_type'] = $photo_type;
+		//END
+		//START: add photo
+			$photo_id = $this->model_resource_photo->addPhoto($data); 
+		//END
+		//START: add photo to trip
+			$data['photo_id'] = $photo_id;
+			$user_photo_id = $this->model_account_user->addPhoto($data['user_id'], $photo_id);
+		//END
+		//START: name the photo
+			$ds = DIRECTORY_SEPARATOR;
+			$upload_directory = DIR_RESOURCE . "photo" . $ds . "cropped" . $ds;
+			$upload_file = $upload_directory . $photo_id . $photo_type;
+			
+			$tmp_name = $_FILES['file']['tmp_name'];
+		//END
+		
+		//START: move the photo
+			if (move_uploaded_file($tmp_name, $upload_file)) {
+				$result['success'][] = "Success: New <b>Photo #".$photo_id."</b> has been added";
+			} else {
+				$result['warning'][] = "Error: Please check the folder permission";
+			}
+		//END
+		$response = json_encode($result);
+		echo $response;	
+		return;	
 	}
 }

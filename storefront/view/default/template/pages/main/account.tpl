@@ -79,6 +79,10 @@
     <?php echo $modal_account_signup; ?>
     <?php echo $modal_account_login; ?>
     <?php echo $modal_account_logout; ?>
-    <?php echo $modal_account_detail; ?>
-    <?php echo $modal_account_upgrade; ?>
+	<?php 
+    	if($this->user->isLogged()) {
+        	echo $modal_account_detail;
+            echo $modal_account_upgrade;
+        }
+    ?>
 <!-- END -->

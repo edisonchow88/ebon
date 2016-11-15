@@ -53,13 +53,11 @@
 				if($user_id == '') {
 					foreach($query->rows as $result){
 						$output[$result['user_id']] = $result;
-						$output[$result['user_id']]['fullname'] = ucwords($result['fullname']);
 					}
 				}
 				else {
 					$result = $query->row;
 					$output = $query->row;
-					$output['fullname'] = ucwords($result['fullname']);
 				}
 				//END
 				
@@ -81,7 +79,6 @@
 					$output = array();
 					foreach($query->rows as $result){
 						$output[$result['user_id']] = $result;
-						$output[$result['user_id']]['fullname'] = ucwords($result['fullname']);
 					}
 				//END
 				
@@ -98,7 +95,7 @@
 					
 					foreach($fields as $f){
 						if(isset($data[$f])) {
-							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
 						}
 					}
 					
@@ -122,6 +119,64 @@
 				$this->cache->delete('user');
 				
 				return $user_id;
+			}
+			
+			public function editUser($user_id, $data) {
+				//START: set data
+					$fields = $this->getFields($this->db->table($this->table));
+					
+					$update = array();
+					foreach($fields as $f) {
+						if($data[$f] == 'NULL') {
+							$update[$f] = $f . " = NULL";
+						}
+						else if(isset($data[$f])) {
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+						}
+					}
+					if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				//END
+				
+				//START: run sql
+					if(!empty($update)) {
+						$sql = "
+							UPDATE " . $this->db->table($this->table) . " 
+							SET " . implode(',', $update) . "
+							WHERE user_id = '" . (int)$user_id . "'
+						";
+						$query = $this->db->query($sql);
+					}
+				//END
+				
+				//START: run chain reaction
+				//END
+				
+				//START: clear cache
+					$this->cache->delete('user');
+				//END
+				
+				//START: return
+					return true;
+				//END
+			}
+			
+			public function addPhoto($user_id, $photo_id) {
+				//START: run sql
+					$sql = "
+						UPDATE " . $this->db->table($this->table) . " 
+						SET photo_id = '" . $this->db->escape($photo_id) . "'
+						WHERE user_id = '" . (int)$user_id . "'
+					";
+					$query = $this->db->query($sql);
+				//END
+				
+				//START: clear cache
+					$this->cache->delete('user');
+				//END
+				
+				//START: return
+					return true;
+				//END
 			}
 			
 			public function verify($email, $password){

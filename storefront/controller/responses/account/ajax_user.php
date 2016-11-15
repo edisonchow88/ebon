@@ -202,7 +202,7 @@ class ControllerResponsesAccountAjaxUser extends AController {
 	public function upload_user_photo() {
 		//START: set data
 			$data = $this->data;
-			$data['user_id'] = $this->data['user_id'];
+			$user_id = $this->data['user_id'];
 			$data['size'] = $_FILES['file']['size'];
 			$data['photo_type'] = $_FILES['file']['type'];
 		//END
@@ -225,10 +225,21 @@ class ControllerResponsesAccountAjaxUser extends AController {
 			}
 			$data['photo_type'] = $photo_type;
 		//END
-		//START: add photo
-			$photo_id = $this->model_resource_photo->addPhoto($data); 
+		//START: check existed photo
+			$user = $this->model_account_user->getUser($user_id);
+			$existing_photo_id = $user['photo_id'];
 		//END
-		//START: add photo to trip
+		//START: add photo or edit photo
+			if($existing_photo_id > 0) {
+				$photo_id = $this->model_resource_photo->editPhoto($existing_photo_id, $data);
+				$ds = DIRECTORY_SEPARATOR;
+				unlink(DIR_RESOURCE . "photo" . $ds . "cropped" . $ds . $existing_photo_id . $photo_type);
+			}
+			else {
+				$photo_id = $this->model_resource_photo->addPhoto($data);
+			}
+		//END
+		//START: add photo to user
 			$data['photo_id'] = $photo_id;
 			$user_photo_id = $this->model_account_user->addPhoto($data['user_id'], $photo_id);
 		//END
@@ -247,6 +258,8 @@ class ControllerResponsesAccountAjaxUser extends AController {
 				$result['warning'][] = "Error: Please check the folder permission";
 			}
 		//END
+		
+		$result['photo'] = $this->model_resource_photo->getPhoto($photo_id);
 		$response = json_encode($result);
 		echo $response;	
 		return;	

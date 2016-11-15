@@ -1,4 +1,8 @@
 <style>
+	#modal-account-detail .modal-body {
+		padding-bottom:70px !important;
+	}
+	
 	#modal-account-detail .photo {
 		margin-top:30px;
 	}
@@ -17,6 +21,8 @@
 	
 	#modal-account-detail-view-form input:disabled {
 		color:#000;
+		-webkit-text-fill-color:#000;
+		-webkit-opacity: 1;
 	}
 </style>
 
@@ -173,7 +179,7 @@
 				<!-- START: set photo -->
 					var photo = '';
 					if(isset(json.photo)) {
-						photo = '<img src="' + json.photo.path + '" onerror="this.onerror = \'\';this.src = \'resources/image/error/noimage.png\';" />';
+						photo = '<img src="' + json.photo.path + '?' + new Date().getTime() + '" onerror="this.onerror = \'\';this.src = \'resources/image/error/noimage.png\';" />';
 					}
 					else {
 						var letter = '';
@@ -417,19 +423,18 @@
 				contentType:false,
 				processData:false,
 				dataType:'json',
-				success:function(response) {
-					alert(JSON.stringify(response));
-					refreshUserPhoto();
-					showHint('Photo Uploaded');
+				success:function(json) {
+					refreshUserPhoto(json);
+					showHint('Photo Updated');
 				}
 			});
 		<!-- END -->
 	}
 	
-	function refreshUserPhoto() {
+	function refreshUserPhoto(json) {
 		var content = '';
 		content = ''
-			+ '<img src="'+photo.path+'"/>'
+			+ '<img src="' + json.photo.path + '?' + new Date().getTime() + '" onerror="this.onerror = \'\';this.src = \'resources/image/error/noimage.png\';" />'
 		;
 		$('#modal-account-detail .photo').html(content);
 	}

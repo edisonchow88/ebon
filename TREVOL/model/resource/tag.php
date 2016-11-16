@@ -44,7 +44,7 @@ class ModelResourceTag extends Model{
 					ON t1.tag_type_id = t3.tag_type_id 
 				";
 				if($tag_type_id != '') $sql .= "WHERE t1.tag_type_id = '" . (int)$this->db->escape($tag_type_id) . "' ";
-				$sql .= "ORDER BY t3.type_name ASC, t1.tag_id ASC";
+				$sql .= "ORDER BY t3.type_name ASC, t2.name ASC, t1.tag_id ASC";
 			}
 			else {
 				$sql = "

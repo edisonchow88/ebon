@@ -58,7 +58,12 @@
         <h1>Trips</h1>
     </div>
     <div class="col-xs-3 text-right">
+    	<!-- link to modal newtrip (previously use)-->
         <a class="btn btn-header" onclick="openModalNewTrip();"><i class="fa fa-fw fa-lg fa-plus"></i></a>
+        
+        <!-- link to page newtrip  
+        <a href="<?php echo $link['trip/newtrip'] ?>" class="btn btn-header"><i class="fa fa-fw fa-lg fa-plus"></i></a>
+        -->
     </div>
 </div>
 <div id="wrapper-trip-header-edit" class="fixed-bar wrapper-header-main row">
@@ -419,6 +424,15 @@
 		<?php } ?>
 	}
 	
+	function autoloadmodal() {
+		if ("<?php echo $this->request->get_or_post('m'); ?>" =="new") {
+			openModalNewTrip();
+			window.history.pushState("", "", "<?php echo $link['main/home']; ?>" + window.location.hash);
+		}
+	}
+	
 	refreshTripList();
 	closeEditTrip();
+	$(document).ready(autoloadmodal);
+	
 </script>

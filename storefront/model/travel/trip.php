@@ -18,6 +18,7 @@ class ModelTravelTrip extends Model{
 	private $table_day = "trip_day";
 	private $table_line = "trip_line";
 	private $table_photo = "trip_photo";
+	private $table_sample = "trip_sample";
 	
 	public function getFields($table) {
 		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
@@ -1879,7 +1880,59 @@ class ModelTravelTrip extends Model{
 				return true;
 			//END
 		}
+	
+		public function getSample($country) {
+			if($trip_country_id ="") {
+				$sql = "
+					SELECT trip_id
+					FROM " . $this->db->table($this->table_sample) . "
+					ORDER BY ranking DESC
+				";
+			}
+			else {
+				//retrive sample_id with selected country id
+				$sql = "
+					SELECT " . $this->db->table($this->table_country) . ".trip_id
+					FROM " . $this->db->table($this->table_country) . ", " . $this->db->table($this->table_sample) . "
+					WHERE " . $this->db->table($this->table_country) . ".trip_id = " . $this->db->table($this->table_sample) . ".trip_id
+					AND " . $this->db->table($this->table_country) . ".country_id = '" .$country. "' 
+					ORDER BY ranking DESC
+				";		
+			}
+			$query = $this->db->query($sql);
+			
+			foreach($query->rows as $sample_trip_id){
+				$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table) . " 
+						WHERE trip_id = '" . $sample_trip_id['trip_id'] . "' 
+				";	
+				
+				$query = $this->db->query($sql);
+				
+				$sql = "
+						SELECT " . $this->db->table($this->table_day) . ".day_id
+						FROM " . $this->db->table($this->table_plan) . " , " . $this->db->table($this->table_day) . "
+						WHERE " . $this->db->table($this->table_plan) . ".plan_id = " . $this->db->table($this->table_day) . ".plan_id
+						AND trip_id = '" . $sample_trip_id['trip_id'] . "' 
+				";	
+				
+				$query2 = $this->db->query($sql); 
+				$no_of_day = COUNT($query2);
+				
+				$output[$sample_trip_id['trip_id']]	= $query->row;
+			}
+
+			return $output;
+			}
+		
+		
+	
+	
+	
 	//END
+	
+	
 }
 
 ?>

@@ -139,8 +139,13 @@
                                 <div class="col-xs-8">
                                     <select name="country_id">
                                         <?php
+                                        	$c = $this->request->get_or_post('c');
                                         	foreach($country as $key => $value) {
-                                            	if($value['iso_code_2'] == 'MY') { $selected = 'selected'; } else { $selected = ''; }
+                                            	if($c) {
+                             						 if($value['country_id'] == $c) { $selected = 'selected'; } else { $selected = ''; }
+                                                }else{
+                                                    if($value['iso_code_2'] == 'MY') { $selected = 'selected'; } else { $selected = ''; }
+                                                }
                                             	echo '<option value="'.$value['country_id'].'" '.$selected.'>'.$value['name'].'</option>';
                                                 
                                             }
@@ -317,11 +322,12 @@
 			"action":"refresh_sample",
 			"country_id": $("select[name=country_id]").val()
 		};
-
+		
 		<!-- START: send POST -->
 		$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 			//alert (JSON.stringify(json));
 			if (json) {
+				
 				$.each(json, function(i){
 					printSample(json[i]);
 				});

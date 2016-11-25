@@ -1881,25 +1881,30 @@ class ModelTravelTrip extends Model{
 			//END
 		}
 	
-		public function getSample($country) {
-			if($trip_country_id ="") {
+		public function getSample($country_id) {
+			
+			if(!$country_id) {
 				$sql = "
-					SELECT trip_id
+					SELECT *
 					FROM " . $this->db->table($this->table_sample) . "
 					ORDER BY ranking DESC
 				";
 			}
+			
 			else {
 				//retrive sample_id with selected country id
 				$sql = "
 					SELECT " . $this->db->table($this->table_country) . ".trip_id
 					FROM " . $this->db->table($this->table_country) . ", " . $this->db->table($this->table_sample) . "
 					WHERE " . $this->db->table($this->table_country) . ".trip_id = " . $this->db->table($this->table_sample) . ".trip_id
-					AND " . $this->db->table($this->table_country) . ".country_id = '" .$country. "' 
+					AND " . $this->db->table($this->table_country) . ".country_id = '" .$country_id. "' 
 					ORDER BY ranking DESC
-				";		
+				";	
+					
 			}
 			$query = $this->db->query($sql);
+			
+			//echo $query->row; return;
 			
 			foreach($query->rows as $sample_trip_id){
 				$sql = "
@@ -1925,11 +1930,6 @@ class ModelTravelTrip extends Model{
 
 			return $output;
 			}
-		
-		
-	
-	
-	
 	//END
 	
 	

@@ -5,6 +5,7 @@
 	
 	#modal-account-detail .photo {
 		margin-top:30px;
+		image-orientation: from-image !important;
 	}
 	
 	#modal-account-detail .photo img {
@@ -12,6 +13,8 @@
 		height:120px;
 		width:120px;
 		border-radius:60px;
+		background-color:#CCC;
+		image-orientation: from-image !important;
 	}
 	
 	#modal-account-detail .button-edit-photo-wrapper {
@@ -61,7 +64,7 @@
                     <div id="modal-account-detail-alert"></div>
                     <div class="photo text-center"></div>
                     <div class="text-center button-edit-photo-wrapper"><a class="button-edit-photo">Edit</a></div>
-                    <form class="mobile-form hidden" id="modal-account-detail-photo-form">
+                    <form class="mobile-form hidden" id="modal-account-detail-photo-form" enctype="multipart/form-data">
                         <input type="text" name="action" value="upload_user_photo"/>
                         <input type="text" name="user_id" value="<?php echo $this->user->getUserId();?>"/>
                         <input type="text" name="type" value="user"/>
@@ -402,16 +405,13 @@
 			if(!(type.match('image.*'))) {
 				showAlert('It is not an image file.');
 			}
-			else if(size > 2000000) {
-				showAlert('Photo too big');
-			}
 			else {
-				uploadTripPhoto();
+				uploadUserPhoto();
 			}
 		<!-- END -->
 	});
 	
-	function uploadTripPhoto() {
+	function uploadUserPhoto() {
 		var formData = new FormData($('#modal-account-detail-photo-form')[0]);
 		
 		<!-- START: send POST -->
@@ -424,8 +424,13 @@
 				processData:false,
 				dataType:'json',
 				success:function(json) {
-					refreshUserPhoto(json);
-					showHint('Photo Updated');
+					if(isset(json.warning)) {
+						showAlert(json.warning);
+					}
+					else if(isset(json.success)) {
+						refreshUserPhoto(json);
+						showHint(json.success);
+					}
 				}
 			});
 		<!-- END -->

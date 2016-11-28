@@ -55,6 +55,52 @@
 		-webkit-appearance: none;
 		-webkit-border-radius: 0px;
 	}
+	
+	/* CSS SAMPLE LIST*/ 
+	.result-sample-row {
+		border-bottom:solid thin #DDD;
+		padding:15px 0 15px 15px;
+		cursor:pointer;
+	}
+	
+	.result-sample-row .result-sample-no-day {
+		border-radius: 50%;
+		 -moz-border-radius: 50%;
+		height: 40px;
+		width: 40px;
+		line-height: 40px;
+		background: #333;
+		text-align: center;		
+		font-weight:bold;
+		font-size: 1.2em;
+		color:#FFF;
+	}
+	
+	.sample-head {
+		color: #999;
+	}
+	
+	.css-wrapper-sample-list {
+		padding: 10px;	
+	}
+	
+	.css-wrapper-sample-list .result-sample-row {
+		margin-bottom: 10px;
+		border-radius:5px;
+	}
+	
+	.css-tools-or-with-line {
+		width: 100%; 
+		text-align: center; 
+		border-bottom: 1px solid #CCC; 
+		line-height: 0.1em;
+		margin: 10px 0 20px; 
+	}
+	
+	.css-tools-or-with-line span {
+		background:#fff; 
+    	padding:0 10px; 
+	}
 </style>
 
 <!-- START: Modal -->
@@ -93,8 +139,13 @@
                                 <div class="col-xs-8">
                                     <select name="country_id">
                                         <?php
+                                        	$c = $this->request->get_or_post('c');
                                         	foreach($country as $key => $value) {
-                                            	if($value['iso_code_2'] == 'MY') { $selected = 'selected'; } else { $selected = ''; }
+                                            	if($c) {
+                             						 if($value['country_id'] == $c) { $selected = 'selected'; } else { $selected = ''; }
+                                                }else{
+                                                    if($value['iso_code_2'] == 'MY') { $selected = 'selected'; } else { $selected = ''; }
+                                                }
                                             	echo '<option value="'.$value['country_id'].'" '.$selected.'>'.$value['name'].'</option>';
                                                 
                                             }
@@ -102,10 +153,21 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row text-center padding border-bottom">
+                            <div class="row text-center padding">
                             	<a class="btn btn-block btn-primary box-shadow rounded fixed-height-5" onclick="verify_new_trip_condition();">Create My Own</a>
                             </div>
+                            <div class="css-tools-or-with-line"><span class="">or</span></div>
                         </form>
+                       	<div class="row text-center padding sample-head">
+                            SELECT A SAMPLE TO START:
+                        </div>
+                        <form>
+                      		 <div class="row css-wrapper-sample-list" id="wrapper-sample-list">
+                            </div>
+                        </form>
+                        <div id="wrapper-sample-list-empty" class="empty-list">
+							<div class="title">Sample List is Empty</div>
+						</div>
                     </div>
                 </div>
             </div>
@@ -221,6 +283,71 @@
 		<?php } ?>
 		*/
 	}
+	
+	//////////////////////////////////////////////////SAMPLE LIST//////////////////////////////////////////////////////
+	function printSample(data) {
+		var content = '';
+		content += ''
+			+ '<div class="row result-sample-row box-shadow">'
+				+ '<a href="'+data.url+'">'
+					+ '<div class="col-xs-3 text-left">'
+						+ '<div class="result-sample-no-day">'
+							+ '<span>'+ data.no_of_day+'D</span>'
+						+ '</div>'	
+					+ '</div>'
+					+ '<div class="col-xs-9 text-left result-sample-button">'
+						+ '<div class="result-trip-title line-clamp-1">'
+							+ data.name
+						+ '</div>'
+						+ '<div class="result-trip-blurb line-clamp-1">'
+							+ '<span class="small">Created by <b>'+data.username+'</b></span>'
+						+ '</div>'
+					+ '</div>'
+				+ '</a>'
+				+ '<form class="result-trip-form hidden">'
+					+ '<input type="hidden" name="trip_id" value="' + data.trip_id + '"/>'
+				+ '</form>'
+			+ '</div>'
+		;
+		$('#wrapper-sample-list').append(content);
+	}
+	
+	function refreshSampleList() {
+		<!-- START: clear wrapper -->
+			$('#wrapper-sample-list').html('');
+			$("#wrapper-sample-list-empty").hide();
+		<!-- END -->
+		var trip= {};
+		var data = {
+			"action":"refresh_sample",
+			"country_id": $("select[name=country_id]").val()
+		};
+		
+		<!-- START: send POST -->
+		$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+			//alert (JSON.stringify(json));
+			if (json) {
+				
+				$.each(json, function(i){
+					printSample(json[i]);
+				});
+			}
+			
+			else {
+				$("#wrapper-sample-list-empty").show();
+			}
+		}, "json");
+		<!-- END -->
+	}
+	
+
+	
+	$("#modal-trip-new").on( "show.bs.modal", function() { 
+		refreshSampleList();
+		$("select[name=country_id]").on("change", function () {
+			refreshSampleList();
+		});
+	});
 	
 	$("#modal-trip-new").on( "hidden.bs.modal", function() { 
 		$('#modal-trip-new-form-alert').html('');

@@ -91,11 +91,31 @@
 						</div>
 					</div>
 				</li>
-                <li>
+                <li class="dropdown">
 					<div class="btn-group">
-						<a href="<?php echo $link['travel/trip']; ?>" class="btn btn-default tp-icon">
-							Trip
+						<a type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        	Travel
+                            <span class="caret"></span>
 						</a>
+						<div class="dropdown-menu dropdown-menu-head pull-left">
+							<ul class="dropdown-list gen-list">
+								<li>
+                                	<a href="<?php echo $link['travel/trip']; ?>">
+                                        <i class="fa fa-fw fa-suitcase"></i> Trip
+                                    </a>
+                                </li>
+                                <li>
+                                	<a href="<?php echo $link['travel/sample']; ?>">
+                                        <i class="fa fa-fw fa-clone"></i> Sample
+                                    </a>
+                                </li>
+							</ul>
+						</div>
+                        
+                      <!--  <i class="fa fa-suitcase" aria-hidden="true"></i>
+                        <a href="<?php echo $link['travel/trip']; ?>" class="btn btn-default tp-icon">
+							Trip
+						</a>-->
 					</div>
 				</li>
 				<li>

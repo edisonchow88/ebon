@@ -99,6 +99,7 @@ class ControllerCommonHeader extends AController {
 			$link['account/user'] = $this->html->getSecureURL('account/user');
 			$link['account/admin'] = $this->html->getSecureURL('account/admin');
 			$link['travel/trip'] = $this->html->getSecureURL('travel/trip');
+			$link['travel/sample'] = $this->html->getSecureURL('travel/sample');
 			$link['log'] = $this->html->getSecureURL('tool/error_log');
 			$link['language'] = $this->html->getSecureURL('localisation/language_definitions');
 			$link['logout'] = $this->html->getSecureURL('index/logout');

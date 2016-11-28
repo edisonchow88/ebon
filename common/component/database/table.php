@@ -199,9 +199,68 @@
 						return "<a class=\'btn btn-default\' style=\'min-width:40px;\' href=\''.$link['child'].'&'.$object.'_id='.'"+row.id+"\'>" + row.child + "</a>";
 					}
 				';
+				$format['url'] = '
+					return "<a class=\'btn btn-default\' style=\'min-width:40px;\' href=\'"+row.url+"\' target=\'_blank\'><span class=\'fa fa-fw fa-eye\'></span></a>";
+				';
+				$format['exist'] = '
+					if(row.exist == 1) {
+						return "<i class=\'fa fa-check\' data-toggle=\'tooltip\' data-placement=\'bottom\'></i>";
+					}else {						
+						return "<i class=\'fa fa-times\' data-toggle=\'tooltip\' data-placement=\'bottom\'></i>";
+	
+					}
+				';
+
 				if($action['review'] != true) { $off_review = 'hidden'; }
 				if($action['edit'] != true) { $off_edit = 'hidden'; }
 				if($action['delete'] != true) { $off_delete = 'hidden'; }
+				
+				////////////////////////////////////////////////////////////
+				$format['sample_commands'] = '
+					if(row.exist == 1) {
+						return ""
+						+ "<nav style=\'display:inline !important; margin-left:10px !important;\'>"
+								+ "<ul class=\'pagination\' style=\'margin: 0px !important;\'>"
+									+ "<li class=\''.$off_edit.'\'>"
+										+ "<span class=\'nopadding\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'Edit\'>"
+										+ "<a class=\'btn btn-sm command-edit\' data-toggle=\'modal\' data-target=\'#modal-edit-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
+											+ "<span class=\'fa fa-fw fa-pencil\'>"
+											+ "</span>"
+										+ "</a>"
+										+ "</span>"
+									+ "</li>"
+									+ "<li class=\''.$off_delete.'\'>"
+										+ "<span class=\'nopadding\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'Delete\'>"
+										+ "<a class=\'btn btn-sm command-delete\' data-toggle=\'modal\' data-target=\'#modal-delete-'.$object_id.'\' data-row-id=\'"+row.id+"\'>"
+											+ "<span class=\'fa fa-fw fa-trash-o\'>"
+											+ "</span>"
+										+ "</a>"
+										+ "</span>"
+									+ "</li>"
+								+ "</ul>"
+							+ "</nav>"
+						;
+					}else {
+						return ""
+						+ "<nav style=\'display:inline !important; margin-left:10px !important;\'>"
+								+ "<ul class=\'pagination\' style=\'margin: 0px !important;\'>"
+									+ "<li>"
+										+ "<span class=\'nopadding\' data-toggle=\'tooltip\' data-placement=\'bottom\' title=\'Add Sample\'>"
+										+ "<a class=\'btn btn-sm command-custom-add\' data-toggle=\'modal\' data-target=\'#modal-add-'.$object_id.'\' data-row-id=\'"+row.trip_id+"\'>"
+											+ "<span class=\'fa fa-fw fa-plus\'>"
+											+ "</span>"
+										+ "</a>"
+										+ "</span>"
+									+ "</li>"
+								+ "</ul>"
+							+ "</nav>"
+						;
+						
+					}
+				';
+				
+				//////////////////////////////////////////////////////////////				
+				
 				$format['commands'] = '
 					return ""
 					+ "<nav style=\'display:inline !important; margin-left:10px !important;\'>"
@@ -282,6 +341,12 @@
 						{
 							document.getElementById("modal-review-'.$object_id.'-form-input-'.$object_id.'-id").value = $(this).data("row-id");
 							review'.$object_name_no_space.'();
+							$($(this).attr("data-target")).modal("show");
+						})
+						.end().find(".command-custom-add").on("click", function(e)
+						{
+							document.getElementById("modal-add-'.$object_id.'-form-input-trip-id").value = $(this).data("row-id");		
+							document.getElementById("modal-add-'.$object_id.'-form-text-trip-id").innerHTML = $(this).data("row-id");
 							$($(this).attr("data-target")).modal("show");
 						})
 						'.$grid_function.'

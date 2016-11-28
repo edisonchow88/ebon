@@ -388,8 +388,13 @@ class ControllerPagesTripView extends AController {
 			$ajax['main/ajax_explore'] = $this->html->getSecureURL('main/ajax_explore');
 		//END
 		
+		//START: set redirect
+			$this->data['redirect'] = $this->html->getSecureURL('trip/itinerary');
+		//END
+		
 		//START: set link
 			$link['main/home'] = $this->html->getSecureURL('main/home','#tab=trip');
+			$link['main/home/addtrip'] = $this->html->getSEOURL('main/home','&m=new&c='.$this->request->get_or_post('c').'#tab=trip');
 		//END
 		
 		//START: set variable

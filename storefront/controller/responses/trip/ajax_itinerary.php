@@ -50,6 +50,8 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'edit_line') { $this->edit_line(); return; }
 			else if($this->data['action'] == 'delete_line') { $this->delete_line(); return; }
 			else if($this->data['action'] == 'sort_line') { $this->sort_line(); return; }
+			else if($this->data['action'] == 'refresh_sample') { $this->refresh_sample(); return; }
+			else if($this->data['action'] == 'sample_new_trip') { $this->sample_new_trip(); return; }
 			else { 
 				//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 				$result['warning'][] = '<b>ERROR: Invalid action</b><br/>Please contact Admin.'; 
@@ -997,6 +999,33 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//END
 	}
 	
+	public function refresh_sample() {
+
+		$result = $this->model_travel_trip->getSample($this->data['country_id']);
+		
+		foreach ($result as $trip_id => $trip) {
+			$user = $this->model_account_user->getUser($result[$trip_id]['user_id']);
+			$username = substr($user['email'], 0, strpos($user['email'], "@"));
+			$result[$trip_id]['username'] = $username;
+			
+			$plan = 	$this->model_travel_trip->getPlanByTripId($result[$trip_id]['trip_id']);
+			$plan_id = array_keys($plan);
+			$no_of_day = COUNT($this->model_travel_trip->getDayByPlanId($plan[$plan_id[0]]['plan_id']));
+			$result[$trip_id]['no_of_day'] = $no_of_day;
+						 
+			$result[$trip_id]['url'] = $this->html->getSEOURL('trip/view','&trip='.$result[$trip_id]['code'].'&m=new&c='.$this->data['country_id']);
+		}
+		
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function sample_new_trip() {
+		$this->data['user_id'] = $this->user->getUserId();
+		$this->data['language_id']= $this->language->getLanguageId();
+		$this->save_trip();
+	
+	}
 	/*
 	public function get_trip() {
 		$text = html_entity_decode($this->data['send']);

@@ -230,9 +230,11 @@ class ModelTravelTrip extends Model{
 			
 			//START: run chain reaction
 				$this->deletePlanByTripId($trip_id);
+				$this->deleteSample("",$trip_id);
 				$this->deleteTripPhotoByTripId($trip_id);
 				$this->deleteCountryByTripId($trip_id);
 				$this->deleteMemberByTripId($trip_id);
+				
 			//END
 			
 			//START: clear cache
@@ -1932,6 +1934,32 @@ class ModelTravelTrip extends Model{
 			}
 	//END
 	
+	public function deleteSample($sample_id ="",$trip_id ="") {
+			if ($sample_id != "") {
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_sample) . " 
+					WHERE sample_id = '" . (int)$sample_id . "'
+				";
+			
+			}else if ($trip_id != "") {
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_sample) . " 
+					WHERE trip_id = '" . (int)$trip_id . "'
+				";			
+			}
+			$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('sample');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+	//END
 	
 }
 

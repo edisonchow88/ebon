@@ -14,6 +14,7 @@ class ModelTravelTrip extends Model{
 	private $table_day = "trip_day";
 	private $table_line = "trip_line";
 	private $table_photo = "trip_photo";
+	private $table_sample = "trip_sample";
 	
 	public function getFields($table) {
 		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
@@ -216,6 +217,7 @@ class ModelTravelTrip extends Model{
 			//START: run chain reaction
 				$this->deletePlanByTripId($trip_id);
 				$this->deleteTripPhotoByTripId($trip_id);
+				$this->deleteSample("",$trip_id);
 			//END
 			
 			//START: clear cache
@@ -1332,6 +1334,167 @@ class ModelTravelTrip extends Model{
 			return true;
 		}
 	//END
+	
+		public function getSampleExist($trip_id) {
+			//START: run sql
+				$sql = "
+					SELECT * 
+					FROM " . $this->db->table($this->table_sample) . " 
+					WHERE trip_id = '" . (int)$trip_id . "' 
+				";
+				$query = $this->db->query($sql);
+				$output = $query->row;
+			//END
+
+			return $output;
+		}
+	//END
+		
+		public function getSample($sample_id='') {
+			$trip = array();
+			
+			//START: run sql
+				if($sample_id == '') {
+					$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table_sample) . " 
+						ORDER BY sample_id DESC 
+					";
+				}
+				else {
+					$sql = "
+						SELECT * 
+						FROM " . $this->db->table($this->table_sample) . " 
+						WHERE sample_id = '" . (int)$sample_id . "' 
+					";
+		
+				}
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				if($sample_id == '') {
+					foreach($query->rows as $result){
+						$output[$result['sample_id']] = $result;
+						$output[$result['sample_id']]['trip_id'] = ucwords($result['trip_id']);
+						$output[$result['sample_id']]['status'] = $result['status'];
+						$output[$result['sample_id']]['ranking'] = $result['ranking'];
+					}
+				}
+				else {
+					$result = $query->row;
+					$output = $query->row;
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function addSample($data) {
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_sample));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f])) {
+						if($data[$f] == 'NULL') {
+							$update[$f] = $f . " = NULL";
+						}
+						else {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+				}
+				if(isset($update['date_added'])) { $update['date_added'] = "date_added = '" . gmdate('Y-m-d H:i:s') . "'"; }
+				if(isset($update['date_modified'])) { $update['date_modified'] = "date_modified = '" . gmdate('Y-m-d H:i:s') . "'"; }
+			//END
+			
+			//START: run sql
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_sample) . "` 
+					SET " . implode(',', $update) . "
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set id
+				//$sample_id = $this->db->getLastId();
+			  	$return['sample_id'] = $this->db->getLastId();
+				$return['trip_id'] = $data['trip_id'];
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('sample');
+			//END
+			
+			
+			return $return;
+		}
+		
+		public function editSample($sample_id, $data) {
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_sample));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f])) {
+						if($data[$f] == 'NULL') {
+							$update[$f] = $f . " = NULL";
+						}
+						else {
+							$update[$f] = $f . " = '" . $this->db->escape(strtolower($data[$f])) . "'";
+						}
+					}
+				}
+			//END
+			
+			//START: run sql
+				if(!empty($update)){
+					$sql = "
+						UPDATE " . $this->db->table($this->table_sample) . " 
+						SET " . implode(',', $update) . "
+						WHERE sample_id = '" . (int)$sample_id . "'
+					";
+					$query = $this->db->query($sql);
+				}
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('sample');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+		
+		public function deleteSample($sample_id ="",$trip_id ="") {
+			if ($sample_id != "") {
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_sample) . " 
+					WHERE sample_id = '" . (int)$sample_id . "'
+				";
+			
+			}else if ($trip_id != "") {
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_sample) . " 
+					WHERE trip_id = '" . (int)$trip_id . "'
+				";			
+			}
+			$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('sample');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+	//END
 }
+
 
 ?>

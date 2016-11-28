@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' ) || !IS_ADMIN) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesTravelTrip extends AController {
+class ControllerPagesTravelSample extends AController {
 
   	public function main() {
         //START: init controller data
@@ -11,7 +11,7 @@ class ControllerPagesTravelTrip extends AController {
 		//END
 		
 		//START: set title
-			$title = "Trip";
+			$title = "Sample";
 			$this->document->setTitle($title);
 		//END
 		
@@ -39,27 +39,25 @@ class ControllerPagesTravelTrip extends AController {
 			if(count($data) > 0 ) {
 				foreach($data as $row) {
 					$trip_id = $row['trip_id'];
-			
+										
 					$plan = $this->model_travel_trip->getPlanByTripId($trip_id);
-					
+					$row['url'] = $this->html->removeQueryVar($this->html->getURL('trip/view','&trip='.$row['code']), 's');
+					$sample_exist = $this->model_travel_trip->getSampleExist($trip_id);
 					//NOTE: sequence is important
 					$result[$trip_id]['trip_id'] = $row['trip_id'];
 					$result[$trip_id]['code'] = $row['code'];
-					$result[$trip_id]['user_id'] = $row['user_id'];
-					$result[$trip_id]['status'] = json_encode($row['status']);
 					$result[$trip_id]['language'] = $row['language']['name'];
 					$result[$trip_id]['name'] = $row['name'];
 					$result[$trip_id]['description'] = $row['description'];
-					$result[$trip_id]['plan'] = count($plan);
-					unset($travel_date);
-					foreach($plan as $p) {
-						if($p['selected'] == 1) {
-							$travel_date = $p['travel_date'];
-						}
+					$result[$trip_id]['url'] = $row['url'];
+					if ($sample_exist) {
+						$result[$trip_id]['sample'] = "1";
+						$result[$trip_id]['id'] = $sample_exist['sample_id'];						
+					}else {
+						$result[$trip_id]['sample'] = "0";
+						$result[$trip_id]['id'] = "-";
 					}
-					$result[$trip_id]['travel_date'] = $travel_date;
-					$result[$trip_id]['date_added'] = $row['date_added'];
-					$result[$trip_id]['date_modified'] = $row['date_modified'];
+					$result[$trip_id]['ranking'] = $sample_exist['ranking'];
 				}
 			}
 		//END
@@ -80,14 +78,14 @@ class ControllerPagesTravelTrip extends AController {
 			*/
 			
 			$i = 'trip_id';
-			$column[$i]['name'] = 'id';
-			$column[$i]['title'] = 'Id';
+			$column[$i]['name'] = 'trip_id';
+			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = 'numeric';
 			$column[$i]['width'] = '80px';
 			$column[$i]['order'] = '';
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'true';
-			
+
 			$i = 'code';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
@@ -99,31 +97,7 @@ class ControllerPagesTravelTrip extends AController {
 			$column[$i]['visible'] = 'true';
 			$column[$i]['sortable'] = 'false';
 			$column[$i]['searchable'] = 'true';
-			
-			$i = 'user_id';
-			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['type'] = '';
-			$column[$i]['width'] = '';
-			$column[$i]['order'] = '';
-			$column[$i]['align'] = '';
-			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'true';
-			$column[$i]['sortable'] = 'true';
-			$column[$i]['searchable'] = 'true';
-			
-			$i = 'status';
-			$column[$i]['name'] = $i;
-			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
-			$column[$i]['type'] = '';
-			$column[$i]['width'] = '';
-			$column[$i]['order'] = '';
-			$column[$i]['align'] = '';
-			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'true';
-			$column[$i]['sortable'] = 'true';
-			$column[$i]['searchable'] = 'false';
-			
+		
 			$i = 'langauge';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
@@ -159,9 +133,9 @@ class ControllerPagesTravelTrip extends AController {
 			$column[$i]['visible'] = 'true';
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'false';
-			
-			$i = 'plan';
-			$column[$i]['name'] = 'child';
+						
+			$i = 'View';
+			$column[$i]['name'] = 'url';
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
@@ -172,8 +146,8 @@ class ControllerPagesTravelTrip extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'false';
 			
-			$i = 'travel_date';
-			$column[$i]['name'] = $i;
+			$i = 'sample';
+			$column[$i]['name'] = 'exist';
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
@@ -184,35 +158,34 @@ class ControllerPagesTravelTrip extends AController {
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'false';
 			
-			$i = 'date_added';
-			$column[$i]['name'] = $i;
+			$i = 'sample_id';
+			$column[$i]['name'] = 'id';
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'false';
+			$column[$i]['visible'] = 'true';
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'false';
 			
-			$i = 'date_modified';
-			$column[$i]['name'] = $i;
+			$i = 'ranking';
+			$column[$i]['name'] = 'sample_ranking';
 			$column[$i]['title'] = ucwords(str_replace("_"," ",$i));
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
 			$column[$i]['order'] = '';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
-			$column[$i]['visible'] = 'false';
+			$column[$i]['visible'] = 'true';
 			$column[$i]['sortable'] = 'true';
 			$column[$i]['searchable'] = 'false';
-			
-			
-			$i = 'commands';
+						
+			$i = 'sample_commands';
 			$column[$i]['name'] = $i;
 			$column[$i]['title'] = '';
-			$column[$i]['width'] = '180px';
+			$column[$i]['width'] = '200px';
 			$column[$i]['align'] = 'right';
 			$column[$i]['sortable'] = 'false';
 			$column[$i]['searchable'] = 'false';
@@ -220,44 +193,17 @@ class ControllerPagesTravelTrip extends AController {
 		
 		//START: set component
 			$this->loadComponent('database/table');
-			$object = 'trip';
+			$object = 'sample';
 			$table['column'] = $column;
 			$table['row'] = $result;
 			//START: [action]
 				$action['review'] = true;
-				$action['add'] = true;
+				$action['add'] = false;
 				$action['edit'] = true;
 				$action['delete'] = true;
+				$action['custom_add'] = true;
 			//END
-			//START: [related]
-				$related = array();
-				$i = 'trip';
-				$related[$i]['title'] = $i;
-				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
-				$i = 'plan';
-				$related[$i]['title'] = $i;
-				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
-				$i = 'day';
-				$related[$i]['title'] = $i;
-				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
-				$i = 'line';
-				$related[$i]['title'] = $i;
-				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
-				$i = '1';
-				$related[$i]['divider'] = $i;
-				$i = 'photo';
-				$related[$i]['title'] = $i;
-				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
-				$i = '2';
-				$related[$i]['divider'] = $i;
-				$i = 'status';
-				$related[$i]['title'] = $i;
-				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
-				$i = 'mode';
-				$related[$i]['title'] = $i;
-				$related[$i]['url'] = $this->html->getSecureURL('travel/'.$i);
-						
-			//END
+			
 			//START: [setting]
 				$grid['setting']['caseSensitive'] = 'false';
 				$grid['setting']['rowCount'] = -1;
@@ -272,17 +218,21 @@ class ControllerPagesTravelTrip extends AController {
 		
 		//START: set modal
 			if($action['review'] == true) {
-				$this->addChild('modal/travel/trip/review_trip', 'modal_review_trip', 'modal/travel/trip/review_trip.tpl');
+				$this->addChild('modal/travel/sample/review_sample', 'modal_review_sample', 'modal/travel/sample/review_sample.tpl');
 			}
 			if($action['add'] == true) {
-				$this->addChild('modal/travel/trip/add_trip', 'modal_add_trip', 'modal/travel/trip/add_trip.tpl');
+				$this->addChild('modal/travel/sample/add_sample', 'modal_add_sample', 'modal/travel/sample/add_sample.tpl');
 			}
 			if($action['edit'] == true) {
-				$this->addChild('modal/travel/trip/edit_trip', 'modal_edit_trip', 'modal/travel/trip/edit_trip.tpl');
+				$this->addChild('modal/travel/sample/edit_sample', 'modal_edit_sample', 'modal/travel/sample/edit_sample.tpl');
 			}
 			if($action['delete'] == true) {
-				$this->addChild('modal/travel/trip/delete_trip', 'modal_delete_trip', 'modal/travel/trip/delete_trip.tpl');
+				$this->addChild('modal/travel/sample/delete_sample', 'modal_delete_sample', 'modal/travel/sample/delete_sample.tpl');
 			}
+			if($action['custom_add'] == true) {
+				$this->addChild('modal/travel/sample/add_sample', 'modal_add_sample', 'modal/travel/sample/add_sample.tpl');
+			}
+			
 		//END
 		
 		//START: set variable
@@ -290,7 +240,7 @@ class ControllerPagesTravelTrip extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('pages/travel/trip.tpl' );
+			$this->processTemplate('pages/travel/sample.tpl' );
 		//END
 		
         //START: update controller data

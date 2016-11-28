@@ -820,12 +820,12 @@
 <div id="section-popover-alert"><div id="popover-alert" class="fixed-width" onclick="$(this).hide();"></div></div>
 <div class="header header-black fixed-width fixed-bar noselect">
     <div class="col-xs-2 text-left">
-        <a class="btn" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times"></i></a>
+        <a class="btn sample-return" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times"></i></a>
     </div>
     <div class="col-xs-8 text-left">
         <input id="wrapper-title-input" disabled/>
     </div>
-    <div class="col-xs-2 text-right">
+    <div class="col-xs-2 text-right sample-menu">
     	<a class="btn" data-toggle="modal" data-target="#modal-itinerary-menu"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
     </div>
 </div>
@@ -1203,6 +1203,9 @@
 					+ '</div>'
 					+ '<div class="plan-day-line" id="plan-day-'+day.day_id+'-line">'
 					+ '</div>'
+					+ '<form class="plan-day-form-hidden plan-form-hidden" id="plan-day-' + day.day_id + '-form-hidden">'
+						+ hidden_form
+					+ '</form>'
 				+ '</div>'
 			;
 		<!-- END -->
@@ -1419,3 +1422,133 @@
 	}
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>
+
+
+<script>
+//////////////// SAMPLE NEW TRIP CODE ////////////////////////////
+	function newTripFromSample() {
+		var title = $('#wrapper-title-input').val();
+		//var trip = '{"name":"Copy of '+title+'"}';
+		var serial = '';
+		serial = plan_serialize();	
+		
+		<!-- START: set POST data -->
+			var data = {
+				"action":"sample_new_trip",
+				"trip_id":"<?php echo $trip_id; ?>",
+				"plan": serial,
+				"name": "Copy of"+title
+			};
+		<!-- END -->
+		
+		<!-- START: send POST -->
+		/**/	$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {;
+				if(isset(json.success)) {
+					alert(json.success);
+					<!-- if success -->
+					setCookie('trip','',0);
+					setCookie('plan','',0);
+					window.location = json.redirect;
+				}
+			}, "json");
+		<!-- END -->
+	}
+	
+	function newTripFromSampleViaCookies() {
+		var title = $('#wrapper-title-input').val();
+		var trip = '{"name":"Copy of '+title+'"}';
+		//var plan = '{"name":"Plan 1","travel_date":"","day":[{"day_id":1,"sort_order":1}]}';
+		setCookie('trip',trip,7);
+		//setCookie('plan',plan,7);
+		var serial = '';
+		serial = plan_serialize();			
+			setCookie('plan',serial,7);
+		//// end copy /////////////			
+	}
+	
+	function plan_serialize() {
+				/// copy from itinerary tpl ////
+		var serial = '';
+			serial += '{';
+				serial += '"name":"Plan 1"';
+				serial += ',';
+				serial += '"travel_date":""';
+				serial += ',';
+				serial += '"day":';
+				serial += '[';
+				<!-- START: [day] -->
+					$.each($('.plan-day'), function(i, val) {
+						var day_id = $(this).find($('.plan-input-hidden[name=day_id]')).val();
+						serial += JSON.stringify($('#plan-day-'+day_id+'-form-hidden').find('.plan-input-hidden').not('[value="undefined"]').serializeObject());
+						serial = serial.slice(0,-1);
+						/**/
+						<!-- START: [line] -->
+							if($('#plan-day-'+day_id+'-line .plan-line-form-hidden').length > 0) {
+								serial += ',';
+								serial += '"line":';
+								serial += '[';
+									$.each($('#plan-day-'+day_id+'-line').find($('.plan-line-form-hidden')), function(j, val) {
+										var line_id = $(this).find($('.plan-input-hidden[name=line_id]')).val();
+										serial += '{'
+										$.each($('#plan-line-'+line_id+'-form-hidden .plan-input-hidden'), function(k, val) {
+											if(isset($(this).val())) {
+												serial += '"' + $(this).attr('name') + '"';
+												serial += ':';
+												serial += '"' + $(this).val() + '"';
+												serial += ',';
+											}
+										});
+										serial = serial.slice(0,-1);
+										serial += '}'
+										serial += ',';
+									});
+									serial = serial.slice(0,-1);
+								serial += ']';
+							}
+						<!-- END -->
+						serial += '},';
+					});
+					serial = serial.slice(0,-1);
+				<!-- END -->
+				serial += ']';
+			serial += '}';
+			<!-- START: sort day according to sort_order -->
+				//data = JSON.parse(serial);
+				//data.day.sort(sortBySortOrder);
+				//serial = JSON.stringify(data);
+			<!-- END -->
+		return serial;
+	}
+	
+	function sample_verify_new_trip_condition() {
+		//Google Analytics Event
+		ga('send', 'event','trip','create-new-trip');
+		<?php if($this->user->isLogged() == false) { ?>
+			<!-- START: [not logged] -->
+				newTripFromSampleViaCookies();
+				window.location = '<?php echo $redirect; ?>';
+			<!-- END -->
+		<?php } else { ?>
+			<!-- START: [logged] -->
+				newTripFromSample();
+			<!-- END -->
+		<?php } ?>	
+	}
+	
+	// regarding sample class:
+	// hide normal menu & add create button- .sample-menu
+	// back to main --> autoload new trip modal - .sample-return
+	//
+	// Check if from new trip sample, then change to create new trip ver.
+	function viewSampleAddTrip() {
+		if ("<?php echo $this->request->get_or_post('m'); ?>" =="new") {
+			$(".sample-return").attr('href',"<?php echo $link['main/home/addtrip'];?>");
+			$(".sample-menu>a").hide();
+			$(".sample-menu").html("<a class='btn btn-header' onclick='sample_verify_new_trip_condition();'>Create</a>");
+			
+		}	
+	}
+	
+	viewSampleAddTrip();
+</script>
+

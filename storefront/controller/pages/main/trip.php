@@ -32,6 +32,13 @@ class ControllerPagesMainTrip extends AController {
 		
 		//START: set link
 			$link['trip/itinerary'] = $this->html->getSecureURL('trip/itinerary');
+			$link['main/home'] = $this->html->getSecureURL('main/home');
+		//END
+		
+		//START: set auto-open modal
+		//if (isset($this->request->get['m'])) {
+   			 $this->data['check_modal'] = $this->request->get_or_post('m');
+		//}
 		//END
 		
 		//START: set variable

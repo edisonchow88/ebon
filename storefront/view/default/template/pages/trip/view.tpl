@@ -746,11 +746,13 @@
 		position:relative;
 		vertical-align:middle;
 		overflow:hidden;
+		max-height:calc(100vw * 0.75);
 	}
 	
 	.trip-photo-background {
 		width:100%;
 		height:300px;
+		max-height:calc(100vw * 0.75);
 	}
 	
 	.trip-photo {
@@ -760,7 +762,8 @@
 		left:0;
 		margin:auto;
 		width:100%;
-		height:300px;
+		height:400px;
+		max-height:calc(100vw);
 	}
 	
 	.plan-line .fa-link {
@@ -809,6 +812,21 @@
 		#modal-member-view .button-edit-member {
 			display:none;
 		}
+		
+		@media print {
+			body {
+				font-size:9px;
+				line-height:20px;
+			}
+			
+			.plan-line {
+				margin:0;
+				padding:0;
+				height:20px;
+			}
+			
+			.noprint {display:none;}
+		}
 	/* END */
 </style>
 
@@ -818,7 +836,7 @@
 
 <div id="section-popover-hint"><div id="popover-hint" class="fixed-width" onclick="$(this).hide();"></div></div>
 <div id="section-popover-alert"><div id="popover-alert" class="fixed-width" onclick="$(this).hide();"></div></div>
-<div class="header header-black fixed-width fixed-bar noselect">
+<div class="header header-black fixed-width fixed-bar noselect noprint">
     <div class="col-xs-2 text-left">
         <a class="btn" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times"></i></a>
     </div>
@@ -830,10 +848,12 @@
     </div>
 </div>
 <div class="body fixed-width noselect">
-	<div class="swiper-container">
+	<div class="swiper-container noprint">
         <div class="swiper-wrapper">
         </div>
         <div class="swiper-pagination"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
     </div>
 	<div id="trip-description" class="hidden">
     </div>
@@ -843,7 +863,7 @@
         </div>
     	<div class="col-xs-4 text-right">
     		<!-- <a class="btn btn-default btn-block button-show-detail" onclick="toggleAllLineDetail();">Show Details</a> -->
-    		<a class="btn btn-default btn-block" data-toggle="modal" data-target="#modal-itinerary-map">Show Map</a>
+    		<a class="btn btn-default btn-block noprint" data-toggle="modal" data-target="#modal-itinerary-map">Show Map</a>
         </div>
     </div>
 	<div class="itinerary">
@@ -1188,7 +1208,7 @@
 				data.date = day.date;
 			}
 			else {
-				data.date = 'Set Dates';
+				data.date = '';
 				nodate = 'nodate';
 			}
 		<!-- END -->
@@ -1355,6 +1375,8 @@
 			loop:true,
 			threshold:30,
 			pagination:'.swiper-pagination',
+			nextButton: '.swiper-button-next',
+			prevButton: '.swiper-button-prev',
 			paginationClickable:true
 		})
 	}

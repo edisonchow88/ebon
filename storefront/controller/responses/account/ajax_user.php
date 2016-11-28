@@ -200,68 +200,131 @@ class ControllerResponsesAccountAjaxUser extends AController {
     }
 	
 	public function upload_user_photo() {
-		//START: set data
-			$data = $this->data;
-			$user_id = $this->data['user_id'];
-			$data['size'] = $_FILES['file']['size'];
-			$data['photo_type'] = $_FILES['file']['type'];
+		//START: check php upload file error
+			if ($_FILES['file']['error'] != 0) {
+				$result['warning'][] = 'System Error ' . $_FILES['file']['error'];
+				$response = json_encode($result);
+				echo $response;	
+				return;	
+			}
 		//END
-		//verify file type
+		//START: get file
+			$filename = $_FILES['file']['tmp_name'];
 			$file_type = $_FILES['file']['type'];
+		//END
+		//START: verify file type
 			if($file_type == "image/jpeg") {
 				$photo_type = ".jpg";
+				$image_create_func = 'imagecreatefromjpeg';
+				$image_save_func = 'imagejpeg';
 			}
 			else if($file_type == "image/png") {
 				$photo_type = ".png";
+				$image_create_func = 'imagecreatefrompng';
+				 $image_save_func = 'imagepng';
 			}
 			else if($file_type == "image/gif") {
 				$photo_type = ".gif";
+				$image_save_func = 'imagegif';
+				$new_image_ext = 'gif';
 			}
 			else {
-				$result['warning'][] = "Error: Fail to upload new photo due to invalid file type.";
+				$result['warning'][] = "Unknown Image Type";
 				$response = json_encode($result);
 				echo $response;	
 				return;
 			}
-			$data['photo_type'] = $photo_type;
 		//END
-		//START: check existed photo
-			$user = $this->model_account_user->getUser($user_id);
-			$existing_photo_id = $user['photo_id'];
+		//START: [image]
+			//START: get exif
+				$exif = exif_read_data($_FILES['file']['tmp_name']);
+			//END
+			//START: get old dimension
+				list($old_width, $old_height) = getimagesize($filename);
+			//END
+			//START: set new dimension
+				$new_width = '300';
+				$new_height = '300';
+				$edge = min($old_width, $old_height);
+			//END
+			//START: set cropped point
+				if($old_width > $old_height) {
+					$src_x = ($old_width - $old_height) / 2;
+					$src_y = 0;
+				}
+				else if($old_height > $old_width) {
+					$src_x = 0;
+					$src_y = ($old_height - $old_width) / 2;
+				}
+			//END
+			//START: resample
+				$old_image =  $image_create_func($filename);
+				$new_image = imagecreatetruecolor($new_width, $new_width);
+				imagecopyresampled($new_image, $old_image, 0, 0, $src_x, $src_y, $new_width, $new_height, $edge, $edge);
+			//END
+			//START: rotate image
+				if(!empty($exif['Orientation'])) {
+					switch($exif['Orientation']) {
+						case 8:
+							$new_image = imagerotate($new_image,90,0);
+							break;
+						case 3:
+							$new_image = imagerotate($new_image,180,0);
+							break;
+						case 6:
+							$new_image = imagerotate($new_image,-90,0);
+							break;
+					}
+				}
+			//END
 		//END
-		//START: add photo or edit photo
-			if($existing_photo_id > 0) {
-				$photo_id = $this->model_resource_photo->editPhoto($existing_photo_id, $data);
+		//START: [database]
+			//START: set data
+				$data = $this->data;
+				$data['photo_type'] = $photo_type;
+				$data['size'] = 0;
+				$user_id = $this->data['user_id'];
+			//END
+			//START: check existing photo
+				$user = $this->model_account_user->getUser($user_id);
+				$photo_id = $user['photo_id'];
+			//END
+			//START: add photo or edit photo
+				if($photo_id > 0) {
+					$ds = DIRECTORY_SEPARATOR;
+					$execution = $this->model_resource_photo->editPhoto($photo_id, $data);
+					unlink(DIR_RESOURCE . "photo" . $ds . "cropped" . $ds . $photo_id . $photo_type);
+				}
+				else {
+					$photo_id = $this->model_resource_photo->addPhoto($data);
+					//START: add photo to user
+						$user_photo_id = $this->model_account_user->addPhoto($user_id, $photo_id);
+					//END
+				}
+			//END
+		//END
+		//START: [file]
+			//START: name image
 				$ds = DIRECTORY_SEPARATOR;
-				unlink(DIR_RESOURCE . "photo" . $ds . "cropped" . $ds . $existing_photo_id . $photo_type);
-			}
-			else {
-				$photo_id = $this->model_resource_photo->addPhoto($data);
-			}
+				$upload_directory = DIR_RESOURCE . "photo" . $ds . "cropped" . $ds;
+				$upload_filename = $upload_directory . $photo_id . $photo_type;
+			//END
+			//START: save image
+				$execution = $image_save_func($new_image,$upload_filename);
+			//END
 		//END
-		//START: add photo to user
-			$data['photo_id'] = $photo_id;
-			$user_photo_id = $this->model_account_user->addPhoto($data['user_id'], $photo_id);
-		//END
-		//START: name the photo
-			$ds = DIRECTORY_SEPARATOR;
-			$upload_directory = DIR_RESOURCE . "photo" . $ds . "cropped" . $ds;
-			$upload_file = $upload_directory . $photo_id . $photo_type;
-			
-			$tmp_name = $_FILES['file']['tmp_name'];
-		//END
-		
-		//START: move the photo
-			if (move_uploaded_file($tmp_name, $upload_file)) {
-				$result['success'][] = "Success: New <b>Photo #".$photo_id."</b> has been added";
+		//START: save file
+			if ($execution) {
+				$result['success'][] = "Photo Updated";
 			} else {
-				$result['warning'][] = "Error: Please check the folder permission";
+				$result['warning'][] = "System Failed";
 			}
 		//END
-		
-		$result['photo'] = $this->model_resource_photo->getPhoto($photo_id);
-		$response = json_encode($result);
-		echo $response;	
-		return;	
+		//START: return response
+			$result['photo'] = $this->model_resource_photo->getPhoto($photo_id);
+			$response = json_encode($result);
+			echo $response;	
+			return;	
+		//END
 	}
 }

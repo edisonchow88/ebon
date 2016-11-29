@@ -131,7 +131,7 @@ class ControllerPagesGuidePoi extends AController {
 			$column[$i]['title'] = 'Destination';
 			$column[$i]['type'] = '';
 			$column[$i]['width'] = '';
-			$column[$i]['order'] = 'asc';
+			$column[$i]['order'] = 'desc';
 			$column[$i]['align'] = '';
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['visible'] = 'true';

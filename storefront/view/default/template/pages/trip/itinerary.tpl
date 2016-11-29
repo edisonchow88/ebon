@@ -730,11 +730,16 @@
     <?php echo $modal_trip_save; ?>
     <?php echo $modal_trip_share; ?>
     <?php echo $modal_trip_info; ?>
-    <?php echo $modal_member_list; ?>
-    <?php echo $modal_member_view; ?>
-    <?php echo $modal_member_add; ?>
-    <?php echo $modal_member_search; ?>
-    <?php echo $modal_member_invite; ?>
+    <?php 
+    	if($this->session->data['memory'] != 'cookie') 
+        {
+        	echo $modal_member_list;
+            echo $modal_member_view;
+            echo $modal_member_add;
+            echo $modal_member_search;
+            echo $modal_member_invite;
+        }
+    ?>
     <?php echo $modal_country_add; ?>
     <?php echo $modal_line_filter; ?>
     <?php echo $modal_line_add; ?>

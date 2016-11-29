@@ -109,6 +109,19 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$trip_id = $this->model_travel_trip->addTrip($trip_data);
 		//END
 		
+		//START: get user
+			$user_id = $this->data['user_id'];
+			$data = $this->model_account_user->getUser($user_id);
+		//END
+		
+		//START: add user
+			$data['user_id'] = $user_id;
+			$data['trip_id'] = $trip_id;
+			$data['status_id'] = 1;
+			
+			$trip_member_id = $this->model_travel_trip->addMember($data);
+		//END
+		
 		//START: get code
 			$trip = $this->model_travel_trip->getTrip($trip_id);
 			$code = $trip['code'];
@@ -170,6 +183,19 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 					$line_id = $this->model_travel_trip->addLine($line_data);
 				}
 			}
+		//END
+		
+		//START: get user
+			$user_id = $this->data['user_id'];
+			$data = $this->model_account_user->getUser($user_id);
+		//END
+		
+		//START: add user
+			$data['user_id'] = $user_id;
+			$data['trip_id'] = $trip_id;
+			$data['status_id'] = 1;
+			
+			$trip_member_id = $this->model_travel_trip->addMember($data);
 		//END
 		
 		//START: get code

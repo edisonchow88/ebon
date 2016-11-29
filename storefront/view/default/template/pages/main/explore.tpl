@@ -361,6 +361,10 @@
         	<div class="result-subtitle">International Airports</div>
         	<div class="result-list"></div>
         </div>
+        <div class="result-list-wrapper" id="wrapper-explore-child-destination-island">
+        	<div class="result-subtitle">Islands</div>
+        	<div class="result-list"></div>
+        </div>
         <div class="result-list-wrapper" id="wrapper-explore-child-poi">
         	<div class="result-subtitle">Point of Interests</div>
         	<div class="result-list"></div>
@@ -739,22 +743,24 @@
 		if(typeof current.opening_hours.periods != 'undefined' && current.opening_hours.periods != null) {
 			$('#wrapper-explore-current-hour').show();
 			$.each(current.opening_hours.periods, function(index,value) {
-				$('#wrapper-explore-current-hour .detail').append(''
-					+ '<div class="row">'
-						+ '<div class="col-xs-5">'
-							+ weekday[value.open.day]
+				if(typeof value.open != 'undefined' && value.open != null && typeof value.close != 'undefined' && value.close != null) {
+					$('#wrapper-explore-current-hour .detail').append(''
+						+ '<div class="row">'
+							+ '<div class="col-xs-5">'
+								+ weekday[value.open.day]
+							+ '</div>'
+							+ '<div class="col-xs-3 text-right">'
+								+ convertTime([value.open.time.slice(0, 2), ':', value.open.time.slice(2)].join(''))
+							+ '</div>'
+							+ '<div class="col-xs-1 text-center">'
+								+ '-'
+							+ '</div>'
+							+ '<div class="col-xs-3 text-left">'
+								+ convertTime([value.close.time.slice(0, 2), ':', value.open.time.slice(2)].join(''))
+							+ '</div>'
 						+ '</div>'
-						+ '<div class="col-xs-3 text-right">'
-							+ convertTime([value.open.time.slice(0, 2), ':', value.open.time.slice(2)].join(''))
-						+ '</div>'
-						+ '<div class="col-xs-1 text-center">'
-							+ '-'
-						+ '</div>'
-						+ '<div class="col-xs-3 text-left">'
-							+ convertTime([value.close.time.slice(0, 2), ':', value.open.time.slice(2)].join(''))
-						+ '</div>'
-					+ '</div>'
-				);
+					);
+				}
 			});
 		}
 		
@@ -849,6 +855,7 @@
 			$('#wrapper-explore-child-destination').hide();
 			$('#wrapper-explore-child-destination-airport').hide();
 			$('#wrapper-explore-child-destination-national-park').hide();
+			$('#wrapper-explore-child-destination-island').hide();
 			$('#wrapper-explore-child-poi').hide();
 		<!-- END -->
 		
@@ -911,6 +918,10 @@
 						else if(name == 'National Park') {
 							$('#wrapper-explore-child-destination-national-park .result-list').append(content);
 							$('#wrapper-explore-child-destination-national-park').show();
+						}
+						else if(name == 'Island') {
+							$('#wrapper-explore-child-destination-island .result-list').append(content);
+							$('#wrapper-explore-child-destination-island').show();
 						}
 						else {
 							$('#wrapper-explore-child-destination .result-list').append(content);

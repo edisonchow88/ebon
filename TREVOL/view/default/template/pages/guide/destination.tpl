@@ -61,7 +61,7 @@
 <script>
 	var grid = $("#grid").bootgrid({
 		caseSensitive: false,
-		rowCount: -1,
+		rowCount: 10,
 		columnSelection: false,
 		formatters: {
 			"blurb": function(column, row)

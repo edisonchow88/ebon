@@ -27,27 +27,27 @@
                         <div class="title"></div>
                     </div>
                     <div class="col-xs-3 text-right">
-                        <a class="btn btn-header button-save-edit-member disabled" onclick="saveEditMember();">Done</a>
+                        <a class="btn btn-header button-save-edit-member disabled" onclick="saveEditMemberForm();">Done</a>
                     </div>
                 </div>
             </div>
             <div class="modal-dialog fixed-width">
                 <div class="modal-header-shadow"></div>
                 <div class="modal-content">
-                    <div class="modal-body nopadding">
+                    <div class="modal-body nopadding modal-background-grey">
                     	<div class="modal-member-view-alert">
                         </div>
                     	<form class="mobile-form" id="modal-member-view-form">
                         	<input type="text" name="trip_member_id" class="hidden"/>
                             <div class="row">
-                                <div class="col-xs-4"><label for="fullname" selected>Full Name</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="fullname" selected>Full Name</label></div>
+                                <div class="col-xs-7">
                                 	<input type="text" name="fullname" disabled="disabled"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="status_id" selected>Status</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="status_id" selected>Status</label></div>
+                                <div class="col-xs-7">
                                 	<select name="status_id" disabled="disabled"/>
                                     	<option value="1">Going</option>
                                     	<option value="2">Not Going</option>
@@ -56,20 +56,20 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="passport" selected>Passport</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="passport" selected>Passport</label></div>
+                                <div class="col-xs-7">
                                 	<input type="text" name="passport" disabled="disabled"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="dob" selected>Date of Birth</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="dob" selected>Date of Birth</label></div>
+                                <div class="col-xs-7">
                                 	<input type="date" name="dob" disabled="disabled"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="gender" selected>Gender</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="gender" selected>Gender</label></div>
+                                <div class="col-xs-7">
                                 	<select name="gender" disabled="disabled"/>
                                     	<option value="1">Male</option>
                                     	<option value="2">Female</option>
@@ -77,14 +77,14 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="mobile" selected>Mobile</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="mobile" selected>Mobile</label></div>
+                                <div class="col-xs-7">
                                 	<input type="text" name="mobile" disabled="disabled"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="email" selected>Email</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="email" selected>Email</label></div>
+                                <div class="col-xs-7">
                                 	<input type="text" name="email" disabled="disabled"/>
                                 </div>
                             </div>
@@ -92,14 +92,14 @@
                         <form class="mobile-form" id="modal-member-edit-form">
                         	<input type="text" name="trip_member_id" class="hidden"/>
                         	<div class="row">
-                                <div class="col-xs-4"><label for="fullname" selected>Full Name</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="fullname" selected>Full Name</label></div>
+                                <div class="col-xs-7">
                                 	<input type="text" name="fullname"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="status_id" selected>Status</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="status_id" selected>Status</label></div>
+                                <div class="col-xs-7">
                                 	<select name="status_id"/>
                                     	<option value="1">Going</option>
                                     	<option value="2">Not Going</option>
@@ -108,20 +108,20 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="passport" selected>Passport</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="passport" selected>Passport</label></div>
+                                <div class="col-xs-7">
                                 	<input type="text" name="passport"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="dob" selected>Date of Birth</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="dob" selected>Date of Birth</label></div>
+                                <div class="col-xs-7">
                                 	<input type="date" name="dob"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="gender" selected>Gender</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="gender" selected>Gender</label></div>
+                                <div class="col-xs-7">
                                 	<select name="gender"/>
                                     	<option value="1">Male</option>
                                     	<option value="2">Female</option>
@@ -129,18 +129,19 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="mobile" selected>Mobile</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="mobile" selected>Mobile</label></div>
+                                <div class="col-xs-7">
                                 	<input type="text" name="mobile"/>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-4"><label for="email" selected>Email</label></div>
-                                <div class="col-xs-8">
+                                <div class="col-xs-5"><label for="email" selected>Email</label></div>
+                                <div class="col-xs-7">
                                 	<input type="text" name="email"/>
                                 </div>
                             </div>
                         </form>
+                    	<div class="modal-header-shadow"></div>
                     </div>
                 </div>
             </div>
@@ -201,6 +202,7 @@
 			$('#modal-member-view-header-main').show();
 			$('#modal-member-view-header-edit').hide();
 			$('#modal-member-view .modal-member-view-alert').html('');
+			$('#modal-member-view .button-save-edit-member').removeClass('disabled');
 		<!-- END -->
 	}
 	
@@ -235,7 +237,7 @@
 		<!-- END -->
 	}
 	
-	function saveEditMember() {
+	function saveEditMemberForm() {
 		<!-- START: get data -->
 			var trip_id = <?php echo $this->trip->getTripId(); ?>;
 		<!-- END -->
@@ -281,6 +283,19 @@
 			}, "json");
 		<!-- END -->
 	}
+	
+	$('#modal-member-edit-form label').click(function() {
+       name = $(this).attr('for');
+	   if($('#modal-member-edit-form input[name='+name+']').length > 0) {
+		   $('#modal-member-edit-form input[name='+name+']').focus();
+	   }
+	   else if($('#modal-member-edit-form textarea[name='+name+']').length > 0) {
+		   $('#modal-member-edit-form textarea[name='+name+']').focus();
+	   }
+	   else if($('#modal-member-edit-form select[name='+name+']').length > 0) {
+		   $('#modal-member-edit-form select[name='+name+']').focus();
+	   }
+	});
 	
 	$('#modal-member-edit-form').on('change keydown',function() {
 		$('#modal-member-view .button-save-edit-member').removeClass('disabled');

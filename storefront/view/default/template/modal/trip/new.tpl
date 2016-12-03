@@ -159,14 +159,14 @@
                             <div class="css-tools-or-with-line"><span class="">or</span></div>
                         </form>
                        	<div class="row text-center padding sample-head">
-                            SELECT A SAMPLE TO START:
+                            SELECT A TEMPLATE TO START:
                         </div>
                         <form>
                       		 <div class="row css-wrapper-sample-list" id="wrapper-sample-list">
                             </div>
                         </form>
                         <div id="wrapper-sample-list-empty" class="empty-list">
-							<div class="title">Sample List is Empty</div>
+							<div class="title">No template is available. <br />Be the first to create & share your itinerary.</div>
 						</div>
                     </div>
                 </div>
@@ -313,8 +313,7 @@
 	}
 	
 	function refreshSampleList() {
-		<!-- START: clear wrapper -->
-			$('#wrapper-sample-list').html('');
+		<!-- START: clear wrapper -->			
 			$("#wrapper-sample-list-empty").hide();
 		<!-- END -->
 		var trip= {};
@@ -327,7 +326,7 @@
 		$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 			//alert (JSON.stringify(json));
 			if (json) {
-				
+				$('#wrapper-sample-list').html('');
 				$.each(json, function(i){
 					printSample(json[i]);
 				});

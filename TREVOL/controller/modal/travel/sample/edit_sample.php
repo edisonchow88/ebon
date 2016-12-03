@@ -46,19 +46,11 @@ class ControllerModalTravelSampleEditSample extends AController {
 						$input[$i]['json'] = $i;
 						
 						$i = 'ranking';
-						$input[$i]['label'] = 'Ranking (Highest = 1)';
+						$input[$i]['label'] = 'Ranking (Numbers)';
 						$input[$i]['id'] = 'ranking';
 						$input[$i]['name'] = 'ranking';
-						$input[$i]['type'] = 'select';
-						$option = array();
-							$option[0]['ranking'] = 1;
-							$option[1]['ranking'] = 2;
-							$option[2]['ranking'] = 3;
-							$option[3]['ranking'] = 4;
-							$option[4]['ranking'] = 5;
-						$input[$i]['option'] = $option;
+						$input[$i]['type'] = 'text';
 						$input[$i]['required'] = true;
-						$input[$i]['value'] = 1;
 					//END
 					
 					$form[$f]['input'] = $input;

@@ -81,6 +81,10 @@ class ControllerPagesTripItinerary extends AController {
 			}
 		//END
 		
+		//START: set active mode (LINE MODE SELECTOR)
+			$mode_selector = $this->model_travel_trip->getActiveMode();
+		//END
+		
 		//START: set column
 			$i = 'day_id';
 			$column[$i]['name'] = $i;
@@ -270,7 +274,18 @@ class ControllerPagesTripItinerary extends AController {
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['thAlign'] = 'left';
 			$column[$i]['visible'] = 'false';
-			
+							
+			$i = 'mode';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			$column[$i]['class'] = 'plan-col-'.str_replace("_","-",$i);
+			$column[$i]['title'] = '';
+			$column[$i]['width'] = '';
+			$column[$i]['align'] = '';
+			$column[$i]['headerAlign'] = '';
+			$column[$i]['thAlign'] = 'left';
+			$column[$i]['visible'] = 'false';
+						
 			$i = 'fee';
 			$column[$i]['name'] = $i;
 			$column[$i]['id'] = str_replace("_","-",$i);
@@ -347,7 +362,7 @@ class ControllerPagesTripItinerary extends AController {
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['thAlign'] = 'left';
 			$column[$i]['visible'] = 'false';
-			
+					
 			$i = 'note';
 			$column[$i]['name'] = $i;
 			$column[$i]['id'] = str_replace("_","-",$i);
@@ -358,6 +373,7 @@ class ControllerPagesTripItinerary extends AController {
 			$column[$i]['headerAlign'] = '';
 			$column[$i]['thAlign'] = 'left';
 			$column[$i]['visible'] = 'false';
+
 			
 			$i = 'command';
 			$column[$i]['name'] = $i;
@@ -409,6 +425,7 @@ class ControllerPagesTripItinerary extends AController {
 		
 		//START: set variable
 			$this->view->batchAssign($this->data);
+			$this->view->assign('mode_selector',json_encode($mode_selector));
 			$this->view->assign('column',$column);
 			$this->view->assign('column_json',json_encode(array_values($column)));
 			if(count($result) > 0) { $this->view->assign('result', $result); }

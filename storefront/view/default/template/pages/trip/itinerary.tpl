@@ -662,7 +662,50 @@
 		background-color:#FFF;
 		color:#999;
 		margin-top:15px;
-		font-size:11px;
+		/*font-size:0.9em;*/
+	}
+	
+	.line-transport-mode {
+		position:relative; 
+	}
+	
+	.mode-option-selector{
+		position:absolute;
+		display:inline-block;
+		width: 40px;
+		font-size:1.1em;
+		z-index: 12;
+	}
+	
+	.border{
+		border: #CCC thin solid;
+	}
+	
+	.mode-option-selector .mode-icon{
+		width: 30px;
+		display: inline-block;
+	}
+	
+	body .mode-option-selector .mode-option{
+		background:  #FFF;
+	}
+	
+	.mode-option-display { 
+		font-size:0.9em;
+		position:absolute;
+		display:inline-block;
+		left: 50px;	
+	}
+	
+	.click-blocker {
+		width: 100vw;
+		height: 100vh;
+		z-index: 10;
+		position:fixed;
+		top: 0;
+		left: 0;
+		/*background-color:#0F3;*/
+	
 	}
 	/* START: [plan-day-line-empty] */
 		.plan-day-line-empty {
@@ -917,8 +960,8 @@
 				//Google Analytics Event
 				ga('send', 'event','line', 'sort-line');
 				updatePlanTableLineDayIdAndSortOrder();
-				$(document).trigger("refreshRoute");
 				
+
 				<?php if($this->session->data['memory'] == 'cookie') { ?>
 					updatePlanTableCookie();
 					showHint('Activity Sorted');
@@ -954,7 +997,9 @@
 						}, "json");
 					<!-- END -->
 				<?php } ?>
+				$(document).trigger("refreshDistance");
 			}
+			
 		});
 	}
 	
@@ -1360,6 +1405,7 @@
 <!-- END -->
 </script>
 <script>
+
 	function refreshPlanTable() {
 		<?php if(isset($trip_id)) { ?>
 			<!-- START: [logged] -->
@@ -1374,6 +1420,7 @@
 				<!-- START: send POST -->
 					$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(plan) {
 						runRefreshPlanTable(plan);
+						refreshLineTransportModeMain();
 					}, "json");
 				<!-- END -->
 			<!-- END -->
@@ -1387,12 +1434,14 @@
 						setCookie('plan',plan,7);
 						plan = JSON.parse(plan);
 						runRefreshPlanTable(plan);
+						refreshLineTransportModeMain();
 					<!-- END -->
 				}
 				else {
 					<!-- START: [revisit] -->
 						plan = JSON.parse(plan);
 						runRefreshPlanTable(plan);
+						refreshLineTransportModeMain();
 					<!-- END -->
 				}
 			<!-- END -->
@@ -1437,6 +1486,7 @@
 				}
 				printDayLineEmpty(this.day_id);
 				printButtonAddLine(this.day_id);
+				
 			});
 			//printButtonAddDay(column);
 		<!-- END -->
@@ -1449,7 +1499,7 @@
 			initDateButton();
 			initDayButton();
 			initMapButton();
-			$(document).trigger("refreshRoute");
+			$(document).trigger("refreshDistance");
 			<?php if($this->session->data['mode'] == 'view') { ?>
 				$('.button-move').hide();
 				$('.plan-btn-add-line').hide();
@@ -1706,11 +1756,6 @@
 					+ '</div>' 
 					+ '<div class="transport-row row">'
 						+ '<div class="transport">'
-							+ '<span class="icon">'
-							+ '</span>'
-							+ '<span class="text">'
-							+ '</span>'
-							+ '<span class="path hidden"></span>'
 						+ '</div>'
 					+ '</div>' 
 					+ '<form class="plan-line-form-hidden plan-form-hidden hidden" id="plan-line-' + line.line_id + '-form-hidden">'
@@ -1720,7 +1765,7 @@
 			;
 		<!-- END -->
 		<!-- START: print content -->
-			$("#plan-day-"+line.day_id+"-line").append(content); 
+			$("#plan-day-"+line.day_id+"-line").append(content);
 		<!-- END -->
 		<!-- START: replace image -->
 			if(isset(line['image_id']) == false && isset(line['photo']) == false && isset(line.place_id)) {
@@ -1774,7 +1819,6 @@
 		});
 	}
 	
-	refreshPlanTable();
 </script>
 <script>
 <!-- START: [day] -->
@@ -1870,7 +1914,7 @@
 			showHint('Day Updated');
 			refreshDayList();
 			refreshPlanTable();
-			$(document).trigger("refreshRoute");
+			$(document).trigger("refreshDistance");
 		<?php } else { ?>
 			<!-- START: set data -->
 				var data = {
@@ -1888,7 +1932,7 @@
 						showHint('Day Updated');
 						refreshDayList();
 						refreshPlanTable();
-						$(document).trigger("refreshRoute");
+						$(document).trigger("refreshDistance");
 					}
 				}, "json");
 			<!-- END -->
@@ -1923,7 +1967,7 @@
 			//updatePlanTableDayDuration();
 			refreshPlanDayLineEmpty();
 			initSortableLine();
-			$(document).trigger("refreshRoute");
+			$(document).trigger("refreshDistance");
 		<!-- END -->
 		
 		<!-- START: show hint -->
@@ -1954,6 +1998,7 @@
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=fax]').val(line_raw.fax);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=website]').val(line_raw.website);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=activity]').val(line_raw.activity);
+			$('#plan-line-'+line.line_id+'-form-hidden input[name=mode]').val(line_raw.mode);
 		<!-- END -->
 		<!-- START: update html -->
 			<!-- START: set format -->
@@ -2104,7 +2149,7 @@
 		
 		<!-- START: init function -->
 			//updatePlanTableDayDuration();
-			$(document).trigger("refreshRoute");
+			$(document).trigger("refreshDistance");
 		<!-- END -->
 		
 		<!-- START: show hint -->
@@ -2269,7 +2314,7 @@
 			//updatePlanTableDayDuration();
 			updatePlanTableLineDayIdAndSortOrder();
 			refreshPlanDayLineEmpty();
-			$(document).trigger("refreshRoute");
+			$(document).trigger("refreshDistance");
 			//updatePlanTableButtonEvent();
 		<!-- END -->
 		
@@ -2293,4 +2338,517 @@
 		<?php }
 	} ?>
 </script>
+
+<script>
+	function setTransportTypeMenu () {
+		var output = "";
+		var mode = "";
+		var mode_selector = <?php echo $mode_selector; ?>;
+		$.each(mode_selector, function(i) {
+			mode += ''
+					+ '<div class="mode-option" value="'+mode_selector[i].mode_id+'">'
+						+ '<span class="'+mode_selector[i].icon+'"></span>'
+					+ '</div>'		
+		});	
+					
+		output += ''
+			+ '<div class="line-transport-mode">'
+				+ '<div class="click-blocker"></div>'
+				+'<div class="mode-option-selector" >'
+					+ '<div class="mode-option-selected"><span class="mode-icon"></span><i class="fa fa-caret-down" aria-hidden="true"></i></div>'
+					+ mode
+					//+ '<div class="mode-option" value="2"><span class="icon-transport-car"></span></div>'
+					//+ '<div class="mode-option" value="3"><span class="icon-transport-walk"></span></div>'		
+					//+ '<div class="mode-option" value="1"><span class="icon-transport-public"></span></div>'	
+				+ '</div>'
+				+ '<div class="mode-option-display">'
+					+ '<span class="text"></span>'
+					+ '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+					+ '<span class="link"></span>'
+					+ '<span class="path hidden"></span>'
+					+ '<span class="travel-distance hidden"></span>'
+					+ '<span class="travel-duration hidden"></span>'
+				+ '</div>';
+			+ '</div>'
+		
+		/*
+		+ '<span class="icon">'
+							+ '</span>'
+							+ '<span class="text">'
+							+ '</span>'
+							+ '<span class="path hidden"></span>'	*/
+		return output;	
+			
+	}
+	
+	function activeSelectTransportModeEvent() {
+		// Onclick open close menu
+		
+		
+		$(".mode-option-selector").off().on("click",function() {
+			if ( $(this).find(".mode-option").is(":visible") ) {
+				$(this).find(".mode-option").hide();
+				$(this).removeClass("border");
+			}else {
+				$(".mode-option").hide();
+				$(".mode-option-selector").removeClass("border");
+				$(this).find(".mode-option").show();
+				$(this).addClass("border");
+				// create page block
+				$(this).parents(".line-transport-mode").find(".click-blocker").show();
+			}
+		});	
+		
+		$(".click-blocker").off().on("click",function() {
+			$(this).hide();
+			$(this).parents(".line-transport-mode").find(".mode-option").hide();
+			$(this).parents(".line-transport-mode").find(".mode-option-selector").removeClass("border");					
+		});
+		
+		// onclick change selected 
+		$(".mode-option").off().on("click",function() {
+			$(this).parents(".line-transport-mode").find(".click-blocker").hide();
+			var selected_mode = $(this).siblings(".mode-option-selected");
+						
+			if ($(this).attr('value') != selected_mode.attr('value')) {	
+				selected_mode.find(".mode-icon").html($(this).html());
+				selected_mode.attr('value', $(this).attr('value'));	
+				
+				var line_id, day_id, mode_id;
+				
+				if($(this).parents(".transport-row").parent().hasClass("plan-line-twins")) {
+					//if this is twins, change the master also
+					line_id =  $(this).parents(".transport-row").parent().find(".master-line-id").html();
+					day_id =  $(this).parents(".transport-row").parent().find(".master-day-id").html();
+					mode_id = $(this).attr('value');
+					$("#plan-line-"+line_id).find(".mode-option-selected .mode-icon").html($(this).html());	
+					$("#plan-line-"+line_id).find(".mode-option-selected").attr('value', $(this).attr('value'));	
+				}else {
+					line_id = $(this).parents(".plan-line").find($('.plan-input-hidden[name=line_id]')).val();
+					day_id = $(this).parents(".plan-line").find($('.plan-input-hidden[name=day_id]')).val();
+					mode_id = $(this).attr('value');					
+				}
+				//save the changes
+				var coor = getOriDes (line_id);
+				<?php if($this->session->data['memory'] == 'cookie') { ?>
+					$(this).parents(".plan-line").find($('.plan-input-hidden[name=mode]')).val(mode_id);
+					updatePlanTableCookie();					
+					getLineModeDistanceDataViaCookie(line_id,day_id,coor);
+				<?php }else { ?>
+					editLineMode(line_id, day_id, mode_id,coor);
+					//read transport for this line code here
+				<?php } ?>
+				
+			}else {
+				return;
+			}	
+		});
+	}
+	
+	<!-- START: event response when select a transport -->
+	function editLineMode(line_id, day_id, mode_id,coor){
+		var data = {
+					"action":"edit_line_mode",
+					"line_id": line_id,
+					"mode_id": mode_id
+				};
+				
+		$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+			if (json.success) {
+				getLineModeDistanceDataViaDatabase(line_id,day_id,coor);	
+			}else {
+				alert (json.warning);	
+			}
+		}, "json");
+	}
+	
+	<!-- START: TRANSPORT MODE MAIN FUNCTION -->
+	function refreshLineTransportModeMain(condition) {
+		<!-- START: GET TRANSPORT MODE FOR EACH LINE TRANSPORT -->
+		$(".plan-line .transport").each(function(i){
+			
+			// GET CURRENT LINE ID AND DAY ID
+			var line_id = $(this).parents(".plan-line").find($('.plan-input-hidden[name=line_id]')).val();
+			var day_id = $(this).parents(".plan-line").find($('.plan-input-hidden[name=day_id]')).val();
+			
+			<!-- SUB: GET ORIGIN AND DESTINATION COORDINATE FOR THIS LINE -->
+			var coor = getOriDes (line_id);
+			
+			<!-- SUB: CREATE TWINS CONTAINER FOR EACH DAY LAST LINE IF AVAILABLE-->
+			createLineTwins (line_id,day_id);
+			
+			if (coor) {
+				<?php if($this->session->data['memory'] == 'cookie') { ?>
+					getLineModeDistanceDataViaCookie(line_id,day_id,coor);		
+				<?php }else { ?>
+					<!-- SUB: GET MODE ID FROM DATABASE-->	
+					getLineModeDistanceDataViaDatabase(line_id,day_id,coor,condition);	
+				<?php } ?>
+			}else {
+				// hide transport mode selector if not use (same coor, without origin or destination)
+				$("#plan-line-"+line_id+" .transport").hide();
+				$("#twins-"+line_id+" .transport").hide();	
+			}
+		});<!-- END -->
+		
+		<!-- START: PREPARE TRANSPORT CONTAINER -->
+		<!-- SUB: CREATE TRANSPORT MODE SELECTOR OUTPUT AND PRINT TO EACH LINE-->
+		var transport_menu = setTransportTypeMenu(); 
+		$(".transport-row .transport").html(transport_menu);
+		$(".mode-option").hide();
+		$(".click-blocker").hide();
+		<!-- SUB: ACTIVE ALL EVENT LISTENER FOR TRANSPORT MODE SELECTOR-->
+		activeSelectTransportModeEvent();	
+		
+		<!-- EVENT LISTENER: RESPONSE AFTER ACTION ADD, EDIT, DELETE, SORT-->
+		$(document).off("refreshDistance").on("refreshDistance",function(){
+			$(".plan-line-twins").remove();	
+			$(".transport-row .transport").show();	
+			refreshLineTransportModeMain("refresh");
+		});
+	}	
+	
+	function getLineModeDistanceDataViaDatabase(line_id,day_id,coor,condition) {												
+		var data = {
+				"action":"get_line_mode_path",
+				"line_id": line_id,
+				"coor": coor,
+				"condition": condition,
+				"default_mode_id": "2"
+			};
+			<!-- END -->
+	
+			<!-- START: send POST -->
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				<!-- SUB: PRINT DATA FROM AJAX RESPONSE-->
+				printLineModeDistanceData(line_id, coor,json);
+					
+			}, "json");
+			<!-- END -->	
+		
+	}
+
+	function getLineModeDistanceDataViaCookie(line_id,day_id,coor) {	
+			
+			if ($("#plan-line-"+line_id).find($('.plan-input-hidden[name=mode]')).val() == "") {
+					$("#plan-line-"+line_id).find($('.plan-input-hidden[name=mode]')).val("2");
+					updatePlanTableCookie();
+					mode_id = "2";
+			}else mode_id = $("#plan-line-"+line_id).find($('.plan-input-hidden[name=mode]')).val();
+
+			var data = {
+				"action":"get_distance_path",
+				"coor": coor,
+				"mode_id" : mode_id
+			};
+			<!-- END -->
+	
+			<!-- START: send POST -->
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				<!-- SUB: PRINT DATA FROM AJAX RESPONSE-->
+				printLineModeDistanceData(line_id, coor, json);
+				
+			}, "json");
+			<!-- END -->	
+	}
+	
+	function printLineModeDistanceData(line_id, coor ,json) {
+		var mode_selector = $("#plan-line-"+line_id+" .mode-option-selected");
+		var mode_display = $("#plan-line-"+line_id+" .mode-option-display");
+		var mode_id = json.mode_id;
+		var mode = json.mode_name;
+		mode_selector.find(".mode-icon").html("<span class='"+json.mode_icon+"'></span>");
+		mode_selector.attr('value', json.mode_id);	
+								
+		if (json.path_id) {
+			if (json.path.distance == "") var travel_text = "No Route Available";
+			else var travel_text = json.path.distance+", "+json.path.duration;
+			
+			mode_display.find(".text").html(travel_text);
+			mode_display.find(".travel-distance.hidden").html(json.path.distance);
+			mode_display.find(".travel-duration.hidden").html(json.path.duration);
+			mode_display.find(".path.hidden").html(json.path.path);
+			var path_id = json.path_id;
+			refreshTwinsTransportMode (line_id,coor);
+		}else {
+			//// get from google
+			//retriveGDistance (line_id, mode, data);
+			//retriveGPath (line_id, mode, data);
+			$.when(retriveGDistance (line_id, mode, coor), retriveGPath (line_id, mode, coor)).then(function( ) {
+				addDistancePath (line_id,mode_id, coor);
+				refreshTwinsTransportMode (line_id,coor);
+			});						
+		}	
+	}
+
+	
+	function retriveGDistance (line_id, mode, data) {			
+		var ori_lat = data.ori_lat;
+		var ori_lng = data.ori_lng;
+		var des_lat = data.des_lat;
+		var des_lng = data.des_lng;
+		
+		
+				var origin = ori_lat+","+ori_lng;
+				var destination = des_lat+","+des_lng;
+				var transport_id = $(this).attr("id");	
+				//alert(origin + destination);	
+				//alert (ori_lat +"" + ori_lng +"" +des_lat+"" +des_lng +"--------"+line_id);		
+				if ( origin == destination) {
+					$("#plan-line-"+line_id+" .transport").hide();
+				}else {
+					var deferred = new $.Deferred();
+					var service = new google.maps.DistanceMatrixService();
+					service.getDistanceMatrix({
+							origins: [origin],
+							destinations:  [destination],
+							travelMode: mode,
+							unitSystem: google.maps.UnitSystem.METRIC,
+							avoidHighways: false,
+							avoidTolls: false
+						}, function(response, status) {
+							if (status !== 'OK') {
+								alert('Error was: ' + status);
+							} else if (response.rows[0].elements[0].status == "OK") {
+								//alert (status);
+								var distance = response.rows[0].elements[0].distance.text;
+								var duration = response.rows[0].elements[0].duration.text;
+				
+								$("#plan-line-"+line_id+" .mode-option-display .text").html(distance+", "+duration);
+								$("#plan-line-"+line_id+" .mode-option-display .travel-distance").html(distance);
+								$("#plan-line-"+line_id+" .mode-option-display .travel-duration").html(duration);
+								deferred.resolve(response);
+										
+							}else if (response.rows[0].elements[0].status == "ZERO_RESULTS"){
+								//alert (JSON.stringify(response));
+								$("#plan-line-"+line_id+" .mode-option-display .text").html("No Route Available.");
+								$("#plan-line-"+line_id+" .mode-option-display .travel-distance").html("");
+								$("#plan-line-"+line_id+" .mode-option-display .travel-duration").html("");
+								deferred.resolve(response);
+							}
+						});
+					return deferred.promise();	
+					}				
+	}
+	
+	function retriveGPath (line_id, mode,data) {
+		var ori_lat = data.ori_lat;
+		var ori_lng = data.ori_lng;
+		var des_lat = data.des_lat;
+		var des_lng = data.des_lng;
+		
+		if (data.ori_place_id && data.des_place_id) {
+			ori = { placeId: data.ori_place_id };
+			des = { placeId: data.des_place_id };
+		}else {
+			ori = new google.maps.LatLng(ori_lat, ori_lng);
+			des = new google.maps.LatLng(des_lat, des_lng);
+		}
+		
+		var request = {
+								origin: ori,
+								destination: des,
+								travelMode: mode
+					};	
+				
+		var coordinates = new Array();
+				coordinates [0] = ori;
+				coordinates [1] = des;
+						
+		var orindesString = JSON.stringify (coordinates);
+
+		//$("#plan-line-"+line_id+" .mode-option-display .orindes").html(orindesString);
+		var deferred = new $.Deferred();
+		var directionsService = new google.maps.DirectionsService();			
+		directionsService.route(request, function(response, status) {
+		
+			if (status == 'OK') {
+				
+				var routePath = response.routes[0].overview_path;
+				var routeString = JSON.stringify (routePath);
+				$("#plan-line-"+line_id+" .mode-option-display .path").html(routeString);	
+				deferred.resolve(response);			
+			}else if (status == 'ZERO_RESULTS'){
+			/**/var coordinates = new Array();
+				coordinates [0] = ori;
+				coordinates [1] = des;
+				//alert (JSON.stringify(response));
+				var routeString = JSON.stringify (coordinates);
+				
+				$("#plan-line-"+line_id+" .mode-option-display .path").html(routeString);
+				//$("#plan-line-"+line_id+" .transport").addClass("no-reach");	
+				deferred.resolve(response);	
+			}	
+
+		})
+		return deferred.promise();	
+	}
+	
+	function addDistancePath (line_id,mode_id, coor) {
+		var distance = $("#plan-line-"+line_id+" .mode-option-display .travel-distance").html();
+		var duration = $("#plan-line-"+line_id+" .mode-option-display .travel-duration").html();
+		var path = $("#plan-line-"+line_id+" .mode-option-display .path").html();
+		var text = $("#plan-line-"+line_id+" .mode-option-display .text").html();
+		if (text) {
+			//set data
+			var data = {
+					"action":"add_path",
+					"line_id": line_id,			
+					"mode_id": mode_id,
+					"coor": coor,
+					"distance": distance,
+					"duration": duration,
+					"path": path
+				};
+	
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {	
+				
+			}, "json");
+				<!-- END -->
+		}
+	}
+	
+	//// SUB FUNCTION OF GET DISTANCE
+	function getOriDes (line_id,data) {
+		// add class to line with lat lng
+		this_line = $("#plan-line-"+line_id+" .transport");	
+		$(".plan-line").each(function(i) {
+			if ($(this).find('.plan-line-form-hidden input[name=lat]').val()) $(this).addClass("haslatlng"); 
+		});	
+		
+		var this_haslatlng = this_line.parents().hasClass("haslatlng");
+		var next_hasline = this_line.parents().next(".plan-line").length;
+		var next_haslatlng = this_line.parents().next(".plan-line").hasClass("haslatlng");
+		var next_day_haslatlng = this_line.parents(".plan-day").next(".plan-day").find(".plan-line").first().hasClass("haslatlng");
+		//alert (next_haslatlng +" " + next_day_haslatlng +""+line_id);
+		var ori_lat, ori_lng, des_lat, des_lng;
+		if (this_haslatlng) {
+			ori_lat = parseFloat(this_line.parents(".plan-line").find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
+			ori_lng = parseFloat(this_line.parents(".plan-line").find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
+			ori_place_id = this_line.parents(".plan-line").find('.plan-line-form-hidden input[name=place_id]').val();
+		}else {
+			ori_lat = parseFloat(this_line.parents(".plan-line").prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
+			ori_lng = parseFloat(this_line.parents(".plan-line").prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
+			ori_place_id = this_line.parents(".plan-line").prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=place_id]').val();
+		}
+		
+		if (next_hasline && next_haslatlng) {
+			des_lat = parseFloat(this_line.parents(".plan-line").next().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
+			des_lng = parseFloat(this_line.parents(".plan-line").next().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);		
+			des_place_id = this_line.parents(".plan-line").next().find('.plan-line-form-hidden input[name=place_id]').val();
+		}
+		
+		if (!next_hasline && next_day_haslatlng){
+			des_lat = parseFloat(this_line.parents(".plan-day").next(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
+			des_lng = parseFloat(this_line.parents(".plan-day").next(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);	
+			des_place_id =this_line.parents(".plan-day").next(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=place_id]').val();
+		}
+	
+		//alert (ori_lat +"/" + ori_lng +"," +des_lat+"/" +des_lng +"--------"+line_id);	
+		if ( ori_lat && ori_lng && des_lat && des_lng && ori_lat !="NaN" && ori_lng !="NaN" && des_lat !="NaN" && des_lng !="NaN" ) {
+			//if same coor, return
+			if (ori_lat == des_lat && ori_lng == des_lng) return false;
+			var coor = {
+						"ori_lat": ori_lat,
+						"ori_lng": ori_lng,
+						"des_lat": des_lat,
+						"des_lng": des_lng,
+						"ori_place_id": ori_place_id,
+						"des_place_id": des_place_id
+					};
+			return coor;
+		}else { 
+			return false;
+		}
+		
+	}
+	
+	function refreshTwinsTransportMode (line_id,coor) {
+		// add link to google for transit mode
+		linkTransitDirection (line_id,coor);
+		if ($("#twins-"+line_id))	{
+			var info_option = $("#plan-line-"+line_id).find(".transport .mode-option-selected").html();
+			var info_display = $("#plan-line-"+line_id).find(".transport .mode-option-display").html();
+			$("#twins-"+line_id).find(".transport .mode-option-selected").html(info_option);	
+			$("#twins-"+line_id).find(".transport .mode-option-display").html(info_display);										
+		}
+	}
+	
+	function createLineTwins (line_id,day_id) {
+		
+		var day_last_line = $("#plan-day-"+day_id+"-line .plan-line").last();
+		var next_day_id = $("#plan-day-"+day_id).next().attr('id');
+		
+		
+		//check if is last line 
+		if (line_id == day_last_line.find($('.plan-input-hidden[name=line_id]')).val()) {
+			var is_last_line = true;
+		}
+		//check if have next day
+		if (next_day_id) {
+			var have_next_day = true;
+		}
+		
+		//alert (is_last_line+","+have_next_day+","+line_id+","+day_id) ;
+		
+		if (is_last_line && have_next_day) {
+
+			var info_name = $("#plan-line-"+line_id).find(".title span").html();
+			
+			
+			var twins_content = ''
+					+ '<div class="plan-line-twins" id="twins-'+line_id+'">'
+						+ '<div class="row">'
+							+ '<div class="description">'
+								+ '<div class="title">'
+									+'<span>'+info_name+' (previous day)</span>'
+								+ '</div>'
+								+ '<div class="hidden">'
+									+'<span class="master-day-id">'+day_id+'</span>'
+									+'<span class="master-line-id">'+line_id+'</span>'
+								+'</div>'
+							+ '</div>'
+						+ '</div>' 
+						+ '<div class="transport-row row">'
+							+ '<div class="transport">'
+								//+ info_transport
+							+ '</div>'
+						+ '</div>' 
+					+ '</div>'
+					;
+		
+			if (twins_content && $("#twins-"+line_id).length < 1 ) {
+				// create the twin line
+				$("#"+next_day_id).find(".plan-day-line").prepend(twins_content);
+				// hide the last line transport mode
+				$("#plan-line-"+line_id+" .transport").hide();	
+			}
+		}
+	}
+	
+	function linkTransitDirection (line_id,coor) {
+		var selected_mode_id = $("#plan-line-"+line_id+" .mode-option-selected").attr('value');
+		if (selected_mode_id == "1") {
+			/*var output = ''
+					+ '<a href="https://maps.google.com?saddr='+coor.ori_lat+'+'+coor.ori_lng+'&daddr='+coor.des_lat+','+coor.des_lng+'&dirflg=r" target="_blank">'
+						+ '<i class="fa fa-compass" aria-hidden="true"></i>&nbsp;'
+					+ '</a>'
+					;*/
+				
+				var output = ''
+					+ '<a href="https://maps.google.com?saddr='+coor.ori_lat+'+'+coor.ori_lng+'+&daddr='+coor.des_lat+','+coor.des_lng+'&dirflg=r" target="_blank">'
+						+ '<i class="fa fa-compass" aria-hidden="true"></i>&nbsp;'
+					+ '</a>'
+					;
+							
+			$("#plan-line-"+line_id+" .mode-option-display .link").html(output);		
+		}else {
+			$("#plan-line-"+line_id+" .mode-option-display .link").html("");
+		}
+	}
+</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>
+
+<script>
+	refreshPlanTable();
+</script>

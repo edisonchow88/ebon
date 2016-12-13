@@ -1459,7 +1459,7 @@
 		//var trip = '{"name":"Copy of '+title+'"}';
 		var serial = '';
 		serial = plan_serialize();	
-		
+	
 		<!-- START: set POST data -->
 			var data = {
 				"action":"sample_new_trip",
@@ -1468,16 +1468,16 @@
 				"name": "Copy of "+title
 			};
 		<!-- END -->
-		
+
 		<!-- START: send POST -->
 		/**/	$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {;
 				if(isset(json.success)) {
-					//alert(json.success);
 					<!-- if success -->
 					setCookie('trip','',0);
 					setCookie('plan','',0);
 					window.location = json.redirect;
 				}
+				
 			}, "json");
 		<!-- END -->
 	}
@@ -1494,6 +1494,10 @@
 	}
 	
 	function plan_serialize() {
+		
+		//remove mode
+		
+		
 				/// copy from itinerary tpl ////
 		var serial = '';
 			serial += '{';
@@ -1548,6 +1552,7 @@
 	}
 	
 	function sample_verify_new_trip_condition() {
+		$(".run-once-event").prop('onclick',null).off('click');
 		//Google Analytics Event
 		ga('send', 'event','trip','create-new-trip');
 		<?php if($this->user->isLogged() == false) { ?>
@@ -1571,8 +1576,7 @@
 		if ("<?php echo $this->request->get_or_post('m'); ?>" =="new") {
 			$(".sample-return").attr('href',"<?php echo $link['main/home/addtrip'];?>");
 			$(".sample-menu>a").hide();
-			$(".sample-menu").html("<a class='btn btn-header' onclick='sample_verify_new_trip_condition();'>Create</a>");
-			
+			$(".sample-menu").html("<a class='btn btn-header run-once-event' onclick='sample_verify_new_trip_condition();'>Create</a>");		
 		}	
 	}
 	

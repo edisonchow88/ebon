@@ -381,7 +381,7 @@ function initOverlayPrototype () { // must be after or inside initMap()
 <script>
 var map;
 	$(document).ready(function(){
-		updateTransportBox();
+		//updateTransportBox();
 	});
 
 
@@ -397,14 +397,14 @@ var map;
 			styles: map_style
 		});
 		
-		getDistanceTime();
+		//getDistanceTime();
 		initExploreMap();
 		
 		
 		////callback to refresh route after action (delete, add, move ,modify)
 		$(document).off("refreshRoute").on("refreshRoute",function(){
-			updateTransportBox();
-			getDistanceTime();	
+			//updateTransportBox();
+			//getDistanceTime();	
 		});
 		
 	}
@@ -688,251 +688,10 @@ var map;
 		}*/
 	}
 	
-	function updateTransportBox() {
-		// REFRESH: show all transport, delete all twins, clear all path 
-		$(".transport").show();
-		$(".transport .path").html("");
-		$(".orindes").remove(); //maybe change the output code in itinerary later
-		$(".transport").append('<span class="orindes hidden"></span>');
-		$(".transport .orindes").html("");
-		$(".plan-line-twins").remove();
-		$(this).removeAttr('id');
-		$(".has-route").removeClass("has-route mode-flight mode-drive no-reach");
 
-		
-		// add class to line with lat lng	
-		$(".plan-line").each(function(i) {
-			if ($(this).find('.plan-line-form-hidden input[name=lat]').val()) $(this).addClass("haslatlng"); 
-		});	
-		
-		// make twins && hide all transport box not used
-		$(".plan-day").each(function(i) {
-			
-			// make twins
-			//if ( $(this).prevAll(".plan-day").has(".plan-line.haslatlng").length > 0 && $(this).find(".plan-line").length > 0){
-			if ( $(this).prevAll(".plan-day").has(".plan-line.haslatlng").length > 0 ){	
-			
-				var twins_master_id = $(this).prevAll(".plan-day").has(".plan-line.haslatlng").first().find(".plan-line.haslatlng").last().attr("id");
-				var info_name = $("#"+twins_master_id).find(".title span").html();
-				var info_lat = parseFloat($("#"+twins_master_id).find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
-				var info_lng = parseFloat($("#"+twins_master_id).find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
-				var info_img = $("#"+twins_master_id).find(".image img").attr("src");
-				
-				var twins_content = ''
-				+ '<div class="plan-line-twins haslatlng">'
-					+ '<div class="row">'
-						//+ '<div class="image">'
-						//	+ '<img class="noselect" src="'+info_img+'" />'
-						//+ '</div>'
-						+ '<div class="description">'
-							+ '<div class="title">'
-								+'<span>'+info_name+' (previous day)</span>'
-								+'<span class="plan-line-twins-lat hidden">'+info_lat+'</span>'
-								+'<span class="plan-line-twins-lng hidden">'+info_lng+'</span>'
-								+ '<div class="line"></div>'
-							+ '</div>'
-						+ '</div>'
-					+ '</div>' 
-					+ '<div class="transport-row row">'
-						+ '<div class="transport">'
-							+ '<span>'
-								+ '<i class="fa fa-fw fa-car"></i><i class="fa fa-fw"></i>'
-							+ '</span>'
-							+ '<span class="text">'
-								+ '3.7 km / 45 mins'
-							+ '</span>'
-							+ '<span class="path hidden"></span>'
-							+ '<span class="orindes hidden"></span>'
-						+ '</div>'
-					+ '</div>' 
-				+ '</div>'
-				;
-				if (twins_content) {
-					//$(this).find(".plan-line").first().before(twins_content);
-					$(this).find(".plan-day-line").prepend(twins_content);
-				}
-			}
-			// hide last plan-line transport box
-			$(this).find(".plan-line, .plan-line-twins").last().find(".transport" ).hide();	
-		});	
-		
-		$(".transport").each(function(i){
-			$(this).attr('id', 'transport_'+i);	
-		});
-	}
-	
 	
 	Number.prototype.toRad = function() {
 		return this * Math.PI / 180;
-	}
-	
-	function getDistanceTime() {
-		
-		$(".transport").each(function(i){
-			var this_haslatlng = $(this).parents().hasClass("haslatlng");
-			var next_haslatlng = $(this).parents().next(".plan-line").hasClass("haslatlng");
-			var is_twins = $(this).parents().hasClass("plan-line-twins");
-			var prev_is_twins = $(this).parents().prevAll(".haslatlng").first().hasClass("plan-line-twins");
-			
-			var ori_lat, ori_lng, des_lat, des_lng;
-			// get original latlng (must have)
-			if (is_twins) var parent_class = ".plan-line-twins";
-			else  var parent_class = ".plan-line";		
-			
-			if (this_haslatlng && is_twins) {
-				ori_lat = $(this).parents(parent_class).find(".plan-line-twins-lat").html();
-				ori_lng = $(this).parents(parent_class).find(".plan-line-twins-lng").html();
-			}else if (this_haslatlng && !is_twins) {
-				ori_lat = parseFloat($(this).parents(parent_class).find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
-				ori_lng = parseFloat($(this).parents(parent_class).find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
-			}else if (!this_haslatlng && !prev_is_twins){
-				ori_lat = parseFloat($(this).parents(parent_class).prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
-				ori_lng = parseFloat($(this).parents(parent_class).prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
-			}else if (!this_haslatlng && prev_is_twins){
-				ori_lat = $(this).parents(parent_class).prevAll(".haslatlng").first().find(".plan-line-twins-lat").html();
-				ori_lng = $(this).parents(parent_class).prevAll(".haslatlng").first().find(".plan-line-twins-lng").html();
-			}
-			
-			if (next_haslatlng) {
-				des_lat = parseFloat($(this).parents(parent_class).next().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
-				des_lng = parseFloat($(this).parents(parent_class).next().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
-			}
-			
-			
-			if ( ori_lat && ori_lng && des_lat && des_lng && ori_lat !="NaN" && ori_lng !="NaN" && des_lat !="NaN" && des_lng !="NaN" ) {
-				var origin = ori_lat+","+ori_lng;
-				var destination = des_lat+","+des_lng;
-				var transport_id = $(this).attr("id");	
-				var service = new google.maps.DistanceMatrixService();
-		
-				if ( origin == destination) {
-					$("#"+ transport_id).hide();
-				}else {
-					service.getDistanceMatrix({
-							origins: [origin],
-							destinations:  [destination],
-							travelMode: 'DRIVING',
-							unitSystem: google.maps.UnitSystem.METRIC,
-							avoidHighways: false,
-							avoidTolls: false
-						}, function(response, status) {
-							var R = 6371; // km
-							var dLat = (des_lat - ori_lat).toRad();
-							var dLon = (des_lng - ori_lng).toRad();
-							var lat1 = parseFloat(ori_lat).toRad();
-							var lat2 = parseFloat(des_lat).toRad();
-							var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-									Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
-							var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-							var d = parseInt(R * c);
-							
-							if (status !== 'OK') {
-								alert('Error was: ' + status);
-							} else {
-								if (response.rows[0].elements[0].status !== 'OK') {
-									var speed = 600;
-									if(d > 7200) {
-										speed = 870;
-									}
-									else if(d > 4800) {
-										speed = 770;
-									}
-									else if(d > 2400) {
-										speed = 720;
-									}
-									else if(d > 1600) {
-										speed = 650;
-									}
-									
-									var duration_number = parseInt(d / speed * 60);
-									var t = convertLineDurationFormat(duration_number);
-									var mode = "flight";
-									$("#"+ transport_id).addClass("mode-"+mode);
-									$("#"+ transport_id +" .icon").html("<i class='fa fa-fw fa-plane'></i><i class='fa fa-fw'></i>");
-									$("#"+ transport_id +" .text").html('about ' + d + ' km , ' + t);								
-								}
-								else {
-									var distance = response.rows[0].elements[0].distance.text;
-									var duration = response.rows[0].elements[0].duration.text;
-									
-									var distance_number = parseInt(distance.substring(0, distance.length-3).replace(',',''));
-									var speed = 600;
-									
-									if(distance_number > 800) {
-										if(d > 7200) {
-											speed = 870;
-										}
-										else if(d > 4800) {
-											speed = 770;
-										}
-										else if(d > 2400) {
-											speed = 720;
-										}
-										else if(d > 1600) {
-											speed = 650;
-										}
-										var duration_number = parseInt(d / speed * 60);
-										var t = convertLineDurationFormat(duration_number);
-										var mode = "flight";
-										$("#"+ transport_id).addClass("mode-"+mode);
-										$("#"+ transport_id +" .icon").html("<i class='fa fa-fw fa-plane'></i><i class='fa fa-fw'></i>");
-										$("#"+ transport_id +" .text").html('about ' + d + ' km , ' + t);	
-									}
-									else {
-										var mode = "drive";
-										$("#"+ transport_id).addClass("mode-"+mode);
-										$("#"+ transport_id +" .icon").html("<i class='fa fa-fw fa-car'></i><i class='fa fa-fw'></i>");
-										$("#"+ transport_id +" .text").html(distance + " , " + duration);
-									}
-								}
-						}
-					});
-				}
-			}else {
-				var transport_id = $(this).attr("id");
-				$("#"+ transport_id).hide();
-			}
-		
-			if ( ori_lat && ori_lng && des_lat && des_lng && ori_lat !="NaN" && ori_lng !="NaN" && des_lat !="NaN" && des_lng !="NaN" &&  !$("#"+ transport_id +" .path").html()) {
-				
-				$("#"+ transport_id).addClass("has-route");
-				var ori = new google.maps.LatLng(ori_lat, ori_lng)
-				var des = new google.maps.LatLng(des_lat, des_lng)
-				
-				var request = {
-								origin: ori,
-								destination: des,
-								travelMode: 'DRIVING'
-					};	
-				
-				var coordinates = new Array();
-						coordinates [0] = ori;
-						coordinates [1] = des;
-						
-						var orindesString = JSON.stringify (coordinates);
-						
-						$("#"+ transport_id +" .orindes").html(orindesString);
-				
-				var directionsService = new google.maps.DirectionsService();			
-				directionsService.route(request, function(response, status) {
-					if (status == 'OK') {
-						var routePath = response.routes[0].overview_path;
-						var routeString = JSON.stringify (routePath);
-						$("#"+ transport_id +" .path").html(routeString);				
-					}else if (status == 'ZERO_RESULTS'){
-					/*	var coordinates = new Array();
-						coordinates [0] = ori;
-						coordinates [1] = des;
-						
-						var routeString = JSON.stringify (coordinates);
-						
-						$("#"+ transport_id +" .path").html(routeString);*/
-						$("#"+ transport_id).addClass("no-reach");	
-							
-					}					
-				})
-			}
-		});
 	}
 	
 	

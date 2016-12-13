@@ -52,6 +52,11 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'sort_line') { $this->sort_line(); return; }
 			else if($this->data['action'] == 'refresh_sample') { $this->refresh_sample(); return; }
 			else if($this->data['action'] == 'sample_new_trip') { $this->sample_new_trip(); return; }
+			else if($this->data['action'] == 'get_line_mode_path') { $this->get_line_mode_path(); return; }
+			else if($this->data['action'] == 'get_distance_path') { $this->get_distance_path(); return; }
+			else if($this->data['action'] == 'add_path') { $this->add_path(); return; }
+			else if($this->data['action'] == 'edit_line_mode') { $this->edit_line_mode(); return; }
+			
 			else { 
 				//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 				$result['warning'][] = '<b>ERROR: Invalid action</b><br/>Please contact Admin.'; 
@@ -219,7 +224,11 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//START: set response
 			$result['success'][] = 'Trip saved'; 
 			$response = json_encode($result);
-			echo $response;
+			if ($this->data['from_sample']) {
+				return $result['redirect'];
+			}else {
+				echo $response;
+			}
 		//END
 	}
 	
@@ -1023,8 +1032,116 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	public function sample_new_trip() {
 		$this->data['user_id'] = $this->user->getUserId();
 		$this->data['language_id']= $this->language->getLanguageId();
-		$this->save_trip();
+		$this->data['from_sample']= "1";
+		$result['redirect'] = $this->save_trip();
+		
+		//START: set response
+		if($result['redirect'] == true) {
+			$result['success'] = 'Trip Created';
+		}
+		else {
+			$result['warning'] = 'ERROR: Fail to create Trip'; 
+		}
 	
+		$response = json_encode($result);
+		echo $response;
+		//END
+	}
+		
+	public function get_line_mode_path() {
+		// DATABASE MODE need to read mode_id from database, if COOKIE MODE, then skip these function
+		$result = $this->model_travel_trip->getLineMode($this->data['line_id']);
+		$default_mode_id = $this->data['default_mode_id'];
+		// create new data with this line_id, set mode to default mode_id 
+		if (!$result['line_id']) {			
+			$new_result = $this->model_travel_trip->addLineMode($this->data['line_id'],$default_mode_id);
+			$result = $new_result;
+		}
+		// edit mode if given line_id with different mode_id, wont happen alot.
+		if (!$result['mode_id']) {
+			$result['mode_id'] = $this->model_travel_trip->editLineMode($this->data['line_id'],$default_mode_id);
+		}
+		
+		// condition refresh after edit, add, delete, etc
+		if ($this->data['condition'] == "refresh") {
+			$result['path_id'] = "";
+		}
+		
+		if ($result['path_id']) {
+			$result['path'] = $this->model_travel_trip->getPathById($result['path_id']);	
+		}
+		
+		if (!$result['path_id'] || !$result['path']) {
+			$result['path'] = $this->model_travel_trip->getPathByCoor($this->data['coor'], $result['mode_id']);	
+			$result['path_id'] = $result['path']['path_id'];
+			if ($result['path']) {
+				$this->model_travel_trip->editLineMode($this->data['line_id'], $result['mode_id'], $result['path_id']);	
+			}
+		}
+		
+		//,$this->data['latlng']
+		$mode = $this->model_travel_trip->getMode($result['mode_id']);
+		$result['mode_name'] = $mode['g_name'];	
+		$result['mode_icon'] = $mode['icon'];	
+		
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function get_distance_path(){
+		$mode = $this->model_travel_trip->getMode($this->data['mode_id']);
+		$result['mode_id'] = $this->data['mode_id'];	
+		$result['mode_name'] = $mode['g_name'];	
+		$result['mode_icon'] = $mode['icon'];	
+		$result['path'] = $this->model_travel_trip->getPathByCoor($this->data['coor'], $result['mode_id']);	
+		$result['coor'] = $this->data['coor'];
+		$result['path_id'] = $result['path']['path_id'];
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function add_path(){
+
+		$path_exist =  $this->verify_path($this->data['coor'], $this->data['mode_id']);
+		
+		if (!$path_exist){
+			foreach($this->data['coor'] as $key => $value) {
+				$this->data[$key] = $value;
+			}
+			$execution = $this->model_travel_trip->addPath($this->data);
+		}
+		//START: set response
+		if($execution == true) {
+			$result['success'] = 'Success';
+		}
+		else {
+			$result['warning'] = 'ERROR: Fail to save'; 
+		}
+		$response = json_encode($result);
+		echo $response;
+		//END
+	}
+	
+	public function verify_path(){
+		
+		$result = $this->model_travel_trip->getPathByCoor($this->data['coor'], $this->data['mode_id']);
+		
+		return $result;
+	}
+	
+	public function edit_line_mode(){
+		$execution = $this->model_travel_trip->editLineMode($this->data['line_id'], $this->data['mode_id'],"0");	
+		
+		//START: set response
+		if($execution == true) {
+			$result['success'] = 'Success';
+		}
+		else {
+			$result['warning'] = 'ERROR: Fail to save'; 
+		}
+		
+		$response = json_encode($result);
+		echo $response;		
 	}
 	/*
 	public function get_trip() {

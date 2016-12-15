@@ -585,7 +585,7 @@
 		color:#000;
 	}
 	
-	.plan-line .image, .plan-line-twins .image {
+	.plan-line .image {
 		position:relative;
 		float:left;
 		height:60px;
@@ -698,12 +698,12 @@
 	}
 	
 	.click-blocker {
-		width: 100vw;
-		height: 100vh;
+		width: 150vw;
+		height: 200vh;
 		z-index: 10;
-		position:fixed;
-		top: 0;
-		left: 0;
+		position:absolute;
+		top: -100vh;
+		left: -50vw;
 		/*background-color:#0F3;*/
 	
 	}
@@ -2457,7 +2457,7 @@
 			if (json.success) {
 				getLineModeDistanceDataViaDatabase(line_id,day_id,coor);	
 			}else {
-				alert (json.warning);	
+				//alert (json.warning);	
 			}
 		}, "json");
 	}
@@ -2475,7 +2475,7 @@
 			var coor = getOriDes (line_id);
 			
 			<!-- SUB: CREATE TWINS CONTAINER FOR EACH DAY LAST LINE IF AVAILABLE-->
-			createLineTwins (line_id,day_id);
+			 createLineTwins(line_id,day_id);
 			
 			if (coor) {
 				<?php if($this->session->data['memory'] == 'cookie') { ?>
@@ -2487,7 +2487,7 @@
 			}else {
 				// hide transport mode selector if not use (same coor, without origin or destination)
 				$("#plan-line-"+line_id+" .transport").hide();
-				$("#twins-"+line_id+" .transport").hide();	
+				$(".twins-"+line_id+" .transport ").hide();	
 			}
 		});<!-- END -->
 		
@@ -2719,7 +2719,7 @@
 		var this_haslatlng = this_line.parents().hasClass("haslatlng");
 		var next_hasline = this_line.parents().next(".plan-line").length;
 		var next_haslatlng = this_line.parents().next(".plan-line").hasClass("haslatlng");
-		var next_day_haslatlng = this_line.parents(".plan-day").next(".plan-day").find(".plan-line").first().hasClass("haslatlng");
+		var after_next_day_haslatlng = this_line.parents(".plan-day").nextAll(".plan-day").find(".plan-line").first().hasClass("haslatlng");
 		//alert (next_haslatlng +" " + next_day_haslatlng +""+line_id);
 		var ori_lat, ori_lng, des_lat, des_lng;
 		if (this_haslatlng) {
@@ -2738,10 +2738,10 @@
 			des_place_id = this_line.parents(".plan-line").next().find('.plan-line-form-hidden input[name=place_id]').val();
 		}
 		
-		if (!next_hasline && next_day_haslatlng){
-			des_lat = parseFloat(this_line.parents(".plan-day").next(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
-			des_lng = parseFloat(this_line.parents(".plan-day").next(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);	
-			des_place_id =this_line.parents(".plan-day").next(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=place_id]').val();
+		if (!next_hasline && after_next_day_haslatlng){
+			des_lat = parseFloat(this_line.parents(".plan-day").nextAll(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
+			des_lng = parseFloat(this_line.parents(".plan-day").nextAll(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);	
+			des_place_id =this_line.parents(".plan-day").nextAll(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=place_id]').val();
 		}
 	
 		//alert (ori_lat +"/" + ori_lng +"," +des_lat+"/" +des_lng +"--------"+line_id);	
@@ -2766,11 +2766,12 @@
 	function refreshTwinsTransportMode (line_id,coor) {
 		// add link to google for transit mode
 		linkTransitDirection (line_id,coor);
-		if ($("#twins-"+line_id))	{
+	
+		if ($(".twins-"+line_id))	{
 			var info_option = $("#plan-line-"+line_id).find(".transport .mode-option-selected").html();
 			var info_display = $("#plan-line-"+line_id).find(".transport .mode-option-display").html();
-			$("#twins-"+line_id).find(".transport .mode-option-selected").html(info_option);	
-			$("#twins-"+line_id).find(".transport .mode-option-display").html(info_display);										
+			$(".twins-"+line_id).last().find(".transport .mode-option-selected").html(info_option);	
+			$(".twins-"+line_id).last().find(".transport .mode-option-display").html(info_display);										
 		}
 	}
 	
@@ -2778,7 +2779,7 @@
 		
 		var day_last_line = $("#plan-day-"+day_id+"-line .plan-line").last();
 		var next_day_id = $("#plan-day-"+day_id).next().attr('id');
-		
+		var day_after_this = $("#plan-day-"+day_id).nextAll(".plan-day");
 		
 		//check if is last line 
 		if (line_id == day_last_line.find($('.plan-input-hidden[name=line_id]')).val()) {
@@ -2787,6 +2788,7 @@
 		//check if have next day
 		if (next_day_id) {
 			var have_next_day = true;
+			
 		}
 		
 		//alert (is_last_line+","+have_next_day+","+line_id+","+day_id) ;
@@ -2797,7 +2799,7 @@
 			
 			
 			var twins_content = ''
-					+ '<div class="plan-line-twins" id="twins-'+line_id+'">'
+					+ '<div class="plan-line-twins twins-'+line_id+'">'
 						+ '<div class="row">'
 							+ '<div class="description">'
 								+ '<div class="title">'
@@ -2816,12 +2818,30 @@
 						+ '</div>' 
 					+ '</div>'
 					;
-		
-			if (twins_content && $("#twins-"+line_id).length < 1 ) {
-				// create the twin line
+			
+			
+			
+			if (twins_content && $(".twins-"+line_id).length < 1 ) {
+			/*	// create the twin line
 				$("#"+next_day_id).find(".plan-day-line").prepend(twins_content);
-				// hide the last line transport mode
-				$("#plan-line-"+line_id+" .transport").hide();	
+				*/// hide the last line transport mode
+				
+			
+			
+				var day_after_this = $("#plan-day-"+day_id).nextAll(".plan-day");
+				day_after_this.each(function(){
+					if ( $(this).find(".plan-line-twins").length < 1) {
+						
+						$(this).find(".plan-day-line").prepend(twins_content);
+						
+						if ($(this).find(".plan-line").length > 0) {
+							return false;	
+						}
+					}
+				});
+				$("#plan-line-"+line_id+" .transport").hide();
+				$(".twins-"+line_id+" .transport ").hide();	
+				$(".twins-"+line_id).last().find(".transport").show();		
 			}
 		}
 	}

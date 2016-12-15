@@ -380,11 +380,6 @@ function initOverlayPrototype () { // must be after or inside initMap()
 
 <script>
 var map;
-	$(document).ready(function(){
-		//updateTransportBox();
-	});
-
-
 	function initMap() {
 		var map_style = getMapStyle();
 		var myLatlng = new google.maps.LatLng(3.139003, 101.686852); //Malaysia
@@ -397,16 +392,7 @@ var map;
 			styles: map_style
 		});
 		
-		//getDistanceTime();
 		initExploreMap();
-		
-		
-		////callback to refresh route after action (delete, add, move ,modify)
-		$(document).off("refreshRoute").on("refreshRoute",function(){
-			//updateTransportBox();
-			//getDistanceTime();	
-		});
-		
 	}
 	
 	function mapEventListenResponse(markers, marker_labels, positions, bounds, routes ,routesP) {
@@ -710,7 +696,7 @@ var map;
 	
 		var routes = [];
 		var routesP = [];
-		$(".transport.has-route").each(function(i) {
+		$(".transport:visible").each(function(i) {
 			
 			if ( $(this).hasClass("no-reach") ||  $(this).hasClass("mode-flight")  ) {				
 				var icon_sequence = [{

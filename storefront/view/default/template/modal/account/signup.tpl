@@ -25,6 +25,8 @@
                         <span>Own an account? </span>
                     <a data-dismiss="modal" data-toggle='modal' data-target="#modal-account-login" >Log in</a>
                     </div>
+                    <div class="modal-response">
+               		</div>
                 </div>
             </div>
         </div>
@@ -66,11 +68,12 @@
 					content += "<li>You may save and load your plan anytime anywhere.</li>";
 					content += "</ul></div>";
 					alert_text = content;
-					
+
 					button = '<button type="button" class="btn btn-default" data-dismiss="modal">Continue</button>';
 					$('#modal-account-signup-form').hide();
 					$('#modal-account-signup .modal-body-footnote').hide();
-					$('#modal-account-signup .modal-footer').html(button);
+					$('.modal-button').hide();
+					$('#modal-account-signup .modal-response').html(button);
 					$("#modal-account-signup").on( "hidden.bs.modal", function() { window.location.reload(true); } );
 				}
 				document.getElementById('modal-account-signup-form-alert').innerHTML = alert_text;

@@ -1274,7 +1274,7 @@
 			if(isset(line_raw.website)) { hidden_website = ''; }
 			if(isset(line_raw.description)) { hidden_description = ''; }
 			
-			if(isset(line_raw.time) || isset(line_raw.duration) && line_raw.duration != 0 || isset(line_raw.company) || isset(line_raw.address) || isset(line_raw.phone) || isset(line_raw.fax) || isset(line_raw.website) || isset(line_raw.description)) {
+			if(isset(line_raw.time) || isset(line_raw.duration) && line_raw.duration != 0 || isset(line_raw.company) || isset(line_raw.address) || isset(line_raw.phone) || isset(line_raw.fax) || isset(line_raw.website) || isset(line_raw.description) || $(".text-line-get-direction").html() != "") {
 				hidden_button_show_detail = '';
 				action = 'onclick="toggleLineDetail('+line.line_id+');"';
 			}
@@ -1334,6 +1334,12 @@
 								+ '<i class="fa fa-fw fa-globe"></i>'
 								+ '<i class="fa fa-fw"></i>'
 								+ '<a href="' + convertTextToUrl(line.website) + '" target="blank">' + convertUrlToText(line.website) + '</a>'
+							+ '</div>'
+							+ '<div class="plan-line-description text-line-get-direction">'
+								+ '<a class="btn btn-default btn-block" href="https://maps.google.com?saddr=Current+Location&daddr='+line.lat+','+line.lng+'" target="_blank" style="text-decoration: none;">'
+									+ '<i class="fa fa-compass" aria-hidden="true"></i>&nbsp;'
+									+ '<span>Get Direction</span>'
+								+ '</a>'
 							+ '</div>'
 						+ '</div>'
 					+ '</div>' 
@@ -1441,14 +1447,14 @@
 				"action":"sample_new_trip",
 				"trip_id":"<?php echo $trip_id; ?>",
 				"plan": serial,
-				"name": "Copy of"+title
+				"name": "Copy of "+title
 			};
 		<!-- END -->
 		
 		<!-- START: send POST -->
 		/**/	$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {;
 				if(isset(json.success)) {
-					alert(json.success);
+					//alert(json.success);
 					<!-- if success -->
 					setCookie('trip','',0);
 					setCookie('plan','',0);
@@ -1461,9 +1467,8 @@
 	function newTripFromSampleViaCookies() {
 		var title = $('#wrapper-title-input').val();
 		var trip = '{"name":"Copy of '+title+'"}';
-		//var plan = '{"name":"Plan 1","travel_date":"","day":[{"day_id":1,"sort_order":1}]}';
 		setCookie('trip',trip,7);
-		//setCookie('plan',plan,7);
+		
 		var serial = '';
 		serial = plan_serialize();			
 			setCookie('plan',serial,7);

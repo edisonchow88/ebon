@@ -834,8 +834,6 @@
 	<?php echo $modal_itinerary_splash; ?>
 <!-- END -->
 
-<div id="section-popover-hint"><div id="popover-hint" class="fixed-width" onclick="$(this).hide();"></div></div>
-<div id="section-popover-alert"><div id="popover-alert" class="fixed-width" onclick="$(this).hide();"></div></div>
 <div class="header header-black fixed-width fixed-bar noselect noprint">
     <div class="col-xs-2 text-left">
         <a class="btn sample-return" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times"></i></a>
@@ -908,22 +906,6 @@
 	<!-- END -->
 </script>
 <script>
-	<!-- START: [popover alert] -->
-		function showAlert(text) {
-			$("#popover-alert").hide();
-			$("#popover-alert").html(text).fadeIn(100);
-			setTimeout(function() { $("#popover-alert").delay(1000).fadeOut(300); }, 2000);
-		}
-	<!-- END -->
-	
-	<!-- START: [popover hint] -->
-		function showHint(hint) {
-			$("#popover-hint").hide();
-			$("#popover-hint").html(hint).fadeIn(100);
-			setTimeout(function() { $("#popover-hint").delay(1000).fadeOut(300); }, 2000);
-		}
-	<!-- END -->
-	
 	<?php if($last_action != '') { ?>
 		showHint("<?php echo $last_action; ?>");
 	<?php } ?>
@@ -1316,7 +1298,7 @@
 					+ '<div class="row">'
 						+ '<div class="plan-line-detail plan-line-detail-'+line.line_id+' hidden">'
 							+ '<div class="plan-line-description text-line-description '+hidden_description+'">'
-								+ line.description
+								+ line.description.replace(new RegExp('\r?\n','g'), '<br />')
 							+ '</div>'
 							+ '<div class="plan-line-description '+hidden_time+'">'
 								+ '<i class="fa fa-fw fa-clock-o"></i>'

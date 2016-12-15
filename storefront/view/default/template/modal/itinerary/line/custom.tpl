@@ -489,7 +489,7 @@
 			sort_order	: $('#plan-line-'+line_id+'-form-hidden input[name=sort_order]').val(),
 			place_id	: $('#plan-line-'+line_id+'-form-hidden input[name=place_id]').val(),
 			title		: $('#plan-line-'+line_id+'-form-hidden input[name=title]').val(),
-			description	: $('#plan-line-'+line_id+'-form-hidden input[name=description]').val(),
+			description	: $('#plan-line-'+line_id+'-form-hidden textarea[name=description]').val(),
 			duration	: $('#plan-line-'+line_id+'-form-hidden input[name=duration]').val(),
 			time		: $('#plan-line-'+line_id+'-form-hidden input[name=time]').val(),
 			lat			: $('#plan-line-'+line_id+'-form-hidden input[name=lat]').val(),
@@ -504,7 +504,6 @@
 			website		: $('#plan-line-'+line_id+'-form-hidden input[name=website]').val(),
 			activity	: $('#plan-line-'+line_id+'-form-hidden input[name=activity]').val(),
 		};
-		
 		$('#modal-line-custom input[name=line_id]').val(line_id);
 		$('#modal-line-custom input[name=day_id]').val(line.day_id);
 		$('#modal-line-custom input[name=sort_order]').val(line.sort_order);
@@ -612,7 +611,7 @@
 			day_id		: line_raw.day_id,
 			sort_order	: line_raw.sort_order,
 			title		: line_raw.title,
-			description : line_raw.description,
+			description : line_raw.description.replace(new RegExp('\r?\n','g'), '<br />'),
 			duration	: convertLineDurationFormat(line_raw.duration),
 			time		: convertLineTimeFormat(line_raw.time),
 			lat			: line_raw.lat,

@@ -695,8 +695,6 @@
 	<?php echo $modal_itinerary_splash; ?>
 <!-- END -->
 
-<div id="section-popover-hint"><div id="popover-hint" class="fixed-width" onclick="$(this).hide();"></div></div>
-<div id="section-popover-alert"><div id="popover-alert" class="fixed-width" onclick="$(this).hide();"></div></div>
 <div class="header header-black fixed-width fixed-bar noselect">
     <div class="col-xs-2 text-left">
         <a class="btn" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times"></i></a>
@@ -779,22 +777,6 @@
 	<!-- END -->
 </script>
 <script>
-	<!-- START: [popover alert] -->
-		function showAlert(text) {
-			$("#popover-alert").hide();
-			$("#popover-alert").html(text).fadeIn(100);
-			setTimeout(function() { $("#popover-alert").delay(1000).fadeOut(300); }, 2000);
-		}
-	<!-- END -->
-	
-	<!-- START: [popover hint] -->
-		function showHint(hint) {
-			$("#popover-hint").hide();
-			$("#popover-hint").html(hint).fadeIn(100);
-			setTimeout(function() { $("#popover-hint").delay(1000).fadeOut(300); }, 2000);
-		}
-	<!-- END -->
-	
 	<?php if($last_action != '') { ?>
 		showHint("<?php echo $last_action; ?>");
 	<?php } ?>
@@ -1547,14 +1529,27 @@
 			$.each(column, function(i, col) {
 				var value = line_raw[col.name];
 				if(typeof value == 'undefined' || value == null || value == '') { value = ''; } 
-				hidden_form += ""
-					+ "<input "
+				if(col.name == 'description') {
+					hidden_form += ""
+					+ "<textarea "
 						+ "id='plan-line-" + line.line_id + "-col-" + col.id + "-input-hidden' "
 						+ 'name="' + col.name + '" '
 						+ "class='plan-input-hidden hidden' "
-						+ "value='" + value + "'"
-					+ "/>"
+					+ ">"
+					+ value
+					+ "</textarea>"
 				;
+				}
+				else {
+					hidden_form += ""
+						+ "<input "
+							+ "id='plan-line-" + line.line_id + "-col-" + col.id + "-input-hidden' "
+							+ 'name="' + col.name + '" '
+							+ "class='plan-input-hidden hidden' "
+							+ "value='" + value + "'"
+						+ "/>"
+					;
+				}
 			});
 		<!-- END -->
 		<!-- START: [info] -->
@@ -1697,7 +1692,7 @@
 								+ '</div>'
 								+ '<div class="description ' + hidden_description + '">'
 									+ '<span class="text-description">'
-										+ line.description
+										+ line.description.replace(new RegExp('\r?\n','g'), '<br />')
 									+ '</span>'
 								+ '</div>'
 								+ note

@@ -611,7 +611,7 @@
 			day_id		: line_raw.day_id,
 			sort_order	: line_raw.sort_order,
 			title		: line_raw.title,
-			description : line_raw.description.replace(new RegExp('\r?\n','g'), '<br />'),
+			description : line_raw.description,
 			duration	: convertLineDurationFormat(line_raw.duration),
 			time		: convertLineTimeFormat(line_raw.time),
 			lat			: line_raw.lat,
@@ -625,6 +625,8 @@
 			website		: line_raw.website,
 			activity	: line_raw.activity
 		}
+		
+		if(isset(line.description)) { line.description = line.description.replace(new RegExp('\r?\n','g'), '<br />'); }
 		
 		if(mode=='edit') {
 			<!-- START: edit existing line -->

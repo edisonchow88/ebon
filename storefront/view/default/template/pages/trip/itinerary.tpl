@@ -1632,6 +1632,9 @@
 				hidden_detail = '';
 			}
 		<!-- END -->
+		<!-- START: format variable -->
+			if(isset(line.description)) { line.description = line.description.replace(new RegExp('\r?\n','g'), '<br />'); }
+		<!-- END -->
 		<!-- START: [content] -->
 			content = ''
 				+ '<div id="plan-line-' + line.line_id + '" class="plan-line">'
@@ -1692,7 +1695,7 @@
 								+ '</div>'
 								+ '<div class="description ' + hidden_description + '">'
 									+ '<span class="text-description">'
-										+ line.description.replace(new RegExp('\r?\n','g'), '<br />')
+										+ line.description
 									+ '</span>'
 								+ '</div>'
 								+ note
@@ -1936,7 +1939,7 @@
 		ga('send', 'event','line', 'edit-line');
 		<!-- START: update hidden value -->
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=title]').val(line_raw.title);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=description]').val(line_raw.description);
+			$('#plan-line-'+line.line_id+'-form-hidden textarea[name=description]').val(line_raw.description);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=lat]').val(line_raw.lat);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=lng]').val(line_raw.lng);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=duration]').val(line_raw.duration);

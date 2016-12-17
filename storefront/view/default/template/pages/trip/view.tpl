@@ -781,7 +781,7 @@
 	}
 	
 	.plan-line-description a {
-		color:#666;
+		color:#777;
 		text-decoration:underline;
 	}
 	
@@ -792,6 +792,11 @@
 	
 	.text-line-description {
 		margin-bottom:15px;
+		line-height:20px;
+	}
+	
+	.text-line-get-direction {
+		margin-top:15px;
 	}
 </style>
 <style>
@@ -1095,7 +1100,7 @@
 					$("#wrapper-title-input").val(trip.name);
 					if(isset(trip.description)) {
 						$("#trip-description").removeClass('hidden');
-						$("#trip-description").html(trip.description);
+						$("#trip-description").html(trip.description.replace(new RegExp('\r?\n','g'), '<br />'));
 					}
 				}, "json");
 			<!-- END -->
@@ -1264,6 +1269,7 @@
 			var hidden_fax = 'hidden';
 			var hidden_website = 'hidden';
 			var hidden_description = 'hidden';
+			var hidden_direction = 'hidden';
 						
 			if(isset(line_raw.time)) { hidden_time = ''; }
 			if(isset(line_raw.duration) && line_raw.duration != 0) { hidden_duration = ''; }
@@ -1273,11 +1279,15 @@
 			if(isset(line_raw.fax)) { hidden_fax = ''; }
 			if(isset(line_raw.website)) { hidden_website = ''; }
 			if(isset(line_raw.description)) { hidden_description = ''; }
+			if(isset(line_raw.lat) && isset(line_raw.lng)) { hidden_direction = ''; }
 			
 			if(isset(line_raw.time) || isset(line_raw.duration) && line_raw.duration != 0 || isset(line_raw.company) || isset(line_raw.address) || isset(line_raw.phone) || isset(line_raw.fax) || isset(line_raw.website) || isset(line_raw.description) || $(".text-line-get-direction").html() != "") {
 				hidden_button_show_detail = '';
 				action = 'onclick="toggleLineDetail('+line.line_id+');"';
 			}
+		<!-- END -->
+		<!-- START: format variable -->
+			if(isset(line.description)) { line.description = line.description.replace(new RegExp('\r?\n','g'), '<br />'); }
 		<!-- END -->
 		<!-- START: [content] -->
 			content = ''
@@ -1298,7 +1308,7 @@
 					+ '<div class="row">'
 						+ '<div class="plan-line-detail plan-line-detail-'+line.line_id+' hidden">'
 							+ '<div class="plan-line-description text-line-description '+hidden_description+'">'
-								+ line.description.replace(new RegExp('\r?\n','g'), '<br />')
+								+ line.description
 							+ '</div>'
 							+ '<div class="plan-line-description '+hidden_time+'">'
 								+ '<i class="fa fa-fw fa-clock-o"></i>'
@@ -1335,7 +1345,7 @@
 								+ '<i class="fa fa-fw"></i>'
 								+ '<a href="' + convertTextToUrl(line.website) + '" target="blank">' + convertUrlToText(line.website) + '</a>'
 							+ '</div>'
-							+ '<div class="plan-line-description text-line-get-direction">'
+							+ '<div class="plan-line-description text-line-get-direction '+hidden_direction+'">'
 								+ '<a class="btn btn-default btn-block" href="https://maps.google.com?saddr=Current+Location&daddr='+line.lat+','+line.lng+'" target="_blank" style="text-decoration: none;">'
 									+ '<i class="fa fa-compass" aria-hidden="true"></i>&nbsp;'
 									+ '<span>Get Direction</span>'

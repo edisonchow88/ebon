@@ -2069,20 +2069,18 @@ class ModelTravelTrip extends Model{
 	//END
 		
 		public function getPathByCoor($coor, $mode_id) {
-			//if(!$coor || $mode_id) {
-			//	return;
-			//}else {
+
+			if($coor && $mode_id) {
 				$sql = "
 					SELECT *
 					FROM " . $this->db->table($this->table_path) . "
-					WHERE mode_id = '" .$mode_id. "'
-					AND ori_lat = " .$coor['ori_lat']. "
-					AND ori_lng = " .$coor['ori_lng']. "
-					AND des_lat = " .$coor['des_lat']. "
-					AND des_lng = " .$coor['des_lng']. "
+					WHERE mode_id = '" .$mode_id. "' 
+					AND ori_lat = ".$coor['ori_lat']." 
+					AND ori_lng = ".$coor['ori_lng']." 
+					AND des_lat = ".$coor['des_lat']."
+					AND des_lng = ".$coor['des_lng']."				
 				";				
-				
-			//}
+			}
 				$query = $this->db->query($sql);
 				$output = $query->row;
 				
@@ -2124,6 +2122,10 @@ class ModelTravelTrip extends Model{
 	}
 */
 	public function addPath($data){
+			//verify:
+			$path = $this->getPathByCoor($data['coor'], $data['mode_id']);
+						
+			if (!$path) { 
 			//START: set data
 				$fields = $this->getFields($this->db->table($this->table_path));
 				
@@ -2145,9 +2147,10 @@ class ModelTravelTrip extends Model{
 					INSERT INTO `" . $this->db->table($this->table_path) . "` 
 					SET " . implode(',', $update) . "
 				";
+								
 				$query = $this->db->query($sql);
 			//END
-			
+	
 			//START: get id
 				$path_id = $this->db->getLastId();
 			//END
@@ -2155,14 +2158,15 @@ class ModelTravelTrip extends Model{
 			//START: run chain reaction
 				$this->editLineMode($data['line_id'], $data['mode_id'], $path_id);
 			//END
-			
+			    $path_reget = $this->getPathById($path_id);
 			//START: clear cache
-			//	$this->cache->delete('path');
+				$this->cache->delete('path');
 			//END
-			
+		
 			//START: return
 				return $path_id;
 			//END
+			}	
 	}
 	
 }

@@ -348,12 +348,12 @@ function initOverlayPrototype () { // must be after or inside initMap()
 		var count_active_transport_box = $(".transport:not(:hidden)").length;
 		var transport_box_not_empty = $(".transport:not(:hidden) .path:not(:empty)").length + $(".transport:not(:hidden) .path:empty").siblings(".orindes:not(:empty)").length;
 		
-		if (transport_box_not_empty == count_active_transport_box) {
+		if (transport_box_not_empty /* == count_active_transport_box*/) {
 			runMapUpdate();	
 		}else {
-			var timer = setInterval(loopLoadMap, 1000);
+			//var timer = setInterval(loopLoadMap, 1000);
 			var i = 0;
-					
+			runMapUpdate();			
 			function loopLoadMap() {
 				count_active_transport_box = $(".transport:not(:hidden)").length;
 				transport_box_not_empty  =  $(".transport:not(:hidden) .path:not(:empty)").length;
@@ -693,12 +693,12 @@ var map;
           strokeOpacity: 1.5,
           scale: 2
         };
-	
+
 		var routes = [];
 		var routesP = [];
 		$(".transport:visible").each(function(i) {
 			
-			if ( $(this).hasClass("no-reach") ||  $(this).hasClass("mode-flight")  ) {				
+			if ( $(this).find(".path.hidden").html() == "") {
 				var icon_sequence = [{
 						icon: lineSymbol,
 						offset: '60%'
@@ -708,16 +708,17 @@ var map;
             			repeat: '15px'
 					}];
 				var route_opacity = 0;
-				var routePath = JSON.parse($(this).find(".orindes").html());
+				
+			var routePath = JSON.parse($(this).find(".travel-orindes.hidden").html());				
 			}else {
 				var icon_sequence = [{
 						icon: lineSymbol,
 						offset: '60%'
 					}];	
 				var route_opacity = 1;	
-				var routePath = JSON.parse($(this).find(".path").html());					
+				var routePath = JSON.parse($(this).find(".path.hidden").html());					
 			}
-			
+
 			if (routePath){
 			
 				var route = new google.maps.Polyline({

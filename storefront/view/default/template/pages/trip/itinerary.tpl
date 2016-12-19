@@ -2368,6 +2368,7 @@
 					+ '<span class="path hidden"></span>'
 					+ '<span class="travel-distance hidden"></span>'
 					+ '<span class="travel-duration hidden"></span>'
+					+ '<span class="travel-orindes hidden"></span>'
 				+ '</div>';
 			+ '</div>'
 		
@@ -2455,7 +2456,7 @@
 				
 		$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 			if (json.success) {
-				getLineModeDistanceDataViaDatabase(line_id,day_id,coor);	
+				getLineModeDistanceDataViaDatabase(line_id,day_id,coor);
 			}else {
 				//alert (json.warning);	
 			}
@@ -2473,7 +2474,7 @@
 			
 			<!-- SUB: GET ORIGIN AND DESTINATION COORDINATE FOR THIS LINE -->
 			var coor = getOriDes (line_id);
-			
+
 			<!-- SUB: CREATE TWINS CONTAINER FOR EACH DAY LAST LINE IF AVAILABLE-->
 			 createLineTwins(line_id,day_id);
 			
@@ -2559,11 +2560,20 @@
 		var mode = json.mode_name;
 		mode_selector.find(".mode-icon").html("<span class='"+json.mode_icon+"'></span>");
 		mode_selector.attr('value', json.mode_id);	
-								
+		
+		var coordinates = new Array();
+				coordinates [0] = new google.maps.LatLng(coor.ori_lat,  coor.ori_lng);
+				coordinates [1] = new google.maps.LatLng(coor.des_lat, coor.des_lng);
+						
+		var orindesString = JSON.stringify (coordinates);
+		
+		mode_display.find(".travel-orindes.hidden").html(orindesString);
+		
+		
 		if (json.path_id) {
+					
 			if (json.path.distance == "") var travel_text = "No Route Available";
-			else var travel_text = json.path.distance+", "+json.path.duration;
-			
+			else var travel_text = json.path.distance_text+", "+json.path.duration_text;			
 			mode_display.find(".text").html(travel_text);
 			mode_display.find(".travel-distance.hidden").html(json.path.distance);
 			mode_display.find(".travel-duration.hidden").html(json.path.duration);
@@ -2580,84 +2590,77 @@
 			});						
 		}	
 	}
-
 	
 	function retriveGDistance (line_id, mode, data) {			
 		var ori_lat = data.ori_lat;
 		var ori_lng = data.ori_lng;
 		var des_lat = data.des_lat;
 		var des_lng = data.des_lng;
+
+
+		var origin = ori_lat+","+ori_lng;
+		var destination = des_lat+","+des_lng;
+		var transport_id = $(this).attr("id");	
+		//alert(origin + destination);	
+		//alert (ori_lat +"" + ori_lng +"" +des_lat+"" +des_lng +"--------"+line_id);		
+		if ( origin == destination) {
+			$("#plan-line-"+line_id+" .transport").hide();
+		}else {
+			var deferred = new $.Deferred();
+			var service = new google.maps.DistanceMatrixService();
+			service.getDistanceMatrix({
+					origins: [origin],
+					destinations:  [destination],
+					travelMode: mode,
+					unitSystem: google.maps.UnitSystem.METRIC,
+					avoidHighways: false,
+					avoidTolls: false
+				}, function(response, status) {
+					if (status !== 'OK') {
+						alert('Error was: ' + status);
+					} else if (response.rows[0].elements[0].status == "OK") {
+						//alert (status);
+						var distance = response.rows[0].elements[0].distance.text;
+						var duration = response.rows[0].elements[0].duration.text;
+						var distance_value = response.rows[0].elements[0].distance.value;
+						var duration_value = response.rows[0].elements[0].duration.value;
 		
-		
-				var origin = ori_lat+","+ori_lng;
-				var destination = des_lat+","+des_lng;
-				var transport_id = $(this).attr("id");	
-				//alert(origin + destination);	
-				//alert (ori_lat +"" + ori_lng +"" +des_lat+"" +des_lng +"--------"+line_id);		
-				if ( origin == destination) {
-					$("#plan-line-"+line_id+" .transport").hide();
-				}else {
-					var deferred = new $.Deferred();
-					var service = new google.maps.DistanceMatrixService();
-					service.getDistanceMatrix({
-							origins: [origin],
-							destinations:  [destination],
-							travelMode: mode,
-							unitSystem: google.maps.UnitSystem.METRIC,
-							avoidHighways: false,
-							avoidTolls: false
-						}, function(response, status) {
-							if (status !== 'OK') {
-								alert('Error was: ' + status);
-							} else if (response.rows[0].elements[0].status == "OK") {
-								//alert (status);
-								var distance = response.rows[0].elements[0].distance.text;
-								var duration = response.rows[0].elements[0].duration.text;
-				
-								$("#plan-line-"+line_id+" .mode-option-display .text").html(distance+", "+duration);
-								$("#plan-line-"+line_id+" .mode-option-display .travel-distance").html(distance);
-								$("#plan-line-"+line_id+" .mode-option-display .travel-duration").html(duration);
-								deferred.resolve(response);
-										
-							}else if (response.rows[0].elements[0].status == "ZERO_RESULTS"){
-								//alert (JSON.stringify(response));
-								$("#plan-line-"+line_id+" .mode-option-display .text").html("No Route Available.");
-								$("#plan-line-"+line_id+" .mode-option-display .travel-distance").html("");
-								$("#plan-line-"+line_id+" .mode-option-display .travel-duration").html("");
-								deferred.resolve(response);
-							}
-						});
-					return deferred.promise();	
-					}				
+						$("#plan-line-"+line_id+" .mode-option-display .text").html(distance+", "+duration);
+						$("#plan-line-"+line_id+" .mode-option-display .travel-distance").html(distance_value);
+						$("#plan-line-"+line_id+" .mode-option-display .travel-duration").html(duration_value);
+						deferred.resolve(response);
+								
+					}else if (response.rows[0].elements[0].status == "ZERO_RESULTS"){
+						//alert (JSON.stringify(response));
+						$("#plan-line-"+line_id+" .mode-option-display .text").html("No Route Available.");
+						$("#plan-line-"+line_id+" .mode-option-display .travel-distance").html("");
+						$("#plan-line-"+line_id+" .mode-option-display .travel-duration").html("");
+						deferred.resolve(response);
+					}
+				});
+			return deferred.promise();	
+			}				
 	}
 	
 	function retriveGPath (line_id, mode,data) {
-		var ori_lat = data.ori_lat;
-		var ori_lng = data.ori_lng;
-		var des_lat = data.des_lat;
-		var des_lng = data.des_lng;
-		
 		if (data.ori_place_id && data.des_place_id) {
 			ori = { placeId: data.ori_place_id };
 			des = { placeId: data.des_place_id };
 		}else {
-			ori = new google.maps.LatLng(ori_lat, ori_lng);
-			des = new google.maps.LatLng(des_lat, des_lng);
+			ori = new google.maps.LatLng(data.ori_lat, data.ori_lng);
+			des = new google.maps.LatLng(data.des_lat, data.des_lng);
 		}
 		
 		var request = {
-								origin: ori,
-								destination: des,
-								travelMode: mode
+						origin: ori,
+						destination: des,
+						travelMode: mode
 					};	
 				
 		var coordinates = new Array();
 				coordinates [0] = ori;
 				coordinates [1] = des;
-						
-		var orindesString = JSON.stringify (coordinates);
 
-		//$("#plan-line-"+line_id+" .mode-option-display .orindes").html(orindesString);
 		var deferred = new $.Deferred();
 		var directionsService = new google.maps.DirectionsService();			
 		directionsService.route(request, function(response, status) {
@@ -2669,14 +2672,7 @@
 				$("#plan-line-"+line_id+" .mode-option-display .path").html(routeString);	
 				deferred.resolve(response);			
 			}else if (status == 'ZERO_RESULTS'){
-			/**/var coordinates = new Array();
-				coordinates [0] = ori;
-				coordinates [1] = des;
-				//alert (JSON.stringify(response));
-				var routeString = JSON.stringify (coordinates);
-				
-				$("#plan-line-"+line_id+" .mode-option-display .path").html(routeString);
-				//$("#plan-line-"+line_id+" .transport").addClass("no-reach");	
+				$("#plan-line-"+line_id+" .mode-option-display .path").html("");	
 				deferred.resolve(response);	
 			}	
 
@@ -2701,10 +2697,10 @@
 					"path": path
 				};
 	
-			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {	
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
 				
 			}, "json");
-				<!-- END -->
+			<!-- END -->
 		}
 	}
 	

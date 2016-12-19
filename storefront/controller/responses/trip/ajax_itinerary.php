@@ -1078,8 +1078,13 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 				$this->model_travel_trip->editLineMode($this->data['line_id'], $result['mode_id'], $result['path_id']);	
 			}
 		}
+
+		if ($result['path']) {
+			$converted_value = $this->convertDistanceDurationToUnit($result['path']['distance'],$result['path']['duration']);
+			$result['path']['distance_text'] = $converted_value['distance_text'];
+			$result['path']['duration_text'] = $converted_value['duration_text'];
+		}
 		
-		//,$this->data['latlng']
 		$mode = $this->model_travel_trip->getMode($result['mode_id']);
 		$result['mode_name'] = $mode['g_name'];	
 		$result['mode_icon'] = $mode['icon'];	
@@ -1096,20 +1101,25 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		$result['path'] = $this->model_travel_trip->getPathByCoor($this->data['coor'], $result['mode_id']);	
 		$result['coor'] = $this->data['coor'];
 		$result['path_id'] = $result['path']['path_id'];
+		
+		if ($result['path']) {
+			$converted_value = $this->convertDistanceDurationToUnit($result['path']['distance'],$result['path']['duration']);
+			$result['path']['distance_text'] = $converted_value['distance_text'];
+			$result['path']['duration_text'] = $converted_value['duration_text'];
+		}
+		
 		$response = json_encode($result);
 		echo $response;
 	}
 	
 	public function add_path(){
 
-		$path_exist =  $this->verify_path($this->data['coor'], $this->data['mode_id']);
-		
-		if (!$path_exist){
-			foreach($this->data['coor'] as $key => $value) {
-				$this->data[$key] = $value;
-			}
-			$execution = $this->model_travel_trip->addPath($this->data);
+		foreach($this->data['coor'] as $key => $value) {
+			$this->data[$key] = $value;
 		}
+		
+		$execution = $this->model_travel_trip->addPath($this->data);
+
 		//START: set response
 		if($execution == true) {
 			$result['success'] = 'Success';
@@ -1117,16 +1127,10 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		else {
 			$result['warning'] = 'ERROR: Fail to save'; 
 		}
+		
 		$response = json_encode($result);
 		echo $response;
-		//END
-	}
-	
-	public function verify_path(){
 		
-		$result = $this->model_travel_trip->getPathByCoor($this->data['coor'], $this->data['mode_id']);
-		
-		return $result;
 	}
 	
 	public function edit_line_mode(){
@@ -1141,7 +1145,55 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		}
 		
 		$response = json_encode($result);
-		echo $response;		
+		echo $response;	
+		//END	
+	}
+	
+	public function convertDistanceDurationToUnit($distance="", $duration=""){
+		if (is_numeric($distance) && $distance > 99) {
+			$unit = " km";
+			$distance_text = number_format(round($distance/1000,1),1) .$unit;
+		}else {
+			$unit = " m";
+			$distance_text = $distance .$unit;
+		}
+		
+		if (is_numeric($duration)) {
+			$sec = (int)($duration%60);
+			$min = (int)(($duration/60)%60);
+			$hour = (int)(($duration/3600)%24);
+			$day = (int)($duration/3600/24);
+			
+			if ($sec > 30) $min_round = 1;
+			if ($min > 30) $hour_round = 1;
+			
+			$duration_text = "";
+			$format_limit = 1;
+			
+			if ( $format_limit <= 2 )	{
+				if ( $day == 1 ) {$duration_text .= $day." day "; $format_limit++;}
+				else if ( $day > 1 ) {$duration_text .= $day." days "; $format_limit++;}				
+			}
+					
+			if ( $format_limit <= 2 ) {
+				if ($format_limit == 2 && $min > 30) $hour= $hour+1;
+				if ( $hour == 1 ) {$duration_text .= $hour." hour "; $format_limit++;}
+				else if ( $hour > 1 ) {$duration_text .= $hour." hours "; $format_limit++;}
+			}
+			
+			if ( $format_limit <= 2 ) {
+				if ($format_limit == 2 && $sec > 30) $min= $min+1;
+				if ( $min == 1 ) {$duration_text .= $min." min "; $format_limit++;}
+				else if ( $min > 1 ) {$duration_text .= $min." mins "; $format_limit++;}
+			}
+			
+			if (!$duration_text) { $duration_text .= "1 min "; }
+		}
+		
+		$converted_value['distance_text']= $distance_text;
+		$converted_value['duration_text']= $duration_text;
+
+		return $converted_value;
 	}
 	/*
 	public function get_trip() {

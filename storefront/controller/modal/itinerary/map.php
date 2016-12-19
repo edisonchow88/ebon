@@ -13,6 +13,10 @@ class ControllerModalItineraryMap extends AController {
 		//START: set template
 			$this->processTemplate('modal/itinerary/map.tpl' );
 		//END
+		
+		//START: set variable
+			if(count($ajax) > 0) { $this->view->assign('ajax', $ajax); }
+		//END
 
         //START: update controller data
         	$this->extensions->hk_UpdateData($this,__FUNCTION__);

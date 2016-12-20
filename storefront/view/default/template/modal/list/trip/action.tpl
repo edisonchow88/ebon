@@ -131,6 +131,9 @@
 </script>
 <script>
 	function removeTrip() {
+		<!-- START: show loading -->
+			showLoad('Removing');
+		<!-- END -->
 		<!-- START: set data -->
 			var data = {
 				"action":"remove_trip",
@@ -139,24 +142,34 @@
 			};
 		<!-- END -->
 		<!-- START: send POST -->
-			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-				<!-- START: if error -->
-					if(isset(json['error'])) {
-						processError(json['error']);
-						return;
-					}
-				<!-- END -->
-				<!-- START: reload result -->
-					refreshTrip();
-				<!-- END -->
-				<!-- START: show hint -->
-					showHint('Trip Removed');
-				<!-- END -->
-			}, "json");
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data)
+				.done(function(json) {
+					<!-- START: if error -->
+						if(isset(json['error'])) {
+							processError(json['error']);
+							return;
+						}
+					<!-- END -->
+					<!-- START: reload result -->
+						refreshTrip();
+					<!-- END -->
+					<!-- START: show hint -->
+						showHint('Trip Removed');
+					<!-- END -->
+				}, "json")
+				.fail(function() {
+					<!-- START: show hint -->
+						showAlert('Connection Error');
+					<!-- END -->
+				})
+			;
 		<!-- END -->
 	}
 	
 	function deleteTrip() {
+		<!-- START: show loading -->
+			showLoad('Deleting');
+		<!-- END -->
 		<!-- START: set data -->
 			var data = {
 				"action":"delete_trip",
@@ -165,24 +178,34 @@
 			};
 		<!-- END -->
 		<!-- START: send POST -->
-			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-				<!-- START: if error -->
-					if(isset(json['error'])) {
-						processError(json['error']);
-						return;
-					}
-				<!-- END -->
-				<!-- START: reload result -->
-					refreshTrip();
-				<!-- END -->
-				<!-- START: show hint -->
-					showHint('Trip Deleted');
-				<!-- END -->
-			}, "json");
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data)
+				.done(function(json) {
+					<!-- START: if error -->
+						if(isset(json['error'])) {
+							processError(json['error']);
+							return;
+						}
+					<!-- END -->
+					<!-- START: reload result -->
+						refreshTrip();
+					<!-- END -->
+					<!-- START: show hint -->
+						showHint('Trip Deleted');
+					<!-- END -->
+				}, "json")
+				.fail(function() {
+					<!-- START: show hint -->
+						showAlert('Connection Error');
+					<!-- END -->
+				})
+			;
 		<!-- END -->
 	}
 	
 	function restoreTrip() {
+		<!-- START: show loading -->
+			showLoad('Restoring');
+		<!-- END -->
 		<?php if($this->user->isLogged() == false) { ?>
 			var trip_id = $('#modal-trip-action-form input[name=trip_id]').val();
 			if(trip_id == 0) { //means it is unsaved trip
@@ -210,7 +233,44 @@
 				};
 			<!-- END -->
 			<!-- START: send POST -->
-				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data)
+					.done(function(json) {
+							<!-- START: if error -->
+								if(isset(json['error'])) {
+									processError(json['error']);
+									return;
+								}
+							<!-- END -->
+							<!-- START: reload result -->
+								refreshTrip();
+							<!-- END -->
+							<!-- START: show hint -->
+								showHint('Trip Restored');
+							<!-- END -->
+						}, "json")
+					.fail(function() {
+						<!-- START: show hint -->
+							showAlert('Connection Error');
+						<!-- END -->
+					})
+				;
+			<!-- END -->
+		<?php } ?>
+	}
+	
+	function cancelTrip() {
+		<!-- START: show loading -->
+			showLoad('Cancelling');
+		<!-- END -->
+		<!-- START: set data -->
+			var data = {
+				"action":"cancel_trip",
+				"trip_id":$('#modal-trip-action-form input[name=trip_id]').val()
+			};
+		<!-- END -->
+		<!-- START: send POST -->
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data)
+				.done(function(json) {
 					<!-- START: if error -->
 						if(isset(json['error'])) {
 							processError(json['error']);
@@ -221,39 +281,22 @@
 						refreshTrip();
 					<!-- END -->
 					<!-- START: show hint -->
-						showHint('Trip Restored');
+						showHint('Trip Cancelled');
 					<!-- END -->
-				}, "json");
-			<!-- END -->
-		<?php } ?>
-	}
-	
-	function cancelTrip() {
-		<!-- START: set data -->
-			var data = {
-				"action":"cancel_trip",
-				"trip_id":$('#modal-trip-action-form input[name=trip_id]').val()
-			};
-		<!-- END -->
-		<!-- START: send POST -->
-			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-				<!-- START: if error -->
-					if(isset(json['error'])) {
-						processError(json['error']);
-						return;
-					}
-				<!-- END -->
-				<!-- START: reload result -->
-					refreshTrip();
-				<!-- END -->
-				<!-- START: show hint -->
-					showHint('Trip Cancelled');
-				<!-- END -->
-			}, "json");
+				}, "json")
+				.fail(function() {
+					<!-- START: show hint -->
+						showAlert('Connection Error');
+					<!-- END -->
+				})
+			;
 		<!-- END -->
 	}
 	
 	function resumeTrip() {
+		<!-- START: show loading -->
+			showLoad('Undoing');
+		<!-- END -->
 		<!-- START: set data -->
 			var data = {
 				"action":"resume_trip",
@@ -261,20 +304,27 @@
 			};
 		<!-- END -->
 		<!-- START: send POST -->
-			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-				<!-- START: if error -->
-					if(isset(json['error'])) {
-						processError(json['error']);
-						return;
-					}
-				<!-- END -->
-				<!-- START: reload result -->
-					refreshTrip();
-				<!-- END -->
-				<!-- START: show hint -->
-					showHint('Trip Resumed');
-				<!-- END -->
-			}, "json");
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data)
+				.done(function(json) {
+					<!-- START: if error -->
+						if(isset(json['error'])) {
+							processError(json['error']);
+							return;
+						}
+					<!-- END -->
+					<!-- START: reload result -->
+						refreshTrip();
+					<!-- END -->
+					<!-- START: show hint -->
+						showHint('Cancellation Undid');
+					<!-- END -->
+				}, "json")
+				.fail(function() {
+					<!-- START: show hint -->
+						showAlert('Connection Error');
+					<!-- END -->
+				})
+			;
 		<!-- END -->
 	}
 	

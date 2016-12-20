@@ -10,18 +10,24 @@
 	
 	<!-- START: [popover alert] -->
 		function showAlert(text) {
-			$(".popover-alert-wrapper").hide();
 			$(".popover-alert").html(text);
-			$(".popover-alert-wrapper").fadeIn(100);
+			$(".popover-alert-wrapper").show();
+			$(".popover-load").hide();
 			setTimeout(function() { $(".popover-alert-wrapper").delay(1000).fadeOut(300); }, 2000);
 		}
 	<!-- END -->
 	<!-- START: [popover hint] -->
 		function showHint(text) {
-			$(".popover-hint-wrapper").hide();
 			$(".popover-hint").html(text);
-			$(".popover-hint-wrapper").fadeIn(100);
+			$(".popover-hint-wrapper").show();
+			$(".popover-load").hide();
 			setTimeout(function() { $(".popover-hint-wrapper").delay(1000).fadeOut(300); }, 2000);
+		}
+	<!-- END -->
+	<!-- START: [popover loading] -->
+		function showLoad(text) {
+			$(".popover-load").html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i><i class="fa fa-fw"></i>'+text+'...');
+			$(".popover-load").show();
 		}
 	<!-- END -->
 	

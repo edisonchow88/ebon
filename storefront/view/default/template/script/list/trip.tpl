@@ -356,6 +356,9 @@
 		var num_of_removed_saved_trip = $('.result-saved-trip.selected').length;
 		var num_of_removed_unsaved_trip = $('.result-unsaved-trip.selected').length;
 		
+		<!-- START: show loading -->
+			showLoad('Removing');
+		<!-- END -->
 		<?php if($this->user->isLogged() == false) { ?>
 			<!-- START: set cookie -->
 				setCookie('trip','',0);
@@ -395,19 +398,26 @@
 				};
 			<!-- END -->
 			<!-- START: send POST -->
-				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-					<!-- START: reload result -->
-						refreshTrip();
-					<!-- END -->
-					<!-- START: show hint -->
-						if(num_of_removed_trip > 1) {
-							showHint('Trips Removed');
-						}
-						else {
-							showHint('Trip Removed');
-						}
-					<!-- END -->
-				}, "json");
+				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data)
+					.done(function(json) {
+						<!-- START: reload result -->
+							refreshTrip();
+						<!-- END -->
+						<!-- START: show hint -->
+							if(num_of_removed_trip > 1) {
+								showHint('Trips Removed');
+							}
+							else {
+								showHint('Trip Removed');
+							}
+						<!-- END -->
+					}, "json")
+					.fail(function() {
+						<!-- START: show hint -->
+							showAlert('Connection Error');
+						<!-- END -->
+					})
+				;
 			<!-- END -->
 		<?php } ?>
 	}
@@ -417,6 +427,9 @@
 		var num_of_removed_saved_trip = $('.result-saved-trip.selected').length;
 		var num_of_removed_unsaved_trip = $('.result-unsaved-trip.selected').length;
 		
+		<!-- START: show loading -->
+			showLoad('Deleting');
+		<!-- END -->
 		<?php if($this->user->isLogged() == false) { ?>
 			<!-- START: set cookie -->
 				setCookie('trip','',0);
@@ -451,19 +464,26 @@
 				};
 			<!-- END -->
 			<!-- START: send POST -->
-				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-					<!-- START: reload result -->
-						refreshTrip();
-					<!-- END -->
-					<!-- START: show hint -->
-						if(num_of_removed_trip > 1) {
-							showHint('Trips Deleted');
-						}
-						else {
-							showHint('Trip Deleted');
-						}
-					<!-- END -->
-				}, "json");
+				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data)
+					.done(function(json) {
+						<!-- START: reload result -->
+							refreshTrip();
+						<!-- END -->
+						<!-- START: show hint -->
+							if(num_of_removed_trip > 1) {
+								showHint('Trips Deleted');
+							}
+							else {
+								showHint('Trip Deleted');
+							}
+						<!-- END -->
+					}, "json")
+					.fail(function() {
+						<!-- START: show hint -->
+							showAlert('Connection Error');
+						<!-- END -->
+					})
+				;
 			<!-- END -->
 		<?php } ?>
 	}
@@ -473,6 +493,9 @@
 		var num_of_removed_saved_trip = $('.result-saved-trip').length;
 		var num_of_removed_unsaved_trip = $('.result-unsaved-trip').length;
 		
+		<!-- START: show loading -->
+			showLoad('Deleting');
+		<!-- END -->
 		<?php if($this->user->isLogged() == false) { ?>
 			<!-- START: set cookie -->
 				setCookie('trip','',0);
@@ -507,19 +530,26 @@
 				};
 			<!-- END -->
 			<!-- START: send POST -->
-				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-					<!-- START: reload result -->
-						refreshTrip();
-					<!-- END -->
-					<!-- START: show hint -->
-						if(num_of_removed_trip > 1) {
-							showHint('Trips Deleted');
-						}
-						else {
-							showHint('Trip Deleted');
-						}
-					<!-- END -->
-				}, "json");
+				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data)
+					.done(function(json) {
+						<!-- START: reload result -->
+							refreshTrip();
+						<!-- END -->
+						<!-- START: show hint -->
+							if(num_of_removed_trip > 1) {
+								showHint('Trips Deleted');
+							}
+							else {
+								showHint('Trip Deleted');
+							}
+						<!-- END -->
+					}, "json")
+					.fail(function() {
+						<!-- START: show hint -->
+							showAlert('Connection Error');
+						<!-- END -->
+					})
+				;
 			<!-- END -->
 		<?php } ?>
 	}

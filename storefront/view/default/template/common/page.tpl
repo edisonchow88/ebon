@@ -11,6 +11,7 @@
         <div class="popover-hint-wrapper" onclick="$(this).hide();">
             <div class="popover-hint"></div>
         </div>
+        <div class="popover-load"></div>
         <div class="container-fluid">
             <?php echo $content; ?>
         </div>

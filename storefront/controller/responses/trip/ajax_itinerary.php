@@ -69,6 +69,11 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'sort_line') { $this->sort_line(); return; }
 			else if($this->data['action'] == 'refresh_sample') { $this->refresh_sample(); return; }
 			else if($this->data['action'] == 'sample_new_trip') { $this->sample_new_trip(); return; }
+			else if($this->data['action'] == 'get_line_mode_path') { $this->get_line_mode_path(); return; }
+			else if($this->data['action'] == 'get_distance_path') { $this->get_distance_path(); return; }
+			else if($this->data['action'] == 'add_path') { $this->add_path(); return; }
+			else if($this->data['action'] == 'edit_line_mode') { $this->edit_line_mode(); return; }
+			
 			else { 
 				//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 				$result['warning'][] = '<b>ERROR: Invalid action</b><br/>Please contact Admin.'; 
@@ -236,7 +241,11 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//START: set response
 			$result['success'][] = 'Trip saved'; 
 			$response = json_encode($result);
-			echo $response;
+			if ($this->data['from_sample']) {
+				return $result['redirect'];
+			}else {
+				echo $response;
+			}
 		//END
 	}
 	
@@ -1247,8 +1256,168 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	public function sample_new_trip() {
 		$this->data['user_id'] = $this->user->getUserId();
 		$this->data['language_id']= $this->language->getLanguageId();
-		$this->save_trip();
+		$this->data['from_sample']= "1";
+		$result['redirect'] = $this->save_trip();
+		
+		//START: set response
+		if($result['redirect'] == true) {
+			$result['success'] = 'Trip Created';
+		}
+		else {
+			$result['warning'] = 'ERROR: Fail to create Trip'; 
+		}
 	
+		$response = json_encode($result);
+		echo $response;
+		//END
+	}
+		
+	public function get_line_mode_path() {
+		// DATABASE MODE need to read mode_id from database, if COOKIE MODE, then skip these function
+		$result = $this->model_travel_trip->getLineMode($this->data['line_id']);
+		$default_mode_id = $this->data['default_mode_id'];
+		// create new data with this line_id, set mode to default mode_id 
+		if (!$result['line_id']) {			
+			$new_result = $this->model_travel_trip->addLineMode($this->data['line_id'],$default_mode_id);
+			$result = $new_result;
+		}
+		// edit mode if given line_id with different mode_id, wont happen alot.
+		if (!$result['mode_id']) {
+			$result['mode_id'] = $this->model_travel_trip->editLineMode($this->data['line_id'],$default_mode_id);
+		}
+		
+		// condition refresh after edit, add, delete, etc
+		if ($this->data['condition'] == "refresh") {
+			$result['path_id'] = "";
+		}
+		
+		if ($result['path_id']) {
+			$result['path'] = $this->model_travel_trip->getPathById($result['path_id']);	
+		}
+		
+		if (!$result['path_id'] || !$result['path']) {
+			$result['path'] = $this->model_travel_trip->getPathByCoor($this->data['coor'], $result['mode_id']);	
+			$result['path_id'] = $result['path']['path_id'];
+			if ($result['path']) {
+				$this->model_travel_trip->editLineMode($this->data['line_id'], $result['mode_id'], $result['path_id']);	
+			}
+		}
+
+		if ($result['path']) {
+			$converted_value = $this->convertDistanceDurationToUnit($result['path']['distance'],$result['path']['duration']);
+			$result['path']['distance_text'] = $converted_value['distance_text'];
+			$result['path']['duration_text'] = $converted_value['duration_text'];
+		}
+		
+		$mode = $this->model_travel_trip->getMode($result['mode_id']);
+		$result['mode_name'] = $mode['g_name'];	
+		$result['mode_icon'] = $mode['icon'];	
+		
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function get_distance_path(){
+		$mode = $this->model_travel_trip->getMode($this->data['mode_id']);
+		$result['mode_id'] = $this->data['mode_id'];	
+		$result['mode_name'] = $mode['g_name'];	
+		$result['mode_icon'] = $mode['icon'];	
+		$result['path'] = $this->model_travel_trip->getPathByCoor($this->data['coor'], $result['mode_id']);	
+		$result['coor'] = $this->data['coor'];
+		$result['path_id'] = $result['path']['path_id'];
+		
+		if ($result['path']) {
+			$converted_value = $this->convertDistanceDurationToUnit($result['path']['distance'],$result['path']['duration']);
+			$result['path']['distance_text'] = $converted_value['distance_text'];
+			$result['path']['duration_text'] = $converted_value['duration_text'];
+		}
+		
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	public function add_path(){
+
+		foreach($this->data['coor'] as $key => $value) {
+			$this->data[$key] = $value;
+		}
+		
+		$execution = $this->model_travel_trip->addPath($this->data);
+
+		//START: set response
+		if($execution == true) {
+			$result['success'] = 'Success';
+		}
+		else {
+			$result['warning'] = 'ERROR: Fail to save'; 
+		}
+		
+		$response = json_encode($result);
+		echo $response;
+		
+	}
+	
+	public function edit_line_mode(){
+		$execution = $this->model_travel_trip->editLineMode($this->data['line_id'], $this->data['mode_id'],"0");	
+		
+		//START: set response
+		if($execution == true) {
+			$result['success'] = 'Success';
+		}
+		else {
+			$result['warning'] = 'ERROR: Fail to save'; 
+		}
+		
+		$response = json_encode($result);
+		echo $response;	
+		//END	
+	}
+	
+	public function convertDistanceDurationToUnit($distance="", $duration=""){
+		if (is_numeric($distance) && $distance > 99) {
+			$unit = " km";
+			$distance_text = number_format(round($distance/1000,1),1) .$unit;
+		}else {
+			$unit = " m";
+			$distance_text = $distance .$unit;
+		}
+		
+		if (is_numeric($duration)) {
+			$sec = (int)($duration%60);
+			$min = (int)(($duration/60)%60);
+			$hour = (int)(($duration/3600)%24);
+			$day = (int)($duration/3600/24);
+			
+			if ($sec > 30) $min_round = 1;
+			if ($min > 30) $hour_round = 1;
+			
+			$duration_text = "";
+			$format_limit = 1;
+			
+			if ( $format_limit <= 2 )	{
+				if ( $day == 1 ) {$duration_text .= $day." day "; $format_limit++;}
+				else if ( $day > 1 ) {$duration_text .= $day." days "; $format_limit++;}				
+			}
+					
+			if ( $format_limit <= 2 ) {
+				if ($format_limit == 2 && $min > 30) $hour= $hour+1;
+				if ( $hour == 1 ) {$duration_text .= $hour." hour "; $format_limit++;}
+				else if ( $hour > 1 ) {$duration_text .= $hour." hours "; $format_limit++;}
+			}
+			
+			if ( $format_limit <= 2 ) {
+				if ($format_limit == 2 && $sec > 30) $min= $min+1;
+				if ( $min == 1 ) {$duration_text .= $min." min "; $format_limit++;}
+				else if ( $min > 1 ) {$duration_text .= $min." mins "; $format_limit++;}
+			}
+			
+			if (!$duration_text) { $duration_text .= "1 min "; }
+		}
+		
+		$converted_value['distance_text']= $distance_text;
+		$converted_value['duration_text']= $duration_text;
+
+		return $converted_value;
 	}
 	/*
 	public function get_trip() {

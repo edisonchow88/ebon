@@ -39,17 +39,29 @@
 }
 
 .icon-straight-route:before {
-  content: "\61";
+  content: "\100";
 }
 .icon-curve-route:before {
-  content: "\62";
+  content: "\101";
 }
 .icon-plane-down:before {
-  content: "\63";
+  content: "\102";
 }
 .icon-plane-up:before {
-  content: "\64";
+  content: "\103";
 }
 .icon-food-icon:before {
-  content: "\65";
+  content: "\104";
+}
+.icon-transport-car:before {
+  content: "\105";
+}
+.icon-transport-flight:before {
+  content: "\106";
+}
+.icon-transport-walk:before {
+  content: "\107";
+}
+.icon-transport-public:before {
+  content: "\108";
 }

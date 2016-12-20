@@ -19,6 +19,8 @@ class ModelTravelTrip extends Model{
 	private $table_line = "trip_line";
 	private $table_photo = "trip_photo";
 	private $table_sample = "trip_sample";
+	private $table_line_mode ="trip_line_mode";
+	private $table_path = "path";
 	
 	public function getFields($table) {
 		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
@@ -2174,7 +2176,7 @@ class ModelTravelTrip extends Model{
 			}
 	//END
 	
-	public function deleteSample($sample_id ="",$trip_id ="") {
+		public function deleteSample($sample_id ="",$trip_id ="") {
 			if ($sample_id != "") {
 			//START: run sql
 				$sql = "
@@ -2200,6 +2202,212 @@ class ModelTravelTrip extends Model{
 			//END
 		}
 	//END
+	
+		public function getActiveMode() {
+			
+				//retrive transport mode with selected line_id
+				$sql = "
+					SELECT * 
+					FROM " . $this->db->table($this->table_mode) . " t1 
+					LEFT JOIN ".$this->db->table($this->table_mode_description)." t2 
+					ON t1.mode_id = t2.mode_id 
+					WHERE t1.status = '1'
+					ORDER BY t1.mode_id DESC 
+				";	
+				$query = $this->db->query($sql);
+				$output = $query->rows;
+							
+				return $output;
+			}
+		//END
+	
+	
+		public function addLineMode($line_id, $mode_id) {
+			if (!$mode_id) $mode_id = "2";
+			
+			if(!$line_id) {
+				return;
+			}else {
+				//add new line with given mode
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_line_mode) . "` 
+					SET line_id = '" .$line_id. "', mode_id = '" .$mode_id. "'
+				";	
+			}
+			
+			$query = $this->db->query($sql);
+			
+			if ($query == true) {
+				$output['line_id'] = $line_id;
+				$output['mode_id'] = $mode_id;
+				return $output;
+			}else {
+				return false;									
+			}
+		}
+		//END
+		
+		public function editLineMode($line_id, $mode_id, $path_id) {
+			if (!$mode_id) $mode_id = "2";
+			if (!$path_id) $path_id ="0";
+			if(!$line_id) {
+				return;
+			}else {
+				//add new line with given mode
+				$sql = "
+					UPDATE `" . $this->db->table($this->table_line_mode) . "` 
+					SET mode_id = '" .$mode_id. "', path_id = '" . $path_id. "'
+					WHERE line_id = '" .$line_id. "'
+				";	
+			}
+			
+			$query = $this->db->query($sql);
+			
+			if ($query == true) {
+				$output = $mode_id;
+				return $output;
+			}else {
+				return false;									
+			}
+		}
+		//END
+		
+		public function getLineMode($line_id) {
+			
+			if(!$line_id) {
+				return;
+			}else {
+				//retrive transport mode with selected line_id
+				$sql = "
+					SELECT line_id, mode_id, path_id
+					FROM " . $this->db->table($this->table_line_mode) . "
+					WHERE line_id = '" .$line_id. "' 	
+				";				
+			}
+				$query = $this->db->query($sql);
+				$output = $query->row;
+										
+				return $output;
+			}
+	//END
+		
+		public function getPathById($path_id) {
+			if(!$path_id) {
+				return;
+			}else {
+				$sql = "
+					SELECT path_id, distance, duration, path
+					FROM " . $this->db->table($this->table_path) . "
+					WHERE path_id = '" .$path_id. "' 	
+				";				
+			}
+				$query = $this->db->query($sql);
+				$output = $query->row;
+										
+				return $output;
+			}
+	//END
+		
+		public function getPathByCoor($coor, $mode_id) {
+
+			if($coor && $mode_id) {
+				$sql = "
+					SELECT *
+					FROM " . $this->db->table($this->table_path) . "
+					WHERE mode_id = '" .$mode_id. "' 
+					AND ori_lat = ".$coor['ori_lat']." 
+					AND ori_lng = ".$coor['ori_lng']." 
+					AND des_lat = ".$coor['des_lat']."
+					AND des_lng = ".$coor['des_lng']."				
+				";				
+			}
+				$query = $this->db->query($sql);
+				$output = $query->row;
+				
+			return $output;
+		}
+	
+		/*public function add_line_mode($data){
+			
+			//set data
+			$fields = $this->getFields($this->db->table($this->table_line_mode));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f]))
+						$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+				}
+			//START: run sql
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_line_mode) . "` 
+					SET " . implode(',', $update) . "
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: get id
+				$trip_line_mode_id = $this->db->getLastId();
+			//END
+			
+			//START: run chain reaction
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('trip_line_mode');
+			//END
+			
+			//START: return
+				return $trip_line_mode_id;
+			//END
+	}
+*/
+	public function addPath($data){
+			//verify:
+			$path = $this->getPathByCoor($data['coor'], $data['mode_id']);
+						
+			if (!$path) { 
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_path));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f])) {
+						if($data[$f] == 'NULL') {
+							$update[$f] = $f . " = NULL";
+						}
+						else {
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+						}
+					}
+				}
+			//END
+			
+			//START: run sql
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_path) . "` 
+					SET " . implode(',', $update) . "
+				";
+								
+				$query = $this->db->query($sql);
+			//END
+	
+			//START: get id
+				$path_id = $this->db->getLastId();
+			//END
+			
+			//START: run chain reaction
+				$this->editLineMode($data['line_id'], $data['mode_id'], $path_id);
+			//END
+			    $path_reget = $this->getPathById($path_id);
+			//START: clear cache
+				$this->cache->delete('path');
+			//END
+		
+			//START: return
+				return $path_id;
+			//END
+			}	
+	}
 	
 }
 

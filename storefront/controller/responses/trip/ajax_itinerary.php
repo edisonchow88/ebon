@@ -1153,6 +1153,8 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		if (is_numeric($distance) && $distance > 99) {
 			$unit = " km";
 			$distance_text = number_format(round($distance/1000,1),1) .$unit;
+		}elseif ($distance == 0) {
+			$distance_text = "";
 		}else {
 			$unit = " m";
 			$distance_text = $distance .$unit;
@@ -1182,12 +1184,12 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			}
 			
 			if ( $format_limit <= 2 ) {
-				if ($format_limit == 2 && $sec > 30) $min= $min+1;
+				if ($format_limit == 2 && $sec > 1) $min= $min+1;
 				if ( $min == 1 ) {$duration_text .= $min." min "; $format_limit++;}
 				else if ( $min > 1 ) {$duration_text .= $min." mins "; $format_limit++;}
 			}
 			
-			if (!$duration_text) { $duration_text .= "1 min "; }
+			//if (!$duration_text) { $duration_text .= "1 min "; }
 		}
 		
 		$converted_value['distance_text']= $distance_text;

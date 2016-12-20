@@ -412,6 +412,7 @@ class ControllerPagesTripItinerary extends AController {
 			$this->addChild('modal/itinerary/line/custom', 'modal_line_custom', 'modal/itinerary/line/custom.tpl');
 			$this->addChild('modal/itinerary/line/delete', 'modal_line_delete', 'modal/itinerary/line/delete.tpl');
 			$this->addChild('modal/itinerary/line/filter', 'modal_line_filter', 'modal/itinerary/line/filter.tpl');
+			$this->addChild('modal/itinerary/transport/custom', 'modal_transport_custom', 'modal/itinerary/transport/custom.tpl');
 		//END
 		
 		//START: set ajax

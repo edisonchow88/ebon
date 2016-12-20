@@ -1482,6 +1482,183 @@ class ModelTravelTrip extends Model{
 			return $output;
 		}
 		
+		public function getUpcomingTripByUserId($user_id) {
+			$trip = array();
+			
+			//START: run sql
+				$sql = "
+						SELECT t1.status_id AS `member_status_id`, t2.*, t2.user_id AS `host_id`, t3.plan_id, t3.travel_date, COUNT(t4.day_id) AS `num_of_day`
+						FROM " . $this->db->table($this->table_member) . " t1
+						LEFT JOIN ".$this->db->table($this->table)." t2 
+						ON t1.trip_id = t2.trip_id 
+						LEFT JOIN ".$this->db->table($this->table_plan)." t3 
+						ON t1.trip_id = t3.trip_id 
+						LEFT JOIN ".$this->db->table($this->table_day)." t4 
+						ON t3.plan_id = t4.plan_id 
+						AND t3.selected = 1
+						WHERE t1.user_id = '" . (int)$user_id . "'
+						AND t1.status_id > 1
+						AND t1.removed = 0
+						GROUP BY t1.trip_id
+						ORDER BY t3.travel_date ASC, t2.name ASC
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				if($query->num_rows > 0) {
+					foreach($query->rows as $result){
+						$output[$result['trip_id']] = $result;
+						if($result['status_id'] == 1) {
+							$output[$result['trip_id']]['type'] = 'upcoming';
+						}
+						else if($result['status_id'] == 0) {
+							$output[$result['trip_id']]['type'] = 'cancelled';
+						}
+						if(isset($result['travel_date'])) {
+							$output[$result['trip_id']]['end_date'] = date('Y-m-d', strtotime('+'.($result['num_of_day'] - 1).' days',strtotime($result['travel_date'])));
+							if(date('Y-m-d') > $output[$result['trip_id']]['end_date']) { unset($output[$result['trip_id']]); }
+						}
+					}
+				}
+				else {
+					return false;
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getPastTripByUserId($user_id) {
+			$trip = array();
+			
+			//START: run sql
+				$sql = "
+						SELECT t1.status_id AS `member_status_id`, t2.*, t2.user_id AS `host_id`, t3.plan_id, t3.travel_date, COUNT(t4.day_id) AS `num_of_day`
+						FROM " . $this->db->table($this->table_member) . " t1
+						LEFT JOIN ".$this->db->table($this->table)." t2 
+						ON t1.trip_id = t2.trip_id 
+						LEFT JOIN ".$this->db->table($this->table_plan)." t3 
+						ON t1.trip_id = t3.trip_id 
+						LEFT JOIN ".$this->db->table($this->table_day)." t4 
+						ON t3.plan_id = t4.plan_id 
+						AND t3.selected = 1
+						WHERE t1.user_id = '" . (int)$user_id . "'
+						AND t1.status_id > 1
+						AND t1.removed = 0
+						AND NOT(t3.travel_date IS NULL)
+						GROUP BY t1.trip_id
+						ORDER BY t3.travel_date ASC
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				if($query->num_rows > 0) {
+					foreach($query->rows as $result){
+						$output[$result['trip_id']] = $result;
+						if($result['status_id'] == 1) {
+							$output[$result['trip_id']]['type'] = 'past';
+						}
+						else if($result['status_id'] == 0) {
+							$output[$result['trip_id']]['type'] = 'cancelled';
+						}
+						if(isset($result['travel_date'])) {
+							$output[$result['trip_id']]['end_date'] = date('Y-m-d', strtotime('+'.($result['num_of_day'] - 1).' days',strtotime($result['travel_date'])));
+							if(date('Y-m-d') <= $output[$result['trip_id']]['end_date']) { unset($output[$result['trip_id']]); }
+						}
+					}
+				}
+				else {
+					return false;
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getInvitedTripByUserId($user_id) {
+			$trip = array();
+			
+			//START: run sql
+				$sql = "
+						SELECT t1.status_id AS `member_status_id`, t2.*, t2.user_id AS `host_id`, t3.plan_id, t3.travel_date, COUNT(t4.day_id) AS `num_of_day`
+						FROM " . $this->db->table($this->table_member) . " t1
+						LEFT JOIN ".$this->db->table($this->table)." t2 
+						ON t1.trip_id = t2.trip_id 
+						LEFT JOIN ".$this->db->table($this->table_plan)." t3 
+						ON t1.trip_id = t3.trip_id 
+						LEFT JOIN ".$this->db->table($this->table_day)." t4 
+						ON t3.plan_id = t4.plan_id 
+						AND t3.selected = 1
+						WHERE t1.user_id = '" . (int)$user_id . "'
+						AND t1.status_id = 1
+						AND t1.removed = 0
+						GROUP BY t1.trip_id
+						ORDER BY t3.travel_date ASC, t2.name ASC
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				if($query->num_rows > 0) {
+					foreach($query->rows as $result){
+						$output[$result['trip_id']] = $result;
+						$output[$result['trip_id']]['type'] = 'invited';
+						if(isset($result['travel_date'])) {
+							$output[$result['trip_id']]['end_date'] = date('Y-m-d', strtotime('+'.($result['num_of_day'] - 1).' days',strtotime($result['travel_date'])));
+						}
+					}
+				}
+				else {
+					return false;
+				}
+			//END
+			
+			return $output;
+		}
+		
+		public function getRemovedTripByUserId($user_id) {
+			$trip = array();
+			
+			//START: run sql
+				$sql = "
+						SELECT t1.status_id AS `member_status_id`, t2.*, t2.user_id AS `host_id`, t3.plan_id, t3.travel_date, COUNT(t4.day_id) AS `num_of_day`
+						FROM " . $this->db->table($this->table_member) . " t1
+						LEFT JOIN ".$this->db->table($this->table)." t2 
+						ON t1.trip_id = t2.trip_id 
+						LEFT JOIN ".$this->db->table($this->table_plan)." t3 
+						ON t1.trip_id = t3.trip_id 
+						LEFT JOIN ".$this->db->table($this->table_day)." t4 
+						ON t3.plan_id = t4.plan_id 
+						AND t3.selected = 1
+						WHERE t1.user_id = '" . (int)$user_id . "'
+						AND t1.removed = 1
+						AND t1.deleted = 0
+						GROUP BY t1.trip_id
+						ORDER BY t3.travel_date ASC, t2.name ASC
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				if($query->num_rows > 0) {
+					foreach($query->rows as $result){
+						$output[$result['trip_id']] = $result;
+						$output[$result['trip_id']]['type'] = 'removed';
+						if(isset($result['travel_date'])) {
+							$output[$result['trip_id']]['end_date'] = date('Y-m-d', strtotime('+'.($result['num_of_day'] - 1).' days',strtotime($result['travel_date'])));
+						}
+					}
+				}
+				else {
+					return false;
+				}
+			//END
+			
+			return $output;
+		}
+		
 		public function getActiveTripByUserId($user_id) {
 			$trip = array();
 			
@@ -1511,6 +1688,8 @@ class ModelTravelTrip extends Model{
 			return $output;
 		}
 		
+		/*
+		
 		public function getRemovedTripByUserId($user_id) {
 			$trip = array();
 			
@@ -1539,12 +1718,73 @@ class ModelTravelTrip extends Model{
 			
 			return $output;
 		}
+		*/
 		
-		public function removeTrip($trip_id) {
+		public function removeUserOfTrip($user_id,$trip_id) {
+			//START: run sql
+				$sql = "
+					UPDATE " . $this->db->table($this->table_member) . " 
+					SET removed = '1'
+					WHERE user_id = '" . (int)$user_id . "'
+					AND trip_id = '" . (int)$trip_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('trip_member');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+		
+		public function restoreUserOfTrip($user_id,$trip_id) {
+			//START: run sql
+				$sql = "
+					UPDATE " . $this->db->table($this->table_member) . " 
+					SET removed = '0'
+					WHERE user_id = '" . (int)$user_id . "'
+					AND trip_id = '" . (int)$trip_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('trip_member');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+		
+		public function deleteUserOfTrip($user_id,$trip_id) {
+			//START: run sql
+				$sql = "
+					UPDATE " . $this->db->table($this->table_member) . " 
+					SET deleted = '1'
+					WHERE user_id = '" . (int)$user_id . "'
+					AND trip_id = '" . (int)$trip_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('trip_member');
+			//END
+			
+			//START: return
+				return true;
+			//END
+		}
+		
+		public function cancelTrip($trip_id) {
 			//START: run sql
 				$sql = "
 					UPDATE " . $this->db->table($this->table) . " 
-					SET removed = '1'
+					SET status_id = '0'
 					WHERE trip_id = '" . (int)$trip_id . "'
 				";
 				$query = $this->db->query($sql);
@@ -1559,11 +1799,11 @@ class ModelTravelTrip extends Model{
 			//END
 		}
 		
-		public function restoreTrip($trip_id) {
+		public function resumeTrip($trip_id) {
 			//START: run sql
 				$sql = "
 					UPDATE " . $this->db->table($this->table) . " 
-					SET removed = '0'
+					SET status_id = '1'
 					WHERE trip_id = '" . (int)$trip_id . "'
 				";
 				$query = $this->db->query($sql);

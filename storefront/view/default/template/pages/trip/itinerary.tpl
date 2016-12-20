@@ -741,8 +741,6 @@
 	<?php echo $modal_itinerary_splash; ?>
 <!-- END -->
 
-<div id="section-popover-hint"><div id="popover-hint" class="fixed-width" onclick="$(this).hide();"></div></div>
-<div id="section-popover-alert"><div id="popover-alert" class="fixed-width" onclick="$(this).hide();"></div></div>
 <div class="header header-black fixed-width fixed-bar noselect">
     <div class="col-xs-2 text-left">
         <a class="btn" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times"></i></a>
@@ -826,22 +824,6 @@
 	<!-- END -->
 </script>
 <script>
-	<!-- START: [popover alert] -->
-		function showAlert(text) {
-			$("#popover-alert").hide();
-			$("#popover-alert").html(text).fadeIn(100);
-			setTimeout(function() { $("#popover-alert").delay(1000).fadeOut(300); }, 2000);
-		}
-	<!-- END -->
-	
-	<!-- START: [popover hint] -->
-		function showHint(hint) {
-			$("#popover-hint").hide();
-			$("#popover-hint").html(hint).fadeIn(100);
-			setTimeout(function() { $("#popover-hint").delay(1000).fadeOut(300); }, 2000);
-		}
-	<!-- END -->
-	
 	<?php if($last_action != '') { ?>
 		showHint("<?php echo $last_action; ?>");
 	<?php } ?>
@@ -1601,14 +1583,27 @@
 			$.each(column, function(i, col) {
 				var value = line_raw[col.name];
 				if(typeof value == 'undefined' || value == null || value == '') { value = ''; } 
-				hidden_form += ""
-					+ "<input "
+				if(col.name == 'description') {
+					hidden_form += ""
+					+ "<textarea "
 						+ "id='plan-line-" + line.line_id + "-col-" + col.id + "-input-hidden' "
 						+ 'name="' + col.name + '" '
 						+ "class='plan-input-hidden hidden' "
-						+ "value='" + value + "'"
-					+ "/>"
+					+ ">"
+					+ value
+					+ "</textarea>"
 				;
+				}
+				else {
+					hidden_form += ""
+						+ "<input "
+							+ "id='plan-line-" + line.line_id + "-col-" + col.id + "-input-hidden' "
+							+ 'name="' + col.name + '" '
+							+ "class='plan-input-hidden hidden' "
+							+ "value='" + value + "'"
+						+ "/>"
+					;
+				}
 			});
 		<!-- END -->
 		<!-- START: [info] -->
@@ -1690,6 +1685,9 @@
 				;
 				hidden_detail = '';
 			}
+		<!-- END -->
+		<!-- START: format variable -->
+			if(isset(line.description)) { line.description = line.description.replace(new RegExp('\r?\n','g'), '<br />'); }
 		<!-- END -->
 		<!-- START: [content] -->
 			content = ''
@@ -1989,7 +1987,7 @@
 		ga('send', 'event','line', 'edit-line');
 		<!-- START: update hidden value -->
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=title]').val(line_raw.title);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=description]').val(line_raw.description);
+			$('#plan-line-'+line.line_id+'-form-hidden textarea[name=description]').val(line_raw.description);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=lat]').val(line_raw.lat);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=lng]').val(line_raw.lng);
 			$('#plan-line-'+line.line_id+'-form-hidden input[name=duration]').val(line_raw.duration);

@@ -8,6 +8,15 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	public $data = array();
 	
 	public function main() {
+		if(!isset($_SESSION['user_id'])) {
+			$result['error']['code'] = 401; 
+			$result['error']['title'] = 'Not Logged In'; 
+			$result['error']['text'] = 'Please log in to continue'; 
+			$response = json_encode($result);
+			echo $response;
+			die();
+		}
+		
 		//START: testing script
 			foreach($_POST as $key => $value) {
 				$this->data[$key] = $value;
@@ -24,9 +33,17 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'save_trip') { $this->save_trip(); return; }
 			else if($this->data['action'] == 'new_trip') { $this->new_trip(); return; }
 			else if($this->data['action'] == 'load_trip') { $this->load_trip(); return; }
+			else if($this->data['action'] == 'load_upcoming_trip') { $this->load_upcoming_trip(); return; }
+			else if($this->data['action'] == 'load_past_trip') { $this->load_past_trip(); return; }
+			else if($this->data['action'] == 'load_invited_trip') { $this->load_invited_trip(); return; }
+			else if($this->data['action'] == 'load_removed_trip') { $this->load_removed_trip(); return; }
 			else if($this->data['action'] == 'remove_trip') { $this->remove_trip(); return; }
+			else if($this->data['action'] == 'remove_multi_trip') { $this->remove_multi_trip(); return; }
 			else if($this->data['action'] == 'restore_trip') { $this->restore_trip(); return; }
+			else if($this->data['action'] == 'cancel_trip') { $this->cancel_trip(); return; }
+			else if($this->data['action'] == 'resume_trip') { $this->resume_trip(); return; }
 			else if($this->data['action'] == 'delete_trip') { $this->delete_trip(); return; }
+			else if($this->data['action'] == 'delete_multi') { $this->delete_multi(); return; }
 			else if($this->data['action'] == 'clean_archive') { $this->clean_archive(); return; }
 			else if($this->data['action'] == 'edit_trip_name') { $this->edit_trip_name(); return; }
 			else if($this->data['action'] == 'save_trip_info') { $this->save_trip_info(); return; }
@@ -266,6 +283,11 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 					$username = substr($user['email'], 0, strpos($user['email'], "@"));
 					$result['active_trip'][$trip_id]['username'] = $username;
 					$result['active_trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/itinerary','&trip='.$trip['code']);
+					
+					$plan = array_values($this->model_travel_trip->getPlanByTripId($trip['trip_id']));
+					$result['active_trip'][$trip_id]['travel_date'] = $plan[0]['travel_date'];
+					$day = array_values($this->model_travel_trip->getDayByPlanId($plan[0]['plan_id']));
+					$result['active_trip'][$trip_id]['num_of_day'] = count($day);
 				}
 			}
 		//END
@@ -294,43 +316,154 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//END
 	}
 	
+	
+	public function load_upcoming_trip() {
+		//START: get data
+			$result['trip'] = $this->model_travel_trip->getUpcomingTripByUserId($this->data['user_id']);
+		//END
+		//START: process trip
+			if($result['trip'] != false) {
+				foreach($result['trip'] as $trip_id => $trip) {
+					$result['trip'][$trip_id] = $trip;
+					$result['trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/itinerary','&trip='.$trip['code']);
+				}
+			}
+		//END
+		//START: convert to array
+			$result['trip'] = array_values($result['trip']);
+		//END
+		//START: set response 
+			$result['success'][] = 'Trips Loaded'; 
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function load_past_trip() {
+		//START: get data
+			$result['trip'] = $this->model_travel_trip->getPastTripByUserId($this->data['user_id']);
+		//END
+		//START: process trip
+			if($result['trip'] != false) {
+				foreach($result['trip'] as $trip_id => $trip) {
+					$result['trip'][$trip_id] = $trip;
+					$result['trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/itinerary','&trip='.$trip['code']);
+				}
+			}
+		//END
+		//START: convert to array
+			$result['trip'] = array_values($result['trip']);
+		//END
+		//START: set response 
+			$result['success'][] = 'Trips Loaded'; 
+			$response = json_encode($result);
+			echo $response;
+		//END
+	} 
+	
+	public function load_invited_trip() {
+		//START: get data
+			$result['trip'] = $this->model_travel_trip->getInvitedTripByUserId($this->data['user_id']);
+		//END
+		//START: process trip
+			if($result['trip'] != false) {
+				foreach($result['trip'] as $trip_id => $trip) {
+					$result['trip'][$trip_id] = $trip;
+					$result['trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/itinerary','&trip='.$trip['code']);
+				}
+			}
+		//END
+		//START: convert to array
+			$result['trip'] = array_values($result['trip']);
+		//END
+		//START: set response 
+			$result['success'][] = 'Trips Loaded'; 
+			$response = json_encode($result);
+			echo $response;
+		//END
+	} 
+	
+	public function load_removed_trip() {
+		//START: get data
+			$result['trip'] = $this->model_travel_trip->getRemovedTripByUserId($this->data['user_id']);
+		//END
+		//START: process trip
+			if($result['trip'] != false) {
+				foreach($result['trip'] as $trip_id => $trip) {
+					$result['trip'][$trip_id] = $trip;
+					$result['trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/itinerary','&trip='.$trip['code']);
+				}
+			}
+		//END
+		//START: convert to array
+			$result['trip'] = array_values($result['trip']);
+		//END
+		//START: set response 
+			$result['success'][] = 'Trips Loaded'; 
+			$response = json_encode($result);
+			echo $response;
+		//END
+	} 
+	
 	public function remove_trip() {
-		//START: run verification
-			if($this->verify_remove_trip() == 'failed') { return; }
+		//START: set variable
+			$trip_id = $this->data['trip_id'];
+			$user_id = $this->data['user_id'];
 		//END
 		
 		//START: excute function
-			$execution = $this->model_travel_trip->removeTrip($this->data['trip_id']);
-		//END
-		
-		//START: set redirect
-			$result['redirect'] = $this->html->getSecureURL('trip/itinerary');
+			$execution = $this->model_travel_trip->removeUserOfTrip($user_id,$trip_id);
 		//END
 		
 		//START: set response
 			if($execution == true) {
-				$result['success'][] = 'Trip removed';
+				$result['success'][] = 'Trip Removed';
 			}
 			else {
-				$result['warning'][] = '<b>SYSTEM ERROR: Trip cannot be removed.</b><br/>Please contact admin.'; 
+				$result['warning'][] = 'System Error'; 
 			}
 			$response = json_encode($result);
 			echo $response;
 		//END
 	}
 	
+	public function remove_multi_trip() {
+		//START: set variable
+			$trip = $this->data['trip'];
+			$user_id = $this->data['user_id'];
+		//END
+		
+		//START: execute
+			foreach($trip as $trip_id) {
+				$execution = $this->model_travel_trip->removeUserOfTrip($user_id,$trip_id);
+				if($execution == true) {
+					$result['success'][] = 'Trip Removed';
+				}
+				else {
+					$result['warning'][] = 'System Error';
+				}
+			}
+		//END
+		
+		//START: set response
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
 	public function restore_trip() {
-		//START: run verification
-			if($this->verify_restore_trip() == 'failed') { return; }
+		//START: set variable
+			$trip_id = $this->data['trip_id'];
+			$user_id = $this->data['user_id'];
 		//END
 		
 		//START: excute function
-			$execution = $this->model_travel_trip->restoreTrip($this->data['trip_id']);
+			$execution = $this->model_travel_trip->restoreUserOfTrip($user_id,$trip_id);
 		//END
 		
 		//START: set response
 			if($execution == true) {
-				$result['success'][] = 'Trip restored';
+				$result['success'][] = 'Trip Restored';
 			}
 			else {
 				$result['warning'][] = '<b>SYSTEM ERROR: Trip cannot be restored.</b><br/>Please contact admin.'; 
@@ -340,6 +473,95 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//END
 	}
 	
+	public function cancel_trip() {
+		//START: set variable
+			$trip_id = $this->data['trip_id'];
+		//END
+		
+		//START: excute function
+			$execution = $this->model_travel_trip->cancelTrip($trip_id);
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'][] = 'Trip Cancelled';
+			}
+			else {
+				$result['warning'][] = 'System Error';
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function resume_trip() {
+		//START: set variable
+			$trip_id = $this->data['trip_id'];
+		//END
+		
+		//START: excute function
+			$execution = $this->model_travel_trip->resumeTrip($trip_id);
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'][] = 'Trip Resumed';
+			}
+			else {
+				$result['warning'][] = 'System Error';
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function delete_trip() {
+		//START: set variable
+			$trip_id = $this->data['trip_id'];
+			$user_id = $this->data['user_id'];
+		//END
+		
+		//START: excute function
+			$execution = $this->model_travel_trip->deleteUserOfTrip($user_id,$trip_id);
+		//END
+		
+		//START: set response
+			if($execution == true) {
+				$result['success'][] = 'Trip Deleted';
+			}
+			else {
+				$result['warning'][] = 'System Error'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function delete_multi() {
+		//START: set variable
+			$trip = $this->data['trip'];
+			$user_id = $this->data['user_id'];
+		//END
+		
+		//START: execute
+			foreach($trip as $trip_id) {
+				$execution = $this->model_travel_trip->deleteUserOfTrip($user_id,$trip_id);
+				if($execution == true) {
+					$result['success'][] = 'Trip Deleted';
+				}
+				else {
+					$result['warning'][] = 'System Error';
+				}
+			}
+		//END
+		
+		//START: set response
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	/*
 	public function delete_trip() {
 		//START: run verification
 			//if($this->verify_delete_trip() == 'failed') { return; }
@@ -356,7 +578,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 					$result['success'][] = 'Trip deleted';
 				}
 				else {
-					$result['warning'][] = '<b>SYSTEM ERROR: Trip cannot be deleted.</b><br/>Please contact admin.'; 
+					$result['warning'][] = 'System Error';
 				}
 			}
 		//END
@@ -393,6 +615,8 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			echo $response;
 		//END
 	}
+	
+	*/
 	
 	public function verify_new_trip() {
 		$active_trip = $this->model_travel_trip->getActiveTripByUserId($this->data['user_id']);

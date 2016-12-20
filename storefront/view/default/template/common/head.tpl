@@ -82,6 +82,7 @@ if (window.location.host != 'localhost') {
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/jquery-migrate-1.2.1.min.js');?>"></script>
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/common.js'); ?>"></script>
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/cookie.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->templateResource('/javascript/trevol.js'); ?>"></script>
 
 <?php foreach ($scripts as $script) { ?>
 <script type="text/javascript" src="<?php echo $script; ?>"></script>

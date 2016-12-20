@@ -420,8 +420,6 @@
 	<?php echo $modal_home_splash; ?>
 <!-- END -->
 
-<div id="section-popover-alert"><div id="popover-alert" class="fixed-bar" onclick="$(this).hide();"></div></div>
-<div id="section-popover-hint"><div id="popover-hint" class="fixed-bar" onclick="$(this).hide();"></div></div>
 <div id="section-body" class="fixed-bar">
 	<div class="row" id="section-content">
         <div class="content" id="content-explore">
@@ -452,20 +450,6 @@
 		setTimeout(function() {
 			$('#wrapper-splash').fadeOut(500);
 		},1000);
-	<!-- END -->
-	<!-- START: [popover alert] -->
-		function showAlert(text) {
-			$("#popover-alert").hide();
-			$("#popover-alert").html(text).fadeIn(100);
-			setTimeout(function() { $("#popover-alert").delay(1000).fadeOut(300); }, 2000);
-		}
-	<!-- END -->
-	<!-- START: [popover hint] -->
-		function showHint(hint) {
-			$("#popover-hint").hide();
-			$("#popover-hint").html(hint).fadeIn(100);
-			setTimeout(function() { $("#popover-hint").delay(1000).fadeOut(300); }, 2000);
-		}
 	<!-- END -->
 	<!-- START: [tab] -->
 		function getHash() {

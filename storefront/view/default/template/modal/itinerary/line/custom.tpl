@@ -489,7 +489,7 @@
 			sort_order	: $('#plan-line-'+line_id+'-form-hidden input[name=sort_order]').val(),
 			place_id	: $('#plan-line-'+line_id+'-form-hidden input[name=place_id]').val(),
 			title		: $('#plan-line-'+line_id+'-form-hidden input[name=title]').val(),
-			description	: $('#plan-line-'+line_id+'-form-hidden input[name=description]').val(),
+			description	: $('#plan-line-'+line_id+'-form-hidden textarea[name=description]').val(),
 			duration	: $('#plan-line-'+line_id+'-form-hidden input[name=duration]').val(),
 			time		: $('#plan-line-'+line_id+'-form-hidden input[name=time]').val(),
 			lat			: $('#plan-line-'+line_id+'-form-hidden input[name=lat]').val(),
@@ -504,7 +504,6 @@
 			website		: $('#plan-line-'+line_id+'-form-hidden input[name=website]').val(),
 			activity	: $('#plan-line-'+line_id+'-form-hidden input[name=activity]').val(),
 		};
-		
 		$('#modal-line-custom input[name=line_id]').val(line_id);
 		$('#modal-line-custom input[name=day_id]').val(line.day_id);
 		$('#modal-line-custom input[name=sort_order]').val(line.sort_order);
@@ -626,6 +625,8 @@
 			website		: line_raw.website,
 			activity	: line_raw.activity
 		}
+		
+		if(isset(line.description)) { line.description = line.description.replace(new RegExp('\r?\n','g'), '<br />'); }
 		
 		if(mode=='edit') {
 			<!-- START: edit existing line -->

@@ -172,18 +172,18 @@
 				;
 				$('.content-body-result').append(content);
 			}
-			else if(data.type == 'removed') {
+			else if(data.type == 'invited') {
 				content = ''
 					+ '<div class="la-row result-trip result-saved-trip" data-date="'+sort_date+'" data-saved="1">'
 						+ '<a href="'+data.url+'">'
 							+ '<div class="col-xs-10 text-left">'
 								+ '<div class="la-icon">' 
-									+ '<i class="fa fa-fw fa-lg fa-dot-circle-o" style="color:#666;"></i>'
+									+ '<i class="fa fa-fw fa-lg fa-envelope" style="color:#555;"></i>'
 								+ '</div>'
 								+ text_description
 							+ '</div>'
 							+ '<div class="col-xs-2 text-right">'
-								+ '<a class="la-btn" data-toggle="modal" data-target="#modal-trip-action" onclick="setModalTripAction(\'removed\',\''+data.name+'\',\''+data.trip_id+'\');"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>'
+								+ '<a class="la-btn" data-toggle="modal" data-target="#modal-trip-action" onclick="setModalTripAction(\''+data.type+'\',\''+data.name+'\',\''+data.trip_id+'\');"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>'
 							+ '</div>'
 						+ '</a>'
 						+ '<form class="result-trip-form hidden">'
@@ -193,69 +193,80 @@
 				;
 				$('.content-body-result').append(content);
 			}
+			else if(data.type == 'removed') {
+				if(data.status_id == 0) { //removed cancelled trip
+					content = ''
+						+ '<div class="la-row result-trip result-saved-trip" data-date="'+sort_date+'" data-saved="1">'
+							+ '<a href="'+data.url+'">'
+								+ '<div class="col-xs-7 text-left">'
+									+ '<div class="la-icon">' 
+										+ '<i class="fa fa-fw fa-lg fa-times-circle-o" style="color:#666;"></i>'
+									+ '</div>'
+									+ text_description
+								+ '</div>'
+								+ '<div class="col-xs-3 text-right">'
+									+ '<div class="la-desc">'
+										+ '<div class="la-text text-sub">'
+											+ 'CANCELLED'
+										+ '</div>'
+									+ '</div>'
+								+ '</div>'
+								+ '<div class="col-xs-2 text-right">'
+									+ '<a class="la-btn" data-toggle="modal" data-target="#modal-trip-action" onclick="setModalTripAction(\''+data.type+'\',\''+data.name+'\',\''+data.trip_id+'\');"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>'
+								+ '</div>'
+							+ '</a>'
+							+ '<form class="result-trip-form hidden">'
+								+ '<input type="hidden" name="trip_id" value="'+data.trip_id+'"/>'
+							+ '</form>'
+						+ '</div>'
+					;
+				}
+				else if(data.member_status_id == 1) { //removed invited trip
+					content = ''
+						+ '<div class="la-row result-trip result-saved-trip" data-date="'+sort_date+'" data-saved="1">'
+							+ '<a href="'+data.url+'">'
+								+ '<div class="col-xs-10 text-left">'
+									+ '<div class="la-icon">' 
+										+ '<i class="fa fa-fw fa-lg fa-envelope" style="color:#666;"></i>'
+									+ '</div>'
+									+ text_description
+								+ '</div>'
+								+ '<div class="col-xs-2 text-right">'
+									+ '<a class="la-btn" data-toggle="modal" data-target="#modal-trip-action" onclick="setModalTripAction(\'removed\',\''+data.name+'\',\''+data.trip_id+'\');"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>'
+								+ '</div>'
+							+ '</a>'
+							+ '<form class="result-trip-form hidden">'
+								+ '<input type="hidden" name="trip_id" value="'+data.trip_id+'"/>'
+							+ '</form>'
+						+ '</div>'
+					;
+				}
+				else { //normal removed trip
+					content = ''
+						+ '<div class="la-row result-trip result-saved-trip" data-date="'+sort_date+'" data-saved="1">'
+							+ '<a href="'+data.url+'">'
+								+ '<div class="col-xs-10 text-left">'
+									+ '<div class="la-icon">' 
+										+ '<i class="fa fa-fw fa-lg fa-dot-circle-o" style="color:#666;"></i>'
+									+ '</div>'
+									+ text_description
+								+ '</div>'
+								+ '<div class="col-xs-2 text-right">'
+									+ '<a class="la-btn" data-toggle="modal" data-target="#modal-trip-action" onclick="setModalTripAction(\'removed\',\''+data.name+'\',\''+data.trip_id+'\');"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>'
+								+ '</div>'
+							+ '</a>'
+							+ '<form class="result-trip-form hidden">'
+								+ '<input type="hidden" name="trip_id" value="'+data.trip_id+'"/>'
+							+ '</form>'
+						+ '</div>'
+					;
+				}
+				$('.content-body-result').append(content);
+			}
 		<!-- END -->
 	}
 	
-	function refreshTrip() {
-		<!-- START: reset loading screen -->
-			$('.content-body-loading').show();
-			$('.content-body-empty').show();
-			$('.content-body').css('min-height','100vh');
-			closeEditTrip();
-		<!-- END -->
-		<!-- START: clear old result -->
-			$('.content-body-result').html('');
-		<!-- END -->
-		<!-- START: clear old result -->
-			$('.content-body-result').html('');
-		<!-- END -->
-		<!-- START: get unsaved trip -->
-			var result = {trip:[]}
-			var cookie_trip = getCookie('trip');
-			var cookie_plan = getCookie('plan');
-			if(isset(cookie_trip)) {
-				<!-- START: [revisit] -->
-					unsaved_plan = new Array();
-					unsaved_plan = JSON.parse(cookie_plan);
-					unsaved_trip = new Array();
-					unsaved_trip = JSON.parse(cookie_trip);
-					if(!(isset(unsaved_trip.removed))) { unsaved_trip.removed = 0; }
-					unsaved_trip.travel_date = unsaved_plan.travel_date;
-					unsaved_trip.num_of_day = unsaved_plan.day.length;
-					unsaved_trip.end_date = addDayToDate(unsaved_trip.travel_date,unsaved_trip.num_of_day-1);
-					unsaved_trip.username = 'Me';
-					unsaved_trip.url = '<?php echo $link["trip/itinerary"]; ?>';
-					unsaved_trip.storage = 'cookie';
-					if(unsaved_trip.removed != 1) { result.trip.push(unsaved_trip); }
-				<!-- END -->
-			}
-		<!-- END -->
-		<!-- START: get new result -->
-			<?php if($this->user->isLogged() != false) { ?>
-				<!-- START: [logged] -->
-					<!-- START: set data -->
-						var data = {
-							"action":"load_upcoming_trip",
-							"user_id":"<?php echo $this->user->getUserId(); ?>"
-						};
-					<!-- END -->
-					<!-- START: send POST -->
-						$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-							if(!(isset(json.trip))) { json.trip = new Array(); }
-							if(typeof unsaved_trip != 'undefined' && unsaved_trip.removed != 1) { 
-								json.trip.unshift(unsaved_trip); 
-							}
-							runRefreshTripList(json,'sortTripByDateFromOldToNew');
-						}, "json");
-					<!-- END -->
-				<!-- END -->
-			<?php } else { ?>
-				<!-- START: [not logged] -->
-					runRefreshTripList(result,'sortTripByDateFromOldToNew');
-				<!-- END -->
-			<?php } ?>
-		<!-- END -->
-	}
+	
 	
 	function runRefreshTripList(trip,sorting) {
 		if(isset(trip.trip)) {
@@ -287,6 +298,7 @@
 		}
 		else {
 			$('.btn-edit-trip').addClass('disabled');
+			$('.btn-delete-all').addClass('disabled');
 			$('.content-body-loading').fadeOut();
 		}
 	}
@@ -314,7 +326,7 @@
 	function closeEditTrip() {
 		$('.navbar-general').removeClass('hidden');
 		$('.navbar-edit').addClass('hidden');
-		$('.btn-remove-trip').addClass('disabled');
+		$('.btn-navbar-edit-right').addClass('disabled');
 		$('.result-trip .la-btn').html('<i class="fa fa-fw fa-lg fa-ellipsis-v"></i>');
 		$('.result-trip .la-btn').css('color','#000');
 		$('.result-trip a').css('pointer-events','auto');
@@ -327,7 +339,7 @@
 		$(button).html('<i class="fa fa-fw fa-lg fa-check-square"></i>');
 		$(button).css('color','#e93578');
 		if($('.result-trip.selected').length > 0) {
-			$('.btn-remove-trip').removeClass('disabled');
+			$('.btn-navbar-edit-right').removeClass('disabled');
 		}
 	}
 	
@@ -335,7 +347,7 @@
 		$(button).html('<i class="fa fa-fw fa-lg fa-square-o"></i>');
 		$(button).css('color','#CCC');
 		if($('.result-trip.selected').length < 1) {
-			$('.btn-remove-trip').addClass('disabled');
+			$('.btn-navbar-edit-right').addClass('disabled');
 		}
 	}
 	
@@ -400,6 +412,135 @@
 		<?php } ?>
 	}
 	
+	function deleteMulti() {
+		var num_of_removed_trip = $('.result-trip.selected').length;
+		var num_of_removed_saved_trip = $('.result-saved-trip.selected').length;
+		var num_of_removed_unsaved_trip = $('.result-unsaved-trip.selected').length;
+		
+		<?php if($this->user->isLogged() == false) { ?>
+			<!-- START: set cookie -->
+				setCookie('trip','',0);
+				setCookie('plan','',0);
+			<!-- END -->
+			<!-- START: reload result -->
+				refreshTrip();
+			<!-- END -->
+			<!-- START: show hint -->
+				showHint('Trip Deleted');
+			<!-- END -->
+		<?php } else { ?>
+			<!-- START: set cookie -->
+				setCookie('trip','',0);
+				setCookie('plan','',0);
+			<!-- END -->
+			<!-- START: get data -->
+				var trip = new Array();
+				var trip_id = '';
+				var e;
+				for(i=0;i<num_of_removed_saved_trip;i++) {
+					e = $('.result-saved-trip.selected .result-trip-form input[name=trip_id]').get(i);
+					trip_id = $(e).val();
+					trip.push(trip_id);
+				}
+			<!-- END -->
+			<!-- START: set data -->
+				var data = {
+					"action":"delete_multi",
+					"user_id":"<?php echo $this->user->getUserId(); ?>",
+					"trip":trip
+				};
+			<!-- END -->
+			<!-- START: send POST -->
+				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+					<!-- START: reload result -->
+						refreshTrip();
+					<!-- END -->
+					<!-- START: show hint -->
+						if(num_of_removed_trip > 1) {
+							showHint('Trips Deleted');
+						}
+						else {
+							showHint('Trip Deleted');
+						}
+					<!-- END -->
+				}, "json");
+			<!-- END -->
+		<?php } ?>
+	}
+	
+	function deleteAll() {
+		var num_of_removed_trip = $('.result-trip').length;
+		var num_of_removed_saved_trip = $('.result-saved-trip').length;
+		var num_of_removed_unsaved_trip = $('.result-unsaved-trip').length;
+		
+		<?php if($this->user->isLogged() == false) { ?>
+			<!-- START: set cookie -->
+				setCookie('trip','',0);
+				setCookie('plan','',0);
+			<!-- END -->
+			<!-- START: reload result -->
+				refreshTrip();
+			<!-- END -->
+			<!-- START: show hint -->
+				showHint('Trip Deleted');
+			<!-- END -->
+		<?php } else { ?>
+			<!-- START: set cookie -->
+				setCookie('trip','',0);
+				setCookie('plan','',0);
+			<!-- END -->
+			<!-- START: get data -->
+				var trip = new Array();
+				var trip_id = '';
+				var e;
+				for(i=0;i<num_of_removed_saved_trip;i++) {
+					e = $('.result-saved-trip .result-trip-form input[name=trip_id]').get(i);
+					trip_id = $(e).val();
+					trip.push(trip_id);
+				}
+			<!-- END -->
+			<!-- START: set data -->
+				var data = {
+					"action":"delete_multi",
+					"user_id":"<?php echo $this->user->getUserId(); ?>",
+					"trip":trip
+				};
+			<!-- END -->
+			<!-- START: send POST -->
+				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+					<!-- START: reload result -->
+						refreshTrip();
+					<!-- END -->
+					<!-- START: show hint -->
+						if(num_of_removed_trip > 1) {
+							showHint('Trips Deleted');
+						}
+						else {
+							showHint('Trip Deleted');
+						}
+					<!-- END -->
+				}, "json");
+			<!-- END -->
+		<?php } ?>
+	}
+	
+	function openModalNewTrip() {
+		var trip = getCookie('trip');
+		if(isset(trip)) { trip = JSON.parse(trip); }
+		
+		if($('.result-trip-status').length > 0) {
+			var content;
+			content = '<div class="alert alert-warning"><b>'+trip.name+' is not saved.</b><br/>Please save or delete it before create a new trip.</div>';
+			$('#wrapper-trip-list-alert').html(content);
+		}
+		else {
+			$('#wrapper-trip-list-alert').html('');
+			$('#modal-trip-new').modal('show');
+			//Google Analytics Event
+			ga('send', 'event','trip','open-modal-new-trip');
+		}
+	}
+	
 	function setModalTripAction(type,name,trip_id) {
 		$('.modal-trip-action-trip-name').html(name);
 		$('#modal-trip-action-form input[name=trip_id]').val(trip_id);
@@ -411,28 +552,60 @@
 			$('.modal-trip-action-template').hide();
 			$('.modal-trip-action-cancel').hide();
 			$('.modal-trip-action-resume').hide();
+			$('.modal-trip-action-read').hide();
+			$('.modal-trip-action-report').hide();
 			$('.modal-trip-action-remove').hide();
 			$('.modal-trip-action-restore').hide();
 			$('.modal-trip-action-delete').hide();
 		}
-		if(type == 'upcoming') {
+		else if(type == 'upcoming') {
 			$('.modal-trip-action-save').hide();
 			$('.modal-trip-action-share').show();
 			$('.modal-trip-action-duplicate').show();
 			$('.modal-trip-action-template').hide();
 			$('.modal-trip-action-cancel').show();
 			$('.modal-trip-action-resume').hide();
+			$('.modal-trip-action-read').hide();
+			$('.modal-trip-action-report').hide();
 			$('.modal-trip-action-remove').show();
 			$('.modal-trip-action-restore').hide();
 			$('.modal-trip-action-delete').hide();
 		}
-		if(type == 'cancelled') {
+		else if(type == 'past') {
+			$('.modal-trip-action-save').hide();
+			$('.modal-trip-action-share').show();
+			$('.modal-trip-action-duplicate').show();
+			$('.modal-trip-action-template').hide();
+			$('.modal-trip-action-cancel').show();
+			$('.modal-trip-action-resume').hide();
+			$('.modal-trip-action-read').hide();
+			$('.modal-trip-action-report').hide();
+			$('.modal-trip-action-remove').show();
+			$('.modal-trip-action-restore').hide();
+			$('.modal-trip-action-delete').hide();
+		}
+		else if(type == 'invited') {
+			$('.modal-trip-action-save').hide();
+			$('.modal-trip-action-share').hide();
+			$('.modal-trip-action-duplicate').hide();
+			$('.modal-trip-action-template').hide();
+			$('.modal-trip-action-cancel').hide();
+			$('.modal-trip-action-resume').hide();
+			$('.modal-trip-action-read').show();
+			$('.modal-trip-action-report').show();
+			$('.modal-trip-action-remove').show();
+			$('.modal-trip-action-restore').hide();
+			$('.modal-trip-action-delete').hide();
+		}
+		else if(type == 'cancelled') {
 			$('.modal-trip-action-save').hide();
 			$('.modal-trip-action-share').show();
 			$('.modal-trip-action-duplicate').show();
 			$('.modal-trip-action-template').hide();
 			$('.modal-trip-action-cancel').hide();
 			$('.modal-trip-action-resume').show();
+			$('.modal-trip-action-read').hide();
+			$('.modal-trip-action-report').hide();
 			$('.modal-trip-action-remove').show();
 			$('.modal-trip-action-restore').hide();
 			$('.modal-trip-action-delete').hide();
@@ -444,6 +617,8 @@
 			$('.modal-trip-action-template').hide();
 			$('.modal-trip-action-cancel').hide();
 			$('.modal-trip-action-resume').hide();
+			$('.modal-trip-action-read').hide();
+			$('.modal-trip-action-report').hide();
 			$('.modal-trip-action-remove').hide();
 			$('.modal-trip-action-restore').show();
 			$('.modal-trip-action-delete').show();

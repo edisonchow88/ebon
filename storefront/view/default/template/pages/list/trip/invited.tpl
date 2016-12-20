@@ -4,7 +4,7 @@
             <a class="btn" data-toggle="modal" data-target="#modal-home-menu" onclick="closePageMenuInstant();"><i class="fa fa-fw fa-lg fa-bars"></i></a>
         </div>
         <div class="col-xs-6 text-center">
-            <a onclick="togglePageMenu();"><h1>Past</h1><i class="fa fa-fw fa-caret-down"></i></a>
+            <a onclick="togglePageMenu();"><h1>Invited</h1><i class="fa fa-fw fa-caret-down"></i></a>
         </div>
         <div class="col-xs-3 text-right">
             <a class="btn" data-toggle="modal" data-target="#modal-trip-search" onclick="closePageMenuInstant();"><i class="fa fa-fw fa-lg fa-search"></i></a>
@@ -35,7 +35,7 @@
 </div>
 <div class="content-body-empty fixed-width">
     <div class="col-xs-12">
-    	<div><b>No Past Trip</b></div>
+    	<div><b>No Invitation</b></div>
         <div>Click to create a <a href="<?php echo $link['trip/new']; ?>">new trip</a></div>
     </div>
 </div>
@@ -47,7 +47,7 @@
             <span class="text-sub">Sort by</span>
         </div>
         <div class="col-xs-6 text-right">
-            <a class="btn btn-sort-trip" data-toggle="modal" data-target="#modal-trip-sort">&uarr; DATE</a>
+            <a class="btn btn-sort-trip" data-toggle="modal" data-target="#modal-trip-sort">&uarr;; DATE</a>
         </div>
     </div>
     <div class="content-body-alert"></div>
@@ -60,6 +60,7 @@
     <?php echo $modal_trip_search; ?>
     <?php echo $modal_trip_sort; ?>
     <?php echo $modal_trip_action; ?>
+    <?php echo $modal_confirm_delete; ?>
 <!-- END -->
 
 <!-- START: [script] -->
@@ -85,7 +86,7 @@
 				<!-- START: [logged] -->
 					<!-- START: set data -->
 						var data = {
-							"action":"load_past_trip",
+							"action":"load_invited_trip",
 							"user_id":"<?php echo $this->user->getUserId(); ?>"
 						};
 					<!-- END -->

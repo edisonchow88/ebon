@@ -24,7 +24,7 @@
             <a class="btn" onclick="closeEditTrip();">Done</a>
         </div>
         <div class="col-xs-6 text-right">
-            <a class="btn btn-remove-trip disabled" onclick="removeTripMulti();">
+            <a class="btn btn-navbar-edit-right disabled" onclick="removeTripMulti();">
             	<?php 
                 	if($this->user->isLogged() == false) { 
                     	echo 'Delete';
@@ -76,5 +76,62 @@
 <!-- END -->
 
 <script>
+	function refreshTrip() {
+		<!-- START: reset loading screen -->
+			$('.content-body-loading').show();
+			$('.content-body-empty').show();
+			$('.content-body').css('min-height','100vh');
+			closeEditTrip();
+		<!-- END -->
+		<!-- START: clear old result -->
+			$('.content-body-result').html('');
+		<!-- END -->
+		<!-- START: get unsaved trip -->
+			var result = {trip:[]}
+			var cookie_trip = getCookie('trip');
+			var cookie_plan = getCookie('plan');
+			if(isset(cookie_trip)) {
+				<!-- START: [revisit] -->
+					unsaved_plan = new Array();
+					unsaved_plan = JSON.parse(cookie_plan);
+					unsaved_trip = new Array();
+					unsaved_trip = JSON.parse(cookie_trip);
+					if(!(isset(unsaved_trip.removed))) { unsaved_trip.removed = 0; }
+					unsaved_trip.travel_date = unsaved_plan.travel_date;
+					unsaved_trip.num_of_day = unsaved_plan.day.length;
+					unsaved_trip.end_date = addDayToDate(unsaved_trip.travel_date,unsaved_trip.num_of_day-1);
+					unsaved_trip.username = 'Me';
+					unsaved_trip.url = '<?php echo $link["trip/itinerary"]; ?>';
+					unsaved_trip.storage = 'cookie';
+					if(unsaved_trip.removed != 1) { result.trip.push(unsaved_trip); }
+				<!-- END -->
+			}
+		<!-- END -->
+		<!-- START: get new result -->
+			<?php if($this->user->isLogged() != false) { ?>
+				<!-- START: [logged] -->
+					<!-- START: set data -->
+						var data = {
+							"action":"load_upcoming_trip",
+							"user_id":"<?php echo $this->user->getUserId(); ?>"
+						};
+					<!-- END -->
+					<!-- START: send POST -->
+						$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+							if(!(isset(json.trip))) { json.trip = new Array(); }
+							if(typeof unsaved_trip != 'undefined' && unsaved_trip.removed != 1) { 
+								json.trip.unshift(unsaved_trip); 
+							}
+							runRefreshTripList(json,'sortTripByDateFromOldToNew');
+						}, "json");
+					<!-- END -->
+				<!-- END -->
+			<?php } else { ?>
+				<!-- START: [not logged] -->
+					runRefreshTripList(result,'sortTripByDateFromOldToNew');
+				<!-- END -->
+			<?php } ?>
+		<!-- END -->
+	}
 	refreshTrip();
 </script>

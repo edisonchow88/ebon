@@ -17,6 +17,10 @@ class ControllerPagesListTripPast extends AController {
 			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
 		//END
 		
+		//START: set script
+			$this->addChild('script/list/trip', 'script_list_trip', 'script/list/trip.tpl');
+		//END 
+		
 		//START: set menu
 			$this->addChild('menu/list/trip', 'menu_list_trip', 'menu/list/trip.tpl');
 		//END 
@@ -29,12 +33,6 @@ class ControllerPagesListTripPast extends AController {
 		//END
 		
 		//START: set link
-			$link['list/trip/upcoming'] = $this->html->getSecureURL('list/trip/upcoming');
-			$link['list/trip/past'] = $this->html->getSecureURL('list/trip/past');
-			$link['list/trip/cancelled'] = $this->html->getSecureURL('list/trip/cancelled');
-			$link['list/trip/removed'] = $this->html->getSecureURL('list/trip/removed');
-			$link['list/trip/invited'] = $this->html->getSecureURL('list/trip/invited');
-
 			$link['trip/new'] = $this->html->getSecureURL('trip/new');
 			$link['trip/itinerary'] = $this->html->getSecureURL('trip/itinerary');
 			$link['main/home'] = $this->html->getSecureURL('main/home');

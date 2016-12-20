@@ -72,6 +72,22 @@
                             <div class="la-text">Undo Cancellation</div>
                         </div>
                     </div>
+                    <div class="la-row modal-trip-action-read" data-dismiss="modal">
+                        <div class="la-icon">
+                            <i class="fa fa-fw fa-lg fa-envelope-open"></i>
+                        </div>
+                        <div class="la-desc">
+                            <div class="la-text">Read</div>
+                        </div>
+                    </div>
+                    <div class="la-row modal-trip-action-report" data-dismiss="modal">
+                        <div class="la-icon">
+                            <i class="fa fa-fw fa-lg fa-flag"></i>
+                        </div>
+                        <div class="la-desc">
+                            <div class="la-text">Report as ...</div>
+                        </div>
+                    </div>
                     <div class="la-row modal-trip-action-remove" data-dismiss="modal" onclick="removeTrip();">
                         <div class="la-icon">
                             <i class="fa fa-fw fa-lg fa-trash text-danger"></i>
@@ -124,11 +140,43 @@
 		<!-- END -->
 		<!-- START: send POST -->
 			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				<!-- START: if error -->
+					if(isset(json['error'])) {
+						processError(json['error']);
+						return;
+					}
+				<!-- END -->
 				<!-- START: reload result -->
 					refreshTrip();
 				<!-- END -->
 				<!-- START: show hint -->
 					showHint('Trip Removed');
+				<!-- END -->
+			}, "json");
+		<!-- END -->
+	}
+	
+	function deleteTrip() {
+		<!-- START: set data -->
+			var data = {
+				"action":"delete_trip",
+				"user_id":"<?php echo $this->user->getUserId(); ?>",
+				"trip_id":$('#modal-trip-action-form input[name=trip_id]').val()
+			};
+		<!-- END -->
+		<!-- START: send POST -->
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				<!-- START: if error -->
+					if(isset(json['error'])) {
+						processError(json['error']);
+						return;
+					}
+				<!-- END -->
+				<!-- START: reload result -->
+					refreshTrip();
+				<!-- END -->
+				<!-- START: show hint -->
+					showHint('Trip Deleted');
 				<!-- END -->
 			}, "json");
 		<!-- END -->
@@ -163,6 +211,12 @@
 			<!-- END -->
 			<!-- START: send POST -->
 				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+					<!-- START: if error -->
+						if(isset(json['error'])) {
+							processError(json['error']);
+							return;
+						}
+					<!-- END -->
 					<!-- START: reload result -->
 						refreshTrip();
 					<!-- END -->
@@ -183,6 +237,12 @@
 		<!-- END -->
 		<!-- START: send POST -->
 			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				<!-- START: if error -->
+					if(isset(json['error'])) {
+						processError(json['error']);
+						return;
+					}
+				<!-- END -->
 				<!-- START: reload result -->
 					refreshTrip();
 				<!-- END -->
@@ -202,6 +262,12 @@
 		<!-- END -->
 		<!-- START: send POST -->
 			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				<!-- START: if error -->
+					if(isset(json['error'])) {
+						processError(json['error']);
+						return;
+					}
+				<!-- END -->
 				<!-- START: reload result -->
 					refreshTrip();
 				<!-- END -->

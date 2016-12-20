@@ -73,6 +73,10 @@
 		return result;
 	}
 	
+	function processError(error) {
+		alert(error['code'] + ': ' + error['title'] + '. ' + error['text']);
+	}
+	
 	function date(format, timestamp) {
 		var that = this;
 		var jsdate, f;

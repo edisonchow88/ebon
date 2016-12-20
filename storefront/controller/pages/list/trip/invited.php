@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesListTripRemoved extends AController {
+class ControllerPagesListTripInvited extends AController {
 	//START: set common variable
 		public $data = array();
 	//END
@@ -31,8 +31,6 @@ class ControllerPagesListTripRemoved extends AController {
 			$this->addChild('modal/list/trip/sort', 'modal_trip_sort', 'modal/list/trip/sort.tpl');
 			$this->addChild('modal/list/trip/action', 'modal_trip_action', 'modal/list/trip/action.tpl');
 			$this->addChild('modal/list/trip/confirm_delete', 'modal_confirm_delete', 'modal/list/trip/confirm_delete.tpl');
-			$this->addChild('modal/list/trip/confirm_delete_multi', 'modal_confirm_delete_multi', 'modal/list/trip/confirm_delete_multi.tpl');
-			$this->addChild('modal/list/trip/confirm_delete_all', 'modal_confirm_delete_all', 'modal/list/trip/confirm_delete_all.tpl');
 		//END
 		
 		//START: set link
@@ -49,7 +47,7 @@ class ControllerPagesListTripRemoved extends AController {
 		//END
 		
 		//START: set template 
-			$this->processTemplate('pages/list/trip/removed.tpl');
+			$this->processTemplate('pages/list/trip/invited.tpl');
 		//END
 		
 		//START: init controller data

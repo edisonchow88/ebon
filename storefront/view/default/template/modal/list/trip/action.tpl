@@ -58,9 +58,9 @@
                     </div>
                     <div class="la-row modal-trip-action-cancel" data-dismiss="modal" onclick="cancelTrip();">
                         <div class="la-icon">
-                            <i class="fa fa-fw fa-lg fa-times-circle-o text-danger"></i>
+                            <i class="fa fa-fw fa-lg fa-times-circle-o"></i>
                         </div>
-                        <div class="la-desc text-danger">
+                        <div class="la-desc">
                             <div class="la-text">Cancel</div>
                         </div>
                     </div>

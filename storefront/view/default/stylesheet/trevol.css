@@ -784,6 +784,8 @@ ul {
 		
 		.la-row {
 			cursor:pointer;
+			overflow:hidden;
+			width:100%;
 		}
 		
 		.la-row a {

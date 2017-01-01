@@ -8,18 +8,22 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	public $data = array();
 	
 	public function main() {
-		if(!isset($_SESSION['user_id'])) {
-			$result['error']['code'] = 401; 
-			$result['error']['title'] = 'Not Logged In'; 
-			$result['error']['text'] = 'Please log in to continue'; 
-			$response = json_encode($result);
-			echo $response;
-			die();
-		}
-		
+			
 		//START: testing script
 			foreach($_POST as $key => $value) {
 				$this->data[$key] = $value;
+			}
+			
+			$bypass = false;
+			if ($this->data['action'] == 'get_distance_path') $bypass = true;
+			
+			if(!isset($_SESSION['user_id']) && $bypass == false) {
+				$result['error']['code'] = 401; 
+				$result['error']['title'] = 'Not Logged In'; 
+				$result['error']['text'] = 'Please log in to continue'; 
+				$response = json_encode($result);
+				echo $response;
+				die();
 			}
 			
 			$this->loadModel('account/user');	
@@ -73,6 +77,9 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'get_distance_path') { $this->get_distance_path(); return; }
 			else if($this->data['action'] == 'add_path') { $this->add_path(); return; }
 			else if($this->data['action'] == 'edit_line_mode') { $this->edit_line_mode(); return; }
+			else if($this->data['action'] == 'get_path_custom') { $this->get_path_custom(); return; }
+			else if($this->data['action'] == 'add_path_custom') { $this->add_path_custom(); return; }
+			else if($this->data['action'] == 'edit_path_custom') { $this->edit_path_custom(); return; }
 			
 			else { 
 				//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -1298,12 +1305,35 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		if (!$result['path_id'] || !$result['path']) {
 			$result['path'] = $this->model_travel_trip->getPathByCoor($this->data['coor'], $result['mode_id']);	
 			$result['path_id'] = $result['path']['path_id'];
+			
 			if ($result['path']) {
 				$this->model_travel_trip->editLineMode($this->data['line_id'], $result['mode_id'], $result['path_id']);	
 			}
 		}
-
+					
 		if ($result['path']) {
+			$user_id = $this->data['user_id'] = $this->user->getUserId();
+			// if data show ZERO RESULT from google, then get custom path data
+			if ($result['path']['distance'] == "0" && $result['path']['duration'] == "0" && $user_id) {				
+				$custom_path = $this->model_travel_trip->getCustomPathByPathId($result['path_id'], $user_id);
+				$converted_value = $this->convertDistanceDurationToUnit($custom_path['distance'],$custom_path['duration']);
+				$result['path']['custom_distance'] = $custom_path['distance'];
+				$result['path']['custom_duration'] = $custom_path['duration'];
+				$result['path']['custom_distance_text'] = $converted_value['distance_text'];
+				$result['path']['custom_duration_text'] = $converted_value['duration_text'];
+				if ($custom_path['path_custom_id']) {
+					$this->model_travel_trip->editLineMode($this->data['line_id'], $result['mode_id'], $result['path_id'],$custom_path['path_custom_id']	);	
+				}else {
+					//get auto generated custom path.
+					$auto_custom_path = $this->model_travel_trip->getCustomPathAuto($result['path_id']);
+					$converted_value = $this->convertDistanceDurationToUnit($auto_custom_path['distance_median'],$auto_custom_path['duration_median']);
+					$result['path']['auto_custom_distance_text'] = $converted_value['distance_text'];
+					$result['path']['auto_custom_duration_text'] = $converted_value['duration_text'];
+					//$result['check'] =$auto_custom_path;
+					
+				}
+			}
+			
 			$converted_value = $this->convertDistanceDurationToUnit($result['path']['distance'],$result['path']['duration']);
 			$result['path']['distance_text'] = $converted_value['distance_text'];
 			$result['path']['duration_text'] = $converted_value['duration_text'];
@@ -1311,12 +1341,13 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		
 		$mode = $this->model_travel_trip->getMode($result['mode_id']);
 		$result['mode_name'] = $mode['g_name'];	
-		$result['mode_icon'] = $mode['icon'];	
+		$result['mode_icon'] = $mode['icon'];
 		
 		$response = json_encode($result);
 		echo $response;
 	}
 	
+	// get path from database only when using cookies
 	public function get_distance_path(){
 		$mode = $this->model_travel_trip->getMode($this->data['mode_id']);
 		$result['mode_id'] = $this->data['mode_id'];	
@@ -1351,7 +1382,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		else {
 			$result['warning'] = 'ERROR: Fail to save'; 
 		}
-		
+		$result['path_id'] = $execution;
 		$response = json_encode($result);
 		echo $response;
 		
@@ -1421,6 +1452,56 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 
 		return $converted_value;
 	}
+	
+	//read data when open modal for custom transport
+	public function get_path_custom(){
+		$this->data['user_id'] = $this->user->getUserId();
+		$result = $this->model_travel_trip->getCustomPathByPathId($this->data['path_id'], $this->data['user_id']);
+				
+		$converted_value = $this->convertDistanceDurationToUnit($result['distance'],$result['duration']);
+		$result['distance_text'] = $converted_value['distance_text'];
+		$result['duration_text'] = $converted_value['duration_text'];
+		
+		$response = json_encode($result);
+		echo $response;
+	}
+	
+	//save data at custom transport modal
+	public function add_path_custom(){
+		$this->data['user_id'] = $this->user->getUserId();
+		$execution = $this->model_travel_trip->addCustomPath($this->data);
+
+		//START: set response
+		if($execution == true) {
+			$result['success'] = 'Success';
+		}
+		else {
+			$result['warning'] = 'ERROR: Fail to save'; 
+		}
+		
+		$response = json_encode($result);
+		echo $response;
+		
+	}
+	
+	public function edit_path_custom(){
+		$this->data['user_id'] = $this->user->getUserId();
+		$execution = $this->model_travel_trip->editCustomPath($this->data);
+
+		//START: set response
+		if($execution == true) {
+			$result['success'] = 'Success';
+		}
+		else {
+			$result['warning'] = 'ERROR: Fail to save'; 
+		}
+		$result['return'] = $execution;
+		$response = json_encode($result);
+		echo $response;
+		
+	}
+	
+	
 	/*
 	public function get_trip() {
 		$text = html_entity_decode($this->data['send']);

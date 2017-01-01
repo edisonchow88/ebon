@@ -387,7 +387,7 @@ var map;
 			center: myLatlng,
 			zoom: 4,
 			minZoom: 1,
-			maxZoom: 12,
+			maxZoom: 18,
 			disableDefaultUI: true,
 			styles: map_style
 		});

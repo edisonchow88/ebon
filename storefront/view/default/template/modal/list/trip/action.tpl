@@ -8,7 +8,7 @@
                     <input type="text" name="name"/>
                 </form>
             </div>
-            <div class="modal-footer fixed-width">
+            <div class="modal-body modal-body-bottom fixed-width">
             	<div class="la la-50 la-border la-hover noselect">
                 	<div class="la-row la-row-subtitle">
                     	<div class="col-xs-12">
@@ -120,13 +120,13 @@
 
 <script>
 	$("#modal-trip-action").on("show.bs.modal", function () {
-		$('#modal-trip-action .modal-footer').hide();
+		$('#modal-trip-action .modal-body').hide();
 	});
 	$("#modal-trip-action").on("shown.bs.modal", function () {
-		$('#modal-trip-action .modal-footer').slideDown('fast');
+		$('#modal-trip-action .modal-body').slideDown('fast');
 	});
 	$("#modal-trip-action").on("hide.bs.modal", function () {
-		$('#modal-trip-action .modal-footer').slideUp();
+		$('#modal-trip-action .modal-body').slideUp();
 	});
 </script>
 <script>
@@ -333,6 +333,6 @@
 		var name = $('#modal-trip-action-form input[name=name]').val();
 		$('#modal-confirm-delete-form input[name=trip_id]').val(trip_id);
 		$('#modal-confirm-delete-form input[name=name]').val(name);
-		$('#modal-confirm-delete .modal-confirm-target').html(name);
+		$('#modal-confirm-delete .modal-target').html(name);
 	}
 </script>

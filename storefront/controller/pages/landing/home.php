@@ -3,7 +3,7 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerPagesListTripPast extends AController {
+class ControllerPagesLandingHome extends AController {
 	//START: set common variable
 		public $data = array();
 	//END
@@ -13,29 +13,30 @@ class ControllerPagesListTripPast extends AController {
 			$this->extensions->hk_InitData($this, __FUNCTION__);
 		//END
 		
-		//START: set ajax
-			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
+		//START: set model
+			$this->loadModel('localisation/country');
 		//END
 		
-		//START: set script
-			$this->addChild('script/list/trip', 'script_list_trip', 'script/list/trip.tpl');
-		//END 
+		//START: set data
+			$country = $this->model_localisation_country->getCountries();
+			$country_available = array();
+			foreach($country as $key => $value) {
+				if($value['status'] != 0) {
+					$country_available[] = $country[$key];
+				}
+			}
+			$this->data['country'] = $country_available;
+		//END
 		
 		//START: set menu
 			$this->addChild('menu/mobile/main', 'menu_mobile_main', 'menu/mobile/main.tpl');
-			$this->addChild('menu/list/trip', 'menu_list_trip', 'menu/list/trip.tpl');
 		//END
 		
 		//START: set modal
-			$this->addChild('modal/list/trip/search', 'modal_trip_search', 'modal/list/trip/search.tpl');
-			$this->addChild('modal/list/trip/sort', 'modal_trip_sort', 'modal/list/trip/sort.tpl');
-			$this->addChild('modal/list/trip/action', 'modal_trip_action', 'modal/list/trip/action.tpl');
 		//END
 		
 		//START: set link
 			$link['wizard/new'] = $this->html->getSecureURL('wizard/new');
-			$link['trip/itinerary'] = $this->html->getSecureURL('trip/itinerary');
-			$link['main/home'] = $this->html->getSecureURL('main/home');
 		//END
 		
 		//START: set variable
@@ -46,7 +47,7 @@ class ControllerPagesListTripPast extends AController {
 		//END
 		
 		//START: set template 
-			$this->processTemplate('pages/list/trip/past.tpl');
+			$this->processTemplate('pages/landing/home.tpl');
 		//END
 		
 		//START: init controller data

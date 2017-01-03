@@ -1,6 +1,6 @@
 <!-- START: Modal -->
     <div class="modal" id="modal-trip-search" role="dialog" data-backdrop="false">
-        <div class="modal-wrapper">
+        <div class="modal-wrapper fixed-width">
         	<div class="modal-shadow fixed-width" data-dismiss="modal"></div>
             <div class="modal-header fixed-width">
             	<div class="navbar navbar-primary navbar-search">
@@ -17,9 +17,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-dialog fixed-width">
-            </div>
-            <div class="modal-footer fixed-width">
+            <div class="modal-body fixed-width">
             </div>
         </div>
     </div>
@@ -28,6 +26,7 @@
 <script>
 	$("#modal-trip-search").on("show.bs.modal", function () {
 		$('#modal-trip-search .modal-header').hide();
+		$('#modal-trip-search .modal-body').hide();
 	});
 	$("#modal-trip-search").on("shown.bs.modal", function () {
 		$('#modal-trip-search .modal-header').fadeIn('fast');

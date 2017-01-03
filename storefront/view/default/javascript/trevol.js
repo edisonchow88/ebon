@@ -29,6 +29,10 @@
 			$(".popover-load").html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i><i class="fa fa-fw"></i>'+text+'...');
 			$(".popover-load").show();
 		}
+		
+		function hideLoad() {
+			$(".popover-load").hide();
+		}
 	<!-- END -->
 	
 	function escapeRegExp(str) {
@@ -81,6 +85,37 @@
 	
 	function processError(error) {
 		alert(error['code'] + ': ' + error['title'] + '. ' + error['text']);
+	}
+	
+	function fromNow(timestamp) {
+		var then = new Date(timestamp);
+		var now  = new Date;
+		var text;
+		d = Math.round((now - then) / (1000 * 60 * 60 * 24)); 
+		if(d > 730) {
+			y = Math.round(d/365);
+			text = y + ' years ago';
+		}
+		else if(d > 365) {
+			text = '1 year ago';
+		}
+		else if(d > 60) {
+			m = Math.round(d/365);
+			text = m + ' months ago';
+		}
+		else if(d > 30) {
+			text = '1 month ago';
+		}
+		else if(d > 1) {
+			text = d + ' days ago';
+		}
+		else if(d > 0) {
+			text = '1 day ago';
+		}
+		else if(d > -1 && d <= 0) {
+			text = 'today';
+		}
+		return text;
 	}
 	
 	function date(format, timestamp) {

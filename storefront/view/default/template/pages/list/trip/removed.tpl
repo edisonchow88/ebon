@@ -1,7 +1,7 @@
 <div class="content-header fixed-width noselect">
     <div class="row navbar navbar-primary navbar-main">
         <div class="col-xs-3 text-left">
-            <a class="btn" data-toggle="modal" data-target="#modal-home-menu" onclick="closePageMenuInstant();"><i class="fa fa-fw fa-lg fa-bars"></i></a>
+            <a class="btn" data-toggle="modal" data-target="#menu-mobile-main" onclick="closePageMenuInstant();"><i class="fa fa-fw fa-lg fa-bars"></i></a>
         </div>
         <div class="col-xs-6 text-center">
             <a onclick="togglePageMenu();"><h1>Removed</h1><i class="fa fa-fw fa-caret-down"></i></a>
@@ -36,7 +36,7 @@
 <div class="content-body-empty fixed-width">
     <div class="col-xs-12">
     	<div><b>No Removed Trip</b></div>
-        <div>Click to create a <a href="<?php echo $link['trip/new']; ?>">new trip</a></div>
+        <div>Click to create a <a href="<?php echo $link['wizard/new']; ?>">new trip</a></div>
     </div>
 </div>
 <div class="content-body fixed-width">
@@ -55,8 +55,10 @@
     </div>
 </div>
 
+<!-- START: [menu] -->
+	<?php echo $menu_mobile_main; ?>
+<!-- END -->
 <!-- START: [modal] -->
-	<?php echo $modal_home_menu; ?>
     <?php echo $modal_trip_search; ?>
     <?php echo $modal_trip_sort; ?>
     <?php echo $modal_trip_action; ?>
@@ -64,7 +66,6 @@
     <?php echo $modal_confirm_delete_multi; ?>
     <?php echo $modal_confirm_delete_all; ?>
 <!-- END -->
-
 <!-- START: [script] -->
 	<?php echo $script_list_trip; ?>
 <!-- END -->

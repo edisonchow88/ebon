@@ -1,29 +1,27 @@
 <!-- START: Modal -->
-    <div class="modal modal-fixed-top" id="modal-account-signup" role="dialog" data-backdrop="false">
-        <div class="modal-wrapper">
-            <div class="modal-header">
-            	<div class="fixed-bar">
-                    <div class="col-xs-3 text-left">
-                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-account-signup"><i class="fa fa-fw fa-lg fa-times-circle"></i><span class="sr-only">Cancel</span></a>
+    <div class="modal" id="modal-account-signup" role="dialog" data-backdrop="false">
+        <div class="modal-wrapper fixed-width">
+        	<div class="modal-shadow fixed-width" data-dismiss="modal"></div>
+            <div class="modal-header fixed-width">
+            	<div class="navbar navbar-primary navbar-modal">
+                    <div class="col-xs-2 text-left">
+                        <a class="btn" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-times-circle"></i></a>
                     </div>
-                    <div class="col-xs-6 text-center">
-                        <span class="btn-header modal-title">Sign Up</span>
+                    <div class="col-xs-8 text-center">
+                    	<span class="modal-title">Sign Up</span>
                     </div>
-                    <div class="col-xs-3 text-right">
+                    <div class="col-xs-2 text-right">
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="modal-dialog fixed-bar">
-            <div class="modal-header-shadow"></div>
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div id="modal-account-signup-form-alert"></div>
+            <div class="modal-body fixed-width padding">
+            	<div class="navbar navbar-shadow"></div>
+            	<div id="modal-account-signup-form-alert"></div>
                     <?php echo $modal_component['form']; ?>
                     <button type="button" class="btn btn-block btn-primary modal-button" onclick="signup();">Sign Up</button>
-                    <div class="modal-body-footnote">
+                    <div class="text-center">
                         <span>Own an account? </span>
-                    <a data-dismiss="modal" data-toggle='modal' data-target="#modal-account-login" >Log in</a>
+                    	<a data-dismiss="modal" data-toggle='modal' data-target="#modal-account-login" >Log in</a>
                     </div>
                     <div class="modal-response">
                		</div>
@@ -36,6 +34,9 @@
 <!-- START: Script -->
 <script>
 	function signup() {
+		<!-- START: show loading -->
+			var loading = setTimeout(function() { showLoad('Signing Up'); }, 1000);
+		<!-- END -->
 		var form_element = document.querySelector("#modal-account-signup-form");
 		var form_data = new FormData(form_element);
 		var xmlhttp = new XMLHttpRequest();
@@ -77,6 +78,8 @@
 					$("#modal-account-signup").on( "hidden.bs.modal", function() { window.location.reload(true); } );
 				}
 				document.getElementById('modal-account-signup-form-alert').innerHTML = alert_text;
+				clearTimeout(loading);
+				hideLoad();
 			} else {
 				<!-- if connection failed -->
 			}

@@ -14,6 +14,7 @@ class ModelTravelTrip extends Model{
 	private $table_member_status = "trip_member_status";
 	private $table_member_status_description = "trip_member_status_description";
 	private $table_country = "trip_country";
+	private $table_month = "trip_month";
 	private $table_plan = "trip_plan";
 	private $table_day = "trip_day";
 	private $table_line = "trip_line";
@@ -489,7 +490,7 @@ class ModelTravelTrip extends Model{
 					FROM " . $this->db->table($this->table_mode) . " t1 
 					LEFT JOIN ".$this->db->table($this->table_mode_description)." t2 
 					ON t1.mode_id = t2.mode_id 
-					ORDER BY t1.mode_id DESC 
+					ORDER BY t1.mode_id ASC 
 				";
 			}
 			else {
@@ -2174,6 +2175,83 @@ class ModelTravelTrip extends Model{
 
 			return $output;
 			}
+	//END
+	//START: [template]
+		public function getTemplateByFilter($country_id="",$month="",$mode_id="",$duration="") {
+			//START: set sql
+				$sql_country = "";
+				$sql_month = "";
+				$sql_mode = "";
+				
+				if($country_id != "" && $country_id != 0) { 
+					$sql_country_condition = "
+						AND t_country.country_id = ".$country_id."
+					";
+				}
+				if($month != "" && $month != 0) { 
+					$sql_month_condition = "
+						AND t_month.month = ".$month."
+					";
+				}
+				if($mode_id != "" && $mode_id != 0) { 
+					$sql_mode_condition = "
+						AND t_plan.mode_id = ".$mode_id."
+					";
+				}
+				$sql = "
+					SELECT 
+						t1.name, 
+						t1.trip_id, 
+						t1.user_id, 
+						t1.date_modified, 
+						t_user.email, 
+						t_country_description.name as country,
+						t_plan.plan_id, 
+						t_plan.mode_id, 
+						group_concat(DISTINCT t_month.month ORDER BY t_month.month ASC) as month
+					FROM " . $this->db->table($this->table) . " t1
+					JOIN ".$this->db->table('user'). " t_user
+					ON t1.user_id = t_user.user_id 
+					JOIN ".$this->db->table($this->table_country). " t_country
+					ON t1.trip_id = t_country.trip_id 
+					JOIN ".$this->db->table('country_descriptions'). " t_country_description
+					ON t_country.country_id = t_country_description.country_id 
+					JOIN ".$this->db->table($this->table_month). " t_month
+					ON t1.trip_id = t_month.trip_id 
+					JOIN ".$this->db->table($this->table_plan). " t_plan
+					ON t1.trip_id = t_plan.trip_id 
+					WHERE t1.templated = 1
+					".$sql_country_condition."
+					".$sql_month_condition."
+					".$sql_mode_condition."
+					GROUP BY t1.trip_id
+				";
+				$query = $this->db->query($sql);
+			//END
+			//START: set output
+				if($query->num_rows > 0) {
+					foreach($query->rows as $result){
+						$day = $this->getDayByPlanId($result['plan_id']);
+						$num_of_day = count($day);
+						$result['month'] = explode(',',$result['month']);
+						$result['num_of_day'] = $num_of_day;
+						if($duration == "" || $duration == 0) { 
+							$output[$result['trip_id']] = $result;
+						}
+						else {
+							if($num_of_day == $duration) { 
+								$output[$result['trip_id']] = $result;
+							}
+						}
+					}
+				}
+				else {
+					return false;
+				}
+			//END
+			
+			return $output;	
+		}
 	//END
 	
 		public function deleteSample($sample_id ="",$trip_id ="") {

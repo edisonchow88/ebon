@@ -1,7 +1,7 @@
 <div class="content-header fixed-width noselect">
     <div class="row navbar navbar-primary navbar-main">
         <div class="col-xs-3 text-left">
-            <a class="btn" data-toggle="modal" data-target="#modal-home-menu" onclick="closePageMenuInstant();"><i class="fa fa-fw fa-lg fa-bars"></i></a>
+            <a class="btn" data-toggle="modal" data-target="#menu-mobile-main" onclick="closePageMenuInstant();"><i class="fa fa-fw fa-lg fa-bars"></i></a>
         </div>
         <div class="col-xs-6 text-center">
             <a onclick="togglePageMenu();"><h1>Upcoming</h1><i class="fa fa-fw fa-caret-down"></i></a>
@@ -16,7 +16,7 @@
             <a class="btn btn-edit-trip" onclick="openEditTrip();">Edit</a>
         </div>
         <div class="col-xs-6 text-right">
-            <a class="btn" href="<?php echo $link['trip/new']; ?>">Add Trip</a>
+            <a class="btn" href="<?php echo $link['wizard/new']; ?>">Add Trip</a>
         </div>
     </div>
     <div class="row navbar navbar-secondary navbar-edit hidden">
@@ -45,7 +45,7 @@
 <div class="content-body-empty fixed-width">
     <div class="col-xs-12">
     	<div><b>No Upcoming Trip</b></div>
-        <div>Click to create a <a href="<?php echo $link['trip/new']; ?>">new trip</a></div>
+        <div>Click to create a <a href="<?php echo $link['wizard/new']; ?>">new trip</a></div>
     </div>
 </div>
 <div class="content-body fixed-width">
@@ -64,13 +64,14 @@
     </div>
 </div>
 
+<!-- START: [menu] -->
+	<?php echo $menu_mobile_main; ?>
+<!-- END -->
 <!-- START: [modal] -->
-	<?php echo $modal_home_menu; ?>
     <?php echo $modal_trip_search; ?>
     <?php echo $modal_trip_sort; ?>
     <?php echo $modal_trip_action; ?>
 <!-- END -->
-
 <!-- START: [script] -->
 	<?php echo $script_list_trip; ?>
 <!-- END -->

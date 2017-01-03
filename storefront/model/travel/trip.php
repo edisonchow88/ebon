@@ -22,6 +22,7 @@ class ModelTravelTrip extends Model{
 	private $table_sample = "trip_sample";
 	private $table_line_mode ="trip_line_mode";
 	private $table_path = "path";
+	private $table_path_custom = "path_custom";
 	
 	public function getFields($table) {
 		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
@@ -2325,7 +2326,7 @@ class ModelTravelTrip extends Model{
 		}
 		//END
 		
-		public function editLineMode($line_id, $mode_id, $path_id) {
+		public function editLineMode($line_id, $mode_id, $path_id, $path_custom_id) {
 			if (!$mode_id) $mode_id = "2";
 			if (!$path_id) $path_id ="0";
 			if(!$line_id) {
@@ -2334,7 +2335,7 @@ class ModelTravelTrip extends Model{
 				//add new line with given mode
 				$sql = "
 					UPDATE `" . $this->db->table($this->table_line_mode) . "` 
-					SET mode_id = '" .$mode_id. "', path_id = '" . $path_id. "'
+					SET mode_id = '" .$mode_id. "', path_id = '" . $path_id. "', path_custom_id = '" . $path_custom_id. "'
 					WHERE line_id = '" .$line_id. "'
 				";	
 			}
@@ -2357,7 +2358,7 @@ class ModelTravelTrip extends Model{
 			}else {
 				//retrive transport mode with selected line_id
 				$sql = "
-					SELECT line_id, mode_id, path_id
+					SELECT line_id, mode_id, path_id,path_custom_id
 					FROM " . $this->db->table($this->table_line_mode) . "
 					WHERE line_id = '" .$line_id. "' 	
 				";				
@@ -2404,7 +2405,119 @@ class ModelTravelTrip extends Model{
 				
 			return $output;
 		}
+		
+		public function getCustomPathByPathId($path_id, $user_id) {
+
+			if($path_id && $user_id ) {
+				$sql = "
+					SELECT *
+					FROM " . $this->db->table($this->table_path_custom) . "
+					WHERE path_id = '" .$path_id. "' 	
+					AND user_id = '" .$user_id. "'		
+				";				
+			}
+				$query = $this->db->query($sql);
+				$output = $query->row;
+				
+			return $output;
+		}
+		
+		public function getCustomPathAuto($path_id) {
+
+			if($path_id) {
+				$distance_sql = "
+					SELECT distance
+					FROM " . $this->db->table($this->table_path_custom) . "
+					WHERE path_id = '" .$path_id. "'
+					AND distance != '0'
+					ORDER BY distance ASC
+				";				
+				
+				$duration_sql = "
+					SELECT duration
+					FROM " . $this->db->table($this->table_path_custom) . "
+					WHERE path_id = '" .$path_id. "'
+					AND duration != '0'
+					ORDER BY duration ASC
+				";				
+				
+				}
 	
+			$query = $this->db->query($distance_sql);			
+			$query2 = $this->db->query($duration_sql);		
+			foreach($query->rows as $result){
+				$list['distance'][] = $result['distance'];
+				
+			}
+			foreach($query2->rows as $result){
+				$list['duration'][] = $result['duration'];
+				
+			}
+			
+			$count_distance = COUNT($list['distance']);
+			$count_duration = COUNT($list['duration']);
+			if ($count_distance> 12) {
+				$middle_index_distance = floor($count_distance/2);
+				sort($list['distance'], SORT_NUMERIC);
+				$output['distance_median'] = $list['distance'][$middle_index_distance];
+				
+				if ($count_distance % 2 == 0) {
+					$output['distance_median']= ($output['distance_median'] + $list['distance'][$middle_index_distance - 1]) / 2;
+				}
+			}
+			
+			if ($count_duration> 12) {
+				$middle_index_duration = floor($count_duration/2);
+				sort($list['duration'], SORT_NUMERIC);
+				$output['duration_median'] = $list['duration'][$middle_index_duration];
+				
+				if ($count_duration % 2 == 0) {
+					$output['duration_median']= ($output['duration_median'] + $list['duration'][$middle_index_duration - 1]) / 2;
+				}
+			}
+			//$output['distancelist']= $list['distance'];
+			//$output['durationlist']= $list['duration'];
+			// problem with median 
+			// if the range between both value seperate too much
+			return $output;
+			
+			/* // mean (averange) of value
+			if($path_id) {
+				$distance_sql = "
+					SELECT distance,duration
+					FROM " . $this->db->table($this->table_path_custom) . "
+					WHERE path_id = '" .$path_id. "'
+				";				
+				}
+				
+			
+						
+				
+			$query = $this->db->query($distance_sql);
+			$count_distance= 0;
+			$count_duration= 0;	
+			foreach($query->rows as $result){
+				if ($result['distance'] != 0) {
+					$output['distance'][] = $result['distance'];
+					$count_distance ++;
+				}
+				if ($result['duration'] != 0) {
+					$output['duration'][] = $result['duration'];
+					$count_duration ++;
+				]
+			}
+								
+			if ($count_distance>12) {
+				$output['distance_mean'] = array_sum($output['distance'])/$count_distance;
+			}
+			if ($count_duration>12) {
+				$output['duration_mean'] = array_sum($output['duration'])/$count_duration;
+			}*/	
+		}
+		
+		
+		
+		
 		/*public function add_line_mode($data){
 			
 			//set data
@@ -2476,7 +2589,7 @@ class ModelTravelTrip extends Model{
 			//START: run chain reaction
 				$this->editLineMode($data['line_id'], $data['mode_id'], $path_id);
 			//END
-			    $path_reget = $this->getPathById($path_id);
+	
 			//START: clear cache
 				$this->cache->delete('path');
 			//END
@@ -2487,6 +2600,100 @@ class ModelTravelTrip extends Model{
 			}	
 	}
 	
+	public function addCustomPath($data){
+			//verify:
+			$path = $this->getCustomPathByPathId($data['path_id'], $data['user_id']);
+									
+			if (!$path) { 
+			//START: set data
+				$fields = $this->getFields($this->db->table($this->table_path_custom));
+				
+				$update = array();
+				foreach($fields as $f){
+					if(isset($data[$f])) {
+						if($data[$f] == 'NULL') {
+							$update[$f] = $f . " = NULL";
+						}
+						else {
+							$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+						}
+					}
+				}
+			//END
+			
+			//START: run sql
+				$sql = "
+					INSERT INTO `" . $this->db->table($this->table_path_custom) . "` 
+					SET " . implode(',', $update) . "
+				";
+								
+				$query = $this->db->query($sql);
+			//END
+	
+			//START: get id
+				$path_custom_id = $this->db->getLastId();
+			//END
+			
+			//START: run chain reaction
+				$this->editLineMode($data['line_id'], $data['mode_id'], $path_id, $path_custom_id);
+			//END
+	
+			//START: clear cache
+				$this->cache->delete('path_custom');
+			//END
+		
+			//START: return
+				return $path_custom_id;
+			//END
+			}		
+	}
+	
+	public function editCustomPath($data){
+			
+			$fields = $this->getFields($this->db->table($this->table_path_custom));
+			
+			$update = array();
+			foreach($fields as $f){
+				if(isset($data[$f])) {
+					if($data[$f] == 'NULL') {
+						$update[$f] = $f . " = NULL";
+					}
+					else {
+						$update[$f] = $f . " = '" . $this->db->escape($data[$f]) . "'";
+					}
+				}
+			}
+		//END
+		
+		//START: run sql
+			$sql = "
+				UPDATE " . $this->db->table($this->table_path_custom) . " 
+				SET " . implode(',', $update) . "
+				WHERE path_id = '" .$data['path_id']. "'	
+				AND user_id = '" .$data['user_id']. "'
+				AND path_custom_id = '" .$data['path_custom_id']. "'
+			";
+									
+			$query = $this->db->query($sql);
+		//END
+
+		//START: get id
+			if ($query) $path_custom_id = $data['path_custom_id'];
+		//END
+		
+		//START: run chain reaction
+			$this->editLineMode($data['line_id'], $data['mode_id'], $data['path_id'], $path_custom_id);
+		//END
+
+		//START: clear cache
+			$this->cache->delete('path_custom');
+		//END
+	
+		//START: return
+			return $path_custom_id;
+		//END
+				
+	}
 }
 
 ?>

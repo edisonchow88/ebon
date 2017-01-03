@@ -584,7 +584,10 @@
 		font-size:12px;
 		color:#000;
 	}
-	
+	 
+	 .plan-line-twins {
+		 height:60px;
+	 }
 	.plan-line .image {
 		position:relative;
 		float:left;
@@ -788,6 +791,7 @@
     <?php echo $modal_line_explore; ?>
     <?php echo $modal_line_custom; ?>
     <?php echo $modal_line_delete; ?>
+    <?php echo $modal_transport_custom; ?>
 <!-- END -->
 
 <script>
@@ -1504,7 +1508,7 @@
 		<!-- START: end loading -->
 			//swithMobileMode();
 			//setDay();
-			$('.splash').fadeOut(500);
+			//$('.splash').fadeOut(500);
 		<!-- END -->
 	}
 	
@@ -2367,6 +2371,7 @@
 					+ '<span class="travel-distance hidden"></span>'
 					+ '<span class="travel-duration hidden"></span>'
 					+ '<span class="travel-orindes hidden"></span>'
+					+ '<span class="path-id hidden"></span>'
 				+ '</div>';
 			+ '</div>'
 		
@@ -2505,6 +2510,8 @@
 			$(".transport-row .transport").show();	
 			refreshLineTransportModeMain("refresh");
 		});
+		
+		$('.splash').fadeOut(500);
 	}	
 	
 	function getLineModeDistanceDataViaDatabase(line_id,day_id,coor,condition) {												
@@ -2569,15 +2576,30 @@
 		
 		
 		if (json.path_id) {
-					
-			if (json.path.distance == "") var travel_text = "No Route Available";
-			else var travel_text = json.path.distance_text+", "+json.path.duration_text;			
+			//alert (JSON.stringify(json));		
+			if (json.path.distance_text == 0 && json.path.distance_text == 0) {
+				if (json.path.custom_distance_text || json.path.custom_duration_text) {
+					if (json.path.custom_distance_text == "") json.path.custom_distance_text = "--";
+					if (json.path.custom_duration_text == "") json.path.custom_duration_text = "--"; 
+					var travel_text = json.path.custom_distance_text+", "+json.path.custom_duration_text;				
+				}else if (json.path.auto_custom_distance_text || json.path.auto_custom_duration_text ) {
+					if (json.path.auto_custom_distance_text == "") json.path.auto_custom_distance_text = "--";
+					if (json.path.auto_custom_duration_text == "") json.path.auto_custom_duration_text = "--"; 
+					var travel_text = json.path.auto_custom_distance_text+", "+json.path.auto_custom_duration_text;
+				}else {
+					var travel_text = "No Route Available";	
+				}
+			}else {
+				var travel_text = json.path.distance_text+", "+json.path.duration_text;				
+			}
 			mode_display.find(".text").html(travel_text);
 			mode_display.find(".travel-distance.hidden").html(json.path.distance);
 			mode_display.find(".travel-duration.hidden").html(json.path.duration);
+			mode_display.find(".path-id.hidden").html(json.path_id);
 			mode_display.find(".path.hidden").html(json.path.path);
 			var path_id = json.path_id;
 			refreshTwinsTransportMode (line_id,coor);
+			
 		}else {
 			//// get from google
 			//retriveGDistance (line_id, mode, data);
@@ -2696,14 +2718,14 @@
 				};
 	
 			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-				
+				$("#plan-line-"+line_id+" .mode-option-display .path-id").html(json.path_id);
 			}, "json");
 			<!-- END -->
 		}
 	}
 	
 	//// SUB FUNCTION OF GET DISTANCE
-	function getOriDes (line_id,data) {
+	function getOriDes (line_id) {
 		// add class to line with lat lng
 		this_line = $("#plan-line-"+line_id+" .transport");	
 		$(".plan-line").each(function(i) {
@@ -2720,22 +2742,26 @@
 			ori_lat = parseFloat(this_line.parents(".plan-line").find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
 			ori_lng = parseFloat(this_line.parents(".plan-line").find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
 			ori_place_id = this_line.parents(".plan-line").find('.plan-line-form-hidden input[name=place_id]').val();
+			ori_line_id = this_line.parents(".plan-line").find('.plan-line-form-hidden input[name=line_id]').val();
 		}else {
 			ori_lat = parseFloat(this_line.parents(".plan-line").prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
 			ori_lng = parseFloat(this_line.parents(".plan-line").prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);
 			ori_place_id = this_line.parents(".plan-line").prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=place_id]').val();
+			ori_line_id = this_line.parents(".plan-line").prevAll(".haslatlng").first().find('.plan-line-form-hidden input[name=line_id]').val();
 		}
 		
 		if (next_hasline && next_haslatlng) {
 			des_lat = parseFloat(this_line.parents(".plan-line").next().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
 			des_lng = parseFloat(this_line.parents(".plan-line").next().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);		
 			des_place_id = this_line.parents(".plan-line").next().find('.plan-line-form-hidden input[name=place_id]').val();
+			des_line_id = this_line.parents(".plan-line").next().find('.plan-line-form-hidden input[name=line_id]').val();
 		}
 		
 		if (!next_hasline && after_next_day_haslatlng){
 			des_lat = parseFloat(this_line.parents(".plan-day").nextAll(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
 			des_lng = parseFloat(this_line.parents(".plan-day").nextAll(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);	
 			des_place_id =this_line.parents(".plan-day").nextAll(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=place_id]').val();
+			des_line_id =this_line.parents(".plan-day").nextAll(".plan-day").find(".plan-line").first().find('.plan-line-form-hidden input[name=line_id]').val();
 		}
 	
 		//alert (ori_lat +"/" + ori_lng +"," +des_lat+"/" +des_lng +"--------"+line_id);	
@@ -2748,7 +2774,9 @@
 						"des_lat": des_lat,
 						"des_lng": des_lng,
 						"ori_place_id": ori_place_id,
-						"des_place_id": des_place_id
+						"des_place_id": des_place_id,
+						"ori_line_id": ori_line_id,
+						"des_line_id": des_line_id,
 					};
 			return coor;
 		}else { 
@@ -2843,16 +2871,21 @@
 	function linkTransitDirection (line_id,coor) {
 		var selected_mode_id = $("#plan-line-"+line_id+" .mode-option-selected").attr('value');
 		if (selected_mode_id == "1") {
-			/*var output = ''
-					+ '<a href="https://maps.google.com?saddr='+coor.ori_lat+'+'+coor.ori_lng+'&daddr='+coor.des_lat+','+coor.des_lng+'&dirflg=r" target="_blank">'
+			var this_line = $("#plan-line-"+line_id+" .transport .mode-option-display");	
+			var g_link = 'https://maps.google.com?saddr='+coor.ori_lat+'+'+coor.ori_lng+'+&daddr='+coor.des_lat+','+coor.des_lng+'&dirflg=r';
+			var output = '';
+			if ( this_line.find(".travel-distance").html() == "0" && this_line.find(".travel-duration").html() =="0" ) {
+				<?php if(isset($trip_id)) { ?>
+				output += ''
+					+ '<a data-toggle="modal" data-target="#modal-transport-custom" onclick="setOriginDestination('+coor.ori_line_id+','+coor.des_line_id+',&quot;'+g_link+'&quot;)" >'
+						+ '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;'
+					+ '</a>';
+				<?php } ?>
+			}
+				output += ''					
+					+ '<a href="'+g_link+'" target="_blank">'
 						+ '<i class="fa fa-compass" aria-hidden="true"></i>&nbsp;'
-					+ '</a>'
-					;*/
-				
-				var output = ''
-					+ '<a href="https://maps.google.com?saddr='+coor.ori_lat+'+'+coor.ori_lng+'+&daddr='+coor.des_lat+','+coor.des_lng+'&dirflg=r" target="_blank">'
-						+ '<i class="fa fa-compass" aria-hidden="true"></i>&nbsp;'
-					+ '</a>'
+					+ '</a>'					
 					;
 							
 			$("#plan-line-"+line_id+" .mode-option-display .link").html(output);		

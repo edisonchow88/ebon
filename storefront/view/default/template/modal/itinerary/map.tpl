@@ -118,6 +118,11 @@
 		color: #FF0;
 		z-index: 100 !important;	
 	}
+	
+	.marker-label-hide {
+		display:none;	
+	}
+	
 </style>
 
 <!-- START: Modal -->
@@ -210,15 +215,15 @@ function initOverlayPrototype () { // must be after or inside initMap()
     MarkerIconOverlay.prototype = new google.maps.OverlayView();
 
     MarkerIconOverlay.prototype.onAdd = function() {
-
+		//alert("add");
       // Note: an overlay's receipt of onAdd() indicates that
       // the map's panes are now available for attaching
       // the overlay to the map via the DOM.
 
       // Create the DIV and set some basic attributes.
       var div = document.createElement('DIV');
-      if (this.state_ == "active") div.className = "marker-label-active map-font-icon";
-	  else  div.className = "map-font-icon ";
+      if (this.state_ == "active") div.className = "map-font-icon";
+	  else  div.className = "marker-label-hide";
 	 	
       div.innerHTML = "<span class='fa-stack'>"
 	  				+ "<i class='fa fa-circle fa-stack-2x'></i>"
@@ -263,7 +268,6 @@ function initOverlayPrototype () { // must be after or inside initMap()
         div_seq.style.top = position.y - 42 + 'px';
 		div_seq.style.position = 'absolute';
 		*/
-
       }
       //Optional: helper methods for removing and toggling the text overlay.  
     MarkerIconOverlay.prototype.onRemove = function() {
@@ -273,7 +277,9 @@ function initOverlayPrototype () { // must be after or inside initMap()
 	
     MarkerIconOverlay.prototype.hide = function() {
       if (this.div_) {
-        this.div_.style.visibility = "hidden";
+       // this.div_.style.visibility = "hidden";
+	   this.div_.className = "marker-label-hide";
+	   
       }
 	  if (this.div_seq_) {
         this.div_seq_.style.visibility = "hidden";
@@ -282,23 +288,18 @@ function initOverlayPrototype () { // must be after or inside initMap()
 
     MarkerIconOverlay.prototype.show = function() {
       if (this.div_) {
-        this.div_.style.visibility = "visible";
+        //this.div_.style.visibility = "visible";
+		this.div_.className = "map-font-icon";
       }
 	   if (this.div_seq_) {
         this.div_seq_.style.visibility = "visible";
       }
     }
-	
-	 MarkerIconOverlay.prototype.activate = function() {
+
+ 	MarkerIconOverlay.prototype.activate = function() {
 		if (this.div_) {
 			this.div_.className = "marker-label-active map-font-icon";
       }
-	}
-	
-	MarkerIconOverlay.prototype.onc = function(label) {
-		google.maps.event.addDomListener(this.div_, 'click', function () {
-			alert();
-		});
 	}
 };
 	
@@ -344,11 +345,13 @@ function initOverlayPrototype () { // must be after or inside initMap()
 		if ($(".plan-line").length <1) {
 			showHint("Trip itinerary is empty. Please add place or activity.");	
 		}
-			
+		
+		runMapUpdate();	
+	/*		
 		var count_active_transport_box = $(".transport:not(:hidden)").length;
 		var transport_box_not_empty = $(".transport:not(:hidden) .path:not(:empty)").length + $(".transport:not(:hidden) .path:empty").siblings(".orindes:not(:empty)").length;
 		
-		if (transport_box_not_empty /* == count_active_transport_box*/) {
+		if (transport_box_not_empty  == count_active_transport_box) {
 			runMapUpdate();	
 		}else {
 			//var timer = setInterval(loopLoadMap, 1000);
@@ -369,7 +372,7 @@ function initOverlayPrototype () { // must be after or inside initMap()
 				}
 				i++;
 			}
-		}
+		}*/
 	});
 	
 	$(".map-refresh-option").off().on("click",function(){
@@ -482,17 +485,44 @@ var map;
 		
 	}
 	
-	function getMarkerIcon (f_color,s_color, icon_scale) {
+	function getMarkerIcon (icon_name, f_color,s_color, icon_scale) {
 		if (!icon_scale) var icon_scale = 0.03;
-		var myIcon = {
-			path: 'M 364.85742 32.71875 C 279.2041 32.71875 209.5 102.42285 209.5 188.07617 C 209.5 254.70468 251.68216 311.67528 310.73633 333.69922 L 323.56445 355.91797 L 364.85742 427.43945 L 406.15039 355.91797 L 418.97852 333.69922 C 478.03268 311.67528 520.21484 254.70468 520.21484 188.07617 C 520.21484 102.42285 450.51075 32.71875 364.85742 32.71875 z M 366.69727 154.86914 C 367.38633 154.86348 368.04071 154.90196 368.65625 154.98633 C 381.6564 156.7682 398.80043 174.50391 400.19141 188.04883 C 400.73111 193.30422 400.76816 193.09959 398.67578 199.98828 C 396.3737 207.56737 397.82341 205.07274 390.30469 213.04297 C 379.3985 224.6041 378.83377 224.87261 365.82812 225.52148 C 358.92523 225.86589 355.16307 224.97145 355.74023 225.18945 C 348.76882 222.58073 335.73645 210.81217 332 203.21094 C 329.26394 197.64484 329.99966 200.90328 329.99219 190.36133 C 329.98419 179.44002 329.00651 183.63023 332.23633 177.19531 C 338.3999 164.91533 356.36125 154.95401 366.69727 154.86914 z ',
-			fillColor: f_color,
-			strokeColor: s_color,
-			fillOpacity: 1,
-			scale: icon_scale,
-			anchor: new google.maps.Point(360, 430),
-			strokeWeight: 0.5
-		};
+		
+		switch(icon_name) {
+   			case "this_day_twin":
+       		 	var myIcon = {
+					path: 'M-35,0a35,35 0 1,0 70,0a35,35 0 1,0 -70,0',
+					fillColor: "red",
+					strokeColor: "red",
+					fillOpacity: 1,
+					scale: icon_scale,
+					//anchor: new google.maps.Point(360, 430),
+					strokeWeight: 2
+				};
+        	break;
+    		case "other_day":
+        		var myIcon = {
+					path: "M-35,0a35,35 0 1,0 70,0a35,35 0 1,0 -70,0",
+					fillColor: "white",
+					strokeColor: "black",
+					fillOpacity: 1,
+					scale: 1,
+					//anchor: new google.maps.Point(360, 430),
+					strokeWeight: 2
+				};
+        	break;
+    		default:
+        		var myIcon = {
+					path: 'M 364.85742 32.71875 C 279.2041 32.71875 209.5 102.42285 209.5 188.07617 C 209.5 254.70468 251.68216 311.67528 310.73633 333.69922 L 323.56445 355.91797 L 364.85742 427.43945 L 406.15039 355.91797 L 418.97852 333.69922 C 478.03268 311.67528 520.21484 254.70468 520.21484 188.07617 C 520.21484 102.42285 450.51075 32.71875 364.85742 32.71875 z M 366.69727 154.86914 C 367.38633 154.86348 368.04071 154.90196 368.65625 154.98633 C 381.6564 156.7682 398.80043 174.50391 400.19141 188.04883 C 400.73111 193.30422 400.76816 193.09959 398.67578 199.98828 C 396.3737 207.56737 397.82341 205.07274 390.30469 213.04297 C 379.3985 224.6041 378.83377 224.87261 365.82812 225.52148 C 358.92523 225.86589 355.16307 224.97145 355.74023 225.18945 C 348.76882 222.58073 335.73645 210.81217 332 203.21094 C 329.26394 197.64484 329.99966 200.90328 329.99219 190.36133 C 329.98419 179.44002 329.00651 183.63023 332.23633 177.19531 C 338.3999 164.91533 356.36125 154.95401 366.69727 154.86914 z ',
+					fillColor: f_color,
+					strokeColor: s_color,
+					fillOpacity: 1,
+					scale: icon_scale,
+					anchor: new google.maps.Point(360, 430),
+					strokeWeight: 0.5
+				};
+				
+		}
 		return myIcon;	
 	}
 	
@@ -503,7 +533,7 @@ var map;
 		var marker_labels =[];
 		var marker_index = 0;
 		$(".plan-line").each(function(i) {
-			var lat, lng, position, marker, title, imarker;
+			var lat, lng, position, marker, title;
 			lat = parseFloat($(this).find('.plan-line-form-hidden input[name=lat]').val()).toFixed(6);
 			lng = parseFloat($(this).find('.plan-line-form-hidden input[name=lng]').val()).toFixed(6);				
 			title =	$(this).find('.plan-line-form-hidden input[name=title]').val();
@@ -517,13 +547,13 @@ var map;
 					icon : getMarkerIcon(),
 					title: title
 				});
-				
+				//alert($("#"+day_id+" .plan-line").first().attr("id")) ;
 				if (day_id == $(".swiper-slide-active").closest(".plan-day").attr("id")) {
 					var txt = new MarkerIconOverlay(position, marker_index + 1 , map, "", "active");
 				}
 				//else if (day_id == $(".swiper-slide-active").closest(".plan-day").prev().attr("id")) {}
 				else {
-				var txt = new MarkerIconOverlay(position, marker_index + 1 , map, "");
+					var txt = new MarkerIconOverlay(position, marker_index + 1 , map, "","hidden");
 				}
 				
 				marker_labels.push(txt);
@@ -545,9 +575,10 @@ var map;
 	}
 	
 	function showMarkerRoute (markers, marker_labels, positions,routes, routesP) {
-		var red_icon = getMarkerIcon("#F70303","#51000");
-		var grey_icon = getMarkerIcon("grey","grey");
-				
+		var this_day_active = getMarkerIcon("default","#F70303","#51000");
+		var not_this_day = getMarkerIcon("other_day","grey","grey");
+		var this_day_twins = getMarkerIcon("this_day_twin","#F70303","#51000");	
+			
 		var selected_day_id = $(".swiper-slide-active").closest(".plan-day").attr("id");
 		
 		//// Selected day using map change day control
@@ -567,15 +598,20 @@ var map;
 				markers[i].setVisible(false);
 				markers[i].setZIndex(10);
 				if (marker_labels[i]) marker_labels[i].hide();
-			
+				
 				///set color for marker
-				if (markers[i].day == selected_day_id || markers[i].line == prev_last_line_id) {
+				if (markers[i].day == selected_day_id ) {
 					markers[i].set("viewstatus", "red");
-					markers[i].setIcon(red_icon);	
+					markers[i].setIcon(this_day_active);	
 					markers[i].setZIndex(11);
-					if (marker_labels[i]) marker_labels[i].activate();
+					//	if (marker_labels[i]) marker_labels[i].activate();
+				}else if (markers[i].line == prev_last_line_id) {
+					markers[i].set("viewstatus", "red-grey");
+					markers[i].setIcon(this_day_twins);	
+					markers[i].setZIndex(11);
+					//if (marker_labels[i]) marker_labels[i].hide();
 				}else {
-					markers[i].setIcon(grey_icon);	
+					markers[i].setIcon(not_this_day);	
 					markers[i].set("viewstatus", "grey");
 				}
 				
@@ -585,12 +621,22 @@ var map;
 						bounds.extend(positions[i]);
 						map.fitBounds(bounds);
 						if (marker_labels[i]) marker_labels[i].show();
+					}else if ( markers[i].viewstatus == "red-grey") {
+						markers[i].setVisible(true);
+						bounds.extend(positions[i]);
+						map.fitBounds(bounds);
+						if (marker_labels[i]) marker_labels[i].hide();
 					}else return;
 				}else {
 					markers[i].setVisible(true);					
 					bounds.extend(positions[i]);
 					map.fitBounds(bounds);
-					if (marker_labels[i]) marker_labels[i].show();
+					if ( markers[i].viewstatus == "red") {	
+						if (marker_labels[i]) marker_labels[i].show();
+					}else {
+						if (marker_labels[i]) marker_labels[i].hide();
+					}
+					
 				}
 			});
 		}
@@ -607,6 +653,9 @@ var map;
 				
 				///set color for route
 				if (markers[i].viewstatus == "red" && markers[i+1].viewstatus == "red" ) {
+					show_routes[i].setOptions( {strokeColor: "red", zIndex: 9});
+					show_routes[i].set("viewstatus", "red");
+				}else if (markers[i].viewstatus == "red-grey" && markers[i+1].viewstatus == "red" ) {
 					show_routes[i].setOptions( {strokeColor: "red", zIndex: 9});
 					show_routes[i].set("viewstatus", "red");
 				}else {
@@ -657,7 +706,7 @@ var map;
 			markers[i].addListener('click', function() {
 				$.each(infowindows,function(i) {infowindows[i].close();});
 				infowindow.open(map, markers[i]);
-				marker_labels[i].onc();
+				//marker_labels[i].once();
 			});
 						
 			infowindows.push(infowindow);	
@@ -1000,5 +1049,5 @@ var map;
 		
 	}
 
-</script>
+</script>	
 

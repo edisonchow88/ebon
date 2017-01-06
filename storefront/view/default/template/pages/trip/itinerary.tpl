@@ -2578,14 +2578,15 @@
 		if (json.path_id) {
 			//alert (JSON.stringify(json));		
 			if (json.path.distance_text == 0 && json.path.distance_text == 0) {
+				var input_by_user_icon = '<i data-toggle="tooltip" title="Input By User" class="fa fa-exclamation-triangle"  aria-hidden="true"></i>';
 				if (json.path.custom_distance_text || json.path.custom_duration_text) {
 					if (json.path.custom_distance_text == "") json.path.custom_distance_text = "--";
 					if (json.path.custom_duration_text == "") json.path.custom_duration_text = "--"; 
-					var travel_text = json.path.custom_distance_text+", "+json.path.custom_duration_text;				
+					var travel_text = json.path.custom_distance_text+", "+json.path.custom_duration_text+input_by_user_icon;				
 				}else if (json.path.auto_custom_distance_text || json.path.auto_custom_duration_text ) {
 					if (json.path.auto_custom_distance_text == "") json.path.auto_custom_distance_text = "--";
 					if (json.path.auto_custom_duration_text == "") json.path.auto_custom_duration_text = "--"; 
-					var travel_text = json.path.auto_custom_distance_text+", "+json.path.auto_custom_duration_text;
+					var travel_text = json.path.auto_custom_distance_text+", "+json.path.auto_custom_duration_text+input_by_user_icon;
 				}else {
 					var travel_text = "No Route Available";	
 				}

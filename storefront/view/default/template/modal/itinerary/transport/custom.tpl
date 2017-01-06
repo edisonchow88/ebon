@@ -103,10 +103,10 @@
                                         <span class="col-xs-3">Duration </span>
                                        <!--  
                                         <input type="text" class="med-text" name="raw-custom-duration" value=""/>
-                                        -->  
+                                         
                                         
                                         <input type="number" class="short-text" max="60" min="0" name="custom-input-duration-day" value=""/>
-                                        <span class="small-unit">days</span>
+                                        <span class="small-unit">days</span>--> 
                                         <input type="number" class="short-text" max="60" min="0" name="custom-input-duration-hour" value=""/>
                                         <span class="small-unit">hrs</span>
                                         <input type="number" class="short-text" max="60" min="0" name="custom-input-duration-minute" value=""/>
@@ -255,7 +255,8 @@
 	function convertInputToValue() {
 		var input_km_value = ($( "input[name='custom-input-distance-km']").val())*1000;
 		var input_m_value = $( "input[name='custom-input-distance-m']").val();
-		var input_day_value = ($( "input[name='custom-input-duration-day']").val())*24*60*60;
+		//var input_day_value = ($( "input[name='custom-input-duration-day']").val())*24*60*60;
+		input_day_value = 0;
 		var input_hr_value = ($( "input[name='custom-input-duration-hour']").val())*60*60;
 		var input_min_value = ($( "input[name='custom-input-duration-minute']").val())*60;
 		
@@ -309,11 +310,13 @@
 			//if (!$duration_text) { $duration_text .= "1 min "; }
 		}
 		
+		// edit: remove day input. 
+		duration_hour = duration_hour + (duration_day*24);
 		
 		var data = {
 			"distance_km" : parseInt(distance_km),
 			"distance_m" : parseInt(distance_m),
-			"duration_day" : parseInt(duration_day),
+			//"duration_day" : parseInt(duration_day),
 			"duration_hour" : parseInt(duration_hour),
 			"duration_minute" : parseInt(duration_minute)
 			}

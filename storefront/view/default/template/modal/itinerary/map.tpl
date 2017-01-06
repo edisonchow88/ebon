@@ -36,33 +36,6 @@
 		color:#000 !important;	
 	}
 	
-	.plan-line-twins {
-		padding: 0px 0px;
-	}
-	
-	.plan-line-twins .title {
-		left: 10px;
-		color: #999;
-		position:relative;
-		height: 30px;
-	}
-	
-	.plan-line-twins .line {
-		height: 2px;
-		width: 95px;
-		background-color:#000;
-		position:absolute;
-		left: -100px;
-		top: 15px;
-		z-index:99;
-	}
-	
-	.plan-line-twins .transport-row{
-		width: 100%;
-		padding: 0px 15px;
-		margin-top: 0px;
-	}	
-	
 	.btn.nohover:hover {
     /* here copy default .btn class styles */
     cursor:default !important;

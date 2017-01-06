@@ -12,6 +12,7 @@
             <div class="popover-hint"></div>
         </div>
         <div class="popover-load"></div>
+        <div class="container-fluid-shadow fixed-width"></div>
         <div class="container-fluid">
             <?php echo $content; ?>
         </div>

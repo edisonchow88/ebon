@@ -1,454 +1,4 @@
 <style>
-	body {
-		overflow-y:scroll;
-		overflow-x:hidden;
-		text-align:center;
-		padding-top:1px;
-		margin-top:-1px;
-		-webkit-overflow-scrolling:touch;
-	}
-	
-	/* START: [page] */
-		.header {
-			position:fixed;
-			top:0;
-			right:0;
-			left:0;
-			margin:auto;
-			z-index:10;
-		}
-		
-		.header-secondary {
-			top:40px;
-		}
-		
-		.header-tertiary {
-			top:80px;
-		}
-		
-		.header .btn {
-			padding:10px 15px;
-			line-height:20px;
-			border:none;
-		}
-		
-		.header .title {
-			padding:10px 15px;
-			line-height:20px;
-		}
-		
-		.header.header-gray {
-			background-color:#DDD;
-			color:#000;
-			border-bottom:solid thin #CCC;
-		}
-		
-		.header.header-gray .btn {
-			color:#000;
-		}
-		
-		.header.header-black {
-			background-color:#000;
-			color:#FFF;
-			border-bottom:solid thin #333;
-		}
-		
-		.header.header-black .btn {
-			color:#FFF;
-		}
-		
-		.header.header-white {
-			background-color:#FFF !important;
-			color:#000 !important;
-			border-bottom:solid thin #DDD !important;
-		}
-		
-		.body {
-			position:relative;
-			min-height:100vh;
-			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-			margin:auto;
-			text-align:left;
-			background-color:white;
-		}
-		
-		.body {
-			height:100vh;
-			padding-top:40px;
-			padding-bottom:70px;
-		}
-		
-		.body-header {
-			border-bottom:solid thin #DDD;
-		}
-	/* END */
-	/* START: [new common class] */
-		.fixed-bar {
-			height:40px;
-		}
-		
-		.fixed-width {
-			width:100%;
-			max-width:400px;
-		}
-		
-		.text-wrap {
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			overflow: hidden;
-		}
-		
-		.scrollable-y {
-			overflow-y:scroll;
-			overflow-x:hidden;
-			padding-top:1px;
-			margin-top:-1px;
-			-webkit-overflow-scrolling:touch;
-		}
-		
-		.btn-secondary {
-			color:#999;
-			font-size:12px;
-			line-height:20px;
-			font-weight:normal;
-			cursor:pointer;
-		}
-		
-		.btn-secondary:active {
-			box-shadow:none;
-		}
-		
-		.btn-secondary:hover {
-			color:#000;
-		}
-		
-		.grabbable {
-			cursor: pointer; /* fallback if grab cursor is unsupported */
-			cursor: grab;
-			cursor: -moz-grab;
-			cursor: -webkit-grab;
-		}
-	
-		.grabbable:active {
-			cursor: grabbing;
-			cursor: -moz-grabbing;
-			cursor: -webkit-grabbing;
-		}
-		
-		.menu-white {
-			background-color:#FFF;
-		}
-		
-		.menu-white li {
-			border-bottom:solid thin #DDD;
-		}
-	/* END */
-	/* START: [fix for exisiting class] */
-		img {
-			-webkit-touch-callout: none; /* iOS Safari */
-			-webkit-user-select: none;   /* Chrome/Safari/Opera */
-			-khtml-user-select: none;    /* Konqueror */
-			-moz-user-select: none;      /* Firefox */
-			-ms-user-select: none;       /* Internet Explorer/Edge */
-			user-select: none; 
-		}
-		
-		.noselect {
-			cursor:default;
-		}
-		
-		.btn.active {
-			box-shadow:none;
-		}
-		
-		.btn:active {
-			box-shadow:none;
-		}
-		
-		.title {
-			color:#000;
-			background-color:transparent;
-		}
-		
-		.alert {
-			border-radius:0;
-			margin-bottom:0;
-		}
-	/* END */
-</style>
-<style>
-	/* START: modal */
-		.modal {
-			text-align:center;
-			color:#000;
-		}
-		
-		.modal-dialog {
-			margin:0 auto;
-			text-align:left;
-		}
-		
-		.modal-content {
-			position:relative;
-			border-radius:0;
-			border:none;
-			box-shadow:none;
-		}
-		
-		.modal-header {
-			border-radius:0;
-			background-color:#DDD;
-			height:40px;
-			padding:0;
-			border-bottom:solid thin #CCC;
-		}
-		
-		.modal-body {
-			min-height:calc(100vh - 40px);
-		}
-		
-		.modal-section-title {
-			color:#999;
-			padding:15px;
-			border-bottom:solid thin #DDD;
-		}
-		
-		.modal-title {
-			color:#000;
-			font-weight:bold;
-		}
-		
-		.modal-background-grey {
-			background-color:#EEE;
-		}
-	/* END */
-	/* START: [modal form] */
-		.modal-body-footnote {
-			width:100%;
-			text-align:center;
-		}
-		
-		.modal-button {
-			border-radius:3px;
-			line-height:40px;
-			padding:0;
-		}
-		
-		.modal-form .form-group {
-			position:relative;
-		}
-		
-		.modal-form .form-control {
-			border:none;
-			border-bottom:solid thin #DDD;
-			height:40px;
-			margin-top:15px;
-			margin-bottom:15px;
-			box-shadow: 0 2px 0 0 #FFF;
-			padding:0;
-			color:#000;
-		}
-		
-		.modal-form .form-control:focus {
-			border-bottom:solid thin #e93578;
-			box-shadow: 0 2px 0 0 #e93578;
-		}
-		
-		.modal-form .form-control:focus ~label {
-			color:#e93578;
-		}
-		
-		.modal-form .form-group:first-child {
-			margin-top:15px;
-		}
-		
-		.modal-form .form-group:last-child {
-			margin-bottom:30px;
-		}
-		
-		.modal-form label {
-			position:absolute;
-			top:0;
-			left:0;
-			padding:0;
-			margin:0;
-			font-size:12px;
-			z-index:3;
-			color:#999;
-		}
-		.modal-form input:-webkit-autofill {
-			-webkit-box-shadow: 0 0 0 1000px white inset !important;
-		}
-		.modal-form input.form-control::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-		  color: #999;
-			}
-		.modal-form input.form-control::-moz-placeholder { /* Firefox 19+ */
-		  color: #999;
-		}
-		.modal-form input.form-control:-ms-input-placeholder { /* IE 10+ */
-		  color: #999;
-		}
-		.modal-form input.form-control:-moz-placeholder { /* Firefox 18- */
-		  color: #999;
-		}
-		
-		.modal-form input[type='date'] {
-			-webkit-appearance: none;
-		}
-	/* END */
-	/* START: [modal fixed-top] */
-		body.modal-open {
-			overflow: hidden;
-			position:fixed;
-			top:0;
-			bottom:0;
-			left:0;
-			right:0;
-		}
-		.modal.modal-fixed-top {
-			top: 0; 
-			right: 0; 
-			bottom: 0; 
-			left: 0;
-			-webkit-overflow-scrolling:auto;
-			overflow-x:hidden;
-			overflow-y:hidden;
-		}
-		.modal-fixed-top .modal-wrapper {
-			position:relative;
-		}
-		.modal-fixed-top .modal-header {
-			position:absolute;
-			top:0;
-			width:100%;
-			text-align:center;
-			border-radius:0;
-			padding:0;
-			z-index:10500;
-			background-color:transparent;
-			border-bottom:none;
-		}
-		.modal-fixed-top .modal-header > .fixed-bar {
-			height:40px;
-			margin:0 auto;
-			background-color:#DDD;
-			border-bottom:solid thin #CCC;
-		}
-		.modal-fixed-top .modal-header-shadow {
-			display:block;
-			height:40px;
-		}
-		.modal-fixed-top .modal-dialog {
-			background-color:#FFF;
-		}
-		.modal-fixed-top .modal-content {
-			overflow-y:scroll;
-			overflow-x:hidden;
-			-webkit-overflow-scrolling:touch;
-			height:calc(100vh - 40px);
-			padding-top:1px;
-			margin-top:-1px;
-		}
-		.modal-fixed-top .modal-body {
-			padding-bottom:70px;
-		}
-		.modal-fixed-top .modal-footer {
-			position:absolute;
-			bottom:0;
-			width:100%;
-			text-align:center;
-			border-radius:0;
-			padding:0;
-			z-index:10500;
-			background-color:transparent;
-			border-top:none;
-		}
-	/* END */
-</style>
-<style>
-	/* START: [mobile form] */	
-		.mobile-form label {
-			background-color:#FFF;
-			color:#999;
-			height:50px;
-			width:100%;
-			margin:0;
-			padding:15px;
-			border:none;
-			border-radius:0;
-			border-bottom:solid thin #DDD;
-			outline:none;
-			font-weight:normal;
-		}
-		.mobile-form input, .mobile-form select {
-			background-color:#FFF;
-			color:#000;
-			height:50px;
-			width:100%;
-			padding:15px;
-			border:none;
-			border-radius:0;
-			border-bottom:solid thin #DDD;
-			outline:none;
-			-webkit-appearance: none;
-		}
-		.mobile-form input:disabled {
-			color:#999;
-		}
-		.mobile-form select {
-			-webkit-appearance: none;
-			-webkit-border-radius: 0px;
-		}
-	/* END */
-</style>
-<style>
-	/* START: [popover hint] */	
-		#section-popover-hint {
-			position:fixed;
-			bottom:10px;
-			right:0;
-			left:0;
-			width:100%;
-			z-index:15000;
-		}
-		
-		#popover-hint{
-			margin:auto;
-			width:390px;
-			line-height:50px;
-			max-width:calc(100% - 10px);
-			height:auto;
-			background-color: rgba(0,0,0,0.9);
-			color:#FFF;
-			padding: 5px;
-			display: none;
-		}
-	/* END */
-	
-	/* START: [popover alert] */	
-		#section-popover-alert {
-			position:fixed;
-			bottom:10px;
-			right:0;
-			left:0;
-			width:100%;
-			z-index:15000;
-		}
-		
-		#popover-alert{
-			margin:auto;
-			width:390px;
-			line-height:50px;
-			max-width:calc(100% - 10px);
-			height:auto;
-			background-color: rgba(139,0,0,0.9);
-			color:#FFF;
-			padding: 5px;
-			display: none;
-		}
-	/* END */
-</style>
-<style>
 	/* START: [swiper] */
 		.swiper-container {
 			width: 100%;
@@ -557,115 +107,43 @@
 	}
 </style>
 <style>
-	.ui-placeholder {
-		width:100%;
-		height:80px;
-		background-color:#EEE;
-		border-top:solid thin #DDD;
-		border-bottom:solid thin #DDD;
-	}
-	
-	.ui-placeholder > div {
-		opacity:0.3;
-	}
-	
-	.ui-helper {
-		max-width:60px;
-		max-height:60px;
-		background-color:transparent;
-	}
-	
-	.plan-day-line {
-	}
-	
-	.plan-line, .plan-line-twins {
-		padding:7px 15px;
-		line-height:20px;
-		font-size:12px;
-		color:#000;
-	}
-	 
-	 .plan-line-twins {
-		 height:60px;
-	 }
-	.plan-line .image {
-		position:relative;
-		float:left;
-		height:60px;
-		width:60px;
-		background-color:#999;
-		border-radius:30px;
-	}
-	
-	.plan-line .image, .plan-line .image img {
-		cursor: pointer; /* fallback if grab cursor is unsupported */
-		cursor: grab;
-		cursor: -moz-grab;
-		cursor: -webkit-grab;
-	}
-	
-	.plan-line .image:active,.plan-line .image img:active {
-		cursor: grabbing;
-		cursor: -moz-grabbing;
-		cursor: -webkit-grabbing;
-	}
-	
-	.button-move {
-		position:absolute;
-		bottom:0;
-		right:0;
-		height:22px;
-		width:22px;
-		background-color:#FFF;
-		color:#333;
-		border:solid thin #999;
-		border-radius:11px;
-		text-align:center;
-		font-size:12px;
-	}
-	
-	.plan-line .image img, .plan-line-twins .image img {
-		height:60px;
-		width:60px;
-		border-radius:30px;
-	}
-	
-	.plan-line .info, .plan-line-twins .description {
-		display:block;
-		float:right;
-		width:calc(100% - 60px);
-		padding-left:15px;
-		cursor:pointer;
-	}
-	
-	.plan-line .title, .plan-line-twins .title{
-		display:table-cell;
-		height:60px;
-		vertical-align:middle;
-		background-color:transparent;
-		color:#000;
-		font-weight:bold;
-		text-align:left;
-		padding:0;
-	}
-	
-	.plan-line .bullet {
-		margin-bottom:15px;
-	}
-	
+	/* START: [plan-day-line-empty] */
+		.plan-day-line-empty {
+			width:100%;
+			color:#777;
+			padding-top:10vh;
+			font-weight:bold;
+			text-align:center;
+		}
+	/* END */
+	/* START: [plan-btn-add-line] */
+		.plan-btn-add-line {
+			padding:15px;
+			text-align:center;
+		}
+		
+		.plan-btn-add-line div {
+			display:inline-block;
+			color:#333;
+			border:solid 2px #EEE;
+			border-radius:20px;
+			padding:7px 15px;
+			font-size:12px;
+			cursor:pointer;
+		}
+	/* END */
+</style>
+<style>
 	.transport-row {
 		position:relative;
+		height:40px;
 	}
 	
 	.plan-line .transport, .plan-line-twins .transport {
-		float:right;
 		width:calc(100% - 60px);
-		padding-left:15px;
 		display:inline-block;
 		background-color:#FFF;
 		color:#999;
-		margin-top:15px;
-		/*font-size:0.9em;*/
 	}
 	
 	.line-transport-mode {
@@ -689,12 +167,11 @@
 		display: inline-block;
 	}
 	
-	body .mode-option-selector .mode-option{
+	.mode-option-selector .mode-option{
 		background:  #FFF;
 	}
 	
 	.mode-option-display { 
-		font-size:0.9em;
 		position:absolute;
 		display:inline-block;
 		left: 50px;	
@@ -710,65 +187,56 @@
 		/*background-color:#0F3;*/
 	
 	}
-	/* START: [plan-day-line-empty] */
-		.plan-day-line-empty {
-			width:100%;
-			color:#777;
-			padding-top:20vh;
-			font-weight:bold;
-			text-align:center;
-		}
-	/* END */
-	/* START: [plan-btn-add-line] */
-		.plan-btn-add-line {
-			padding:15px;
-			text-align:center;
-		}
-		
-		.plan-btn-add-line div {
-			display:inline-block;
-			color:#333;
-			border:solid 2px #EEE;
-			border-radius:20px;
-			padding:7px 15px;
-			font-size:12px;
-			cursor:pointer;
-		}
-	/* END */
 </style>
-
-<!-- START: [splash] -->
-	<?php echo $modal_itinerary_splash; ?>
-<!-- END -->
-
-<div class="header header-black fixed-width fixed-bar noselect">
-    <div class="col-xs-2 text-left">
-        <a class="btn" href="<?php echo $link['main/home'];?>"><i class="fa fa-fw fa-lg fa-times"></i></a>
-    </div>
-    <div class="col-xs-8 text-left">
-        <input id="wrapper-title-input" type="text"/>
-    </div>
-    <div class="col-xs-2 text-right">
-    	<?php if($this->session->data['memory'] == 'cookie') { ?>
-    		<a class="btn button-save-trip" data-toggle="modal" data-target="#modal-trip-save">Save</a>
-        <?php } else { ?>
-        	<a class="btn" data-toggle="modal" data-target="#modal-itinerary-menu"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
-        <?php } ?>
+<style>
+	.ui-placeholder {
+		width:100%;
+		height:40px;
+		background-color:#EEE;
+		border-top:solid thin #DDD;
+		border-bottom:solid thin #DDD;
+	}
+	
+	.ui-placeholder > div {
+		opacity:0.3;
+	}
+	
+	.ui-helper {
+		max-width:60px;
+		max-height:60px;
+		background-color:transparent;
+	}
+</style>
+<div class="content-header fixed-width noselect">
+    <div class="row navbar navbar-primary navbar-file">
+        <div class="col-xs-3 text-left">
+        </div>
+        <div class="col-xs-6 text-center">
+            <h1>Itinerary</h1>
+        </div>
+        <div class="col-xs-3 text-right">
+            <?php if($this->session->data['memory'] == 'cookie') { ?>
+                <a  class="btn button-save-trip" data-toggle="modal" data-target="#modal-trip-save">Save</a>
+            <?php } else { ?>
+                <a class="btn">Done</a>
+            <?php } ?>
+        </div>
     </div>
 </div>
-<div class="body fixed-width noselect">
-    <div id="hidden-swiper-left-column"></div>
+<div class="content-body fixed-width nopadding">
+	<div class="navbar navbar-shadow"></div>
+	<div id="hidden-swiper-left-column"></div>
     <div id="hidden-swiper-right-column"></div>
     <div class="swiper-container">
         <div class="swiper-wrapper">
         </div>
     </div>
 </div>
-
 <!-- START: [modal] -->
 	<?php echo $modal_itinerary_menu; ?>
     <?php echo $modal_itinerary_map; ?>
 	<?php echo $modal_itinerary_day; ?>
+    <?php echo $modal_itinerary_date; ?>
     <?php echo $modal_account_signup; ?>
     <?php echo $modal_account_login; ?>
     <?php echo $modal_trip_save; ?>
@@ -860,7 +328,7 @@
 		$('.plan-day-line').sortable({
 			delay:100,
 			items:'>.plan-line',
-			handle:'.image',
+			handle:'.button-move',
 			connectWith:'.plan-day-line',
 			containment:'.swiper-container',
 			zindex:200,
@@ -879,7 +347,10 @@
 			start:function(event,ui) {
 				mySwiper.endNow();
 				mySwiper.detachEvents();
-				$('.plan-line .detail').hide();
+				$('.plan-line .button-action').hide();
+				$('.plan-line .pa-bullet').hide();
+				$('.plan-line .pa-text.data-title').addClass('text-clamp-1');
+				$('.plan-line .pa-text.data-description').hide();
 				$('.transport-row').hide();
 				ui.placeholder.html(ui.item.html());
 				$(this).sortable('refreshPositions');
@@ -931,7 +402,10 @@
 				
 				mySwiper.attachEvents();
 				
-				$('.plan-line .detail').show();
+				$('.plan-line .button-action').show();
+				$('.plan-line .pa-bullet').show();
+				$('.plan-line .pa-text.data-description').show();
+				$('.plan-line .pa-text.data-title').removeClass('text-clamp-1');
 				$('.plan-line .transport-row').show();
 				$('.plan-line-twin .transport-row').show();
 				$('.plan-day-line').css('min-height','0px');
@@ -1171,8 +645,7 @@
 	<!-- START: [date] -->
 		function initDateButton() {
 			$('.button-set-date').on('click',function() { 
-				$('#modal-trip-day').modal('show');
-				openEditDate(); 
+				$('#modal-itinerary-date').modal('show');
 			});
 		}
 	<!-- END -->
@@ -1554,7 +1027,7 @@
 						+ '</div>'
 					+ '</div>'
 					+ '<div class="swiper-slide-content scrollable-y">'
-						+ '<div class="swiper-slide-content-header fixed-width fixed-bar">'
+						+ '<div class="swiper-slide-content-header fixed-width row">'
 							+ '<div class="col-xs-4 text-left"><div class="btn button-set-date '+nodate+'">'+data.date+'</div></div>'
 							+ '<div class="col-xs-4 text-center"></div>'
 							+ '<div class="col-xs-4 text-right"><div class="btn button-view-map">View Map</div></div>'
@@ -1691,75 +1164,94 @@
 		<!-- END -->
 		<!-- START: [content] -->
 			content = ''
-				+ '<div id="plan-line-' + line.line_id + '" class="plan-line">'
-					+ '<div class="row">'
-						+ '<div class="image">'
-							+ '<img class="noselect" src="'+image+'" onerror="this.onerror = \'\';this.src = \'resources/image/error/noimage.png\';"/>'
-							+ '<div class="button-move"><i class="fa fa-fw fa-arrows"></i></div>'
-						+ '</div>'
-						+ '<div class="info" data-toggle="modal" data-target="#modal-line-custom" onclick="setModalLineCustomForm(\''+line.line_id+'\');">'
-							+ '<div class="title">'
-								+'<span class="text-title">'+line.title+'</span>'
-								+' <span class="btn-secondary ' + hidden_read + '" data-toggle="modal" data-target="#modal-line-custom" onclick="explorePlace(\''+line.place_id+'\');">(read)</span>'
+				+ '<div id="plan-line-' + line.line_id + '" class="pa plan-line">'
+					+ '<div class="pa-row row">'
+						+ '<div class="col-xs-10">'
+							+ '<div class="pa-icon button-move">'
+								+ '<i class="fa fa-fw fa-arrows"></i>'
 							+ '</div>'
-							+ '<div class="detail ' + hidden_detail + '">'
-								+ '<div class="bullet ' + hidden_bullet + '">'
-									+ '<div class="time ' + hidden_time + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw fa-clock-o"></i><i class="fa fa-fw"></i>'
-											+ '<span class="text-time">' + line['time'] + '</span>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="duration ' + hidden_duration + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw fa-history"></i><i class="fa fa-fw"></i>'
-											+ '<span class="text-duration">' + line['duration'] + '</span>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="company ' + hidden_company + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw">By</i><i class="fa fa-fw"></i>'
-											+ '<span class="text-company">' + line['company'] + '</span>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="address ' + hidden_address + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw fa-map-marker"></i><i class="fa fa-fw"></i>'
-											+ '<span class="text-address">' + line['address'] + '</span>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="phone ' + hidden_phone + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw fa-phone"></i><i class="fa fa-fw"></i>'
-											+ '<span class="text-phone">' + line['phone'] + '</span>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="fax ' + hidden_fax + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw fa-fax"></i><i class="fa fa-fw"></i>'
-											+ '<span class="text-fax">' + line['fax'] + '</span>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="website ' + hidden_website + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw fa-globe"></i><i class="fa fa-fw"></i>'
-											+ '<span data-toggle="modal" data-target="#modal-line-custom"><a class="text-website" href="' + convertTextToUrl(line['website']) + '" target="blank">' + convertUrlToText(line['website']) + '</a></span>'
-										+ '</span>'
-									+ '</div>'
+							+ '<div class="pa-desc">'
+								+ '<div class="pa-text data-title">'
+									+ '<span class="text-title">'
+										+ line.title
+									+ '</span>'
+									+ '<span class="button-expand">'
+										+ '<i class="fa fa-fw fa-caret-down"></i>'
+									+ '</span>'
 								+ '</div>'
-								+ '<div class="description ' + hidden_description + '">'
+								+ '<div class="pa-bullet data-time ' + hidden_time + '">'
+									+ '<span>'
+										+ '<i class="fa fa-fw fa-clock-o"></i><i class="fa fa-fw"></i>'
+										+ '<span class="text-time">' 
+											+ line['time'] 
+										+ '</span>'
+									+ '</span>'
+								+ '</div>'
+								+ '<div class="pa-bullet data-duration ' + hidden_duration + '">'
+									+ '<span>'
+										+ '<i class="fa fa-fw fa-hisotry"></i><i class="fa fa-fw"></i>'
+										+ '<span class="text-time">' 
+											+ line['duration'] 
+										+ '</span>'
+									+ '</span>'
+								+ '</div>'
+								+ '<div class="pa-company data-company ' + hidden_company + '">'
+									+ '<span>'
+										+ '<i class="fa fa-fw">By</i><i class="fa fa-fw"></i>'
+										+ '<span class="text-company">' 
+											+ line['company'] 
+										+ '</span>'
+									+ '</span>'
+								+ '</div>'
+								+ '<div class="pa-bullet data-address ' + hidden_address + '">'
+									+ '<span>'
+										+ '<i class="fa fa-fw fa-map-marker"></i><i class="fa fa-fw"></i>'
+										+ '<span class="text-address">' 
+											+ line['address'] 
+										+ '</span>'
+									+ '</span>'
+								+ '</div>'
+								+ '<div class="pa-bullet data-phone ' + hidden_phone + '">'
+									+ '<span>'
+										+ '<i class="fa fa-fw fa-phone"></i><i class="fa fa-fw"></i>'
+										+ '<span class="text-phone">' 
+											+ line['phone'] 
+										+ '</span>'
+									+ '</span>'
+								+ '</div>'
+								+ '<div class="pa-bullet data-fax ' + hidden_fax + '">'
+									+ '<span>'
+										+ '<i class="fa fa-fw fa-fax"></i><i class="fa fa-fw"></i>'
+										+ '<span class="text-fax">' 
+											+ line['fax'] 
+										+ '</span>'
+									+ '</span>'
+								+ '</div>'
+								+ '<div class="pa-bullet data-website ' + hidden_website + '">'
+									+ '<span>'
+										+ '<i class="fa fa-fw fa-globe"></i><i class="fa fa-fw"></i>'
+										+ '<a class="text-website" href="' + convertTextToUrl(line['website']) + '" target="blank">' 
+											+ convertUrlToText(line['website']) 
+										+ '</a>'
+									+ '</span>'
+								+ '</div>'
+								+ '<div class="pa-text data-description ' + hidden_description + '">'
 									+ '<span class="text-description">'
 										+ line.description
 									+ '</span>'
 								+ '</div>'
-								+ note
+								+ '<div class="transport-row">'
+									+ '<span class="transport data-transport">'
+									+ '</span>'
+								+ '</div>'
 							+ '</div>'
 						+ '</div>'
-					+ '</div>' 
-					+ '<div class="transport-row row">'
-						+ '<div class="transport">'
+						+ '<div class="col-xs-2 text-right">'
+							+ '<div class="pa-btn button-action">'
+								+ '<i class="fa fa-fw fa-ellipsis-v"></i>'
+							+ '</div>'
 						+ '</div>'
-					+ '</div>' 
+					+ '</div>'
 					+ '<form class="plan-line-form-hidden plan-form-hidden hidden" id="plan-line-' + line.line_id + '-form-hidden">'
 						+ hidden_form
 					+ '</form>'
@@ -1799,7 +1291,7 @@
 			var content = ''
 				+'<div class="plan-btn-add-line">'
 					+ '<div class="text-center" data-toggle="modal" data-target="#modal-line-add">'
-						+ 'ADD SOMETHING NEW'
+						+ 'ADD NEW ACTIVITY'
 					+ '</div>'
 				+'</div>'
 			;
@@ -2817,10 +2309,32 @@
 		
 		if (is_last_line && have_next_day) {
 
-			var info_name = $("#plan-line-"+line_id).find(".title span").html();
+			var info_name = $("#plan-line-"+line_id+"-form-hidden input[name=title]").val();
 			
 			
 			var twins_content = ''
+				+ '<div class="pa plan-line-twins twins-'+line_id+'">'
+					+ '<div class="pa-row row">'
+						+ '<div class="col-xs-12">'
+							+ '<div style="position: absolute; top:17.5px; left:0; height:5px; width:50px; background-color:#777;">'
+							+ '</div>'
+							+ '<div class="pa-icon">'
+								+ '<i class="fa fa-fw"></i>'
+							+ '</div>'
+							+ '<div class="pa-desc">'
+								+ '<div class="pa-text data-title" style="color:#777;">'
+									+'<span class="text-title">'+info_name+' (previous day)</span>'
+								+ '</div>'
+								+ '<div class="transport-row">'
+									+ '<div class="transport data-transport">'
+									+ '</div>'
+								+ '</div>'
+							+ '</div>'
+						+ '</div>'
+					+ '</div>'
+				+ '</div>'
+			;
+				/*
 					+ '<div class="plan-line-twins twins-'+line_id+'">'
 						+ '<div class="row">'
 							+ '<div class="description">'
@@ -2839,6 +2353,7 @@
 							+ '</div>'
 						+ '</div>' 
 					+ '</div>'
+					*/
 					;
 			
 			

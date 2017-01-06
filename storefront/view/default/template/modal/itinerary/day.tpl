@@ -1,39 +1,4 @@
 <style>
-	#modal-trip-day .header.header-white {
-		background-color:#FFF;
-		color:#000;
-		border-bottom:solid thin #DDD;
-	}
-	
-	#modal-trip-day .header label {
-		line-height:40px;
-		padding-left:15px;
-		color:#000;
-		font-weight:normal;
-	}
-	
-	#modal-trip-day .header input {
-		width:100%;
-		height:34px;
-		margin:3px;
-		padding:7px 15px;
-		border:solid thin #CCC;
-		outline:none;
-		color:#000;
-	}
-	
-	.modal-modal {
-		position:fixed;
-		top:40px;
-		left:0;
-		right:0;
-		height:calc(100vh - 40px);
-		margin:auto;
-		background-color:#000;
-		opacity:.5;
-		z-index:20;
-	}
-	
 	.result-row {
 		width:100%;
 		background-color:#FFF;
@@ -69,62 +34,45 @@
 </style>
 
 <!-- START: Modal -->
-    <div class="modal modal-fixed-top noselect" id="modal-trip-day" role="dialog" data-backdrop="false">
-        <div class="modal-wrapper">
-            <div class="modal-header">
-            	<div class="modal-modal fixed-width"></div>
-                <div id="modal-trip-day-header-main" class="header fixed-bar fixed-width row">
-                    <div class="col-xs-3 text-left">
+    <div class="modal" id="modal-trip-day" role="dialog" data-backdrop="false">
+    	<div class="modal-wrapper fixed-width">
+        	<div class="modal-header fixed-width">
+            	<div id="modal-trip-day-header-main" class="navbar navbar-primary navbar-modal">
+                	<div class="col-xs-3 text-left">
+                    	<a class="btn" data-dismiss="modal">Back</a>
                     </div>
                     <div class="col-xs-6 text-center">
-                        <div class="title">All Days</div>
+                        <span>All Days</span>
                     </div>
                     <div class="col-xs-3 text-right">
-                        <a class="btn btn-header" onclick="openEditDate();">Set Date</a>
+                        <a class="btn" data-toggle="modal" data-target="#modal-itinerary-date">Set Date</a>
                     </div>
                 </div>
-                <div id="modal-trip-day-header-date" class="header fixed-bar fixed-width row">
-                	<form id="plan-date-form-hidden">
-                        <div class="col-xs-3 text-left">
-                            <label for="travel_date">Start Date</label>
-                        </div>
-                        <div class="col-xs-6">
-                            <input class="empty" type="date" min="<?php echo date('Y-m-d'); ?>" name="travel_date" />
-                        </div>
-                        <div class="col-xs-3 text-right">
-                            <a class="btn btn-header" onclick="closeEditDate();">Done</a>
-                        </div>
-                    </form>
-                </div>
-                <div id="modal-trip-day-header-general" class="header header-secondary header-white fixed-bar fixed-width row">
-                    <div class="col-xs-3 text-left">
+                <div id="modal-trip-day-header-general" class="navbar navbar-white">
+                    <div class="col-xs-6 text-left">
                         <a class="btn btn-header" onclick="openEditDay();">Edit</a>
                     </div>
-                    <div class="col-xs-6 text-center">
-                    </div>
-                    <div class="col-xs-3 text-right">
-                    	<a class="btn btn-header" onclick="addPlanDay();">New Day</a>
+                    <div class="col-xs-6 text-right">
+                        <a class="btn btn-header" onclick="addPlanDay();">New Day</a>
                     </div>
                 </div>
-                <div id="modal-trip-day-header-edit" class="header header-secondary header-white fixed-bar fixed-width row">
-                    <div class="col-xs-3 text-left">
+                <div id="modal-trip-day-header-edit" class="navbar navbar-white">
+                    <div class="col-xs-6 text-left">
                         <a class="btn btn-header" onclick="closeEditDay();">Done</a>
                     </div>
-                    <div class="col-xs-6 text-center">
-                    </div>
-                    <div class="col-xs-3 text-right">
+                    <div class="col-xs-6 text-right">
                     	<a class="btn btn-header button-delete" onclick="deleteSelectedDay();">Delete</a>
                     </div>
                 </div>
-            </div>
-            <div class="modal-dialog fixed-width">
-                <div class="modal-header-shadow"></div>
-                <div class="modal-header-shadow"></div>
-                <div class="modal-content">
-                    <div class="modal-body nopadding">
-                    </div>
+        	</div>
+            <div class="modal-body fixed-width">
+            	<div class="navbar navbar-shadow"></div>
+                <div class="navbar navbar-shadow"></div>
+                <div class="modal-body-body">
                 </div>
-            </div>
+        	</div>
+            <div class="modal-footer fixed-width">
+        	</div>
         </div>
     </div>
 <!-- END -->
@@ -136,13 +84,13 @@
 </script>
 <script>
 	function initSortableDay() {
-		$('#modal-trip-day .modal-body').sortable({	
+		$('#modal-trip-day .modal-body-body').sortable({	
 			delay: 300,
 			axis: "y",
 			items: ">.result-row", 
 			handle: ".sort-handle",
 			appendTo: "parent",	
-			containment: "#modal-trip-day .modal-content",
+			containment: "#modal-trip-day .modal-body",
 			scrollSpeed: 10,
 			cursorAt: {
 				top: 15
@@ -282,7 +230,7 @@
 		var icon;
 		var selected;
 		
-		$('#modal-trip-day .modal-body').html('');
+		$('#modal-trip-day .modal-body-body').html('');
 		
 		$('.plan-day-form-hidden').each(function() {
 			icon = '';
@@ -291,8 +239,8 @@
 				$(this).parent('.plan-day').find('.plan-line-form-hidden').each(function() {
 					icon += ''
 						+ '<span class="fa-stack fa-fw fa-1x">'
-							+ '<i class="fa fa-circle fa-stack-2x text-success"></i>'
-							+ '<i class="fa fa-camera fa-stack-1x fa-inverse"></i>'
+							+ '<i class="fa fa-circle fa-stack-2x"></i>'
+							+ '<i class="fa fa-flag fa-stack-1x fa-inverse"></i>'
 						+ '</span>'
 					;
 				});
@@ -343,7 +291,7 @@
 					+ '</form>'
 				+ '</div>'
 			;
-			$('#modal-trip-day .modal-body').append(content);
+			$('#modal-trip-day .modal-body-body').append(content);
 		});
 		
 		<?php if($this->session->data['mode'] == 'edit') { ?>
@@ -571,9 +519,4 @@
 			$('#plan-date-form-hidden input[name=travel_date]').val(travel_date);
 		}
 	}
-</script>
-<script>
-	$('#plan-date-form-hidden input[name=travel_date]').on('change',function() {
-		updateTravelDate();
-	});
 </script>

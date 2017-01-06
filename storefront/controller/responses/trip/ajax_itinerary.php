@@ -8,28 +8,20 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	public $data = array();
 	
 	public function main() {
-<<<<<<< HEAD
-		/*
-		if(!isset($_SESSION['user_id'])) {
-			$result['error']['code'] = 401; 
-			$result['error']['title'] = 'Not Logged In'; 
-			$result['error']['text'] = 'Please log in to continue'; 
-			$response = json_encode($result);
-			echo $response;
-			die();
-		}
-		*/
-		
-=======
-			
->>>>>>> master
 		//START: testing script
 			foreach($_POST as $key => $value) {
 				$this->data[$key] = $value;
 			}
 			
 			$bypass = false;
-			if ($this->data['action'] == 'get_distance_path') $bypass = true;
+			if ($this->data['action'] == 'get_distance_path' 
+			|| $this->data['action'] == 'refresh_trip' 
+			|| $this->data['action'] == 'refresh_plan'
+			|| $this->data['action'] == 'refresh_trip_photo' 
+			|| $this->data['action'] == 'refresh_member'
+			) { 
+				$bypass = true;
+			}
 			
 			if(!isset($_SESSION['user_id']) && $bypass == false) {
 				$result['error']['code'] = 401; 
@@ -91,13 +83,10 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'get_distance_path') { $this->get_distance_path(); return; }
 			else if($this->data['action'] == 'add_path') { $this->add_path(); return; }
 			else if($this->data['action'] == 'edit_line_mode') { $this->edit_line_mode(); return; }
-<<<<<<< HEAD
 			else if($this->data['action'] == 'refresh_template') { $this->refresh_template(); return; }
-=======
 			else if($this->data['action'] == 'get_path_custom') { $this->get_path_custom(); return; }
 			else if($this->data['action'] == 'add_path_custom') { $this->add_path_custom(); return; }
 			else if($this->data['action'] == 'edit_path_custom') { $this->edit_path_custom(); return; }
->>>>>>> master
 			
 			else { 
 				//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -1482,7 +1471,6 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		return $converted_value;
 	}
 	
-<<<<<<< HEAD
 	public function refresh_template() {
 		$country_id = $this->data['country_id'];
 		$month = $this->data['month'];
@@ -1490,7 +1478,10 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		
 		$result = $this->model_travel_trip->getTemplateByFilter($country_id,$month,$mode_id);
 		$result = array_values($result);
-=======
+		$response = json_encode($result);
+		echo $response;
+	}
+
 	//read data when open modal for custom transport
 	public function get_path_custom(){
 		$this->data['user_id'] = $this->user->getUserId();
@@ -1500,13 +1491,10 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		$result['distance_text'] = $converted_value['distance_text'];
 		$result['duration_text'] = $converted_value['duration_text'];
 		
->>>>>>> master
 		$response = json_encode($result);
 		echo $response;
 	}
 	
-<<<<<<< HEAD
-=======
 	//save data at custom transport modal
 	public function add_path_custom(){
 		$this->data['user_id'] = $this->user->getUserId();
@@ -1542,8 +1530,6 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		
 	}
 	
-	
->>>>>>> master
 	/*
 	public function get_trip() {
 		$text = html_entity_decode($this->data['send']);

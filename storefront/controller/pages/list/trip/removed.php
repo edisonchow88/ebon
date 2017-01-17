@@ -19,14 +19,14 @@ class ControllerPagesListTripRemoved extends AController {
 		
 		//START: set script
 			$this->addChild('script/list/trip', 'script_list_trip', 'script/list/trip.tpl');
-		//END 
+		//END
 		
 		//START: set menu
+			$this->addChild('menu/mobile/main', 'menu_mobile_main', 'menu/mobile/main.tpl');
 			$this->addChild('menu/list/trip', 'menu_list_trip', 'menu/list/trip.tpl');
-		//END 
+		//END
 		
 		//START: set modal
-			$this->addChild('modal/home/menu', 'modal_home_menu', 'modal/home/menu.tpl');
 			$this->addChild('modal/list/trip/search', 'modal_trip_search', 'modal/list/trip/search.tpl');
 			$this->addChild('modal/list/trip/sort', 'modal_trip_sort', 'modal/list/trip/sort.tpl');
 			$this->addChild('modal/list/trip/action', 'modal_trip_action', 'modal/list/trip/action.tpl');
@@ -36,7 +36,7 @@ class ControllerPagesListTripRemoved extends AController {
 		//END
 		
 		//START: set link
-			$link['trip/new'] = $this->html->getSecureURL('trip/new');
+			$link['wizard/new'] = $this->html->getSecureURL('wizard/new');
 			$link['trip/itinerary'] = $this->html->getSecureURL('trip/itinerary');
 			$link['main/home'] = $this->html->getSecureURL('main/home');
 		//END

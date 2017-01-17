@@ -208,10 +208,6 @@
 			border-bottom:solid thin #CCC;
 		}
 		
-		.modal-body {
-			min-height:calc(100vh - 40px);
-		}
-		
 		.modal-title {
 			color:#000;
 			font-weight:bold;

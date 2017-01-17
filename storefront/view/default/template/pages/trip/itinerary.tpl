@@ -1415,9 +1415,9 @@
 				var plan = getCookie('plan');
 				if(plan == '') {
 					<!-- START: [first time] -->
-						var plan = {"name":"Plan 1","travel_date":"2016-02-09","day":[{"day_id":"1","sort_order":"1","line":[{"day_id":"1","line_id":"1","type":"destination","type_id":"26","time":"10:30","sort_order":"1","image_id":"236","title":"New Chitose Airport","description":"international airport","duration":"60","activity":"Visit","place":"New Chitose Airport","place_id":"ChIJ3RpcnUUgdV8R9oH25Xxguho","lat":"42.792595","lng":"141.670486"},{"day_id":"1","line_id":"2","type":"destination","type_id":"9","time":"14:00","sort_order":"2","image_id":"226","title":"Sapporo","duration":"60","activity":"Visit","place":"Sapporo","place_id":"ChIJMzaXWnXUCl8R1bqHRp1-kzM","lat":"43.062096","lng":"141.354370"}]},{"day_id":"2","sort_order":"2","line":[{"day_id":"2","line_id":"6","type":"destination","type_id":"9","sort_order":"1","image_id":"226","title":"Sapporo","duration":"60","activity":"Visit","place":"Sapporo","place_id":"ChIJMzaXWnXUCl8R1bqHRp1-kzM","lat":"43.062096","lng":"141.354370"},{"day_id":"2","line_id":"7","type":"destination","type_id":"13","sort_order":"2","image_id":"217","title":"Furano","duration":"60","activity":"Visit","place":"Furano","place_id":"ChIJj1EPMdVPc18RKt8wkJs2fB8","lat":"43.342140","lng":"142.383224"},{"day_id":"2","line_id":"8","type":"destination","type_id":"16","sort_order":"3","image_id":"220","title":"Biei","duration":"60","activity":"Visit","place":"Biei","place_id":"ChIJL_Q3O3jODF8Rbc5gAOO92fM","lat":"43.588188","lng":"142.466965"}]},{"day_id":"3","sort_order":"3"},{"day_id":"4","sort_order":"4"}]};
+						var plan = {"name":"Plan 1","travel_date":"","day":[{"day_id":"1","sort_order":"1"}]};
 						plan = JSON.stringify(plan);
-						setCookie('plan',plan,7);
+						setCookie('plan',plan,1);
 						plan = JSON.parse(plan);
 						runRefreshPlanTable(plan);
 						refreshLineTransportModeMain();

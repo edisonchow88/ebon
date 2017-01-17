@@ -1,4 +1,5 @@
 <style>
+	/*
 	#modal-line-search-input-keyword-wrapper {
 		height:40px;
 		padding:3px;
@@ -14,7 +15,6 @@
 		margin-top:-3px;
 		color:#e93578;
 	}
-	
 	#modal-line-search-button-clear {
 		position:absolute;
 		top:0;
@@ -31,20 +31,24 @@
 		text-align:center;
 	}
 	
-	#modal-line-search-no-result {
+	#modal-line-search .modal-body-empty {
 		background-color:#FFF;
 		color:#777;
 		padding:15px;
 		font-size:12px;
 	}
+	*/
 	
     .pac-container { 
 		position:fixed !important;
 		top:40px !important;
-		margin-left:-3px !important;
-		padding:0 1px 15px 1px !important;
+		left:0 !important;
+		right:0 !important;
+		margin:auto !important;
 		width:100% !important;
+		min-width:250px !important;
 		max-width:400px !important;
+		height:calc(100vh - 40px) !important;
         z-index: 10000 !important;
 		border:none !important;
 		border-radius:0 !important;
@@ -60,6 +64,7 @@
 		border:none;
 		border-bottom:solid thin #EEE;
 		clear:both;
+		cursor:pointer;
 	}
 	
 	
@@ -89,6 +94,29 @@
 	}
 </style>
 <!-- START: Modal -->
+	<div class="modal" id="modal-line-search" role="dialog" data-backdrop="false">
+        <div class="modal-wrapper fixed-width">
+        	<div class="modal-shadow fixed-width" data-dismiss="modal"></div>
+            <div class="modal-header fixed-width">
+            	<div class="navbar navbar-primary navbar-search">
+                    <div class="col-xs-2 text-left">
+                        <a class="btn" data-dismiss="modal"><i class="fa fa-fw fa-lg fa-long-arrow-left"></i></a>
+                    </div>
+                    <div class="col-xs-8 text-left">
+                    	<form id="modal-line-search-keyword-form">
+                        	<input id="modal-line-search-input-keyword" name="keyword" type="text" placeholder="Search"/>
+                        </form>
+                    </div>
+                    <div class="col-xs-2 text-right">
+                        <a class="btn button-clear"><i class="fa fa-fw fa-lg fa-times-circle"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body fixed-width">
+            </div>
+        </div>
+    </div>
+<!--
     <div class="modal" id="modal-line-search" role="dialog" data-backdrop="false">
         <div class="modal-dialog fixed-bar fixed-width">
             <div class="modal-content">
@@ -115,52 +143,46 @@
             </div>
         </div>
     </div>
+-->
 <!-- END -->
 
 <script>
-	$('#modal-line-search-button-clear').on('click', function() {
-		$('#modal-line-search-input-keyword').val('');
-		$('#modal-line-search-input-keyword').trigger('change');
-		setTimeout(function() { $('#modal-line-search-input-keyword').focus(); }, 1);
-	});
-	
-	$('#modal-line-search-input-keyword').on('keyup change', function() {
-		if($('#modal-line-search-input-keyword').val() != '') {
-			$('.pac-container').removeClass('hidden');
-			$('#modal-line-search-button-clear').show();
-		}
-		else {
-			$('.pac-container').addClass('hidden');
-			$('#modal-line-search-button-clear').hide();
-		}
-	});
-	
-	$("#modal-line-search").on( "show.bs.modal", function() {
-		setTimeout(function() { $('#modal-line-search-input-keyword').focus(); }, 1);
-		$('.search-bar').hide();
-		$('.search-bar-shadow').hide();
-		$('#modal-line-search .modal-body').hide();
-		$('#modal-line-search-button-clear').hide();
-		$('#modal-line-search-no-result').hide();
-		
-	});
-	
-	$("#modal-line-search").on( "hidden.bs.modal", function() { 
-		$('#modal-line-search-form-alert').html('');
-		$('#modal-line-search-input-keyword').val('');
-		$('#modal-line-search-input-keyword').trigger('change');
-		setTimeout(function() { $('.search-bar input').blur(); }, 1);
-		$('.search-bar').show();
-		$('.search-bar-shadow').show();
-	});
-	
-	//IMPORATNT: Disable form submit by enter key 
-	$('#modal-line-search-keyword-form').on('keyup keypress', function(e) {
+	$('#modal-line-search form').on('keyup keypress', function(e) {
 		var keyCode = e.keyCode || e.which;
 		if (keyCode === 13) { 
 			e.preventDefault();
 			return false;
 		}
+	});
+	
+	$('#modal-line-search input[name=keyword]').on('keyup change', function() {
+		if($('#modal-line-search input[name=keyword]').val() != '') {
+			$('.pac-container').removeClass('hidden');
+			$('#modal-line-search .button-clear').show();
+		}
+		else {
+			$('.pac-container').addClass('hidden');
+			$('#modal-line-search .button-clear').hide();
+		}
+	});
+	
+	$('#modal-line-search .button-clear').on('click', function() {
+		$('#modal-line-search input[name=keyword]').val('');
+		$('#modal-line-search input[name=keyword]').trigger('change');
+		setTimeout(function() { $('#modal-line-search-keyword-form input[name=keyword]').focus(); }, 1);
+	});
+</script>
+<script>
+	$("#modal-line-search").on( "show.bs.modal", function() {
+		setTimeout(function() { $('#modal-line-search-keyword-form input[name=keyword]').focus(); }, 1);
+		$('#modal-line-search .modal-body').hide();
+		$('#modal-line-search .button-clear').hide();
+		
+	});
+	
+	$("#modal-line-search").on( "hidden.bs.modal", function() { 
+		$('#modal-line-search input[name=keyword]').val('');
+		$('#modal-line-search input[name=keyword]').trigger('change');
 	});
 </script>
 

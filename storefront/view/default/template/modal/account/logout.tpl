@@ -48,7 +48,7 @@
 					<!-- if success -->
 					setCookie('trip','',0);
 					setCookie('plan','',0);
-					window.location = "<?php echo $modal_link['home']; ?>";
+					location.reload();
 				}
 				document.getElementById('modal-account-logout-form-alert').innerHTML = alert_text;
 			} else {

@@ -1,8 +1,6 @@
 <style>
 	.search-bar {
 		padding:3px;
-		background-color:#DDD;
-		border-bottom:solid thin #CCC;
 	}
 	
 	.search-bar input {
@@ -10,32 +8,64 @@
 		font-size:12px;
 		border-radius:5px;
 	}
-	
-	.menu li {
-		height:50px;
-		padding:15px;
-		border-bottom:solid thin #DDD;
-		cursor:pointer;
-	}
-	
-	.menu li .fa {
-		color:#666;
-	}
-	
-	.menu li:hover {
-		background-color:#EEE;
-	}
-	
-	.menu li.text-danger {
-		color:#F00;
-	}
-	
-	.menu li.text-danger .fa {
-		color:#C00;
-	}
 </style>
 
 <!-- START: Modal -->
+	<div class="modal" id="modal-line-add" role="dialog" data-backdrop="false">
+    	<div class="modal-wrapper fixed-width">
+        	<div class="modal-header fixed-width">
+            	<div class="navbar navbar-primary navbar-modal">
+                	<div class="col-xs-3 text-left">
+                    	<a class="btn" data-dismiss="modal">Cancel</a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <span>New Activity</span>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                    	<a class="btn"  data-toggle="modal" data-target="#modal-line-search"><i class="fa fa-fw fa-lg fa-search"></i></a>
+                    </div>
+                </div>
+        	</div>
+            <div class="modal-body fixed-width">
+                <div class="navbar navbar-shadow"></div>
+                <div class="modal-body-body">
+                	<div class="la la-50 la-border la-hover la-pointer noselect">
+                    	<div class="la-row" data-dismiss="modal" data-toggle="modal" data-target="#modal-line-explore">
+                        	<div class="la-icon">
+                            	<i class="fa fa-fw fa-lg fa-location-arrow"></i>
+                            </div>
+                            <div class="la-desc">
+                            	<div class="la-text">
+                                	<span>Explore Around</span>
+                            	</div>
+                            </div>
+                        </div>
+                        <div class="la-row" data-dismiss="modal" data-toggle="modal" data-target="#modal-line-favourite">
+                        	<div class="la-icon">
+                            	<i class="fa fa-fw fa-lg fa-heart"></i>
+                            </div>
+                            <div class="la-desc">
+                            	<div class="la-text">
+                                	<span>From My Favourites</span>
+                            	</div>
+                            </div>
+                        </div>
+                        <div class="la-row" data-dismiss="modal" onclick="openModalLineCustom();">
+                        	<div class="la-icon">
+                            	<i class="fa fa-fw fa-lg fa-plus-circle"></i>
+                            </div>
+                            <div class="la-desc">
+                            	<div class="la-text">
+                                	<span>Add Custom Activity</span>
+                            	</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        	</div>
+        </div>
+    </div>
+<!--
     <div class="modal modal-fixed-top" id="modal-line-add" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
@@ -75,6 +105,7 @@
             </div>
         </div>
     </div>
+-->
 <!-- END -->
 
 <script>
@@ -90,8 +121,10 @@
 		$('#modal-line-custom').modal('show');
 	}
 </script>
+<!--
 <script>
 	$("#modal-line-add").on("show.bs.modal", function () {
 		initExploreMap();
 	});
 </script>
+-->

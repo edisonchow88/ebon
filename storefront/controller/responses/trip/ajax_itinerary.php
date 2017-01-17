@@ -8,14 +8,24 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	public $data = array();
 	
 	public function main() {
-			
 		//START: testing script
 			foreach($_POST as $key => $value) {
 				$this->data[$key] = $value;
 			}
 			
 			$bypass = false;
-			if ($this->data['action'] == 'get_distance_path') $bypass = true;
+			if ($this->data['action'] == 'get_distance_path' 
+			|| $this->data['action'] == 'refresh_trip' 
+			|| $this->data['action'] == 'refresh_plan'
+			|| $this->data['action'] == 'refresh_trip_photo' 
+			|| $this->data['action'] == 'refresh_member'
+			|| $this->data['action'] == 'get_trip'
+			|| $this->data['action'] == 'get_plan'
+			|| $this->data['action'] == 'get_line_mode_path'
+			|| $this->data['action'] == 'get_path_custom'
+			) { 
+				$bypass = true;
+			}
 			
 			if(!isset($_SESSION['user_id']) && $bypass == false) {
 				$result['error']['code'] = 401; 
@@ -77,9 +87,12 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'get_distance_path') { $this->get_distance_path(); return; }
 			else if($this->data['action'] == 'add_path') { $this->add_path(); return; }
 			else if($this->data['action'] == 'edit_line_mode') { $this->edit_line_mode(); return; }
+			else if($this->data['action'] == 'refresh_template') { $this->refresh_template(); return; }
 			else if($this->data['action'] == 'get_path_custom') { $this->get_path_custom(); return; }
 			else if($this->data['action'] == 'add_path_custom') { $this->add_path_custom(); return; }
 			else if($this->data['action'] == 'edit_path_custom') { $this->edit_path_custom(); return; }
+			else if($this->data['action'] == 'get_trip') { $this->get_trip(); return; }
+			else if($this->data['action'] == 'get_plan') { $this->get_plan(); return; }
 			
 			else { 
 				//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -99,7 +112,18 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	}
 	
 	public function refresh_plan() {
-		$result = $this->model_travel_trip->getPlanDetail($this->data['plan_id']);
+		$plan_id = $this->data['plan_id'];
+		$trip_id = $this->data['trip_id'];
+		
+		if(!isset($plan_id) || $plan_id == 0 || $plan_id == '') {
+			if(isset($trip_id) && $trip_id != 0 && $trip_id != '') {
+				$result = $this->model_travel_trip->getPlanByTripId($trip_id);
+				$result = array_values($result);
+				$plan_id = $result[0]['plan_id'];
+			}
+		}
+		
+		$result = $this->model_travel_trip->getPlanDetail($plan_id);
 		foreach($result['day'] as $day_id => $day) {
 			foreach($day['line'] as $line_id => $line) {
 				$time = $result['day'][$day_id]['line'][$line_id]['time'];
@@ -146,7 +170,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//START: add user
 			$data['user_id'] = $user_id;
 			$data['trip_id'] = $trip_id;
-			$data['status_id'] = 1;
+			$data['status_id'] = 2;
 			
 			$trip_member_id = $this->model_travel_trip->addMember($data);
 		//END
@@ -222,7 +246,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//START: add user
 			$data['user_id'] = $user_id;
 			$data['trip_id'] = $trip_id;
-			$data['status_id'] = 1;
+			$data['status_id'] = 2;
 			
 			$trip_member_id = $this->model_travel_trip->addMember($data);
 		//END
@@ -332,7 +356,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			if($result['trip'] != false) {
 				foreach($result['trip'] as $trip_id => $trip) {
 					$result['trip'][$trip_id] = $trip;
-					$result['trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/itinerary','&trip='.$trip['code']);
+					$result['trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/summary','&trip='.$trip['code']);
 				}
 			}
 		//END
@@ -354,7 +378,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			if($result['trip'] != false) {
 				foreach($result['trip'] as $trip_id => $trip) {
 					$result['trip'][$trip_id] = $trip;
-					$result['trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/itinerary','&trip='.$trip['code']);
+					$result['trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/summary','&trip='.$trip['code']);
 				}
 			}
 		//END
@@ -376,7 +400,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			if($result['trip'] != false) {
 				foreach($result['trip'] as $trip_id => $trip) {
 					$result['trip'][$trip_id] = $trip;
-					$result['trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/itinerary','&trip='.$trip['code']);
+					$result['trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/summary','&trip='.$trip['code']);
 				}
 			}
 		//END
@@ -398,7 +422,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			if($result['trip'] != false) {
 				foreach($result['trip'] as $trip_id => $trip) {
 					$result['trip'][$trip_id] = $trip;
-					$result['trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/itinerary','&trip='.$trip['code']);
+					$result['trip'][$trip_id]['url'] = $this->html->getSecureURL('trip/summary','&trip='.$trip['code']);
 				}
 			}
 		//END
@@ -1453,6 +1477,17 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		return $converted_value;
 	}
 	
+	public function refresh_template() {
+		$country_id = $this->data['country_id'];
+		$month = $this->data['month'];
+		$mode_id = $this->data['mode_id'];
+		
+		$result = $this->model_travel_trip->getTemplateByFilter($country_id,$month,$mode_id);
+		$result = array_values($result);
+		$response = json_encode($result);
+		echo $response;
+	}
+
 	//read data when open modal for custom transport
 	public function get_path_custom(){
 		$this->data['user_id'] = $this->user->getUserId();
@@ -1501,6 +1536,50 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		
 	}
 	
+	public function get_trip() {
+		//START: set data
+			$trip_id = $this->data['trip_id'];
+		//END
+		//START: set response
+			$result = $this->model_travel_trip->getTrip($trip_id);
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
+	
+	public function get_plan() {
+		//START: set data
+			$plan_id = $this->data['plan_id'];
+			$trip_id = $this->data['trip_id'];
+		//END
+		//START
+			if(!isset($plan_id) || $plan_id == 0 || $plan_id == '') {
+				if(isset($trip_id) && $trip_id != 0 && $trip_id != '') {
+					$result = $this->model_travel_trip->getPlanByTripId($trip_id);
+					$result = array_values($result);
+					$plan_id = $result[0]['plan_id'];
+				}
+			}
+		//END
+		//START: set response
+			$result = $this->model_travel_trip->getPlanDetail($plan_id);
+			foreach($result['day'] as $day_id => $day) {
+				//
+					if(isset($result['travel_date'])) {
+						$result['day'][$day_id]['date'] = date('Y-m-d', strtotime($result['travel_date']. ' + '.($day['sort_order']-1).' days'));
+					}
+				//
+				foreach($day['line'] as $line_id => $line) {
+					$time = $result['day'][$day_id]['line'][$line_id]['time'];
+					if($time != 'NULL' && $time != '') {
+						$result['day'][$day_id]['line'][$line_id]['time'] = substr($time,0,-3);
+					}
+				}
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
+	}
 	
 	/*
 	public function get_trip() {

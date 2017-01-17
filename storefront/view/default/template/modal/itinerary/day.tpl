@@ -27,10 +27,6 @@
 	.ui-placeholder-day > div {
 		opacity:.5;
 	}
-	
-	.button-sort-day {
-		overflow:hidden;
-	}
 </style>
 
 <!-- START: Modal -->
@@ -65,13 +61,11 @@
                     </div>
                 </div>
         	</div>
-            <div class="modal-body fixed-width">
+            <div class="modal-body fixed-width scrollable-y">
             	<div class="navbar navbar-shadow"></div>
                 <div class="navbar navbar-shadow"></div>
                 <div class="modal-body-body">
                 </div>
-        	</div>
-            <div class="modal-footer fixed-width">
         	</div>
         </div>
     </div>
@@ -162,7 +156,7 @@
 		<?php if($this->session->data['memory'] == 'cookie') { ?>
 			updatePlanTableCookie();
 			showHint('Day Sorted');
-			refreshPlanTable();
+			refreshPlan();
 		<?php } else { ?>
 			var day = new Array();
 			var day_id;
@@ -189,7 +183,7 @@
 					}
 					else if(typeof json.success != 'undefined') {
 						showHint('Day Sorted');
-						refreshPlanTable();
+						refreshPlan();
 					}
 				}, "json");
 			<!-- END -->
@@ -248,8 +242,8 @@
 			else {
 				icon += ''
 					+ '<span class="fa-stack fa-fw fa-1x">'
-						+ '<i class="fa fa-circle fa-stack-2x text-success"></i>'
-						+ '<i class="fa fa-camera fa-stack-1x fa-inverse"></i>'
+						+ '<i class="fa fa-circle fa-stack-2x"></i>'
+						+ '<i class="fa fa-flag fa-stack-1x fa-inverse"></i>'
 					+ '</span>'
 					+ ' x ' + num_of_line
 				;
@@ -462,7 +456,7 @@
 		//Google Analytics Event
 		ga('send', 'event','day', 'delete-day');
 		<!-- START: chain reaction -->
-			refreshPlanTable();
+			refreshPlan();
 		<!-- END -->
 		<!-- START: hint -->
 			if(day.length == 1) {

@@ -56,6 +56,31 @@
 </style>
 
 <!-- START: Modal -->
+    <div class="modal" id="modal-line-favourite" role="dialog" data-backdrop="false">
+        <div class="modal-wrapper fixed-width">
+            <div class="modal-header fixed-width">
+                <div id="modal-line-favourite-header-general" class="navbar navbar-primary navbar-modal fixed-width">
+                    <div class="col-xs-3 text-left">
+                        <a class="btn" data-dismiss="modal">Cancel</a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <span>My Favourites</span>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body fixed-width">
+            	<div class="navbar navbar-shadow"></div>
+                <div id="modal-line-favourite-list"></div>
+                <div id="modal-line-favourite-list-empty" class="empty-list">
+                    <div class="title">Your List is Empty</div>
+                    <div class="cta">Click to <a data-toggle="modal" data-target="#modal-line-explore" data-dismiss="modal">explore new places</a>.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--
     <div class="modal modal-fixed-top" id="modal-line-favourite" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
@@ -84,6 +109,7 @@
             </div>
         </div>
     </div>
+-->
 <!-- END -->
 
 <script>

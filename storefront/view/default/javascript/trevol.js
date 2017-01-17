@@ -11,17 +11,17 @@
 	<!-- START: [popover alert] -->
 		function showAlert(text) {
 			$(".popover-alert").html(text);
-			$(".popover-alert-wrapper").show();
+			$(".popover-alert").show();
 			$(".popover-load").hide();
-			setTimeout(function() { $(".popover-alert-wrapper").delay(1000).fadeOut(300); }, 2000);
+			setTimeout(function() { $(".popover-alert").delay(1000).fadeOut(300); }, 2000);
 		}
 	<!-- END -->
 	<!-- START: [popover hint] -->
 		function showHint(text) {
 			$(".popover-hint").html(text);
-			$(".popover-hint-wrapper").show();
+			$(".popover-hint").show();
 			$(".popover-load").hide();
-			setTimeout(function() { $(".popover-hint-wrapper").delay(1000).fadeOut(300); }, 2000);
+			setTimeout(function() { $(".popover-hint").delay(1000).fadeOut(300); }, 2000);
 		}
 	<!-- END -->
 	<!-- START: [popover loading] -->
@@ -41,6 +41,24 @@
 	function replaceAll(str, find, replace) {
 		return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 	}
+	
+	<!-- START: jquery function to serialize form -->
+		$.fn.serializeObject = function() {
+			var o = {};
+			var a = this.serializeArray();
+			$.each(a, function() {
+				if (o[this.name] !== undefined) {
+					if (!o[this.name].push) {
+						o[this.name] = [o[this.name]];
+					}
+					o[this.name].push(this.value || '');
+				} else {
+					o[this.name] = this.value || '';
+				}
+			});
+			return o;
+		};
+	<!-- END -->
 	
 	/**
 		sortList({
@@ -75,6 +93,49 @@
 				}
 			}
 		}).appendTo(obj.container);
+	}
+	
+	function convertUrlToText(url) {
+		var text = url;
+		if(isset(url)) {
+			if(url.indexOf('http') >= 0) {
+				var text = url.substring(url.indexOf('//')+2||0);
+			}
+		}
+    	return text;
+	}
+	
+	function convertTextToUrl(text) {
+		var url = text;
+		if(isset(text)) {
+			if(text.indexOf('http') < 0) {
+				var url = 'http://' + text;
+			}
+		}
+    	return url;
+	}
+	
+	function convertTimeToMinute(time) {
+		var hrs = parseInt(time.substring(0, time.indexOf(':')));
+		var mins =  parseInt(time.substring(time.indexOf(':')+1));
+		return (hrs * 60 + mins);
+	}
+	
+	function convertMinuteToTime(minute) {
+		var hrs = Math.floor(minute / 60);          
+		var mins = minute % 60;
+		hrs = ("0" + hrs).slice(-2);
+		mins = ("0" + mins).slice(-2);
+		var string = hrs + ':' + mins;
+		return (string);
+	}
+	
+	function addDurationToTime(time,duration) {
+		time = convertTimeToMinute(time);
+		duration = parseInt(duration);
+		var new_time = time + duration;
+		new_time = convertMinuteToTime(new_time);
+		return new_time;
 	}
 	
 	function addDayToDate(date, day) {

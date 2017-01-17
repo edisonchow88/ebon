@@ -54,7 +54,7 @@ class ControllerPagesWizardNew extends AController {
 			$link['list/trip/removed'] = $this->html->getSecureURL('list/trip/removed');
 			
 			$link['wizard/template'] = $this->html->getSecureURL('wizard/template');
-			$link['trip/itinerary'] = $this->html->getSecureURL('trip/itinerary');
+			$link['trip/itinerary/edit'] = $this->html->getSecureURL('trip/itinerary/edit');
 		//END
 		
 		//START: set variable

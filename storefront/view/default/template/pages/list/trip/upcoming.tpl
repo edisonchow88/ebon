@@ -102,7 +102,7 @@
 					unsaved_trip.num_of_day = unsaved_plan.day.length;
 					unsaved_trip.end_date = addDayToDate(unsaved_trip.travel_date,unsaved_trip.num_of_day-1);
 					unsaved_trip.username = 'Me';
-					unsaved_trip.url = '<?php echo $link["trip/itinerary"]; ?>';
+					unsaved_trip.url = '<?php echo $link["trip/itinerary/edit"]; ?>';
 					unsaved_trip.storage = 'cookie';
 					if(unsaved_trip.removed != 1) { result.trip.push(unsaved_trip); }
 				<!-- END -->

@@ -45,27 +45,23 @@
 	}
 </style>
 <!-- START: Modal -->
-    <div class="modal modal-fixed-top" id="modal-line-review" role="dialog" data-backdrop="false">
-        <div class="modal-wrapper">
-            <div class="modal-header">
-                <div id="modal-line-map-header-general" class="header fixed-bar fixed-width">
+    <div class="modal" id="modal-line-review" role="dialog" data-backdrop="false">
+        <div class="modal-wrapper fixed-width">
+            <div class="modal-header fixed-width">
+                <div class="navbar navbar-primary navbar-modal fixed-width">
                     <div class="col-xs-3 text-left">
-                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-line-review">Back</a>
+                        <a class="btn" data-dismiss="modal" >Back</a>
                     </div>
                     <div class="col-xs-6 text-center">
-                        <div class="title">Reviews</div>
+                        <span>Reviews</span>
                     </div>
                     <div class="col-xs-3 text-right">
                     </div>
                 </div>
             </div>
-            <div class="modal-dialog fixed-width">
-                <div class="modal-header-shadow"></div>
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <div id="wrapper-explore-current-review"></div>
-                    </div>
-                </div>
+            <div class="modal-body fixed-width scrollable-y">
+            	<div class="navbar navbar-shadow"></div>
+                <div id="wrapper-explore-current-review"></div>
             </div>
         </div>
     </div>
@@ -73,6 +69,6 @@
 
 <script>
 	$("#modal-line-review").on( "shown.bs.modal", function() {
-		$('#modal-line-review .modal-content').scrollTop(0);
+		$('#modal-line-review .modal-body').scrollTop(0);
 	});
 </script>

@@ -99,6 +99,65 @@
 </style>
 
 <!-- START: Modal -->
+	<div class="modal" id="modal-trip-map" role="dialog" data-backdrop="false">
+        <div class="modal-wrapper fixed-width">
+        	<div class="modal-shadow fixed-width" data-dismiss="modal"></div>
+            <div class="modal-header fixed-width">
+                <div class="navbar navbar-primary navbar-modal">
+                    <div class="col-xs-3 text-left">
+                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-trip-map">Back</a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <span>Map</span>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body fixed-width">
+            	<div class="navbar navbar-shadow"></div>
+            	<div class="btn-group map-center-group" role="group" aria-label="...">
+                    <button type="button" class="btn btn-default" id="go-center">
+                    	<i class="fa fa-bullseye" aria-hidden="true"></i>
+                    </button>        				
+                </div>							 
+                <div class="map-setting">
+                    <ul class="list-group">
+                        <button class="btn btn-default map-setting-button" type="button">
+                            <i class="fa fa-cog" aria-hidden="true"></i> 
+                        </button> 
+                        <div class="map-setting-list hidden">
+                            <li class="list-group-item"><span>Markers</span> 
+                                <div class="btn-group map-option map-option-option-group" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-sm btn-default map-option-option map-selected option-default" value="all">All</button>
+                                    <button type="button" class="btn btn-sm btn-default map-option-option" value="day">Day</button>
+                                 </div>
+                            </li>
+                            <li class="list-group-item"><span>Routes</span>
+                                 <div class="btn-group map-option map-option-route-group" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-sm btn-default map-route-option route-selected" value="routes"><i class="icon-curve-route"></i></button> 
+                                    <button type="button" class="btn btn-sm btn-default map-route-option" value="routesP"><i class="icon-straight-route"></i></button>                            
+                                 </div> 
+                            </li >
+                            <li class="list-group-item"><span>Refresh Map</span> 
+                                <div class="btn-group map-option map-option-refresh-map" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-sm btn-default map-refresh-option" value=""><i class="fa fa-refresh" aria-hidden="true"></i></button>                                  
+                                </div> 
+                            </li>              
+                        </div>
+                    </ul> 
+                </div>
+                <div class="btn-group map-day-group box-shadow" role="group" aria-label="...">
+                     <button type="button" class="btn btn-default day-control map-day-left"><i class="fa fa-fw fa-chevron-left"></i></button>
+                     <button type="button" class="btn btn-default nohover  disabled map-day-show">Day <span></span></button>
+                     <button type="button" class="btn btn-default day-control map-day-right"><i class="fa fa-fw fa-chevron-right"></i></button>
+                </div>
+                <div class="map-day-line-no"></div>
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+    <!--
     <div class="modal modal-fixed-top" id="modal-trip-map" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
@@ -118,13 +177,7 @@
                 <div class="modal-content">
                     <div class="modal-body nopadding">
                         <div class="btn-group map-center-group" role="group" aria-label="...">
-                            <button type="button" class="btn btn-default" id="go-center"><i class="fa fa-bullseye" aria-hidden="true"></i></button>        		</div>
-                      <!--
-                       	<div class="btn-group map-option-option-group " role="group" aria-label="...">
-                            <button type="button" class="btn btn-default map-option-option map-selected" value="all">All</button>
-                            <button type="button" class="btn btn-default map-option-option" value="day">Day</button>
-                        </div>  
-                         --> 							 
+                            <button type="button" class="btn btn-default" id="go-center"><i class="fa fa-bullseye" aria-hidden="true"></i></button>        				</div>							 
                          <div class="map-setting">
                    			<ul class="list-group">
                                 <button class="btn btn-default map-setting-button" type="button">
@@ -150,8 +203,7 @@
                                     </li>              
                                 </div>
       						</ul> 
-                      	</div>     
-     
+                      	</div>
                         <div class="btn-group map-day-group box-shadow" role="group" aria-label="...">
                              <button type="button" class="btn btn-default day-control map-day-left"><i class="fa fa-fw fa-chevron-left"></i></button>
                              <button type="button" class="btn btn-default nohover  disabled map-day-show">Day <span></span></button>
@@ -164,6 +216,7 @@
             </div>
         </div>
     </div>
+    -->
 <!-- END -->
 <script>
  function MarkerIconOverlay(pos, txt, map, cls, stt) {

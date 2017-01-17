@@ -1,4 +1,34 @@
 <!-- START: Modal -->
+    <div class="modal" id="modal-account-signup" role="dialog" data-backdrop="false">
+        <div class="modal-wrapper fixed-width">
+        	<div class="modal-shadow fixed-width" data-dismiss="modal"></div>
+            <div class="modal-header fixed-width">
+            	<div class="navbar navbar-primary navbar-modal">
+                    <div class="col-xs-2 text-left">
+                        <a class="btn" data-dismiss="modal">Cancel</a>
+                    </div>
+                    <div class="col-xs-8 text-center">
+                    	<span>Sign Up</span>
+                    </div>
+                    <div class="col-xs-2 text-right">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body fixed-width padding">
+            	<div class="navbar navbar-shadow"></div>
+            	<div id="modal-account-signup-form-alert"></div>
+                <?php echo $component['form']; ?>
+                <a class="btn btn-block btn-primary modal-button" onclick="signup();">Sign Up</a>
+                <div class="text-center">
+                    <span>Own an account? </span>
+                    <a data-dismiss="modal" data-toggle='modal' data-target="#modal-account-login">Log in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- END -->
+<!-- START: Modal -->
+<!--
     <div class="modal modal-fixed-top" id="modal-account-signup" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
@@ -29,6 +59,7 @@
             </div>
         </div>
     </div>
+-->
 <!-- END -->
 
 <script>

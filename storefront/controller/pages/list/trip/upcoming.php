@@ -34,7 +34,7 @@ class ControllerPagesListTripUpcoming extends AController {
 		
 		//START: set link
 			$link['wizard/new'] = $this->html->getSecureURL('wizard/new');
-			$link['trip/itinerary'] = $this->html->getSecureURL('trip/itinerary');
+			$link['trip/itinerary/edit'] = $this->html->getSecureURL('trip/itinerary/edit');
 			$link['main/home'] = $this->html->getSecureURL('main/home');
 		//END
 		

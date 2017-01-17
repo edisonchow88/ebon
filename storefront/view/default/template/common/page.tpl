@@ -5,12 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     </head>
     <body>
-		<div class="popover-alert-wrapper" onclick="$(this).hide();">
-            <div class="popover-alert"></div>
-        </div>
-        <div class="popover-hint-wrapper" onclick="$(this).hide();">
-            <div class="popover-hint"></div>
-        </div>
+		<div class="popover-alert" onclick="$(this).hide();"></div>
+        <div class="popover-hint" onclick="$(this).hide();"></div>
         <div class="popover-load"></div>
         <div class="container-fluid-shadow fixed-width"></div>
         <div class="container-fluid">

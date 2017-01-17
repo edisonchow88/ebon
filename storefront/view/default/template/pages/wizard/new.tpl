@@ -23,7 +23,7 @@
             <h1>Select Template</h1>
         </div>
         <div class="col-xs-3 text-right">
-            <a class="btn">Skip</a>
+            <a class="btn button-skip">Skip</a>
         </div>
     </div>
 </div>
@@ -146,7 +146,7 @@
         <div class="content-body-result-empty">
         	<div class="col-xs-12">
                 <div><b>No Available Template</b></div>
-                <div>Click to <a href="<?php echo $link['wizard/new']; ?>">create from scratch</a></div>
+                <div>Click to <a class="button-skip" onclick="verify_new_trip_condition();">create from scratch</a></div>
             </div>
         </div>
         <div class="content-body-result-list ca ca-card ca-white noselect">
@@ -166,6 +166,15 @@
 		$('.filter').toggleClass('hidden');
 		$('.btn-set-filter .fa').toggleClass('fa-flip-vertical');
 	}
+</script>
+<script>
+	function initTripButton() {
+		$('.button-skip').off().on('click',function() {
+			verify_new_trip_condition();
+		});
+	}
+	
+	initTripButton();
 </script>
 <script>
 	function updateTripName() {
@@ -227,12 +236,12 @@
 	}
 	
 	function newTripViaCookie() {
-		var title = $('#modal-trip-new-form input[name=name]').val();
-		var trip = '{"name":"'+title+'"}';
+		var title = $('#modal-trip-new-form select[name=country_id] option:selected').text();
+		var trip = '{"name":"My '+title+' Trip"}';
 		var plan = '{"name":"Plan 1","travel_date":"","day":[{"day_id":1,"sort_order":1}]}';
 		setCookie('trip',trip,1);
 		setCookie('plan',plan,1);
-		window.location = '<?php echo $link["trip/itinerary"]; ?>';
+		window.location = '<?php echo $link["trip/itinerary/edit"]; ?>';
 	}
 	
 	function verify_new_trip_condition() {

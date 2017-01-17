@@ -3,7 +3,7 @@
         <div class="modal-wrapper fixed-width">
         	<div class="modal-shadow fixed-width" data-dismiss="modal"></div>
             <div class="modal-body modal-body-left" style="padding-top:10px;">
-                <div class="la la-40">
+                <div class="la la-40 la-pointer">
                 	<?php if($this->user->isLogged() != false) { ?>
                         <div class="la-row">
                             <div class="la-icon">

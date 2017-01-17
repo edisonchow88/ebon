@@ -15,6 +15,10 @@
 	}
 </style>
 
+<!-- START: [splash] -->
+	<?php echo $modal_home_splash; ?>
+<!-- END -->
+
 <div class="row navbar navbar-primary navbar-white">
         <div class="col-xs-3 text-left">
             <a class="btn" data-toggle="modal" data-target="#menu-mobile-main"><i class="fa fa-fw fa-lg fa-bars"></i></a>
@@ -30,7 +34,7 @@
     </div>
     <form class="temp-form" autocomplete="off">
     	<select name="country_id">
-            <option value="0">Select a country</option>
+            <option value="0">Select country</option>
             <?php
                 $c = $this->request->get_or_post('c');
                 foreach($country as $key => $value) {
@@ -119,6 +123,13 @@
 	<?php echo $menu_mobile_main; ?>
 <!-- END -->
 
+<script>
+	<!-- START: [splash] -->
+		setTimeout(function() {
+			$('#wrapper-splash').fadeOut(500);
+		},500);
+	<!-- END -->
+</script>
 <script>
 	$('.temp-form').on('change',function() {
 		var country_id = $('.temp-form select[name=country_id]').val();

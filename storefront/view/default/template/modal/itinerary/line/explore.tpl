@@ -286,6 +286,114 @@
 </style>
 
 <!-- START: Modal -->
+   <div class="modal" id="modal-line-explore" role="dialog" data-backdrop="false">
+        <div class="modal-wrapper fixed-width">
+            <div class="modal-header fixed-width">
+                <div id="modal-line-explore-header-general" class="navbar navbar-primary navbar-modal fixed-width">
+                    <div class="col-xs-3 text-left">
+                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-line-explore">Cancel</a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <span>Explore</span>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                        <a class="btn"  data-toggle="modal" data-target="#modal-line-search"><i class="fa fa-fw fa-lg fa-search"></i></a>
+                    </div>
+                </div>
+            </div>
+                    <div class="modal-body fixed-width scrollable-y background-empty">
+                    	<div class="navbar navbar-shadow"></div>
+                        <div class="row" id="wrapper-explore-loading">
+                            <i class="fa fa-circle-o-notch fa-spin fa-4x fa-fw"></i> <span class="sr-only">Loading...</span>
+                        </div>
+                        <div id="wrapper-explore-current" class="box-shadow">
+                            <div id="wrapper-explore-current-image"></div>
+                            <div id="wrapper-explore-current-main">
+                                <div id="wrapper-explore-current-parent" class="row wrapper-explore-current-row-half"></div>
+                                <div id="wrapper-explore-current-title" class="row wrapper-explore-current-row"></div>
+                                <div id="wrapper-explore-current-rating" class="row wrapper-explore-current-row-half"></div>
+                                <div id="wrapper-explore-current-tag" class="row wrapper-explore-current-row"></div>
+                                <div id="wrapper-explore-current-description" class="row wrapper-explore-current-row"></div>
+                            </div>
+                            <div id="wrapper-explore-current-action">
+                                <div id="wrapper-explore-current-trip" class="row wrapper-explore-current-row">
+                                    <a class="button-add-trip" data-toggle="modal" data-target="#modal-line-explore" onclick="addPoiFromGuide();">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-plus fa-stack-1x"></i>
+                                        </span>
+                                        <span>Add to My Trip</span>
+                                     </a>
+                                     <div class="button-show-trip hidden">
+                                        <span class="fa-stack fa-lg" style="color:#e93578;">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-heart fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        <span>Added. </span>
+                                        <span><a data-toggle="modal" data-target="#modal-explore-trip">(view my trip)</a></span>
+                                     </div>
+                                </div>
+                            </div>
+                            <div id="wrapper-explore-current-misc">
+                                <div id="wrapper-explore-current-hour" class="row wrapper-explore-current-row">
+                                    <div class="col-xs-2"><i class="fa fa-fw fa-clock-o"></i></div>
+                                    <div class="col-xs-10 detail"></div>
+                                </div>
+                                <div id="wrapper-explore-current-address" class="row wrapper-explore-current-row">
+                                    <div class="col-xs-2"><i class="fa fa-fw fa-map-marker"></i></div>
+                                    <div class="col-xs-10 detail"></div>
+                                </div>
+                                <div id="wrapper-explore-current-phone" class="row wrapper-explore-current-row">
+                                    <div class="col-xs-2"><i class="fa fa-fw fa-phone"></i></div>
+                                    <div class="col-xs-10 detail"></div>
+                                </div>
+                                <div id="wrapper-explore-current-website" class="row wrapper-explore-current-row">
+                                    <div class="col-xs-2"><i class="fa fa-fw fa-globe"></i></div>
+                                    <div class="col-xs-10 detail"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="wrapper-explore-child">
+                            <div class="result-list-wrapper" id="wrapper-explore-child-destination-country">
+                                <div class="result-list"></div>
+                            </div>
+                            <div class="result-list-wrapper" id="wrapper-explore-child-destination">
+                                <div class="result-subtitle">Top Destinations</div>
+                                <div class="result-list"></div>
+                            </div>
+                            <div class="result-list-wrapper" id="wrapper-explore-child-destination-national-park">
+                                <div class="result-subtitle">National Parks</div>
+                                <div class="result-list"></div>
+                            </div>
+                            <div class="result-list-wrapper" id="wrapper-explore-child-destination-airport">
+                                <div class="result-subtitle">International Airports</div>
+                                <div class="result-list"></div>
+                            </div>
+                            <div class="result-list-wrapper" id="wrapper-explore-child-poi">
+                                <div class="result-subtitle">Point of Interests</div>
+                                <div class="result-list"></div>
+                            </div>
+                        </div>
+                        <div class="hidden">
+                            <form id="wrapper-explore-current-form">
+                                <input type="hidden" name="place_id"/>
+                                <input type="hidden" name="name"/>
+                                <textarea type="hidden" name="description"></textarea>
+                                <input type="hidden" name="photo"/>
+                                <input type="hidden" name="city"/>
+                                <input type="hidden" name="region"/>
+                                <input type="hidden" name="country"/>
+                                <input type="hidden" name="type"/>
+                                <input type="hidden" name="type_id"/>
+                                <input type="hidden" name="lat"/>
+                                <input type="hidden" name="lng"/>
+                                <input type="hidden" name="image"/>
+                                <input type="hidden" name="image_id"/>
+                            </form>
+                        </div>
+                    </div>
+        </div>
+    </div>
+<!--
     <div class="modal modal-fixed-top" id="modal-line-explore" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
@@ -379,8 +487,6 @@
                                 <div class="result-list"></div>
                             </div>
                         </div>
-                    <!-- END -->
-                    <!-- START: [form] -->
                         <div class="hidden">
                             <form id="wrapper-explore-current-form">
                                 <input type="hidden" name="place_id"/>
@@ -397,12 +503,12 @@
                                 <input type="hidden" name="image_id"/>
                             </form>
                         </div>
-                    <!-- END -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
+-->
 <!-- END -->
 
 <!-- START: [modal] -->
@@ -542,6 +648,7 @@
 			<!-- END -->
 			<!-- START: reset form -->
 				$('#wrapper-explore-current-form input').val('');
+				$('#wrapper-explore-current-form textarea').val('');
 			<!-- END -->
 		<!-- END -->
 		
@@ -735,6 +842,7 @@
 		if(current.description != null) {
 			$('#wrapper-explore-current-description').html(current.description);
 			$('#wrapper-explore-current-description').show();
+			$('#wrapper-explore-current-form textarea[name=description]').val(current.description);
 		}
 		
 		//hour

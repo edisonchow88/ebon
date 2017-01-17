@@ -9,6 +9,36 @@
 </style>
 
 <!-- START: Modal -->
+	<div class="modal" id="modal-trip-save" role="dialog" data-backdrop="false">
+        <div class="modal-wrapper fixed-width">
+            <div class="modal-header fixed-width">
+                <div class="navbar navbar-primary navbar-modal fixed-width">
+                    <div class="col-xs-3 text-left">
+                        <a class="btn" data-toggle="modal" data-target="#modal-trip-save">Cancel</a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <span>Save Trip</span>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body fixed-width padding">
+            	<div class="navbar navbar-shadow"></div>
+                <div class="tab tab-trip <?php if($this->user->isLogged() != false) { echo 'active'; } ?>">
+                    <?php echo $component['form']; ?>
+                    <a class="btn btn-block btn-primary modal-button" data-dismiss="modal" onclick="saveTrip();">Save Trip</a>
+                </div>
+                <div class="tab tab-account <?php if($this->user->isLogged() == false) { echo 'active'; } ?>">
+                    <div>Log in or sign up to save trip.</div>
+                    <br />
+                    <a class="btn btn-block btn-primary modal-button"data-dismiss="modal" data-toggle='modal' data-target="#modal-account-login">Log In</a>
+                    <a class="btn btn-block btn-default modal-button" data-dismiss="modal" data-toggle='modal' data-target="#modal-account-signup">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+	<!--
     <div class="modal modal-fixed-top" id="modal-trip-save" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
@@ -43,6 +73,7 @@
             </div>
         </div>
     </div>
+    -->
 <!-- END -->
 
 

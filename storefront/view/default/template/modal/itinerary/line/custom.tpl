@@ -1,16 +1,16 @@
 <style>
-	#modal-line-custom .header-secondary {
+	#modal-line-custom .navbar-white {
 	}
 	
-	#modal-line-custom .header-secondary .btn {
+	#modal-line-custom .navbar-white .btn {
 		color:#999;
 	}
 	
-	#modal-line-custom .header-secondary .btn:hover {
+	#modal-line-custom .navbar-white .btn:hover {
 		color:#000;
 	}
 	
-	#modal-line-custom .header-secondary .btn.active {
+	#modal-line-custom .navbar-white .btn.active {
 		color:#e93578;
 		cursor:default;
 		pointer-events:none;
@@ -126,6 +126,260 @@
 </style>
 
 <!-- START: Modal -->
+    <div class="modal" id="modal-line-custom" role="dialog" data-backdrop="false">
+        <div class="modal-wrapper fixed-width">
+            <div class="modal-header fixed-width">
+                <div id="modal-line-map-header-add" class="navbar navbar-primary navbar-modal fixed-width">
+                    <div class="col-xs-3 text-left">
+                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-line-custom">Cancel</a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <span>Add Activity</span>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-line-custom"onclick="saveModalLineCustomForm('add');">Save</a>
+                    </div>
+                </div>
+                <div id="modal-line-map-header-edit" class="navbar navbar-primary navbar-modal fixed-width">
+                    <div class="col-xs-3 text-left">
+                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-line-custom">Cancel</a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <span>Edit Activity</span>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                        <a class="btn btn-header" data-toggle="modal" data-target="#modal-line-custom" onclick="saveModalLineCustomForm('edit');">Save</a>
+                    </div>
+                </div>
+                <div class="navbar navbar-white fixed-width">
+                	<div class="col-xs-3">
+                    	<a class="btn btn-block btn-general" onclick="selectModalLineCustomTab('general');"><i class="fa fa-fw fa-lg fa-pencil"></i></a>
+                    </div>
+                    <div class="col-xs-3">
+                    	<a class="btn btn-block btn-time" onclick="selectModalLineCustomTab('time');"><i class="fa fa-fw fa-lg fa-clock-o"></i></a>
+                    </div>
+                    <div class="col-xs-3 hidden">
+                    	<a class="btn btn-block btn-location" onclick="selectModalLineCustomTab('location');"><i class="fa fa-fw fa-lg fa-map-marker"></i></a>
+                    </div>
+                    <div class="col-xs-3">
+                    	<a class="btn btn-block btn-photo" onclick="selectModalLineCustomTab('photo');"><i class="fa fa-fw fa-lg fa-picture-o"></i></a>
+                    </div>
+                    <div class="col-xs-3 hidden">
+                    	<a class="btn btn-block btn-fee" onclick="selectModalLineCustomTab('fee');"><i class="fa fa-fw fa-lg"><b>&#36;</b></i></a>
+                    </div>
+                    <div class="col-xs-3">
+                    	<a class="btn btn-block btn-more" onclick="selectModalLineCustomTab('more');"><i class="fa fa-fw fa-ellipsis-v"></i></a>
+                    </div>
+                </div>
+            </div>
+                    <div class="modal-body fixed-width">
+                    	<div class="navbar navbar-shadow"></div>
+                        <div class="navbar navbar-shadow"></div>
+                    	<form id="modal-line-custom-form">
+                        	<input type="hidden" name="line_id"/>
+                            <input type="hidden" name="day_id"/>
+                            <input type="hidden" name="sort_order"/>
+                            <input type="hidden" name="place_id"/>
+                        	<div class="tab tab-general">
+                            	<div class="row">
+                                    <select name="activity">
+                                    	<option value="visit">Visit</option>
+                                    	<option value="eat">Eat</option>
+                                    	<option value="stay">Stay</option>
+                                        <option value="fly_out">Fly Out</option>
+                                        <option value="fly">Travel by Flight</option>
+                                        <option value="fly_in">Fly In</option>
+                                    </select>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-12"><input type="text" name="title" placeholder="Title" /></div>
+                                </div>
+                                <textarea name="description" placeholder="Description"></textarea>
+                            </div>
+                            <div class="tab tab-time">
+                                <div class="row hidden">
+                                	<div class="col-xs-4"><label for="duration">Duration</label></div>
+                                	<div class="col-xs-4"><input type="number" name="duration"/></div>
+                                    <div class="col-xs-4"><label class="unit-duration" for="duration">mins</label></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="hrs">Duration</label></div>
+                                	<div class="col-xs-2">
+                                    	<select name=hrs>
+                                        	<?php
+                                            	for($i=0;$i<=23;$i++) {
+                                                	echo '<option value="'.$i.'">'.$i.'</option>';
+                                                }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2"><label class="unit-duration" for="hrs">hrs</label></div>
+                                	<div class="col-xs-2">
+                                    	<select name=mins>
+                                        	<?php
+                                            	for($i=0;$i<=59;$i++) {
+                                                	echo '<option value="'.$i.'">'.$i.'</option>';
+                                                }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2"><label class="unit-duration" for="mins">mins</label></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="time">Time (From)</label></div>
+                                	<div class="col-xs-8"><input type="time" name="time"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="time_to">Time (To)</label></div>
+                                	<div class="col-xs-4"><input type="time" name="time_to"/></div>
+                                    <div class="col-xs-4"><label class="unit-time-to" for="time_to">+ 1 day</label></div>
+                                </div>
+                            </div>
+                            <div class="tab tab-fee">
+                            	<div class="row">
+                                </div>
+                            </div>
+                            <div class="tab tab-location">
+                            	<input type="hidden" name="origin_lat"/>
+                                <input type="hidden" name="origin_lng"/>
+                            	<div class="row">
+                                	<div class="col-xs-4"><label for="lat">Latitude</label></div>
+                                	<div class="col-xs-8"><input type="number" name="lat"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="lng">Longitude</label></div>
+                                	<div class="col-xs-8"><input type="number" name="lng"/></div>
+                                </div>
+                                <ul class="pagination btn-group button-left">
+                                	<li><a class="button-reset disabled">Reset</a></li>
+                                    <li><a class="button-remove">Remove</a></li>
+                                </ul>
+                                <div class="btn-group button-recenter">
+                                    <div class="btn btn-default">
+                                        <i class="fa fa-fw fa-bullseye"></i>
+                                    </div>
+                                </div>
+                                <div id="line-map"></div>
+                            </div>
+                            <div class="tab tab-photo">
+                            	<div class="row">
+                                	<input type="hidden" name="photo_hidden"/>
+                                	<div class="col-xs-12 hidden"><input type="text" name="image_id"/></div>
+                                    <?php if($this->session->data['memory'] == 'server') { ?>
+                                        <div class="col-xs-12">
+                                        	<input type="text" name="photo" placeholder="Place your photo url here"/>
+                                        </div>
+                                    <?php } else { ?>
+                                        <div class="col-xs-12">
+                                            <input type="text" name="photo" placeholder="Place your photo url here" disabled/>
+                                            <div class="icon-disabled"><i class="fa fa-fw fa-lock"></i></div>
+                                        </div>
+                                    <?php } ?>
+                                </div>
+                                <div class="image">
+                                	<img src="" onerror="this.onerror = '';this.src = 'resources/image/error/noimage.png';" />
+                                </div>
+                            </div>
+                            <div class="tab tab-contact">
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="company">Company</label></div>
+                                	<div class="col-xs-8"><input type="text" name="company"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="address">Address</label></div>
+                                	<div class="col-xs-8"><input type="text" name="address"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="phone">Phone</label></div>
+                                	<div class="col-xs-8"><input type="text" name="phone"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="fax">Fax</label></div>
+                                	<div class="col-xs-8"><input type="text" name="fax"/></div>
+                                </div>
+                                <div class="row">
+                                	<div class="col-xs-4"><label for="website">Website</label></div>
+                                	<div class="col-xs-8"><input type="text" name="website"/></div>
+                                </div>
+                            </div>
+                            <div class="tab tab-more">
+                            	<div class="la la-50 la-border la-hover la-pointer noselect">
+                                	<div class="la-row" onclick="selectModalLineCustomTab('location');">
+                                    	<div class="la-icon">
+                                        	<i class="fa fa-fw fa-lg fa-map-marker"></i>
+                                        </div>
+                                        <div class="la-desc">
+                                        	<div class="la-text">
+                                            	<span>Location</span>
+                                        	</div>
+                                        </div>
+                                    </div>
+                                    <div class="la-row" onclick="selectModalLineCustomTab('contact');">
+                                    	<div class="la-icon">
+                                        	<i class="fa fa-fw fa-lg fa-phone"></i>
+                                        </div>
+                                        <div class="la-desc">
+                                        	<div class="la-text">
+                                            	<span>Contact</span>
+                                        	</div>
+                                        </div>
+                                    </div>
+                                    <div class="la-row button-duplicate-activity" data-dismiss="modal" onclick="duplicateLine();">
+                                    	<div class="la-icon">
+                                        	<i class="fa fa-fw fa-lg fa-clone"></i>
+                                        </div>
+                                        <div class="la-desc">
+                                        	<div class="la-text">
+                                            	<span>Duplicate Activity</span>
+                                        	</div>
+                                        </div>
+                                    </div>
+                                    <div class="la-row button-delete-activity" data-toggle="modal" data-target="#modal-line-delete">
+                                    	<div class="la-icon">
+                                        	<i class="fa fa-fw fa-lg fa-trash text-danger"></i>
+                                        </div>
+                                        <div class="la-desc">
+                                        	<div class="la-text text-danger">
+                                            	<span>Delete Activity</span>
+                                        	</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--
+                            	<ul class="menu menu-white">
+                                	<li onclick="selectModalLineCustomTab('location');">
+                                    	<i class="fa fa-fw fa-lg fa-map-marker"></i>
+                                        <i class="fa fa-fw"></i>
+                                        Location
+                                    </li>
+                                    <li onclick="selectModalLineCustomTab('contact');">
+                                    	<i class="fa fa-fw fa-lg fa-phone"></i>
+                                        <i class="fa fa-fw"></i>
+                                        Contact
+                                    </li>
+                                    <li class="hidden" onclick="selectModalLineCustomTab('photo');">
+                                    	<i class="fa fa-fw fa-lg fa-picture-o"></i>
+                                        <i class="fa fa-fw"></i>
+                                        Photo
+                                    </li>
+                                    <li class="button-duplicate-activity" data-dismiss="modal" onclick="duplicateLine();">
+                                    	<i class="fa fa-fw fa-lg fa-clone"></i>
+                                        <i class="fa fa-fw"></i>
+                                        Duplicate Activity
+                                    </li>
+                                    <li class="button-delete-activity text-danger" data-toggle="modal" data-target="#modal-line-delete">
+                                    	<i class="fa fa-fw fa-lg fa-trash"></i>
+                                        <i class="fa fa-fw"></i>
+                                        Delete Activity
+                                    </li>
+                                </ul>
+                                -->
+                            </div>
+                        </form>
+                    </div>
+        </div>
+    </div>
+<!--
     <div class="modal modal-fixed-top" id="modal-line-custom" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
@@ -339,6 +593,7 @@
             </div>
         </div>
     </div>
+-->
 <!-- END -->
 
 <script>
@@ -606,32 +861,10 @@
 			}
 		<!-- END -->
 		
-		var line = {
-			line_id		: line_raw.line_id,
-			day_id		: line_raw.day_id,
-			sort_order	: line_raw.sort_order,
-			title		: line_raw.title,
-			description : line_raw.description,
-			duration	: convertLineDurationFormat(line_raw.duration),
-			time		: convertLineTimeFormat(line_raw.time),
-			lat			: line_raw.lat,
-			lng			: line_raw.lng,
-			photo		: line_raw.photo,
-			image_id	: line_raw.image_id,
-			company		: line_raw.company,
-			address		: line_raw.address,
-			phone		: line_raw.phone,
-			fax			: line_raw.fax,
-			website		: line_raw.website,
-			activity	: line_raw.activity
-		}
-		
-		if(isset(line.description)) { line.description = line.description.replace(new RegExp('\r?\n','g'), '<br />'); }
-		
 		if(mode=='edit') {
 			<!-- START: edit existing line -->
 				<?php if($this->session->data['memory'] == 'cookie') { ?>
-					runEditPlanLine(line,line_raw);
+					runEditPlanLine(line_raw);
 				<?php } else { ?>
 					<!-- START: set data -->
 						var data = {
@@ -646,7 +879,7 @@
 								showAlert(json.warning);
 							}
 							else if(typeof json.success != 'undefined') {
-								runEditPlanLine(line,line_raw);
+								runEditPlanLine(line_raw);
 							}
 						}, "json");
 					<!-- END -->
@@ -673,9 +906,8 @@
 								showAlert(json.warning);
 							}
 							else if(typeof json.success != 'undefined') {
-								line.line_id = json.line_id;
 								line_raw.line_id = json.line_id;
-								runAddPlanLine(line,line_raw);
+								runAddPlanLine(line_raw);
 							}
 						}, "json");
 					<!-- END -->
@@ -796,7 +1028,7 @@
 </script>
 <script>
 	function selectModalLineCustomTab(tab) {
-		$('#modal-line-custom .header-secondary .btn').removeClass('active');
+		$('#modal-line-custom .navbar-white .btn').removeClass('active');
 		$('#modal-line-custom .tab').hide();
 		$('#modal-line-custom .btn-'+tab).addClass('active');
 		$('#modal-line-custom .tab-'+tab).show();

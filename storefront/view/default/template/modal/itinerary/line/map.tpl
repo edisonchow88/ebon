@@ -5,6 +5,27 @@
 </style>
 
 <!-- START: Modal -->
+	<div class="modal" id="modal-line-map" role="dialog" data-backdrop="false">
+        <div class="modal-wrapper fixed-width">
+            <div class="modal-header fixed-width">
+                <div id="modal-line-map-header-general" class="navbar navbar-primary navbar-modal fixed-width">
+                    <div class="col-xs-3 text-left">
+                        <a class="btn btn-header" data-dismiss="modal">Back</a>
+                    </div>
+                    <div class="col-xs-6 text-center">
+                        <span>Map</span>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body fixed-width">
+            	<div class="navbar navbar-shadow"></div>
+                <div id="explore-map"></div>
+            </div>
+        </div>
+    </div>
+<!--
     <div class="modal modal-fixed-top" id="modal-line-map" role="dialog" data-backdrop="false">
         <div class="modal-wrapper">
             <div class="modal-header">
@@ -29,6 +50,7 @@
             </div>
         </div>
     </div>
+-->
 <!-- END -->
 
 <script>

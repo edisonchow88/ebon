@@ -17,27 +17,50 @@
 			padding-bottom:80px;
 		}
 	/* END */
+</style>
+<style>
+	#hidden-swiper-left-column {
+		position:absolute;
+		bottom:0;
+		left:0;
+		width:10px;
+		height:calc(100% - 80px);
+		background-color:transparent;
+		z-index:5;
+	}
+	
+	#hidden-swiper-right-column {
+		position:absolute;
+		bottom:0;
+		right:0;
+		width:30px;
+		height:calc(100% - 80px);
+		background-color:transparent;
+		z-index:5;
+	}
+</style>
+<style>
+	.ui-placeholder {
+		width:100%;
+		height:40px;
+		padding-top:3px;
+		background-color:#EEE;
+		border-top:solid thin #DDD;
+		border-bottom:solid thin #DDD;
+	}
+	
+	.ui-placeholder > div {
+		opacity:0.3;
+	}
+	
+	.ui-helper {
+		max-width:60px;
+		max-height:60px;
+		background-color:transparent;
+	}
+</style>
+<style>
 	/* START: [itinerary] */
-		/*
-		.header .btn.button-save-trip {
-			color:#e93578;
-		}
-		*/
-		
-		#wrapper-title-input {
-			background-color:transparent;
-			border:none;
-			width:100%;
-			height:40px;
-			text-align:center;
-			font-weight:bold;
-			text-overflow: ellipsis;
-		}
-		
-		#wrapper-title-input:focus {
-			outline:none;
-		}
-		
 		.bar-day {
 			height:40px;
 			color:#000;
@@ -60,7 +83,10 @@
 			line-height:39px;
 			box-shadow:none;
 		}
-		
+	/* END */
+</style>
+<style>	
+	/* START: [itinerary] */	
 		.button-prev.disabled, .button-next.disabled {
 			color:#DDD;
 			cursor:default;
@@ -86,27 +112,6 @@
 	/* END */
 </style>
 <style>
-	#hidden-swiper-left-column {
-		position:absolute;
-		bottom:0;
-		left:0;
-		width:10px;
-		height:calc(100% - 80px);
-		background-color:transparent;
-		z-index:5;
-	}
-	
-	#hidden-swiper-right-column {
-		position:absolute;
-		bottom:0;
-		right:0;
-		width:30px;
-		height:calc(100% - 80px);
-		background-color:transparent;
-		z-index:5;
-	}
-</style>
-<style>
 	/* START: [plan-day-line-empty] */
 		.plan-day-line-empty {
 			width:100%;
@@ -116,13 +121,13 @@
 			text-align:center;
 		}
 	/* END */
-	/* START: [plan-btn-add-line] */
-		.plan-btn-add-line {
+	/* START: [plan-button-add-line] */
+		.plan-button-add-line {
 			padding:15px;
 			text-align:center;
 		}
 		
-		.plan-btn-add-line div {
+		.plan-button-add-line div {
 			display:inline-block;
 			color:#333;
 			border:solid 2px #EEE;
@@ -140,7 +145,7 @@
 	}
 	
 	.plan-line .transport, .plan-line-twins .transport {
-		width:calc(100% - 60px);
+		width:100%;
 		display:inline-block;
 		background-color:#FFF;
 		color:#999;
@@ -156,6 +161,7 @@
 		width: 40px;
 		font-size:1.1em;
 		z-index: 12;
+		border:solid thin transparent;
 	}
 	
 	.border{
@@ -174,7 +180,7 @@
 	.mode-option-display { 
 		position:absolute;
 		display:inline-block;
-		left: 50px;	
+		left: 50px;
 	}
 	
 	.click-blocker {
@@ -189,126 +195,44 @@
 	}
 </style>
 <style>
-	.ui-placeholder {
-		width:100%;
-		height:40px;
-		background-color:#EEE;
-		border-top:solid thin #DDD;
-		border-bottom:solid thin #DDD;
+	.plan-edit .plan-line-twins .pa-icon .fa {
+		color:transparent;
 	}
 	
-	.ui-placeholder > div {
-		opacity:0.3;
-	}
-	
-	.ui-helper {
-		max-width:60px;
-		max-height:60px;
-		background-color:transparent;
+	.plan-edit .plan-line-twins .pa-icon::before {
+		display:block;
+		position:absolute;
+		top:17.5px;
+		left:0;
+		height:5px;
+		width:42px;
+		background-color:#777;
+		content:'';
 	}
 </style>
-<div class="content-header fixed-width noselect">
-    <div class="row navbar navbar-primary navbar-file">
-        <div class="col-xs-3 text-left">
-        	<?php if($this->session->data['memory'] == 'cookie') { ?>
-        		<a class="btn">Back</a>
-            <?php } else { ?>
-            	<a class="btn">Cancel</a>
-            <?php } ?>
-        </div>
-        <div class="col-xs-6 text-center">
-            <h1>Itinerary</h1>
-        </div>
-        <div class="col-xs-3 text-right">
-            <?php if($this->session->data['memory'] == 'cookie') { ?>
-                <a  class="btn button-save-trip" data-toggle="modal" data-target="#modal-trip-save">Save</a>
-            <?php } else { ?>
-                <a class="btn">Done</a>
-            <?php } ?>
-        </div>
-    </div>
-</div>
-<div class="content-body fixed-width nopadding">
-	<div class="navbar navbar-shadow"></div>
-	<div id="hidden-swiper-left-column"></div>
-    <div id="hidden-swiper-right-column"></div>
-    <div class="swiper-container">
-        <div class="swiper-wrapper">
-        </div>
-    </div>
-</div>
+
+
 <!-- START: [modal] -->
-	<?php echo $modal_itinerary_menu; ?>
-    <?php echo $modal_itinerary_map; ?>
-	<?php echo $modal_itinerary_day; ?>
-    <?php echo $modal_itinerary_date; ?>
     <?php echo $modal_account_signup; ?>
     <?php echo $modal_account_login; ?>
     <?php echo $modal_trip_save; ?>
-    <?php echo $modal_trip_share; ?>
-    <?php echo $modal_trip_info; ?>
-    <?php 
-    	if($this->session->data['memory'] != 'cookie') 
-        {
-        	echo $modal_member_list;
-            echo $modal_member_view;
-            echo $modal_member_add;
-            echo $modal_member_search;
-            echo $modal_member_invite;
-        }
-    ?>
-    <?php echo $modal_country_add; ?>
+    <?php echo $modal_itinerary_map; ?>
+	<?php echo $modal_itinerary_day; ?>
+    <?php echo $modal_itinerary_date; ?>
     <?php echo $modal_line_filter; ?>
     <?php echo $modal_line_add; ?>
     <?php echo $modal_line_favourite; ?>
     <?php echo $modal_line_explore; ?>
     <?php echo $modal_line_custom; ?>
     <?php echo $modal_line_delete; ?>
-    <?php echo $modal_transport_custom; ?>
 <!-- END -->
 
 <script>
-	function isset(x) {
-		if(typeof x != 'undefined' && x != null && x != '') {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+	var mySwiper;
+	var planFormat;
 </script>
 <script>
-	<!-- START: jquery function to serialize form -->
-		$.fn.serializeObject = function() {
-			var o = {};
-			var a = this.serializeArray();
-			$.each(a, function() {
-				if (o[this.name] !== undefined) {
-					if (!o[this.name].push) {
-						o[this.name] = [o[this.name]];
-					}
-					o[this.name].push(this.value || '');
-				} else {
-					o[this.name] = this.value || '';
-				}
-			});
-			return o;
-		};
-	<!-- END -->
-</script>
-<script>
-	<?php if($last_action != '') { ?>
-		showHint("<?php echo $last_action; ?>");
-	<?php } ?>
-</script>
-<script type="text/javascript" src="<?php echo $this->templateResource('/javascript/swiper.jquery.min.js'); ?>"></script>
-<script>
-	var mySwiper = new Swiper ('.swiper-container', {
-		direction:'horizontal',
-		loop:false,
-		threshold:30
-	})
-	
+<!-- START: [init] -->
 	function initSwiperButton() {
 		$('.button-next').on('click',function() { mySwiper.slideNext(); });
 		$('.button-prev').on('click',function() { mySwiper.slidePrev(); });
@@ -318,6 +242,13 @@
 	
 	function initDayButton() {
 		$('.button-view-day').on('click',function() { $('#modal-trip-day').modal('show'); });
+	}
+	
+	
+	function initDateButton() {
+		$('.button-set-date').on('click',function() { 
+			$('#modal-itinerary-date').modal('show');
+		});
 	}
 	
 	function initMapButton() {
@@ -356,7 +287,8 @@
 				$('.plan-line .pa-bullet').hide();
 				$('.plan-line .pa-text.data-title').addClass('text-clamp-1');
 				$('.plan-line .pa-text.data-description').hide();
-				$('.transport-row').hide();
+				$('.plan-line .transport-row').addClass('hidden');
+				$('.plan-line-twin .transport-row').addClass('hidden');
 				ui.placeholder.html(ui.item.html());
 				$(this).sortable('refreshPositions');
 				$('.plan-day-line').css('min-height','calc(100vh - 120px)');
@@ -411,8 +343,8 @@
 				$('.plan-line .pa-bullet').show();
 				$('.plan-line .pa-text.data-description').show();
 				$('.plan-line .pa-text.data-title').removeClass('text-clamp-1');
-				$('.plan-line .transport-row').show();
-				$('.plan-line-twin .transport-row').show();
+				$('.plan-line .transport-row').removeClass('hidden');
+				$('.plan-line-twin .transport-row').removeClass('hidden');
 				$('.plan-day-line').css('min-height','0px');
 				$('.plan-day-footer').show();
 				
@@ -422,10 +354,7 @@
 				$('#hidden-swiper-left-column').off();
 			},
 			update:function(event,ui) {
-				//Google Analytics Event
-				ga('send', 'event','line', 'sort-line');
 				updatePlanTableLineDayIdAndSortOrder();
-				
 
 				<?php if($this->session->data['memory'] == 'cookie') { ?>
 					updatePlanTableCookie();
@@ -467,7 +396,9 @@
 			
 		});
 	}
-	
+<!-- END -->
+</script>
+<script>
 	function collision($div1, $div2) {
 		var x1 = $div1.offset().left;
 		var y1 = $div1.offset().top;
@@ -487,7 +418,640 @@
     }
 </script>
 <script>
-<!-- START: [cookie] -->
+<!-- START: [format] -->
+	function formatLine(data) {
+		var text = {};
+		
+		text.title = 'Untitled Activity';
+		text.time = '';
+		text.duration = '';
+		text.description = '';
+		text.company = '';
+		text.address = '';
+		text.phone = '';
+		text.fax = '';
+		text.website = '';
+		text.website_link = '';
+		
+		if(isset(data.title)) { text.title = data.title; }
+		if(isset(data.description)) { text.description = formatLineDescription(data.description); }
+		if(isset(data.time)) { text.time = formatLineTime(data.time); }
+		if(isset(data.duration)) { text.duration = formatLineDuration(data.duration); }
+		if(isset(data.time) && isset(data.duration) && data.duration != 0) { 
+			text.time = formatLineTime(data.time) + ' ~ ' + formatLineTime(addDurationToTime(data.time,data.duration)); 
+		}
+		if(isset(data.website)) { 
+			text.website = convertUrlToText(data.website);
+			text.website_link = convertTextToUrl(data.website);
+		}
+		
+		return text;
+	}
+	
+	function formatDayDate(date) {
+		var formatted_date;
+		date = new Date(date);
+		var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+		var weekday = new Array(7);
+			weekday[0]=  "Ｓ";
+			weekday[1] = "Ｍ";
+			weekday[2] = "Ｔ";
+			weekday[3] = "Ｗ";
+			weekday[4] = "Ｔ";
+			weekday[5] = "Ｆ";
+			weekday[6] = "Ｓ";
+		var myWeekday = weekday[date.getDay()];
+		formatted_date = ("0" + date.getDate()).slice(-2) + "&nbsp;" + monthNames[(date.getMonth())] + "&nbsp;&nbsp;&nbsp;(" + myWeekday + ")";
+		return formatted_date;
+	}
+	
+	function formatLineTime(time) {
+		var formatted_time;
+		if(isset(time)) {
+			var hour = time.substring(0, time.indexOf(':'));
+			var minute = time.substring(time.indexOf(':')+1);
+			var ampm = 'am';
+			if(hour == 12) {
+				ampm = 'pm';
+			}
+			else if(hour > 12) {
+				hour = parseInt(hour) - 12;
+				ampm = 'pm';
+			}
+			hour = ("0" + hour).slice(-2);
+			formatted_time = hour+':'+minute+' '+ampm;
+		}
+		else {
+			formatted_time = '';
+		}
+		return formatted_time;
+	}
+	
+	function formatLineDuration(duration) {
+		var formatted_duration;
+		if(isset(duration)) {
+			var hour = Math.floor(duration/ 60);
+			var minute = duration % 60;
+			if(hour >= 1 && minute >= 1) {
+				minute = ("0" + minute).slice(-2);
+				formatted_duration = hour+' hrs '+minute+' min';
+			}
+			else if(hour >= 1) {
+				formatted_duration = hour+' hrs';
+			}
+			else {
+				formatted_duration = minute+' min';
+			}
+		}
+		else {
+			formatted_duration = '';
+		}
+		return formatted_duration;
+	}
+	
+	function formatLineDescription(description) {
+		var formatted_description;
+		formatted_description = description.replace(new RegExp('\r?\n','g'), '<br />');
+		return formatted_description;
+	}
+<!-- START: [end] -->
+</script>
+<script>
+<!-- START: [print] -->
+	function printPlan(mode, data) {
+		<!-- START -->
+			if(mode == 'template') {
+				planFormat = {
+					mode:'template',
+					day:'list',
+					editable:false,
+					expanded:false,
+					expandable:false,
+					sortable:false,
+					dayDate:false,
+					lineContentAction:'read',
+					lineButtonExpand:false,
+					lineButtonMore:false,
+					lineDetail:false,
+					lineMenu:false,
+					lineTransport:false,
+				}
+				if(isset(data.plan_id)) {
+					$('#plan-'+data.plan_id).addClass('plan-template');
+				}
+				else {
+					$('#plan').addClass('plan-template');
+				}
+			}
+			else if(mode == 'edit') {
+				planFormat = {
+					mode:'edit',
+					day:'slide',
+					editable:true,
+					expanded:true,
+					expandable:false,
+					sortable:true,
+					dayDate:true,
+					lineContentAction:'edit',
+					lineButtonExpand:false,
+					lineButtonMore:true,
+					lineDetail:true,
+					lineMenu:false,
+					lineTransport:true,
+				}
+				if(isset(data.plan_id)) {
+					$('#plan-'+data.plan_id).addClass('plan-edit');
+				}
+				else {
+					$('#plan').addClass('plan-edit');
+				}
+			}
+			else {
+				planFormat = {
+					mode:'view',
+					day:'list',
+					editable:false,
+					expanded:false,
+					expandable:true,
+					sortable:false,
+					dayDate:true,
+					lineContentAction:'expand',
+					lineButtonExpand:true,
+					lineButtonMore:false,
+					lineDetail:true,
+					lineMenu:true,
+					lineTransport:true,
+				}
+				if(isset(data.plan_id)) {
+					$('#plan-'+data.plan_id).addClass('plan-view');
+				}
+				else {
+					$('#plan').addClass('plan-view');
+				}
+			}
+		<!-- END -->
+		<!-- START -->
+			if(planFormat.day == 'slide') {
+				content = ''
+					+ '<div id="hidden-swiper-left-column"></div>'
+					+ '<div id="hidden-swiper-right-column"></div>'
+					+ '<div class="swiper-container">'
+						+ '<div class="swiper-wrapper">'
+						+ '</div>'
+					+ '</div>'
+				;
+				if(isset(data.plan_id)) {
+					$('#plan-'+data.plan_id).append(content);
+				}
+				else {
+					$('#plan').append(content);
+				}
+			}
+		<!-- END -->
+		<!-- START -->
+			printDate(data);
+		<!-- END -->
+		<!-- START -->
+			$.each(data.day, function(i) {
+				printDay(planFormat, data.day[i]);
+				if(isset(data.day[i].line)) {
+					if(data.day[i].line.length > 0) {
+						$.each(data.day[i].line, function(j) {
+							printLine(planFormat, data.day[i].line[j]);
+						});
+					}
+				}
+			});
+		<!-- END -->
+		<!-- START -->
+			if(planFormat.day == 'slide') {
+				mySwiper = new Swiper ('.swiper-container', {
+					direction:'horizontal',
+					loop:false,
+					threshold:30
+				})
+			}
+		<!-- END -->
+		<!-- START -->
+			initDateButton();
+			initDayButton();
+			initMapButton();
+			if(planFormat.day == 'slide') {
+				initSwiperButton();
+			}
+			if(planFormat.sortable == true) {
+				initSortableLine();
+			}
+			refreshLineTransportModeMain();
+		<!-- END -->
+	}
+	
+	function printDay(planFormat, data) {
+		<!-- START: [hidden form] -->
+			var column = <?php echo $column_json; ?>;
+			var hidden_form = '';
+			$.each(column, function(i, col) {
+				hidden_form += ''
+					+ '<input '
+						+ 'id="plan-day-' + data.day_id + '-col-' + col.id + '-input-hidden" '
+						+ 'name="' + col.name + '" '
+						+ 'class="plan-input-hidden hidden" '
+						+ 'value="' + data[col.name] + '"'
+					+ '/>'
+				;
+			});
+		<!-- END -->
+		<!-- START [display] -->
+			var hidden_day_date = 'hidden';
+			var hidden_day_line_empty = 'hidden';
+			var hidden_day_button_add_line = 'hidden';
+			
+			if(planFormat.dayDate == true) { hidden_day_date = ''; }
+			if(!(isset(data.line)) || data.line.length == 0) { hidden_day_line_empty = ''; }
+			if(planFormat.editable == true) { hidden_day_button_add_line = ''; }
+		<!-- END -->
+		<!-- START [text] -->
+			var text_day = '';
+			var text_date = '';
+			
+			text_day = 'Day ' + data.sort_order;
+			if(isset(data.date)) { text_date = formatDayDate(data.date); } else { text_date = 'Set Date'; }
+		<!-- END -->
+		<!-- START [html] -->
+			var html_date = '';
+			var html_day_button_add_line = '';
+			var html_day_line_empty = '';
+			var html_hidden_form = '';
+			
+			if(isset(data.date)) {
+				var html_date = ''
+					+ '<div class="padding-top ' + hidden_day_date + '">'
+						+ '<b>'
+							+ text_date
+						+ '</b>'
+					+ '</div>'
+				;
+			}
+			var html_day_line_empty = ''
+				+'<div class="plan-day-line-empty ' + hidden_day_line_empty + '">'
+					+ 'No activity in this day'
+				+'</div>'
+			;
+			var html_day_button_add_line = ''
+				+'<div class="plan-button-add-line ' + hidden_day_button_add_line + '">'
+					+ '<div class="text-center" data-toggle="modal" data-target="#modal-line-add">'
+						+ 'ADD NEW ACTIVITY'
+					+ '</div>'
+				+'</div>'
+			;
+			var html_hidden_form = ''
+				+ '<form class="plan-day-form-hidden plan-form-hidden" id="plan-day-' + data.day_id + '-form-hidden">'
+					+ hidden_form
+				+ '</form>'
+			;
+		<!-- END -->
+		<!-- START: [content] -->
+			if(planFormat.day == 'slide') {
+				content = ''
+					+ '<div id="plan-day-' + data.day_id + '" class="swiper-slide plan-day noselect">'
+						+ '<div class="body-header fixed-width bar-day">'
+							+ '<div class="col-xs-3 text-left">'
+								+ '<div class="btn button-prev"><i class="fa fa-fw fa-chevron-left"></i></div>'
+							+ '</div>'
+							+ '<div class="col-xs-6 text-center">'
+								+ '<a class="button-view-day"><span class="title">' + text_day + '</span><span class="button-see-all btn-secondary">(see all)</span></a>'
+							+ '</div>'
+							+ '<div class="col-xs-3 text-right">'
+								+ '<div class="btn button-next"><i class="fa fa-fw fa-chevron-right"></i></div>'
+							+ '</div>'
+						+ '</div>'
+						+ '<div class="swiper-slide-content scrollable-y">'
+							+ '<div class="swiper-slide-content-header fixed-width row">'
+								+ '<div class="col-xs-6 text-left"><div class="btn button-set-date">'+text_date+'</div></div>'
+								+ '<div class="col-xs-6 text-right"><div class="btn button-view-map">View Map</div></div>'
+							+ '</div>'
+							+ '<div class="plan-day-line" id="plan-day-'+data.day_id+'-line">'
+							+ '</div>'
+							+ '<div class="plan-day-footer" id="plan-day-'+data.day_id+'-footer">'
+								+ html_day_line_empty
+								+ html_day_button_add_line
+							+ '</div>'
+						+ '</div>'
+						+ html_hidden_form
+					+ '</div>'
+				;
+			}
+			else {
+				content = ''
+					+ '<div class="plan-day padding-bottom" id="plan-day-' + data.day_id + '">'
+						+ '<div class="padding">'
+							+ '<div class="label label-danger" style="padding:3.6px 7.2px; font-size:12px;">'
+								+ '<b>'
+									+ text_day
+								+ '</b>'
+							+'</div>'
+							+ html_date
+						+ '</div>'
+						+ '<div class="plan-day-line-twin" id="plan-day-'+data.day_id+'-line-twin">'
+						+ '</div>'
+						+ '<div class="plan-day-line" id="plan-day-'+data.day_id+'-line">'
+						+ '</div>'
+						+'<div class="la la-30 ' + hidden_day_line_empty + '">'
+							+ '<div class="la-row">'
+								+ '<div class="la-desc">'
+									+ '<div class="la-text">'
+										+ 'No activity in this day'
+									+ '</div>'
+								+ '</div>'
+							+ '</div>'
+						+'</div>'
+						+ html_hidden_form
+					+ '</div>'
+				;
+			}
+		<!-- END -->
+		<!-- START: [canvas] -->
+			if(planFormat.day == 'slide') {
+				$('.swiper-wrapper').append(content);
+			}
+			else {
+				$('#plan-'+data.plan_id).append(content);
+			}
+		<!-- END -->
+	}
+	
+	function printLine(planFormat, data) {
+		<!-- START: [hidden form] -->
+			var column = <?php echo $column_json; ?>;
+			var hidden_form = '';
+			$.each(column, function(i, col) {
+				var value = data[col.name];
+				if(typeof value == 'undefined' || value == null || value == '') { value = ''; } 
+				if(col.name == 'description') {
+					hidden_form += ''
+					+ '<textarea '
+						+ 'id="plan-line-' + data.line_id + '-col-' + col.id + '-input-hidden" '
+						+ 'name="' + col.name + '" '
+						+ 'class="plan-input-hidden hidden" '
+					+ '>'
+					+ value
+					+ '</textarea>'
+				;
+				}
+				else {
+					hidden_form += ''
+						+ '<input '
+							+ 'id="plan-line-' + data.line_id + '-col-' + col.id + '-input-hidden" '
+							+ 'name="' + col.name + '" '
+							+ 'class="plan-input-hidden hidden" '
+							+ 'value="' + value + '"'
+						+ '/>'
+					;
+				}
+			});
+		<!-- END -->
+		<!-- START: [] -->
+			if(planFormat.sortable == true) {
+				line_bullet = '<i class="fa fa-fw fa-arrows"></i>';
+			}
+			else {
+				var line_bullet = '<i class="fa fa-fw bullet">&bull;</i>';
+				if(data['activity'] == 'fly_out') {
+					line_bullet = '<i class="fa fa-fw bullet icon-plane-up"></i>';
+				}
+				else if(data['activity'] == 'fly') {
+					line_bullet = '<i class="fa fa-fw bullet fa-plane"></i>';
+				}
+				else if(data['activity'] == 'fly_in') {
+					line_bullet = '<i class="fa fa-fw bullet icon-plane-down"></i>';
+				}
+				else if(data['activity'] == 'eat') {
+					line_bullet = '<i class="fa fa-fw bullet icon-food-icon"></i>';
+				}
+				else if(data['activity'] == 'stay') {
+					line_bullet = '<i class="fa fa-fw bullet fa-bed"></i>';
+				}
+			}
+		<!-- END -->
+		<!-- START: [format] -->
+			<!-- START: [action] -->
+				var line_content_action = '';
+				if(planFormat.lineContentAction == 'expand') {
+					line_content_action = ''
+						+ 'onclick="'
+							+ '$(\'.plan-line-' + data.line_id + '-detail\').toggleClass(\'hidden\');'
+							+ '$(\'.plan-line-' + data.line_id + '-menu\').toggleClass(\'hidden\');'  
+							+ '$(\'#plan-line-' + data.line_id + ' .fa-caret-down\').first().toggleClass(\'fa-flip-vertical\');'
+						+ '"'
+					;
+				}
+				else if(planFormat.lineContentAction == 'edit') {
+					line_content_action = 'data-toggle="modal" data-target="#modal-line-custom" onclick="setModalLineCustomForm(\''+data.line_id+'\');"';
+				}
+			<!-- END -->
+			<!-- START: [expandable] -->
+				var button_expand = '';
+				if(isset(planFormat.expandable)) {
+					if(planFormat.expandable == true) {
+						button_expand = ''
+							+ '<span class="button-expand">'
+								+ '<i class="fa fa-fw fa-caret-down"></i>'
+							+ '</span>'
+						;
+					}
+				}
+			<!-- END -->
+			<!-- START: [expanded] -->
+				var hidden_detail = 'hidden';
+				if(isset(planFormat.expanded)) {
+					if(planFormat.expanded == true) {
+						hidden_detail = '';
+					}
+				}
+			<!-- END -->
+			<!-- START: [expanded] -->
+				var hidden_detail = 'hidden';
+				var hidden_line_menu = 'hidden';
+				var hidden_line_transport = 'hidden';
+				if(isset(planFormat.expanded)) {
+					if(planFormat.expanded == true) {
+						hidden_detail = '';
+						hidden_line_transport = '';
+					}
+				}
+			<!-- END -->
+		<!-- END -->
+		<!-- START: [display] -->
+			var hidden_time = 'hidden';
+			var hidden_duration = 'hidden';
+			var hidden_description = 'hidden';
+			if(isset(data.time)) { hidden_time = ''; }
+			if(isset(data.duration)) { hidden_duration = ''; }
+			if(isset(data.description)) { hidden_description = ''; }
+		<!-- END -->
+		<!-- START: [text] -->
+			var text = formatLine(data);
+		<!-- END -->
+		<!-- START: [html] -->
+			var html_line_bullet = '';
+			var html_line_content = '';
+			var html_line_button = '';
+			var html_line_menu = '';
+			var html_line_transport = '';
+			var html_line_hidden_form = '';
+			<!-- START: [html_line_bullet] -->
+				html_line_bullet = ''
+					+ '<div class="pa-icon button-move">'
+						+ line_bullet
+					+ '</div>'
+				;
+			<!-- END -->
+			<!-- START: [html_line_content] -->
+				html_line_content = ''
+					+ '<div class="pa-desc" ' + line_content_action + '>'
+						+ '<div class="pa-text data-title">'
+							+ '<span class="text-title">'
+								+ text.title
+							+ '</span>'
+							+ button_expand
+						+ '</div>'
+						+ '<div class="plan-line-detail plan-line-' + data.line_id + '-detail '+hidden_detail+'">'
+							+ '<div class="pa-bullet text-clamp-1 data-time ' + hidden_time + '">'
+								+ '<span>'
+									+ '<i class="fa fa-fw fa-clock-o"></i><i class="fa fa-fw"></i>'
+									+ '<span class="text-time">' 
+										+ text.time
+									+ '</span>'
+								+ '</span>'
+							+ '</div>'
+							+ '<div class="pa-bullet text-clamp-1 data-duration ' + hidden_duration + '">'
+								+ '<span>'
+									+ '<i class="fa fa-fw fa-history"></i><i class="fa fa-fw"></i>'
+									+ '<span class="text-duration">' 
+										+ text.duration
+									+ '</span>'
+								+ '</span>'
+							+ '</div>'
+							+ '<div class="pa-text data-description ' + hidden_description + '">'
+								+ '<span class="text-description">'
+									+ text.description
+								+ '</span>'
+							+ '</div>'
+						+ '</div>'
+					+ '</div>'
+				;
+			<!-- END -->
+			<!-- START: [html_line_button] -->
+				if(isset(planFormat.lineButtonMore)) {
+					if(planFormat.lineButtonMore == true) {
+						html_line_button = ''
+							+ '<div class="pa-btn button-action">'
+								+ '<i class="fa fa-fw fa-ellipsis-v"></i>'
+							+ '</div>'
+						;
+					}
+				}
+			<!-- END -->
+			<!-- START: [html_line_menu] -->
+				if(isset(planFormat.lineMenu)) {
+					if(planFormat.lineMenu == true) {
+						html_line_menu = ''
+							+ '<div class="plan-line-menu plan-line-' + data.line_id + '-menu pa-menu row '+hidden_line_menu+'">'
+								+ '<div class="la la-30 la-text-small la-border la-hover la-pointer border-top border-left border-right">'
+									+ '<a>'
+										+ '<div class="la-row text-center">'
+											+ '<div class="col-xs-12">'
+												+ '<div class="la-desc">'
+													+ '<div class="la-text">'
+														+ 'Read More'
+													+ '</div>'
+												+ '</div>'
+											+ '</div>'
+										+ '</div>'
+									+ '</a>'
+									+ '<a>'
+										+ '<div class="la-row text-center">'
+											+ '<div class="col-xs-12">'
+												+ '<div class="la-desc">'
+													+ '<div class="la-text">'
+														+ 'Get Direction'
+													+ '</div>'
+												+ '</div>'
+											+ '</div>'
+										+ '</div>'
+									+ '</a>'
+								+ '</div>'
+							+ '</div>'
+						;
+					}
+				}
+			<!-- END -->
+			<!-- START: [html_line_transport] -->
+				if(isset(planFormat.lineTransport)) {
+					if(planFormat.lineTransport == true) {
+						html_line_transport = ''
+							+ '<div class="plan-line-' + data.line_id + '-transport pa-transport transport-row '+hidden_line_transport+'">'
+								+ '<span class="transport data-transport">'
+								+ '</span>'
+							+ '</div>'
+						;
+					}
+				}
+			<!-- END -->
+			<!-- START: [html_line_hidden_form] -->
+				html_line_hidden_form = ''
+					+ '<form class="plan-line-form-hidden plan-form-hidden hidden" id="plan-line-' + data.line_id + '-form-hidden">'
+						+ hidden_form
+					+ '</form>'
+				;
+			<!-- END -->	
+		<!-- END -->
+		<!-- START: [content] -->
+			if(planFormat.day == 'slide') { 
+				pa_height = 'pa-40'; 
+			}
+			else { 
+				pa_height = 'pa-30'; 
+			}	
+			content = ''
+				+ '<div id="plan-line-' + data.line_id + '" class="pa ' + pa_height + ' plan-line noselect">'
+					+ '<div class="pa-row row">'
+						+ '<div style="float:left; width:42px;">'
+							+ html_line_bullet
+						+ '</div>'
+						+ '<div style="float:left; width:calc(100% - 84px);">'
+							+ html_line_content
+							+ html_line_menu
+							+ html_line_transport
+						+ '</div>'
+						+ '<div style="float:left; width:42px;" class="text-right">'
+							+ html_line_button
+						+ '</div>'
+					+ '</div>'
+					+ html_line_hidden_form
+				+ '</div>'
+		<!-- END -->
+		<!-- START: [canvas] -->
+			$("#plan-day-"+data.day_id+"-line").append(content); 
+		<!-- END -->
+		<!-- START: [modal] -->	
+		<!-- END -->
+	}
+	
+	function refreshPlanDayLineEmpty() {
+		$('.plan-day-line-empty').addClass('hidden');
+		$('.plan-day').each(function() {
+			var day_id = $(this).find('.plan-day-form-hidden input[name=day_id]').val();
+			<!-- START: set visibility -->
+				var hidden = '';
+				var line = $(this).find('.plan-line').length;
+				if(line < 1) { $(this).find('.plan-day-line-empty').removeClass('hidden'); }
+			<!-- END -->
+		});
+	}
+<!-- START: [end] -->
+</script>
+<script>
 	function sortBySortOrder(a, b) {
 		return ((a.sort_order < b.sort_order) ? -1 : ((a.sort_order > b.sort_order) ? 1 : 0));
 	}
@@ -546,7 +1110,7 @@
 			setCookie('plan',serial,7);
 		<?php } ?>
 	}
-<!-- END -->
+	
 	function updatePlanTableLineDayIdAndSortOrder() {
 		var day_id;
 		var index;
@@ -560,288 +1124,43 @@
 			});
 		});
 	}
-</script>
-<script>
-	function refreshTrip() {
-		<?php if(isset($trip_id)) { ?>
-			<!-- START: set POST data -->
-				var data = {
-					"action":"refresh_trip",
-					"trip_id":"<?php echo $trip_id; ?>"
-				};
-			<!-- END -->
-			
-			<!-- START: send POST -->
-				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(trip) {
-					$("#wrapper-title-input").val(trip.name);
-					$('#modal-trip-info-form input[name=name]').val(trip.name);
-					$('#modal-trip-info-form textarea[name=description]').val(trip.description);
-				}, "json");
-			<!-- END -->
-		<?php } else { ?>
-			<!-- START: get data from cookie without login -->
-				var trip = getCookie('trip');
-				if(trip == '') {
-					<!-- START: [first time] -->
-						var trip = {
-							name:"Untitled Trip"
-						};
-						trip = JSON.stringify(trip);
-						setCookie('trip',trip,7)
-					<!-- END -->
-				}
-				trip = JSON.parse(trip);
-				$("#wrapper-title-input").val(trip.name);
-			<!-- END -->
-		<?php } ?>
-	}
 	
-	$("#wrapper-title-input").change(function() {
-		if($(this).val() == null || $(this).val() == '') {
-			$(this).val('Untitled Trip');
-		}
-		<?php if($this->user->isLogged() == false) { ?>
-			var trip = {
-				name:$("#wrapper-title-input").val()
-			};
-			trip = JSON.stringify(trip);
-			setCookie('trip',trip,7);
-			showHint('Title Updated');
+	function updateTravelDate() {
+		//Google Analytics Event
+		ga('send', 'event','date', 'update-date');		
+		<?php if($this->session->data['memory'] == 'cookie') { ?>
+			updatePlanTableCookie();
+			showHint('Day Updated');
+			refreshDayList();
+			refreshPlan();
+			$(document).trigger("refreshDistance");
 		<?php } else { ?>
-			<!-- START: set POST data -->
+			<!-- START: set data -->
 				var data = {
-					"action"	: "edit_trip_name",
-					"trip_id"	: "<?php echo $this->trip->getTripId(); ?>",
-					"name"		: $("#wrapper-title-input").val()
+					"action":"edit_plan_date",
+					"plan_id":"<?php echo $plan_id; ?>",
+					"travel_date":$('#plan-date-form-hidden input[name=travel_date]').val()
 				};
 			<!-- END -->
-			
 			<!-- START: send POST -->
 				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-					showHint('Title Updated');
+					if(typeof json.warning != 'undefined') {
+						showAlert(json.warning);
+					}
+					else if(typeof json.success != 'undefined') {
+						showHint('Day Updated');
+						refreshDayList();
+						refreshPlan();
+						$(document).trigger("refreshDistance");
+					}
 				}, "json");
 			<!-- END -->
 		<?php } ?>
-	});
-	
-	refreshTrip();
-</script>
-<script>
-	function saveTripInfo() {
-		<!-- START: set POST data -->
-			var data = {
-				"action":"save_trip_info",
-				"trip_id":"<?php echo $trip_id; ?>",
-				"name":$('#modal-trip-info-form input[name=name]').val(),
-				"description":$('#modal-trip-info-form textarea[name=description]').val()
-			};
-		<!-- END -->
-		
-		<!-- START: send POST -->
-			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-				showHint('Trip Info Updated');
-			}, "json");
-		<!-- END -->
-	}
-	
-	$('#modal-trip-info input[name=trip_id]').val('<?php echo $trip_id; ?>');
-</script>
-<script>
-	<!-- START: [date] -->
-		function initDateButton() {
-			$('.button-set-date').on('click',function() { 
-				$('#modal-itinerary-date').modal('show');
-			});
-		}
-	<!-- END -->
-</script>
-<script>
-	<!-- START: common function -->
-		function convertTimeToMinute(time) {
-			var hrs = parseInt(time.substring(0, time.indexOf(':')));
-			var mins =  parseInt(time.substring(time.indexOf(':')+1));
-			return (hrs * 60 + mins);
-		}
-		
-		function convertMinuteToTime(minute) {
-			var hrs = Math.floor(minute / 60);          
-			var mins = minute % 60;
-			hrs = ("0" + hrs).slice(-2);
-			mins = ("0" + mins).slice(-2);
-			var string = hrs + ':' + mins;
-			return (string);
-		}
-		
-		function addDurationToTime(time,duration) {
-			time = convertTimeToMinute(time);
-			duration = parseInt(duration);
-			var new_time = time + duration;
-			new_time = convertMinuteToTime(new_time);
-			return new_time;
-		}
-	<!-- END -->
-	
-	function setPlanTableDataFormatForDayDay(plan) {
-		for (i=0; i<plan.day.length; i++) {
-			plan.day[i].day = 'D'+plan.day[i].sort_order;
-		}
-		return plan;
-	}
-	
-	function setPlanTableDataFormatForDayDate(plan) {	
-		if(typeof plan.travel_date != 'undefined' && plan.travel_date != null && plan.travel_date != '' && plan.travel_date != '0000-00-00') {
-			var first_date = new Date(plan.travel_date);
-			first_date.setDate(first_date.getDate() - 1);
-			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-			var weekday = new Array(7);
-				weekday[0]=  "Ｓ";
-				weekday[1] = "Ｍ";
-				weekday[2] = "Ｔ";
-				weekday[3] = "Ｗ";
-				weekday[4] = "Ｔ";
-				weekday[5] = "Ｆ";
-				weekday[6] = "Ｓ";
-			for (i=0; i<plan.day.length; i++) {
-				myDate = new Date(first_date.setDate(first_date.getDate() + 1));
-				var myWeekday = weekday[myDate.getDay()];
-				plan.day[i].date = ("0" + myDate.getDate()).slice(-2) + "&nbsp;" + monthNames[(myDate.getMonth())] + "&nbsp;&nbsp;&nbsp;(" + myWeekday + ")";
-			}
-		}
-		else {
-			for (i=0; i<plan.day.length; i++) {
-				plan.day[i].date = '';
-			}
-		}
-		return plan;
-	}
-	
-	function setPlanTableDataFormatForDayDuration(plan) {
-		for(i=0; i<plan.day.length; i++) {
-			if(typeof plan.day[i].line != 'undefined' && plan.day[i].line != null && plan.day[i].line != '' &&  plan.day[i].line.length > 0) {
-				plan.day[i].duration = 0;
-				for(j=0; j<plan.day[i].line.length; j++) {
-					var duration = plan.day[i].line[j].duration;
-					if(typeof duration != 'undefined' && duration != null && duration != '') {
-						plan.day[i].duration += parseInt(duration);
-					}
-				}
-			}
-			else {
-				plan.day[i].duration = 0;
-			}
-		}
-		return plan;
-	}
-		
-	function setPlanTableDataFormatForLineTime(plan) {
-		for(i=0; i<plan.day.length; i++) {
-			if(isset(plan.day[i].line) && plan.day[i].line.length > 0) {
-				for(j=0; j<plan.day[i].line.length; j++) {
-					var time = plan.day[i].line[j].time;
-					var duration = plan.day[i].line[j].duration;
-					if(isset(time) && isset(duration) && duration != 0) {
-						var end_time = addDurationToTime(time,duration);
-						plan.day[i].line[j].time = convertLineTimeFormat(time) + ' ~ ' + convertLineTimeFormat(end_time);
-					}
-					else {
-						plan.day[i].line[j].time = convertLineTimeFormat(time);
-					}
-				}
-			}
-		}
-		return plan;
-	}
-	
-	function setPlanTableDataFormatForLineDuration(plan) {
-		for(i=0; i<plan.day.length; i++) {
-			if(isset(plan.day[i].line) && plan.day[i].line.length > 0) {
-				for(j=0; j<plan.day[i].line.length; j++) {
-					var duration = plan.day[i].line[j].duration;
-					plan.day[i].line[j].duration = convertLineDurationFormat(duration);
-				}
-			}
-		}
-		return plan;
-	}
-	
-	function convertLineTimeFormat(time) {
-		var formatted_time;
-		if(isset(time)) {
-			var hour = time.substring(0, time.indexOf(':'));
-			var minute = time.substring(time.indexOf(':')+1);
-			var ampm = 'am';
-			if(hour >= 12) {
-				hour = parseInt(hour) - 12;
-				ampm = 'pm';
-			}
-			hour = ("0" + hour).slice(-2);
-			formatted_time = hour+':'+minute+' '+ampm;
-		}
-		else {
-			formatted_time = '';
-		}
-		return formatted_time;
-	}
-	
-	function convertLineDurationFormat(duration) {
-		var formatted_duration;
-		if(isset(duration)) {
-			var hour = Math.floor(duration/ 60);
-			var minute = duration % 60;
-			if(hour >= 1 && minute >= 1) {
-				minute = ("0" + minute).slice(-2);
-				formatted_duration = hour+' hrs '+minute+' min';
-			}
-			else if(hour >= 1) {
-				formatted_duration = hour+' hrs';
-			}
-			else {
-				formatted_duration = minute+' min';
-			}
-		}
-		else {
-			formatted_duration = '';
-		}
-		return formatted_duration;
-	}
-	
-	function convertUrlToText(url) {
-		var text = url;
-		if(isset(url)) {
-			if(url.indexOf('http') >= 0) {
-				var text = url.substring(url.indexOf('//')+2||0);
-			}
-		}
-    	return text;
-	}
-	
-	function convertTextToUrl(text) {
-		var url = text;
-		if(isset(text)) {
-			if(text.indexOf('http') < 0) {
-				var url = 'http://' + text;
-			}
-		}
-    	return url;
 	}
 </script>
 <script>
 <!-- START: [google] -->
-	function replaceGoogleImage(line_id, place_id) {
-		<!-- START: set data -->
-			var data = {
-				"action":"get_place",
-				"place_id":place_id
-			};
-		<!-- END -->
-		<!-- START: send POST -->
-			$.post("<?php echo $ajax['main/ajax_explore']; ?>", data, function(json) {
-				$('#plan-line-'+line_id+' .image img').attr('src',json.photo);
-			}, "json");
-		<!-- END -->
-	}
-	
-	function addGooglePlace() {
+function addGooglePlace() {
 		<!-- START: get data -->
 			var place_id = $('#wrapper-explore-current-form input[name=place_id]').val();
 			var name = $('#wrapper-explore-current-form input[name=name]').val();
@@ -867,459 +1186,6 @@
 		<!-- END -->
 	}
 <!-- END -->
-</script>
-<script>
-
-	function refreshPlanTable() {
-		<?php if(isset($trip_id)) { ?>
-			<!-- START: [logged] -->
-				<!-- START: set data -->
-					var data = {
-						"action":"refresh_plan",
-						"trip_id":"<?php echo $trip_id; ?>",
-						"plan_id":"<?php echo $plan_id; ?>"
-					};
-				<!-- END -->
-			
-				<!-- START: send POST -->
-					$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(plan) {
-						runRefreshPlanTable(plan);
-						refreshLineTransportModeMain();
-					}, "json");
-				<!-- END -->
-			<!-- END -->
-		<?php } else { ?>
-			<!-- START: [not logged] -->
-				var plan = getCookie('plan');
-				if(plan == '') {
-					<!-- START: [first time] -->
-						var plan = {"name":"Plan 1","travel_date":"","day":[{"day_id":"1","sort_order":"1"}]};
-						plan = JSON.stringify(plan);
-						setCookie('plan',plan,1);
-						plan = JSON.parse(plan);
-						runRefreshPlanTable(plan);
-						refreshLineTransportModeMain();
-					<!-- END -->
-				}
-				else {
-					<!-- START: [revisit] -->
-						plan = JSON.parse(plan);
-						runRefreshPlanTable(plan);
-						refreshLineTransportModeMain();
-					<!-- END -->
-				}
-			<!-- END -->
-		<?php } ?>
-	}
-	
-	function runRefreshPlanTable(plan) {
-		<!-- START: set column -->
-			var column = <?php echo $column_json; ?>;
-		<!-- END -->
-		
-		<!-- START: set raw data -->
-			var data_raw = $.extend(true,{},plan); //IMPORTANT: to make sure clone without reference
-		<!-- END -->
-		
-		<!-- START: set data format-->
-			plan = setPlanTableDataFormatForDayDay(plan);
-			plan = setPlanTableDataFormatForDayDate(plan);
-			plan = setPlanTableDataFormatForDayDuration(plan);
-			plan = setPlanTableDataFormatForLineTime(plan);
-			plan = setPlanTableDataFormatForLineDuration(plan);
-		<!-- END -->
-		
-		<!-- START: set modified data -->
-			data_cooked = plan;
-		<!-- END -->
-		
-		<!-- START: set plan date -->
-			printDate(data_raw);
-			mySwiper.removeAllSlides();
-		<!-- END -->
-		
-		<!-- START: print table -->
-			$.each(data_cooked.day, function(i) {
-				printDay(column, this, data_raw.day[i]);
-				if(isset(this.line)) {
-					if(this.line.length > 0) {
-						$.each(this.line, function(j) {
-							printLine(column, this, data_raw.day[i].line[j]);
-						});
-					}
-				}
-				printDayLineEmpty(this.day_id);
-				printButtonAddLine(this.day_id);
-				
-			});
-			//printButtonAddDay(column);
-		<!-- END -->
-		
-		<!-- START: init function -->
-			//updatePlanTableButtonEvent();
-			//updateDateFormButtonEvent();
-			//initSortableDay();
-			initSwiperButton();
-			initDateButton();
-			initDayButton();
-			initMapButton();
-			$(document).trigger("refreshDistance");
-			<?php if($this->session->data['mode'] == 'view') { ?>
-				$('.button-move').hide();
-				$('.plan-btn-add-line').hide();
-				$('.button-set-date.nodate').hide();
-				$('.plan-line .info').prop('onclick',null).off('click');
-				$('.plan-line .info').attr('data-toggle',null);
-				$('.plan-line .info').attr('data-target',null);
-				$('.plan-line .btn-secondary').attr('data-toggle',null);
-				$('.plan-line .btn-secondary').attr('data-target',null);
-				$('#wrapper-explore-current-action').hide();
-				$('#modal-trip-day-header-general').addClass('hidden');
-				$('#modal-trip-day .modal-header-shadow').first().addClass('hidden');
-				$('#modal-trip-day .btn-header').hide();
-				$('#modal-itinerary-menu .button-edit-trip-info').hide();
-			<?php } else { ?>
-				initSortableLine();
-			<?php } ?>
-		<!-- END -->
-		
-		<!-- START: end loading -->
-			//swithMobileMode();
-			//setDay();
-			//$('.splash').fadeOut(500);
-		<!-- END -->
-	}
-	
-	function printDay(column, day, day_raw) {
-		var content = '';
-		var hidden_form = '';
-		
-		<!-- START: [hidden form] -->
-			$.each(column, function(i, col) {
-				hidden_form += ""
-					+ "<input "
-						+ "id='plan-day-" + day.day_id + "-col-" + col.id + "-input-hidden' "
-						+ 'name="' + col.name + '" '
-						+ "class='plan-input-hidden hidden' "
-						+ "value='" + day_raw[col.name] + "'"
-					+ "/>"
-				;
-			});
-		<!-- END -->
-		<!-- START: [info] -->
-			var data = {};
-			var nodate = '';
-			if(isset(day.date)) {
-				data.date = day.date;
-			}
-			else {
-				data.date = 'Set Dates';
-				nodate = 'nodate';
-			}
-		<!-- END -->
-		<!-- START: [content] -->
-			content = ''
-				+ '<div id="plan-day-' + day.day_id + '" class="swiper-slide plan-day">'
-					+ '<div class="body-header fixed-width fixed-bar bar-day">'
-						+ '<div class="col-xs-3 text-left">'
-							+ '<div class="btn button-prev"><i class="fa fa-fw fa-chevron-left"></i></div>'
-						+ '</div>'
-						+ '<div class="col-xs-6 text-center">'
-							+ '<a class="button-view-day"><span class="title">Day ' + day.sort_order + '</span><span class="button-see-all btn-secondary">(see all)</span></a>'
-						+ '</div>'
-						+ '<div class="col-xs-3 text-right">'
-							+ '<div class="btn button-next"><i class="fa fa-fw fa-chevron-right"></i></div>'
-						+ '</div>'
-					+ '</div>'
-					+ '<div class="swiper-slide-content scrollable-y">'
-						+ '<div class="swiper-slide-content-header fixed-width row">'
-							+ '<div class="col-xs-4 text-left"><div class="btn button-set-date '+nodate+'">'+data.date+'</div></div>'
-							+ '<div class="col-xs-4 text-center"></div>'
-							+ '<div class="col-xs-4 text-right"><div class="btn button-view-map">View Map</div></div>'
-						+ '</div>'
-						+ '<div class="plan-day-line" id="plan-day-'+day.day_id+'-line">'
-						+ '</div>'
-						+ '<div class="plan-day-footer" id="plan-day-'+day.day_id+'-footer">'
-						+ '</div>'
-					+ '</div>'
-					+ '<form class="plan-day-form-hidden plan-form-hidden" id="plan-day-' + day.day_id + '-form-hidden">'
-						+ hidden_form
-					+ '</form>'
-				+ '</div>'
-			;
-		<!-- END -->
-		<!-- START: print content -->
-			mySwiper.appendSlide(content);
-		<!-- END -->
-	}
-	
-	function printLine(column, line, line_raw) {
-		var content = '';
-		var hidden_form = '';
-		
-		<!-- START: [hidden form] -->
-			$.each(column, function(i, col) {
-				var value = line_raw[col.name];
-				if(typeof value == 'undefined' || value == null || value == '') { value = ''; } 
-				if(col.name == 'description') {
-					hidden_form += ""
-					+ "<textarea "
-						+ "id='plan-line-" + line.line_id + "-col-" + col.id + "-input-hidden' "
-						+ 'name="' + col.name + '" '
-						+ "class='plan-input-hidden hidden' "
-					+ ">"
-					+ value
-					+ "</textarea>"
-				;
-				}
-				else {
-					hidden_form += ""
-						+ "<input "
-							+ "id='plan-line-" + line.line_id + "-col-" + col.id + "-input-hidden' "
-							+ 'name="' + col.name + '" '
-							+ "class='plan-input-hidden hidden' "
-							+ "value='" + value + "'"
-						+ "/>"
-					;
-				}
-			});
-		<!-- END -->
-		<!-- START: [info] -->
-			var hidden_read = 'hidden';
-			var hidden_description = 'hidden';
-			var hidden_detail = 'hidden';
-			var hidden_bullet = 'hidden';
-			var hidden_time = 'hidden';
-			var hidden_duration = 'hidden';
-			var hidden_company = 'hidden';
-			var hidden_address = 'hidden';
-			var hidden_phone = 'hidden';
-			var hidden_fax = 'hidden';
-			var hidden_website = 'hidden';
-			var note = '';
-			var image = '';
-			if(isset(line['place_id'])) {
-				hidden_read = '';
-			}
-			if(isset(line['title']) == false) {
-				line.title = 'Untitled Activity';
-			}
-			if(isset(line['image_id'])) {
-				image = 'resources/image/cropped/'+line.image_id+'.jpg';
-			}
-			else if(isset(line['photo'])) {
-				image = line.photo;
-			}
-			else {
-				image = 'resources/image/error/noimage.png';
-			}
-			if(isset(line['description'])) {
-				hidden_detail = '';
-				hidden_description = '';
-			}
-			if(isset(line['time'])) {
-				hidden_detail = '';
-				hidden_bullet = '';
-				hidden_time = '';
-				
-			}
-			if(isset(line['duration']) && line_raw['duration'] != 0) {
-				hidden_detail = '';
-				hidden_bullet = '';
-				hidden_duration = '';
-			}
-			if(isset(line['company'])) {
-				hidden_detail = '';
-				hidden_bullet = '';
-				hidden_company = '';
-			}
-			if(isset(line['address'])) {
-				hidden_detail = '';
-				hidden_bullet = '';
-				hidden_address = '';
-			}
-			if(isset(line['phone'])) {
-				hidden_detail = '';
-				hidden_bullet = '';
-				hidden_phone = '';
-			}
-			if(isset(line['fax'])) {
-				hidden_detail = '';
-				hidden_bullet = '';
-				hidden_fax = '';
-			}
-			if(isset(line['website'])) {
-				hidden_detail = '';
-				hidden_bullet = '';
-				hidden_website = '';
-			}
-			if(isset(line['note'])) {
-				note = ''
-					+ '<div class="note">'
-						+ '<span class="text-note">'
-							+ line['note']
-						+ '</span>'
-					+ '</div>'
-				;
-				hidden_detail = '';
-			}
-		<!-- END -->
-		<!-- START: format variable -->
-			if(isset(line.description)) { line.description = line.description.replace(new RegExp('\r?\n','g'), '<br />'); }
-		<!-- END -->
-		<!-- START: [content] -->
-			content = ''
-				+ '<div id="plan-line-' + line.line_id + '" class="pa plan-line">'
-					+ '<div class="pa-row row">'
-						+ '<div class="col-xs-10">'
-							+ '<div class="pa-icon button-move">'
-								+ '<i class="fa fa-fw fa-arrows"></i>'
-							+ '</div>'
-							+ '<div class="pa-desc">'
-								+ '<div data-toggle="modal" data-target="#modal-line-custom" onclick="setModalLineCustomForm(\''+line.line_id+'\');">'
-									+ '<div class="pa-text data-title">'
-										+ '<span class="text-title">'
-											+ line.title
-										+ '</span>'
-										+ '<span class="button-expand">'
-											+ '<i class="fa fa-fw fa-caret-down"></i>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="pa-bullet data-time ' + hidden_time + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw fa-clock-o"></i><i class="fa fa-fw"></i>'
-											+ '<span class="text-time">' 
-												+ line['time'] 
-											+ '</span>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="pa-bullet data-duration ' + hidden_duration + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw fa-hisotry"></i><i class="fa fa-fw"></i>'
-											+ '<span class="text-time">' 
-												+ line['duration'] 
-											+ '</span>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="pa-company data-company ' + hidden_company + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw">By</i><i class="fa fa-fw"></i>'
-											+ '<span class="text-company">' 
-												+ line['company'] 
-											+ '</span>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="pa-bullet data-address ' + hidden_address + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw fa-map-marker"></i><i class="fa fa-fw"></i>'
-											+ '<span class="text-address">' 
-												+ line['address'] 
-											+ '</span>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="pa-bullet data-phone ' + hidden_phone + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw fa-phone"></i><i class="fa fa-fw"></i>'
-											+ '<span class="text-phone">' 
-												+ line['phone'] 
-											+ '</span>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="pa-bullet data-fax ' + hidden_fax + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw fa-fax"></i><i class="fa fa-fw"></i>'
-											+ '<span class="text-fax">' 
-												+ line['fax'] 
-											+ '</span>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="pa-bullet data-website ' + hidden_website + '">'
-										+ '<span>'
-											+ '<i class="fa fa-fw fa-globe"></i><i class="fa fa-fw"></i>'
-											+ '<a class="text-website" href="' + convertTextToUrl(line['website']) + '" target="blank">' 
-												+ convertUrlToText(line['website']) 
-											+ '</a>'
-										+ '</span>'
-									+ '</div>'
-									+ '<div class="pa-text data-description ' + hidden_description + '">'
-										+ '<span class="text-description">'
-											+ line.description
-										+ '</span>'
-									+ '</div>'
-								+ '</div>'
-								+ '<div class="transport-row">'
-									+ '<span class="transport data-transport">'
-									+ '</span>'
-								+ '</div>'
-							+ '</div>'
-						+ '</div>'
-						+ '<div class="col-xs-2 text-right">'
-							+ '<div class="pa-btn button-action">'
-								+ '<i class="fa fa-fw fa-ellipsis-v"></i>'
-							+ '</div>'
-						+ '</div>'
-					+ '</div>'
-					+ '<form class="plan-line-form-hidden plan-form-hidden hidden" id="plan-line-' + line.line_id + '-form-hidden">'
-						+ hidden_form
-					+ '</form>'
-				+ '</div>'
-			;
-		<!-- END -->
-		<!-- START: print content -->
-			$("#plan-day-"+line.day_id+"-line").append(content);
-		<!-- END -->
-		<!-- START: replace image -->
-			if(isset(line['image_id']) == false && isset(line['photo']) == false && isset(line.place_id)) {
-				replaceGoogleImage(line.line_id, line.place_id);
-			}
-		<!-- END -->
-	}
-	
-	function printDayLineEmpty(day_id) {
-		<!-- START: set visibility -->
-			var hidden = '';
-			var line = $('#plan-day-'+day_id+'-line .plan-line').length;
-			if(line > 0) { hidden = 'hidden'; }
-		<!-- END -->
-		<!-- START: set output -->
-			var content = ''
-				+'<div class="plan-day-line-empty ' + hidden + '">'
-					+ 'No activity in this day'
-				+'</div>'
-			;
-		<!-- END -->
-		<!-- START: print content -->
-			$("#plan-day-"+day_id+"-footer").append(content); 
-		<!-- END -->
-	}
-	
-	function printButtonAddLine(day_id) {
-		<!-- START: set output -->
-			var content = ''
-				+'<div class="plan-btn-add-line">'
-					+ '<div class="text-center" data-toggle="modal" data-target="#modal-line-add">'
-						+ 'ADD NEW ACTIVITY'
-					+ '</div>'
-				+'</div>'
-			;
-		<!-- END -->
-		<!-- START: print content -->
-			$("#plan-day-"+day_id+"-footer").append(content); 
-		<!-- END -->
-	}
-	
-	function refreshPlanDayLineEmpty() {
-		$('.plan-day-line-empty').addClass('hidden');
-		$('.plan-day').each(function() {
-			var day_id = $(this).find('.plan-day-form-hidden input[name=day_id]').val();
-			<!-- START: set visibility -->
-				var hidden = '';
-				var line = $(this).find('.plan-line').length;
-				if(line < 1) { $(this).find('.plan-day-line-empty').removeClass('hidden'); }
-			<!-- END -->
-		});
-	}
-	
 </script>
 <script>
 <!-- START: [day] -->
@@ -1364,19 +1230,16 @@
 	}
 	
 	function runAddPlanDay(data) {
-		//Google Analytics Event
-		ga('send', 'event','day', 'new-day');
+		<!-- START: set google analytic -->
+			ga('send', 'event','day', 'new-day');
+		<!-- END -->
+		
 		<!-- START: set variable -->
 			var column = <?php echo $column_json; ?>;
 		<!-- END -->
-		
-		<!-- START: update hidden input -->
-			//$('#plan-date-form-hidden input[name=num_of_day]').val(data.sort_order);
-		<!-- END -->
 			
 		<!-- START: print -->
-			printDay(column,data,data);
-			//printButtonAddLine(column, "#plan-day-" + data.day_id + "-content");
+			printDay(format,data);
 		<!-- END -->
 			
 		<?php if($this->session->data['memory'] == 'cookie') { ?>
@@ -1384,15 +1247,9 @@
 		<?php } ?>
 		
 		<!-- START: init function -->
-			refreshPlanTable();
 			refreshDayList();
-			//refreshDateForm();
-			//updateDateFormButtonEvent();
-			//updatePlanTableButtonEvent();
-			//updatePlanTableDayDate();
-			//updatePlanTableDayDuration();
-			//initSortableDay();
-			//initSortableLine();
+			$('#modal-trip-day .modal-body').animate({ scrollTop: $('#modal-trip-day .modal-body').height()}, 100);
+			refreshPlan();
 		<!-- END -->
 		
 		<!-- START: [swiper] -->
@@ -1406,56 +1263,20 @@
 <!-- END -->
 </script>
 <script>
-<!-- START: [date] -->
-	function updateTravelDate() {
-		//Google Analytics Event
-		ga('send', 'event','date', 'update-date');		
-		<?php if($this->session->data['memory'] == 'cookie') { ?>
-			updatePlanTableCookie();
-			showHint('Day Updated');
-			refreshDayList();
-			refreshPlanTable();
-			$(document).trigger("refreshDistance");
-		<?php } else { ?>
-			<!-- START: set data -->
-				var data = {
-					"action":"edit_plan_date",
-					"plan_id":"<?php echo $plan_id; ?>",
-					"travel_date":$('#plan-date-form-hidden input[name=travel_date]').val()
-				};
-			<!-- END -->
-			<!-- START: send POST -->
-				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
-					if(typeof json.warning != 'undefined') {
-						showAlert(json.warning);
-					}
-					else if(typeof json.success != 'undefined') {
-						showHint('Day Updated');
-						refreshDayList();
-						refreshPlanTable();
-						$(document).trigger("refreshDistance");
-					}
-				}, "json");
-			<!-- END -->
-		<?php } ?>
-	}
-<!-- END -->
-</script>
-<script>
 <!-- START: [line] -->
-	function runAddPlanLine(line,line_raw) {
+	function runAddPlanLine(line) {
 		<!-- START: set variable -->
 			var column = <?php echo $column_json; ?>;
 		<!-- END -->
 		
 		<!-- START: set format -->
-			if(isset(line_raw.time) && isset(line_raw.duration) && line_raw.duration != 0) {
-				line.time = convertLineTimeFormat(line_raw.time) + ' ~ ' + convertLineTimeFormat(addDurationToTime(line_raw.time,line_raw.duration));
+			if(isset(line.time) && isset(line.duration) && line.duration != 0) {
+				line.time = convertLineTimeFormat(line.time) + ' ~ ' + convertLineTimeFormat(addDurationToTime(line.time,line.duration));
 			}
 		<!-- END -->
 		
 		<!-- START: print -->
-			printLine(column,line,line_raw);
+			printLine(planFormat, line);
 		<!-- END -->
 		
 		<?php if($this->session->data['memory'] == 'cookie') { ?>
@@ -1481,54 +1302,42 @@
 		<!-- END -->
 	}
 	
-	function runEditPlanLine(line,line_raw) {
-		//Google Analytics Event
-		ga('send', 'event','line', 'edit-line');
-		<!-- START: update hidden value -->
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=title]').val(line_raw.title);
-			$('#plan-line-'+line.line_id+'-form-hidden textarea[name=description]').val(line_raw.description);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=lat]').val(line_raw.lat);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=lng]').val(line_raw.lng);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=duration]').val(line_raw.duration);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=time]').val(line_raw.time);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=image_id]').val(line_raw.image_id);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=photo]').val(line_raw.photo);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=company]').val(line_raw.company);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=address]').val(line_raw.address);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=phone]').val(line_raw.phone);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=fax]').val(line_raw.fax);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=website]').val(line_raw.website);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=activity]').val(line_raw.activity);
-			$('#plan-line-'+line.line_id+'-form-hidden input[name=mode]').val(line_raw.mode);
+	function runEditPlanLine(data) {
+		<!-- START: [google analytic] -->
+			ga('send', 'event','line', 'edit-line');
 		<!-- END -->
-		<!-- START: update html -->
-			<!-- START: set format -->
-				if(isset(line_raw.time) && isset(line_raw.duration) && line_raw.duration != 0) {
-					line.time = convertLineTimeFormat(line_raw.time) + ' ~ ' + convertLineTimeFormat(addDurationToTime(line_raw.time,line_raw.duration));
-				}
-			<!-- END -->
-			
-			$('#plan-line-'+line.line_id+' .text-title').html(line.title||'Untitled Activity');
-			$('#plan-line-'+line.line_id+' .text-description').html(line.description);
-			$('#plan-line-'+line.line_id+' .text-duration').html(line.duration);
-			$('#plan-line-'+line.line_id+' .text-time').html(line.time);
-			$('#plan-line-'+line.line_id+' .text-company').html(line.company);
-			$('#plan-line-'+line.line_id+' .text-address').html(line.address);
-			$('#plan-line-'+line.line_id+' .text-phone').html(line.phone);
-			$('#plan-line-'+line.line_id+' .text-fax').html(line.fax);
-			$('#plan-line-'+line.line_id+' .text-website').html(convertUrlToText(line.website));
-			$('#plan-line-'+line.line_id+' .text-website').attr('href',convertTextToUrl(line.website));
-			
-			if($('#plan-line-'+line.line_id+' .image img').attr('src') != line_raw.photo || isset(line_raw.photo)) {
-				if(isset(line_raw.photo)) {
-					$('#plan-line-'+line.line_id+' .image img').attr('src',line_raw.photo);
-				}
-				else {
-					var photo = 'resources/image/error/noimage.png';
-					$('#plan-line-'+line.line_id+' .image img').attr('src',photo);
-				}
-			}
-			
+		<!-- START: [hidden form] -->
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=title]').val(data.title);
+			$('#plan-line-'+data.line_id+'-form-hidden textarea[name=description]').val(data.description);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=lat]').val(data.lat);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=lng]').val(data.lng);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=duration]').val(data.duration);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=time]').val(data.time);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=image_id]').val(data.image_id);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=photo]').val(data.photo);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=company]').val(data.company);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=address]').val(data.address);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=phone]').val(data.phone);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=fax]').val(data.fax);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=website]').val(data.website);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=activity]').val(data.activity);
+			$('#plan-line-'+data.line_id+'-form-hidden input[name=mode]').val(data.mode);
+		<!-- END -->
+		<!-- START: [text] -->
+			var text = formatLine(data);
+		<!-- END -->
+		<!-- START: [html] -->
+			$('#plan-line-'+data.line_id+' .text-title').html(text.title);
+			$('#plan-line-'+data.line_id+' .text-description').html(text.description);
+			$('#plan-line-'+data.line_id+' .text-time').html(text.time);
+			$('#plan-line-'+data.line_id+' .text-duration').html(text.duration);
+			$('#plan-line-'+data.line_id+' .text-company').html(text.company);
+			$('#plan-line-'+data.line_id+' .text-address').html(text.address);
+			$('#plan-line-'+data.line_id+' .text-phone').html(text.phone);
+			$('#plan-line-'+data.line_id+' .text-fax').html(text.fax);
+			$('#plan-line-'+data.line_id+' .text-website').html(text.website);
+			$('#plan-line-'+data.line_id+' .text-website').attr('href',text.website_link);
+		<!-- END -->	
 			<!-- START: set visibility -->
 				var detail = 0;
 				var description = 0;
@@ -1541,105 +1350,105 @@
 				var fax = 0;
 				var website = 0;
 				
-				if(isset(line.description)) {
+				if(isset(data.description)) {
 					detail += 1;
 					description += 1;
 				}
-				if(isset(line.duration) && line_raw.duration != 0) {
+				if(isset(data.duration) && data.duration != 0) {
 					detail += 1;
 					bullet += 1;
 					duration += 1;
 				}
-				if(isset(line.time)) {
+				if(isset(data.time)) {
 					detail += 1;
 					bullet += 1;
 					time += 1;
 				}
-				if(isset(line.company)) {
+				if(isset(data.company)) {
 					detail += 1;
 					bullet += 1;
 					company += 1;
 				}
-				if(isset(line.address)) {
+				if(isset(data.address)) {
 					detail += 1;
 					bullet += 1;
 					address += 1;
 				}
-				if(isset(line.phone)) {
+				if(isset(data.phone)) {
 					detail += 1;
 					bullet += 1;
 					phone += 1;
 				}
-				if(isset(line.fax)) {
+				if(isset(data.fax)) {
 					detail += 1;
 					bullet += 1;
 					fax += 1;
 				}
-				if(isset(line.website)) {
+				if(isset(data.website)) {
 					detail += 1;
 					bullet += 1;
 					website += 1;
 				}
 				
 				if(detail > 0) {
-					$('#plan-line-'+line.line_id+' .detail').removeClass('hidden');
+					$('#plan-line-'+data.line_id+' .detail').removeClass('hidden');
 				}
 				else {
-					$('#plan-line-'+line.line_id+' .detail').addClass('hidden');
+					$('#plan-line-'+data.line_id+' .detail').addClass('hidden');
 				}
 				if(description > 0) {
-					$('#plan-line-'+line.line_id+' .description').removeClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-description').removeClass('hidden');
 				}
 				else {
-					$('#plan-line-'+line.line_id+' .description').addClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-description').addClass('hidden');
 				}
 				if(bullet > 0) {
-					$('#plan-line-'+line.line_id+' .bullet').removeClass('hidden');
+					$('#plan-line-'+data.line_id+' .bullet').removeClass('hidden');
 				}
 				else {
-					$('#plan-line-'+line.line_id+' .bullet').addClass('hidden');
+					$('#plan-line-'+data.line_id+' .bullet').addClass('hidden');
 				}
 				if(duration > 0) {
-					$('#plan-line-'+line.line_id+' .duration').removeClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-duration').removeClass('hidden');
 				}
 				else {
-					$('#plan-line-'+line.line_id+' .duration').addClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-duration').addClass('hidden');
 				}
 				if(time > 0) {
-					$('#plan-line-'+line.line_id+' .time').removeClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-time').removeClass('hidden');
 				}
 				else {
-					$('#plan-line-'+line.line_id+' .time').addClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-time').addClass('hidden');
 				}
 				if(company > 0) {
-					$('#plan-line-'+line.line_id+' .company').removeClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-company').removeClass('hidden');
 				}
 				else {
-					$('#plan-line-'+line.line_id+' .company').addClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-company').addClass('hidden');
 				}
 				if(address > 0) {
-					$('#plan-line-'+line.line_id+' .address').removeClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-address').removeClass('hidden');
 				}
 				else {
-					$('#plan-line-'+line.line_id+' .address').addClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-address').addClass('hidden');
 				}
 				if(phone > 0) {
-					$('#plan-line-'+line.line_id+' .phone').removeClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-phone').removeClass('hidden');
 				}
 				else {
-					$('#plan-line-'+line.line_id+' .phone').addClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-phone').addClass('hidden');
 				}
 				if(fax > 0) {
-					$('#plan-line-'+line.line_id+' .fax').removeClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-fax').removeClass('hidden');
 				}
 				else {
-					$('#plan-line-'+line.line_id+' .fax').addClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-fax').addClass('hidden');
 				}
 				if(website > 0) {
-					$('#plan-line-'+line.line_id+' .website').removeClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-website').removeClass('hidden');
 				}
 				else {
-					$('#plan-line-'+line.line_id+' .website').addClass('hidden');
+					$('#plan-line-'+data.line_id+' .data-website').addClass('hidden');
 				}
 			<!-- END -->
 		<!-- END -->
@@ -1684,10 +1493,10 @@
 				var fee = null;
 				var currency = null;
 				var title = place;
-				var description = null;
+				var description = $('#wrapper-explore-current-form textarea[name=description]').val();
 				var note = null;
-				var formatted_time = convertLineTimeFormat(time);
-				var formatted_duration = convertLineDurationFormat(duration);
+				var time = time;
+				var duration = duration;
 			<!-- END -->
 			
 			<!-- START: set line_id for Cookie -->
@@ -1703,29 +1512,7 @@
 				<?php } ?>
 			<!-- END -->
 			<!-- START: set print data -->
-				var line = 
-					{
-						line_id		:line_id,
-						type		:type,
-						type_id		:type_id,
-						day_id		:day_id,
-						image_id	:image_id,
-						sort_order	:sort_order,
-						time		:formatted_time,
-						duration	:formatted_duration,
-						activity	:activity,
-						place		:place,
-						place_id	:place_id,
-						lat			:lat,
-						lng			:lng,
-						fee			:fee,
-						currency	:currency,
-						title		:title,
-						description	:description,
-						note		:note
-					}
-				;
-				var line_raw =
+				var line =
 					{
 						line_id		:line_id,
 						type		:type,
@@ -1751,12 +1538,12 @@
 			//Google Analytics Event
 			ga('send', 'event','line', 'add-line-explore');
 			<?php if($this->session->data['memory'] == 'cookie') { ?>
-				runAddPlanLine(line,line_raw);
+				runAddPlanLine(line);
 			<?php } else { ?>
 				<!-- START: set data -->
 					var data = {
 						"action":"add_line",
-						"line":line_raw
+						"line":line
 					};
 				<!-- END -->
 			
@@ -1767,8 +1554,7 @@
 						}
 						else if(typeof json.success != 'undefined') {
 							line.line_id = json.line_id;
-							line_raw.line_id = json.line_id;
-							runAddPlanLine(line,line_raw);
+							runAddPlanLine(line);
 						}
 					}, "json");
 				<!-- END -->
@@ -1839,16 +1625,15 @@
 		<?php }
 	} ?>
 </script>
-
 <script>
 	function setTransportTypeMenu () {
 		var output = "";
 		var mode = "";
-		var mode_selector = <?php echo $mode_selector; ?>;
-		$.each(mode_selector, function(i) {
+		var mode_option = <?php echo $mode_option; ?>;
+		$.each(mode_option, function(i) {
 			mode += ''
-					+ '<div class="mode-option" value="'+mode_selector[i].mode_id+'">'
-						+ '<span class="'+mode_selector[i].icon+'"></span>'
+					+ '<div class="mode-option" value="'+mode_option[i].mode_id+'">'
+						+ '<span class="'+mode_option[i].icon+'"></span>'
 					+ '</div>'		
 		});	
 					
@@ -1858,9 +1643,6 @@
 				+'<div class="mode-option-selector" >'
 					+ '<div class="mode-option-selected"><span class="mode-icon"></span><i class="fa fa-caret-down" aria-hidden="true"></i></div>'
 					+ mode
-					//+ '<div class="mode-option" value="2"><span class="icon-transport-car"></span></div>'
-					//+ '<div class="mode-option" value="3"><span class="icon-transport-walk"></span></div>'		
-					//+ '<div class="mode-option" value="1"><span class="icon-transport-public"></span></div>'	
 				+ '</div>'
 				+ '<div class="mode-option-display">'
 					+ '<span class="text"></span>'
@@ -1873,15 +1655,7 @@
 					+ '<span class="path-id hidden"></span>'
 				+ '</div>';
 			+ '</div>'
-		
-		/*
-		+ '<span class="icon">'
-							+ '</span>'
-							+ '<span class="text">'
-							+ '</span>'
-							+ '<span class="path hidden"></span>'	*/
-		return output;	
-			
+		return output;
 	}
 	
 	function activeSelectTransportModeEvent() {
@@ -1978,7 +1752,7 @@
 			var coor = getOriDes (line_id);
 
 			<!-- SUB: CREATE TWINS CONTAINER FOR EACH DAY LAST LINE IF AVAILABLE-->
-			 createLineTwins(line_id,day_id);
+			 printLineTwin(line_id,day_id);
 			
 			if (coor) {
 				<?php if($this->session->data['memory'] == 'cookie') { ?>
@@ -1989,8 +1763,8 @@
 				<?php } ?>
 			}else {
 				// hide transport mode selector if not use (same coor, without origin or destination)
-				$("#plan-line-"+line_id+" .transport").hide();
-				$(".twins-"+line_id+" .transport ").hide();	
+				$("#plan-line-"+line_id+" .transport-row").hide();
+				$(".twins-"+line_id+" .transport-row").hide();	
 			}
 		});<!-- END -->
 		
@@ -2006,7 +1780,7 @@
 		<!-- EVENT LISTENER: RESPONSE AFTER ACTION ADD, EDIT, DELETE, SORT-->
 		$(document).off("refreshDistance").on("refreshDistance",function(){
 			$(".plan-line-twins").remove();	
-			$(".transport-row .transport").show();	
+			$(".transport-row").show();	
 			refreshLineTransportModeMain("refresh");
 		});
 		
@@ -2058,12 +1832,12 @@
 	}
 	
 	function printLineModeDistanceData(line_id, coor ,json) {
-		var mode_selector = $("#plan-line-"+line_id+" .mode-option-selected");
+		var mode_option = $("#plan-line-"+line_id+" .mode-option-selected");
 		var mode_display = $("#plan-line-"+line_id+" .mode-option-display");
 		var mode_id = json.mode_id;
 		var mode = json.mode_name;
-		mode_selector.find(".mode-icon").html("<span class='"+json.mode_icon+"'></span>");
-		mode_selector.attr('value', json.mode_id);	
+		mode_option.find(".mode-icon").html("<span class='"+json.mode_icon+"'></span>");
+		mode_option.attr('value', json.mode_id);	
 		
 		var coordinates = new Array();
 				coordinates [0] = new google.maps.LatLng(coor.ori_lat,  coor.ori_lng);
@@ -2124,7 +1898,7 @@
 		//alert(origin + destination);	
 		//alert (ori_lat +"" + ori_lng +"" +des_lat+"" +des_lng +"--------"+line_id);		
 		if ( origin == destination) {
-			$("#plan-line-"+line_id+" .transport").hide();
+			$("#plan-line-"+line_id+" .transport-row").hide();
 		}else {
 			var deferred = new $.Deferred();
 			var service = new google.maps.DistanceMatrixService();
@@ -2297,43 +2071,49 @@
 		}
 	}
 	
-	function createLineTwins (line_id,day_id) {
-		
-		var day_last_line = $("#plan-day-"+day_id+"-line .plan-line").last();
-		var next_day_id = $("#plan-day-"+day_id).next().attr('id');
-		var day_after_this = $("#plan-day-"+day_id).nextAll(".plan-day");
-		
-		//check if is last line 
-		if (line_id == day_last_line.find($('.plan-input-hidden[name=line_id]')).val()) {
-			var is_last_line = true;
-		}
-		//check if have next day
-		if (next_day_id) {
-			var have_next_day = true;
-			
-		}
-		
-		//alert (is_last_line+","+have_next_day+","+line_id+","+day_id) ;
-		
+	function printLineTwin(line_id,day_id) {
+		<!-- START: get global format -->
+			var format = planFormat;
+		<!-- END -->
+		<!-- START: set stakeholder -->
+			var day_last_line = $("#plan-day-"+day_id+"-line .plan-line").last();
+			var next_day_id = $("#plan-day-"+day_id).next().attr('id');
+			var day_after_this = $("#plan-day-"+day_id).nextAll(".plan-day");
+		<!-- END -->
+		<!-- START: verify condition -->
+			//check if is last line 
+			if (line_id == day_last_line.find($('.plan-input-hidden[name=line_id]')).val()) {
+				var is_last_line = true;
+			}
+			//check if have next day
+			if (next_day_id) {
+				var have_next_day = true;
+			}
+		<!-- END -->
+		<!-- START: set visibility -->
+			var hidden_twin = '';
+			var hidden_transport = '';
+			if(format.day == 'list') { hidden_twin = 'hidden'; }
+			if(format.lineTransport == false || format.day == 'list') { hidden_transport = 'hidden'; }
+		<!-- END -->
 		if (is_last_line && have_next_day) {
 
 			var info_name = $("#plan-line-"+line_id+"-form-hidden input[name=title]").val();
 			
 			
 			var twins_content = ''
-				+ '<div class="pa plan-line-twins twins-'+line_id+'">'
+				+ '<div class="pa pa-40 plan-line-twins twins-'+line_id+' '+hidden_twin+'">'
 					+ '<div class="pa-row row">'
 						+ '<div class="col-xs-12">'
-							+ '<div style="position: absolute; top:17.5px; left:0; height:5px; width:50px; background-color:#777;">'
-							+ '</div>'
 							+ '<div class="pa-icon">'
-								+ '<i class="fa fa-fw"></i>'
+								+ '<i class="fa fa-fw fa-long-arrow-right"></i>'
 							+ '</div>'
 							+ '<div class="pa-desc">'
-								+ '<div class="pa-text data-title" style="color:#777;">'
-									+'<span class="text-title">'+info_name+' (previous day)</span>'
+								+ '<div class="pa-text data-title">'
+									+'<span>'+info_name+' </span>'
+									+'<span class="text-sub small">(from previous day)</span>'
 								+ '</div>'
-								+ '<div class="transport-row">'
+								+ '<div class="transport-row '+hidden_transport+'">'
 									+ '<div class="transport data-transport">'
 									+ '</div>'
 								+ '</div>'
@@ -2342,37 +2122,11 @@
 					+ '</div>'
 				+ '</div>'
 			;
-				/*
-					+ '<div class="plan-line-twins twins-'+line_id+'">'
-						+ '<div class="row">'
-							+ '<div class="description">'
-								+ '<div class="title">'
-									+'<span>'+info_name+' (previous day)</span>'
-								+ '</div>'
-								+ '<div class="hidden">'
-									+'<span class="master-day-id">'+day_id+'</span>'
-									+'<span class="master-line-id">'+line_id+'</span>'
-								+'</div>'
-							+ '</div>'
-						+ '</div>' 
-						+ '<div class="transport-row row">'
-							+ '<div class="transport">'
-								//+ info_transport
-							+ '</div>'
-						+ '</div>' 
-					+ '</div>'
-					*/
-					;
 			
-			
-			
-			if (twins_content && $(".twins-"+line_id).length < 1 ) {
+			if ($(".twins-"+line_id).length < 1 ) {
 			/*	// create the twin line
 				$("#"+next_day_id).find(".plan-day-line").prepend(twins_content);
 				*/// hide the last line transport mode
-				
-			
-			
 				var day_after_this = $("#plan-day-"+day_id).nextAll(".plan-day");
 				day_after_this.each(function(){
 					if ( $(this).find(".plan-line-twins").length < 1) {
@@ -2384,9 +2138,9 @@
 						}
 					}
 				});
-				$("#plan-line-"+line_id+" .transport").hide();
-				$(".twins-"+line_id+" .transport ").hide();	
-				$(".twins-"+line_id).last().find(".transport").show();		
+				$("#plan-line-"+line_id+" .transport-row").hide();
+				$(".twins-"+line_id+" .transport-row").hide();	
+				$(".twins-"+line_id).last().find(".transport-row").show();		
 			}
 		}
 	}
@@ -2418,7 +2172,3 @@
 	}
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNokmtFWOCjz3VDLePmZYaqMcfY4p5i0&libraries=places&callback=initMap" async defer></script>
-
-<script>
-	refreshPlanTable();
-</script>

@@ -33,6 +33,7 @@ class ControllerPagesLandingHome extends AController {
 		//END
 		
 		//START: set modal
+			$this->addChild('modal/home/splash', 'modal_home_splash', 'modal/home/splash.tpl');
 		//END
 		
 		//START: set link

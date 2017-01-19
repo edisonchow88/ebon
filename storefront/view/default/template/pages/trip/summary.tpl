@@ -183,6 +183,26 @@
 			text_duration 		= formatTripDuration(data.num_of_day);
 			text_member 		= formatTripMember(data.num_of_member);
 		<!-- END -->
+		<!-- START: [html] -->
+			var html_country = '';
+			
+			if(isset(data.country)) {
+				html_country = ''
+					+ '<div class="la-row">'
+						+ '<div class="col-xs-12 text-left">'
+							+ '<div class="la-icon">'
+								+ '<i class="fa fa-fw fa-map-marker"></i>'
+							+ '</div>'
+							+ '<div class="la-desc">'
+								+ '<div class="la-text">'
+									+ data.country
+								+ '</div>'
+							+ '</div>'
+						+ '</div>'
+					+ '</div>'
+				;
+			}
+		<!-- END -->
 		<!-- START: [content] -->
 			content = ''
 				+ '<img class="ca-img" src="resources/template/japan.png"/>'
@@ -201,18 +221,7 @@
 							+ '</div>'
 						+ '</div>'
 					+ '</div>'
-					+ '<div class="la-row">'
-						+ '<div class="col-xs-12 text-left">'
-							+ '<div class="la-icon">'
-								+ '<i class="fa fa-fw fa-map-marker"></i>'
-							+ '</div>'
-							+ '<div class="la-desc">'
-								+ '<div class="la-text">'
-									+ data.country
-								+ '</div>'
-							+ '</div>'
-						+ '</div>'
-					+ '</div>'
+					+ html_country
 					+ '<div class="la-row">'
 						+ '<div class="col-xs-12 text-left">'
 							+ '<div class="la-icon">'

@@ -2321,6 +2321,145 @@ class ModelTravelTrip extends Model{
 			
 			return $output;	
 		}
+		
+		public function copyTrip($trip_id="", $user_id="") {
+			// START: Copy Trip exclude copy of month, member, 
+			// READ ALL TRIP DATA
+			$sql = "
+						SELECT language_id, name, description
+						FROM " . $this->db->table($this->table) . " 
+						WHERE trip_id = '" . $trip_id . "' 
+				";	
+			
+			$query = $this->db->query($sql);
+			$new_input = $query->row;
+			
+			$sql = "
+						SELECT country_id
+						FROM " . $this->db->table($this->table_country) . " 
+						WHERE trip_id = '" . $trip_id . "' 
+				";	
+			
+			$query = $this->db->query($sql);
+			$result = $query->row;
+			
+			// update new_input
+			$new_input['status_id'] = "1";
+			$new_input['name']= "Copy of ". $new_input['name'];
+			$new_input['user_id'] = $user_id;
+			$new_input['country_id'] = $result['country_id'];
+			
+			
+			$new_trip_id = $this->addTrip($new_input);
+			// END: copy trip w/o day & line
+			
+			// START: copy plan data (mode, name, data)
+			$sql = "
+						SELECT plan_id, mode_id, name, travel_date
+						FROM " . $this->db->table($this->table_plan) . " 
+						WHERE trip_id = '" . $trip_id . "' 
+				";	
+			
+			$query = $this->db->query($sql);
+			$new_plan_data = $query->row;
+			$plan_id = $new_plan_data['plan_id'];
+			unset($new_plan_data['plan_id']);
+			
+			$sql = "
+						SELECT plan_id
+						FROM " . $this->db->table($this->table_plan) . " 
+						WHERE trip_id = '" . $new_trip_id . "' 
+				";	
+			
+			$query = $this->db->query($sql);
+			$result = $query->row;
+			$new_plan_id = $result['plan_id']; 
+			
+			$this->editPlan($new_plan_id, $new_plan_data);
+			// END: copy plan data
+			
+			// START: copy day data
+			$sql = "
+					SELECT day_id, sort_order
+					FROM " . $this->db->table($this->table_day) . " 
+					WHERE plan_id = '" . $plan_id . "' 
+			";	
+			$query = $this->db->query($sql);
+			
+			foreach($query->rows as $new_day_data){
+				$new_day_data['plan_id']= $new_plan_id;
+				$day_id = $new_day_data['day_id'];
+				unset($new_day_data['day_id']);
+				
+				$sql = "
+					SELECT day_id
+					FROM " . $this->db->table($this->table_day) . " 
+					WHERE plan_id = '" . $new_day_data['plan_id'] . "'
+					AND sort_order = '" . $new_day_data['sort_order'] . "'
+				";	
+				$query = $this->db->query($sql);			
+				$day_exist = $query->row;
+				
+				if ($day_exist) {
+					$this->editDay($day_exist['day_id'], $new_plan_data);
+					$new_day_id = $day_exist['day_id'];
+				}else {
+					$new_day_id = $this->addDay($new_day_data);
+				}
+				
+				$sql = "
+					SELECT *
+					FROM " . $this->db->table($this->table_line) . " t1
+					LEFT JOIN ".$this->db->table($this->table_line_mode)." t2 
+					ON t1.line_id = t2.line_id 
+					WHERE day_id = '" . $day_id . "' 
+				";	
+				$query = $this->db->query($sql);
+				
+				// need to get line mode id also ..
+				foreach($query->rows as $new_line_data){
+					$new_line_data['day_id']= $new_day_id;
+					unset($new_line_data['line_id']);
+					$new_line_id = $this->addLine($new_line_data);
+					$this->addLineMode($new_line_id, $new_line_data['mode_id']);
+					$sql = "
+						SELECT *
+						FROM " . $this->db->table($this->table_line) . " 
+						WHERE day_id = '" . $line_id . "' 
+					";	
+					$query = $this->db->query($sql);
+					
+					
+				}
+				
+			}
+			
+			/**/
+			// END: copy day data
+			
+			
+			
+			
+			
+			
+			
+			// add to member
+			$data['user_id'] = $user_id;
+			$data['trip_id'] = $new_trip_id;
+			$data['status_id'] = 2;
+			
+			$this->addMember($data);
+			
+			
+			
+			
+			
+			
+			return $new_line_data;
+			// save all data for this trip 
+			
+		}
+		
 	//END
 	
 		public function deleteSample($sample_id ="",$trip_id ="") {

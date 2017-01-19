@@ -17,3 +17,14 @@
         </div>
     </body>
 </html>
+
+<script>
+	function initHint() {
+		var hint = '<?php echo $hint; ?>';
+		if(hint != '') {
+			showHint(hint);
+		}
+	}
+	
+	initHint;
+</script>

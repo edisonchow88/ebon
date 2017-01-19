@@ -25,6 +25,7 @@
             </div>
             <div class="modal-body fixed-width padding">
             	<div class="navbar navbar-shadow"></div>
+                <div id="modal-trip-save-form-alert"></div>
                 <div class="tab tab-trip <?php if($this->user->isLogged() != false) { echo 'active'; } ?>">
                     <?php echo $component['form']; ?>
                     <a class="btn btn-block btn-primary modal-button" data-dismiss="modal" onclick="saveTrip();">Save Trip</a>
@@ -99,12 +100,16 @@
 				<!-- if connection success -->
 				var json = JSON.parse(xmlhttp.responseText);
 				
+				/*
 				if(typeof json.exceeded_quota != 'undefined') {
 					$('#modal-trip-quota-alert-text').html('Trip cannot be saved.');
 					$('#modal-trip-quota').modal('show');
 					$('#modal-trip-save').modal('hide');
 				}
-				else if(typeof json.warning != 'undefined') {
+				else 
+				*/
+				
+				if(typeof json.warning != 'undefined') {
 					<!-- if error -->
 					var content;
 					content = "<div class='alert alert-danger'><ul>";
@@ -132,9 +137,11 @@
 	
 	<!-- START: clear alert when closed -->
 		$("#modal-trip-save").on( "show.bs.modal", function() { 
+			var trip = JSON.parse(getCookie('trip'));
+		
 			//Google Analytics Event
 			ga('send', 'event','trip','open-modal-save-trip');
-			$('#modal-trip-save-form input[name=name]').val($('#wrapper-title-input').val());
+			$('#modal-trip-save-form input[name=name]').val(trip.name);
 			$('#modal-trip-save-form input[name=name]').trigger('change');
 			$('#modal-trip-save-form input[name=plan]').val(getCookie('plan'));
 		});

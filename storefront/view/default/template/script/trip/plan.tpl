@@ -611,6 +611,35 @@
 		<!-- START -->
 			printDate(data);
 		<!-- END -->
+		<!-- START: [hidden form] -->
+			var column = <?php echo $column_plan; ?>;
+			var hidden_form = '';
+			$.each(column, function(i, col) {
+				hidden_form += ''
+					+ '<input '
+						+ 'name="' + col.name + '" '
+						+ 'value="' + data[col.name] + '"'
+					+ '/>'
+				;
+			});
+		<!-- END -->
+		<!-- START: [html] -->
+			var html_hidden_form = '';
+			
+			html_hidden_form = ''
+				+ '<form class="plan-form-hidden hidden" id="plan-form-hidden">'
+					+ hidden_form
+				+ '</form>'
+			;
+			
+			
+			if(isset(data.plan_id)) {
+				$('#plan-'+data.plan_id).append(html_hidden_form);
+			}
+			else {
+				$('#plan').append(html_hidden_form);
+			}
+		<!-- END -->
 		<!-- START -->
 			$.each(data.day, function(i) {
 				printDay(planFormat, data.day[i]);
@@ -675,7 +704,16 @@
 			var text_date = '';
 			
 			text_day = 'Day ' + data.sort_order;
-			if(isset(data.date)) { text_date = formatDayDate(data.date); } else { text_date = 'Set Date'; }
+			
+			var travel_date = $('#plan-form-hidden input[name=travel_date]').val();
+			if(isset(travel_date) && travel_date != 'null') {
+				travel_date = new Date(travel_date);
+				var current_date = addDayToDate(travel_date,data.sort_order-1); 
+				text_date = formatDayDate(current_date); 
+			} 
+			else { 
+				text_date = 'Set Date'; 
+			}
 		<!-- END -->
 		<!-- START [html] -->
 			var html_date = '';
@@ -683,7 +721,7 @@
 			var html_day_line_empty = '';
 			var html_hidden_form = '';
 			
-			if(isset(data.date)) {
+			if(isset(travel_date)) {
 				var html_date = ''
 					+ '<div class="padding-top ' + hidden_day_date + '">'
 						+ '<b>'
@@ -1062,7 +1100,7 @@
 			serial += '{';
 				serial += '"name":"Plan 1"';
 				serial += ',';
-				serial += '"travel_date":"'+$('#plan-date-form-hidden input[name=travel_date]').val()+'"';
+				serial += '"travel_date":"'+$('#plan-form-hidden input[name=travel_date]').val()+'"';
 				serial += ',';
 				serial += '"day":';
 				serial += '[';
@@ -1127,13 +1165,17 @@
 	
 	function updateTravelDate() {
 		//Google Analytics Event
-		ga('send', 'event','date', 'update-date');		
+		ga('send', 'event','date', 'update-date');
+		
+		var travel_date = $('#plan-date-form-hidden input[name=travel_date]').val();
+		$('#plan-form-hidden input[name=travel_date]').val(travel_date);
+				
 		<?php if($this->session->data['memory'] == 'cookie') { ?>
 			updatePlanTableCookie();
 			showHint('Day Updated');
 			refreshDayList();
 			refreshPlan();
-			$(document).trigger("refreshDistance");
+			//$(document).trigger("refreshDistance");
 		<?php } else { ?>
 			<!-- START: set data -->
 				var data = {
@@ -1151,7 +1193,7 @@
 						showHint('Day Updated');
 						refreshDayList();
 						refreshPlan();
-						$(document).trigger("refreshDistance");
+						//$(document).trigger("refreshDistance");
 					}
 				}, "json");
 			<!-- END -->
@@ -1239,7 +1281,7 @@ function addGooglePlace() {
 		<!-- END -->
 			
 		<!-- START: print -->
-			printDay(format,data);
+			printDay(planFormat,data);
 		<!-- END -->
 			
 		<?php if($this->session->data['memory'] == 'cookie') { ?>
@@ -1498,7 +1540,11 @@ function addGooglePlace() {
 				var time = time;
 				var duration = duration;
 			<!-- END -->
-			
+			<!-- START: temporary solution for cookie memory limit -->
+				<?php if($this->session->data['memory'] == 'cookie') { ?>
+					description = '';
+				<?php } ?>
+			<!-- END -->
 			<!-- START: set line_id for Cookie -->
 				<?php if($this->session->data['memory'] == 'cookie') { ?>
 					var line_id = 0;

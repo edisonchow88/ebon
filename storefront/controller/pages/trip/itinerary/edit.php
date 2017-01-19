@@ -13,27 +13,6 @@ class ControllerPagesTripItineraryEdit extends AController {
 			$this->extensions->hk_InitData($this, __FUNCTION__);
 		//END
 		
-		//START: set popover hint
-			if($this->session->data['account_action'] != '') {
-				if($this->session->data['account_action'] == 'login') {
-					$this->data['last_action'] = 'Log In';
-				}
-				else if($this->session->data['account_action'] == 'signup') {
-					$this->data['last_action'] = 'Sign Up';
-				}
-				else if($this->session->data['account_action'] == 'logout') {
-					$this->data['last_action'] = 'Log Out';
-				}
-				unset($this->session->data['account_action']);
-			}
-			if($this->session->data['trip_action'] != '') {
-				if($this->session->data['trip_action'] == 'save_trip') {
-					$this->data['last_action'] = 'Trip Saved';
-				}
-				unset($this->session->data['trip_action']);
-			}
-		//END
-		
 		//START: set model
 			$this->loadModel('travel/trip');
 		//END

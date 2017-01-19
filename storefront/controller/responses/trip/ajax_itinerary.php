@@ -150,7 +150,9 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	
 	public function new_trip() {
 		//START: run verification
+			/*
 			if($this->verify_new_trip() == 'failed') { return; }
+			*/
 		//END
 		
 		//START: create trip & get trip_id
@@ -193,7 +195,9 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 	
 	public function save_trip() {
 		//START: run verification
+		/*
 			if($this->verify_save_trip() == 'failed') { return; }
+			*/
 		//END
 		
 		//START: create trip & get trip_id
@@ -252,31 +256,23 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//END
 		
 		//START: get code
-			$trip = $this->model_travel_trip->getTrip($trip_id);
-			$code = $trip['code'];
-		//END
-		
-		//START: get code
-			$trip = $this->model_travel_trip->getTrip($trip_id);
-			$code = $trip['code'];
+		/*
+			$code = $this->model_travel_trip->getTripCodeByTripId($trip_id);
+		*/
 		//END
 		
 		//START: set redirect
-			$result['redirect'] = $this->html->getSecureURL('trip/itinerary','&trip='.$code);
+			$result['redirect'] = $this->html->getSecureURL('list/trip/upcoming');
 		//END
 		
 		//START: set session
-			$this->session->data['trip_action'] = 'save_trip';
+			$this->session->data['hint'] = 'Trip Saved';
 		//END
 		
 		//START: set response
 			$result['success'][] = 'Trip saved'; 
 			$response = json_encode($result);
-			if ($this->data['from_sample']) {
-				return $result['redirect'];
-			}else {
-				echo $response;
-			}
+			echo $response;
 		//END
 	}
 	
@@ -1564,11 +1560,11 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//START: set response
 			$result = $this->model_travel_trip->getPlanDetail($plan_id);
 			foreach($result['day'] as $day_id => $day) {
-				//
+				/*
 					if(isset($result['travel_date'])) {
 						$result['day'][$day_id]['date'] = date('Y-m-d', strtotime($result['travel_date']. ' + '.($day['sort_order']-1).' days'));
 					}
-				//
+				*/
 				foreach($day['line'] as $line_id => $line) {
 					$time = $result['day'][$day_id]['line'][$line_id]['time'];
 					if($time != 'NULL' && $time != '') {

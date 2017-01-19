@@ -146,7 +146,7 @@
         <div class="content-body-result-empty">
         	<div class="col-xs-12">
                 <div><b>No Available Template</b></div>
-                <div>Click to <a class="button-skip" onclick="verify_new_trip_condition();">create from scratch</a></div>
+                <div>Click to <a class="button-skip">create from scratch</a></div>
             </div>
         </div>
         <div class="content-body-result-list ca ca-card ca-white noselect">
@@ -156,7 +156,7 @@
         <div class="css-tools-or-with-line"><span>OR</span></div>
         <div class="row text-center padding">
             <div class="text-sub padding">Can't find any template?</div>
-            <a class="btn btn-block btn-primary box-shadow rounded fixed-height-5" onclick="verify_new_trip_condition();">Create From Scratch</a>
+            <a class="btn btn-block btn-primary box-shadow rounded fixed-height-5 button-skip">Create From Scratch</a>
         </div>
     </div>
 </div>
@@ -192,6 +192,7 @@
 		$('#modal-trip-new-form input[name=name]').val(name);
 	}
 	
+	/*
 	function newTrip() {
 		var form_element = document.querySelector("#modal-trip-new-form");
 		var form_data = new FormData(form_element);
@@ -233,6 +234,37 @@
 		};
 		xmlhttp.open("POST", query, true);
 		xmlhttp.send(form_data);
+	}
+	*/
+	
+	function newTrip() {
+		<!-- START -->
+			var name = $('#modal-trip-new-form input[name=name]').val();
+			var country_id = $('#modal-trip-new-form select[name=country_id]').val();
+			var user_id = $('#modal-trip-new-form input[name=user_id]').val();
+			var language_id = $('#modal-trip-new-form input[name=language_id]').val();
+		<!-- END -->
+		<!-- START: set data -->
+			var data = {
+				"action":"new_trip",
+				"name":name,
+				"country_id":country_id,
+				"user_id":user_id,
+				"language_id":language_id
+			};
+		<!-- END -->
+		<!-- START: send POST -->
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				if(typeof json.warning != 'undefined') {
+					showAlert(json.warning);
+				}
+				else if(typeof json.success != 'undefined') {
+					setCookie('trip','',0);
+					setCookie('plan','',0);
+					window.location = json.redirect;
+				}
+			}, "json");
+		<!-- END -->
 	}
 	
 	function newTripViaCookie() {

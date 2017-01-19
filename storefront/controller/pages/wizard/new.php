@@ -44,6 +44,7 @@ class ControllerPagesWizardNew extends AController {
 		
 		//START: set ajax
 			$ajax['wizard/ajax_trip'] = $this->html->getSecureURL('wizard/ajax_trip');
+			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
 		//END
 		
 		//START: set link

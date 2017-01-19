@@ -81,8 +81,10 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'edit_line') { $this->edit_line(); return; }
 			else if($this->data['action'] == 'delete_line') { $this->delete_line(); return; }
 			else if($this->data['action'] == 'sort_line') { $this->sort_line(); return; }
+			/*
 			else if($this->data['action'] == 'refresh_sample') { $this->refresh_sample(); return; }
 			else if($this->data['action'] == 'sample_new_trip') { $this->sample_new_trip(); return; }
+			*/
 			else if($this->data['action'] == 'get_line_mode_path') { $this->get_line_mode_path(); return; }
 			else if($this->data['action'] == 'get_distance_path') { $this->get_distance_path(); return; }
 			else if($this->data['action'] == 'add_path') { $this->add_path(); return; }
@@ -178,12 +180,11 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//END
 		
 		//START: get code
-			$trip = $this->model_travel_trip->getTrip($trip_id);
-			$code = $trip['code'];
+			$code = $this->model_travel_trip->getTripCodeByTripId($trip_id);
 		//END
 		
 		//START: set redirect
-			$result['redirect'] = $this->html->getSecureURL('trip/itinerary','&trip='.$code);
+			$result['redirect'] = $this->html->getSecureURL('trip/itinerary/edit','&trip='.$code);
 		//END
 		
 		//START: set response
@@ -1259,6 +1260,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//END
 	}
 	
+	/*
 	public function refresh_sample() {
 
 		$result = $this->model_travel_trip->getSample($this->data['country_id']);
@@ -1298,6 +1300,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		echo $response;
 		//END
 	}
+	*/
 		
 	public function get_line_mode_path() {
 		// DATABASE MODE need to read mode_id from database, if COOKIE MODE, then skip these function

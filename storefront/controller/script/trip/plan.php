@@ -13,6 +13,27 @@ class ControllerScriptTripPlan extends AController {
 			$this->extensions->hk_InitData($this, __FUNCTION__);
 		//END
 		
+		//START: set popover hint
+			if($this->session->data['account_action'] != '') {
+				if($this->session->data['account_action'] == 'login') {
+					$this->data['last_action'] = 'Log In';
+				}
+				else if($this->session->data['account_action'] == 'signup') {
+					$this->data['last_action'] = 'Sign Up';
+				}
+				else if($this->session->data['account_action'] == 'logout') {
+					$this->data['last_action'] = 'Log Out';
+				}
+				unset($this->session->data['account_action']);
+			}
+			if($this->session->data['trip_action'] != '') {
+				if($this->session->data['trip_action'] == 'save_trip') {
+					$this->data['last_action'] = 'Trip Saved';
+				}
+				unset($this->session->data['trip_action']);
+			}
+		//END
+		
 		//START: set model
 			$this->loadModel('travel/trip');
 		//END
@@ -64,7 +85,32 @@ class ControllerScriptTripPlan extends AController {
 			}
 		//END
 		
+		
+		//START: set column for plan
+			$column = array();
+			
+			$i = 'plan_id';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			
+			$i = 'trip_id';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			
+			$i = 'mode_id';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			
+			$i = 'travel_date';
+			$column[$i]['name'] = $i;
+			$column[$i]['id'] = str_replace("_","-",$i);
+			
+			$column_plan = json_encode(array_values($column));
+		//END
+		
 		//START: set column
+			$column = array();
+		
 			$i = 'day_id';
 			$column[$i]['name'] = $i;
 			$column[$i]['id'] = str_replace("_","-",$i);
@@ -390,6 +436,7 @@ class ControllerScriptTripPlan extends AController {
 			$this->view->batchAssign($this->data);
 			$this->view->assign('column',$column);
 			$this->view->assign('column_json',json_encode(array_values($column)));
+			$this->view->assign('column_plan',$column_plan);
 			if(count($result) > 0) { $this->view->assign('result', $result); }
 			if(count($link) > 0) { $this->view->assign('link', $link); }
 			if(count($ajax) > 0) { $this->view->assign('ajax', $ajax); }

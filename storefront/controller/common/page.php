@@ -21,6 +21,9 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 class ControllerCommonPage extends AController {
+	//START: set common variable
+		public $data = array();
+	//END
 	
 	public function main() {
 
@@ -57,6 +60,13 @@ class ControllerCommonPage extends AController {
 		));
 		$this->document->addScript($this->view->templateResource('/javascript/jquery-1.10.2.js'));
 		$this->document->addScript($this->view->templateResource('/javascript/jquery-ui.js'));
+		
+		//START: set popover hint
+			if($this->session->data['hint'] != '') {
+				$this->data['hint'] = $this->session->data['hint'];
+				unset($this->session->data['hint']);
+			}
+		//END
 		//EOC
 
         $this->addChild('common/head', 'head', 'common/head.tpl');
@@ -91,6 +101,9 @@ class ControllerCommonPage extends AController {
 			$layout_css_suffix = '-long';
 			$comumns_count = 1;
 		}
+		
+		
+		$this->view->batchAssign($this->data);
 		$this->view->assign('layout_columns', $comumns_count);
 		$this->view->assign('layout_css_suffix', $layout_css_suffix);
 		$this->view->assign('layout_width', $this->config->get('storefront_width'));

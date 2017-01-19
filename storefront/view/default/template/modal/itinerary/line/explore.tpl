@@ -902,8 +902,14 @@
 		
 		//review
 		if(current.reviews.length > 0) {
+			
 			var content;
 			$.each(current.reviews, function(index, value) {
+				
+				<!-- START: [temporary code to handle overusage of Google photo] -->
+					value.profile_photo_url = 'resources/image/error/noprofilephoto.png';
+				<!-- END -->
+			
 				//photo
 				var photo = '';
 				if(typeof value.profile_photo_url != 'undefined' && value.profile_photo_url != null && value.profile_photo_url != '') {

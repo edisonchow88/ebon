@@ -95,6 +95,7 @@ class ModelTravelTrip extends Model{
 				$sql = "
 					SELECT 
 						t1.name, 
+						t1.code,
 						t1.trip_id, 
 						t1.user_id, 
 						t1.date_modified, 
@@ -104,13 +105,13 @@ class ModelTravelTrip extends Model{
 						t_plan.mode_id,
 						t_plan.travel_date
 					FROM " . $this->db->table($this->table) . " t1
-					JOIN ".$this->db->table('user'). " t_user
+					LEFT JOIN ".$this->db->table('user'). " t_user
 					ON t1.user_id = t_user.user_id 
-					JOIN ".$this->db->table($this->table_country). " t_country
+					LEFT JOIN ".$this->db->table($this->table_country). " t_country
 					ON t1.trip_id = t_country.trip_id 
-					JOIN ".$this->db->table('country_descriptions'). " t_country_description
+					LEFT JOIN ".$this->db->table('country_descriptions'). " t_country_description
 					ON t_country.country_id = t_country_description.country_id 
-					JOIN ".$this->db->table($this->table_plan). " t_plan
+					LEFT JOIN ".$this->db->table($this->table_plan). " t_plan
 					ON t1.trip_id = t_plan.trip_id 
 					WHERE t1.trip_id = ".$trip_id."
 					GROUP BY t1.trip_id
@@ -130,6 +131,22 @@ class ModelTravelTrip extends Model{
 					$result['num_of_member'] = $num_of_member;
 				//END
 				$output = $result;
+				return $output;
+			//END
+		}
+		
+		public function getTripCodeByTripId($trip_id) {
+			//START: run sql
+				$sql = "
+					SELECT code
+					FROM " . $this->db->table($this->table) . "
+					WHERE trip_id = ".$trip_id."
+				";
+				$query = $this->db->query($sql);
+			//END
+			//START: set output
+				$result = $query->row;
+				$output = $result['code'];
 				return $output;
 			//END
 		}
@@ -279,10 +296,9 @@ class ModelTravelTrip extends Model{
 			
 			//START: run chain reaction
 				$this->deletePlanByTripId($trip_id);
-				$this->deleteSample("",$trip_id);
-				$this->deleteTripPhotoByTripId($trip_id);
-				$this->deleteCountryByTripId($trip_id);
 				$this->deleteMemberByTripId($trip_id);
+				$this->deleteCountryByTripId($trip_id);
+				$this->deleteTripPhotoByTripId($trip_id);
 				
 			//END
 			

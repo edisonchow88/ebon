@@ -26,5 +26,5 @@
 		}
 	}
 	
-	initHint;
+	initHint();
 </script>

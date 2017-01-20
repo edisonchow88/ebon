@@ -50,7 +50,14 @@ class ControllerResponsesWizardAjaxTrip extends AController {
 	public function use_template() {
 		$user_id = $this->user->getUserId();
 		$trip_id = 	$this->data['trip_id'];
-		$result = $this->model_travel_trip->copyTrip($trip_id, $user_id);
+		$code = $this->model_travel_trip->copyTrip($trip_id, $user_id);
+		$result['redirect'] = "";
+		
+		//START: set redirect
+		if ($code) {
+			$result['redirect'] = $this->html->getSecureURL('trip/itinerary/edit','&trip='.$code);
+		}
+		//END
 		
 		$response = json_encode($result);
 		echo $response;

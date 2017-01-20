@@ -2394,7 +2394,7 @@ class ModelTravelTrip extends Model{
 			$this->editPlan($new_plan_id, $new_plan_data);
 			// END: copy plan data
 			
-			// START: copy day data
+			// START: copy dayand line data
 			$sql = "
 					SELECT day_id, sort_order
 					FROM " . $this->db->table($this->table_day) . " 
@@ -2432,33 +2432,22 @@ class ModelTravelTrip extends Model{
 				";	
 				$query = $this->db->query($sql);
 				
-				// need to get line mode id also ..
+				
 				foreach($query->rows as $new_line_data){
 					$new_line_data['day_id']= $new_day_id;
 					unset($new_line_data['line_id']);
 					$new_line_id = $this->addLine($new_line_data);
-					$this->addLineMode($new_line_id, $new_line_data['mode_id']);
+					if ($new_line_data['line_mode_id']) $this->addLineMode($new_line_id, $new_line_data['mode_id']);
 					$sql = "
 						SELECT *
 						FROM " . $this->db->table($this->table_line) . " 
 						WHERE day_id = '" . $line_id . "' 
 					";	
-					$query = $this->db->query($sql);
-					
-					
-				}
-				
+					$query = $this->db->query($sql);	
+				}	
 			}
-			
-			/**/
 			// END: copy day data
-			
-			
-			
-			
-			
-			
-			
+					
 			// add to member
 			$data['user_id'] = $user_id;
 			$data['trip_id'] = $new_trip_id;
@@ -2466,15 +2455,18 @@ class ModelTravelTrip extends Model{
 			
 			$this->addMember($data);
 			
+			$sql = "
+						SELECT code
+						FROM " . $this->db->table($this->table) . " 
+						WHERE trip_id = '" . $new_trip_id . "' 
+				";	
 			
-			
-			
-			
-			
-			return $new_line_data;
+			$query = $this->db->query($sql);
+			$result = $query->row;			
+						
+			return $result['code'];
 			// save all data for this trip 
-			
-		}
+					}
 		
 	//END
 	

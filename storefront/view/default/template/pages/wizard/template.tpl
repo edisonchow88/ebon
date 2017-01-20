@@ -681,6 +681,8 @@
 	}
 	
 	function useTemplate(trip_id){
+		// cover the button with generating.
+		$('.content-body-loading').show();
 		<!-- START: set data -->
 				var data = {
 					"action":"use_template",
@@ -690,10 +692,16 @@
 			
 			<!-- START: send POST -->
 				$.post("<?php echo $ajax['wizard/ajax_trip']; ?>", data, function(json) {
-					alert(JSON.stringify(json));
+					
+					if (!json.redirect) {
+						$('.content-body-loading').hide();
+						showHint("Failed to Create Trip.");						
+					}else {
+						window.location = json.redirect;
+					}
 				}, "json");
 			<!-- END -->
-			//window.location = json.redirect;
+			
 	}
 		
 	$('#modal-trip-new-form').on('change',function() {

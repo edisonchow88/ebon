@@ -19,6 +19,7 @@ class ControllerResponsesWizardAjaxTrip extends AController {
 			$this->loadModel('travel/trip');	
 			
 			if($this->data['action'] == 'refresh_template') { $this->refresh_template(); return; }
+			else if ($this->data['action'] == 'use_template') { $this->use_template(); return; }
 			else { 
 				//IMPORTANT: Return responseText in order for xmlhttp to function properly 
 				$result['warning'][] = '<b>ERROR: Invalid action</b><br/>Please contact Admin.'; 
@@ -42,5 +43,24 @@ class ControllerResponsesWizardAjaxTrip extends AController {
 		
 		$response = json_encode($response);
 		echo $response;
+	}
+	
+	
+
+	public function use_template() {
+		$user_id = $this->user->getUserId();
+		$trip_id = 	$this->data['trip_id'];
+		$code = $this->model_travel_trip->copyTrip($trip_id, $user_id);
+		$result['redirect'] = "";
+		
+		//START: set redirect
+		if ($code) {
+			$result['redirect'] = $this->html->getSecureURL('trip/itinerary/edit','&trip='.$code);
+		}
+		//END
+		
+		$response = json_encode($result);
+		echo $response;
+		
 	}
 }

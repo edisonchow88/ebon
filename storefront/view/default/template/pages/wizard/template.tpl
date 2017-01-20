@@ -595,7 +595,7 @@
 										+ '<i class="fa fa-fw fa-lg fa-check"></i>'
 									+ '</div>'
 									+ '<div>'
-										+ '<span>Use Template</span>'
+										+ '<span onclick="useTemplate('+data.trip_id+')">Use Template</span>'
 									+ '</div>'
 								+ '</a>'
 							+ '</div>'
@@ -670,7 +670,7 @@
 						+ '<div class="trip-'+data.trip_id+'-plan">'
 						+ '</div>'
 						+ '<div class="padding">'
-							+ '<a class="btn btn-block btn-primary box-shadow rounded fixed-height-5"">Use This Template</a>'
+							+ '<a class="btn btn-block btn-primary box-shadow rounded fixed-height-5"" onclick="useTemplate('+data.trip_id+')">Use This Template</a>'
 						+ '</div>'
 					+ '</div>'
 				+ '</div>'
@@ -680,6 +680,30 @@
 		<!-- END -->
 	}
 	
+	function useTemplate(trip_id){
+		// cover the button with generating.
+		$('.content-body-loading').show();
+		<!-- START: set data -->
+				var data = {
+					"action":"use_template",
+					"trip_id":trip_id
+				};
+			<!-- END -->
+			
+			<!-- START: send POST -->
+				$.post("<?php echo $ajax['wizard/ajax_trip']; ?>", data, function(json) {
+					
+					if (!json.redirect) {
+						$('.content-body-loading').hide();
+						showHint("Failed to Create Trip.");						
+					}else {
+						window.location = json.redirect;
+					}
+				}, "json");
+			<!-- END -->
+			
+	}
+		
 	$('#modal-trip-new-form').on('change',function() {
 		refreshTemplate();
 	});

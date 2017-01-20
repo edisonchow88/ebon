@@ -235,7 +235,9 @@ class ModelTravelTrip extends Model{
 					$country['country_id'] = $data['country_id'];
 				//END
 				
-				$this->addCountry($country);
+				if($data['country_id'] != 0) {
+					$this->addCountry($country);
+				}
 			//END
 			
 			//START: clear cache

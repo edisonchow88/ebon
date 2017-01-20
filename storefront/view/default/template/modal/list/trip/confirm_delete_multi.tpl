@@ -13,7 +13,7 @@
                 </div>
                 <div class="modal-body-footer row">
                     <div class="col-xs-6" data-dismiss="modal"><a>CANCEL</a></div>
-                    <div class="col-xs-6" data-dismiss="modal" onclick="deleteTrip();"><a>DELETE FOREVER</a></div>
+                    <div class="col-xs-6" data-dismiss="modal" onclick="deleteMulti();"><a>DELETE FOREVER</a></div>
                 </div>
             </div>
         </div>

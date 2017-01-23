@@ -1,6 +1,7 @@
 <div class="content-header fixed-width noselect">
     <div class="row navbar navbar-primary navbar-file">
         <div class="col-xs-3 text-left">
+        	 <a class="btn" data-toggle="modal" data-target="#menu-mobile-main"><i class="fa fa-fw fa-lg fa-bars"></i></a>
         </div>
         <div class="col-xs-6 text-center">
             <h1>Trip Preview</h1>
@@ -26,7 +27,33 @@
     <div class="content-body-result"></div>
 </div>
 
+<?php echo $menu_mobile_main; ?>
+
+<?php echo $modal_account_login; ?>
+<?php echo $modal_account_signup; ?>
+<?php echo $modal_member_join; ?>
+<?php echo $script_trip_plan; ?>
 <script>
+	function requestJoinTrip(trip_id){
+		<?php if($this->user->isLogged() == false) { ?>
+			showHint('Please Login before request to Join Trip.');
+		<?php }else{ ?>
+			$('#modal-member-join').modal('show');
+			// add this user to member list of the trip
+			
+			
+		<?php } ?>
+	}
+	
+	function showModal(page){
+		if (page == "login" ) {			
+			$('#modal-account-login').modal('show');
+			
+		}else if (page == "signup" ) {
+			$('#modal-account-signup').modal('show');
+		}
+	}
+	
 	function refreshTrip() {
 		<!-- START: reset loading screen -->
 			$('.content-body-loading').show();
@@ -50,6 +77,7 @@
 				}, "json");
 			<!-- END -->
 		<!-- END -->
+		refreshPlan(trip_id);
 	}
 	
 	function runRefreshTrip(json) {
@@ -60,6 +88,43 @@
 		}
 	}
 	
+	function refreshPlan(trip_id) {
+		<!-- START: reset loading screen -->
+			//$('.content-body-loading').show();
+			//$('.content-body-empty').show();
+		<!-- END -->
+		<!-- START: clear old result -->
+			$('.content-plan-result').html('');
+		<!-- END -->
+		<!-- START: get new result -->
+			<!-- START: -->
+				var plan_id = "<?php echo $this->trip->getPlanId(); ?>";
+			<!-- END -->
+			<!-- START: set data -->
+				var data = {
+					"action":"get_plan",
+					"trip_id":"<?php echo $trip_id; ?>",
+					"plan_id":"<?php echo $plan_id; ?>"
+				};
+			<!-- END -->
+			<!-- START: send POST -->
+				$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+					$('.content-plan-result').html('<div id="plan-'+data.plan_id+'"></div>');
+					runRefreshPlan(json);
+				}, "json");
+			<!-- END -->
+		<!-- END -->
+	}
+	
+	function runRefreshPlan(json) {
+		<!-- START -->
+			printPlan('view',json);
+		<!-- END -->
+		<!-- START: end loading -->
+			$('.content-body-empty').hide();
+			$('.content-body-loading').fadeOut();
+		<!-- END -->
+	}
 	
 	<!-- START -->
 		function formatTripDateUpdate(date) {
@@ -268,76 +333,32 @@
 							+ '</div>'
 						+ '</div>'
 					+ '</div>'
-					/*
-					+ '<div class="la-row">'
-						+ '<div class="col-xs-12 text-left">'
-							+ '<div class="la-icon">'
-								+ '<i class="fa fa-fw fa-calendar"></i>'
-							+ '</div>'
-							+ '<div class="la-desc">'
-								+ '<div class="la-text">'
-									+ text_month
-								+ '</div>'
-							+ '</div>'
+				+ '</div>'
+				+ '<div class="hr hr-12"></div>'
+					+ '<div class="content-plan-result"></div>' 
+					+ '<div class="trip-'+data.trip_id+'-plan">'
+					+ '</div>'
+					+ '<div class="padding">'
+						+ '<a class="btn btn-block btn-primary box-shadow rounded fixed-height-5"" onclick="requestJoinTrip('+data.trip_id+')">Request to Join Trip</a>'
+						+ '<div class="padding text-right shortcut-login">'
+							+ '<a onclick="showModal(\'login\');" >Login</a>'
+							+ ' &nbsp;| &nbsp;'
+							+ '<a onclick="showModal(\'signup\');">Sign Up</a>'
 						+ '</div>'
 					+ '</div>'
-					*/
-				+ '</div>'
-				+ '<div class="padding">'
-					+ '<div class="la la-40 la-border la-pointer la-hover border-left border-right border-top">'
-						+ '<a href="'+link_itinerary+'">'
-							+ '<div class="la-row">'
-								+ '<div class="col-xs-10">'
-									+ '<div class="la-desc">'
-										+ '<div class="la-text">'
-											+ 'Itinerary'
-										+ '</div>'
-									+ '</div>'
-								+ '</div>'
-								+ '<div class="col-xs-2 text-right">'
-									+ '<div class="la-btn">'
-										+ '<i class="fa fa-fw fa-chevron-right"></i>'
-									+ '</div>'
-								+ '</div>'
-							+ '</div>'
-						+ '</a>'
-						+ '<a>'
-							+ '<div class="la-row">'
-								+ '<div class="col-xs-10">'
-									+ '<div class="la-desc">'
-										+ '<div class="la-text">'
-											+ 'Host'
-										+ '</div>'
-									+ '</div>'
-								+ '</div>'
-								+ '<div class="col-xs-2 text-right">'
-									+ '<div class="la-btn">'
-										+ '<i class="fa fa-fw fa-chevron-right"></i>'
-									+ '</div>'
-								+ '</div>'
-							+ '</div>'
-						+ '</a>'
-						+ '<a>'
-							+ '<div class="la-row">'
-								+ '<div class="col-xs-10">'
-									+ '<div class="la-desc">'
-										+ '<div class="la-text">'
-											+ 'Members'
-										+ '</div>'
-									+ '</div>'
-								+ '</div>'
-								+ '<div class="col-xs-2 text-right">'
-									+ '<div class="la-btn">'
-										+ '<i class="fa fa-fw fa-chevron-right"></i>'
-									+ '</div>'
-								+ '</div>'
-							+ '</div>'
-						+ '</a>'
+					+ '<div class="padding">'
+						
 					+ '</div>'
 				+ '</div>'
 			;
 			$('.content-body-result').append(content);
 		<!-- END -->
+		
+		<?php if($this->user->isLogged() == true) { ?>
+			$('.shortcut-login').hide();
+		
+		<?php } ?>
+		
 	}
 	
 	refreshTrip();

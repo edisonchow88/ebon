@@ -40,7 +40,7 @@
                             <div class="la-text">Save</div>
                         </div>
                     </div>
-                    <div class="la-row modal-trip-action-share" data-dismiss="modal">
+                    <div class="la-row modal-trip-action-share" data-dismiss="modal" onclick="shareTrip();">
                         <div class="la-icon">
                             <i class="fa fa-fw fa-lg fa-share"></i>
                         </div>
@@ -117,6 +117,8 @@
         </div>
     </div>
 <!-- END -->
+
+<?php echo $modal_trip_share; ?>
 
 <script>
 	$("#modal-trip-action").on("show.bs.modal", function () {
@@ -326,6 +328,10 @@
 				})
 			;
 		<!-- END -->
+	}
+	
+	function shareTrip() {
+		$('#modal-trip-share').modal('show');
 	}
 	
 	function triggerConfirmDeleteTrip() {

@@ -161,6 +161,10 @@
     </div>
 </div>
 
+<!-- START: [script] -->
+	<?php echo $script_trip_frame; ?>
+<!-- END -->
+
 <script>
 	function toggleFilter() {
 		$('.filter').toggleClass('hidden');
@@ -294,6 +298,28 @@
 	}
 </script>
 <script>
+	function refreshTemplatePhoto(trip_id) {
+		<!-- START: set POST data -->
+			var data = {
+				"action":"refresh_trip_photo",
+				"trip_id":trip_id
+			};
+		<!-- END -->
+		<!-- START: send POST -->
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				if(isset(json)) {
+					var photoFrame = {
+						frame:'.photo-frame-'+trip_id,
+						photo:json.photo,
+						editable:false
+					}
+					printPhotoFrame(photoFrame);
+				}
+			}, "json");
+		<!-- END -->
+	}
+</script>
+<script>
 	function refreshTemplate() {
 		<!-- START: reset loading screen -->
 			$('.content-body-result-list').hide();
@@ -423,19 +449,7 @@
 								+ '</div>'
 							+ '</div>'
 						+ '</div>'
-						+ '<div class="row ca-gallery">'
-							+ '<div class="col-xs-6 text-left padding-bottom padding-right">'
-								+ '<img class="ca-img" src="resources/template/japan.png"/>'
-							+ '</div>'
-							+ '<div class="col-xs-6 text-left padding-bottom padding-left">'
-								+ '<img class="ca-img" src="resources/template/japan.png"/>'
-							+ '</div>'
-							+ '<div class="col-xs-6 text-left padding-top padding-right">'
-								+ '<img class="ca-img" src="resources/template/japan.png"/>'
-							+ '</div>'
-							+ '<div class="col-xs-6 text-left padding-top padding-left">'
-								+ '<img class="ca-img" src="resources/template/japan.png"/>'
-							+ '</div>'
+						+ '<div class="row ca-gallery photo-frame-'+data.trip_id+'">'
 						+ '</div>'
 					+ '</a>'
 					+ '<form class="result-template-form hidden">'
@@ -444,6 +458,9 @@
 				+ '</div>'
 			;
 			$('.content-body-result-list').append(content);
+		<!-- END -->
+		<!-- START -->
+			refreshTemplatePhoto(data.trip_id);
 		<!-- END -->
 	}
 	

@@ -93,25 +93,32 @@
             </div>
             <div class="col-xs-10">
                 <div class="la-desc la-desc-line-1">
-                    <div class="la-text">Book it</div>
-                </div>
-            </div>
-        </div>
-        <div class="la-row">
-        	<div class="col-xs-2">
-                <div class="la-icon" style="padding:11px 12px;">
-                    <span class="fa-stack">
-                        <i class="fa fa-circle fa-stack-2x"></i>
-                        <strong class="fa-stack-1x fa-inverse">4</strong>
-                    </span>
-                </div>
-            </div>
-            <div class="col-xs-10">
-                <div class="la-desc la-desc-line-1">
                     <div class="la-text">Manage it</div>
                 </div>
             </div>
         </div>
+    </div>
+    <hr />
+    <div><b>Upcoming Updates</b><br /><br /></div>
+    <div class="la la-40">
+        <div class="la-row">
+            <div class="col-xs-12">
+                <div class="la-desc">
+                    <div class="la-text la-text-clamp-2">2017-02-28&nbsp;&nbsp;&nbsp;Function to invite and manage members</div>
+                </div>
+            </div>
+        </div>
+        <div class="la-row">
+            <div class="col-xs-12">
+                <div class="la-desc">
+                    <div class="la-text la-text-clamp-2">2017-03-31&nbsp;&nbsp;&nbsp;Function to estimate travel budget</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="text-sub">
+    	<span>If you have any suggestion or discover any bug, feel free to send us an email to <a href="mailto:info@travelrevol.com?Subject=Feedback" target="_top">info@travelrevol.com</a></span>
     </div>
     <!--
     <hr />

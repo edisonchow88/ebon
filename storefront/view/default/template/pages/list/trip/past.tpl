@@ -7,7 +7,7 @@
             <a onclick="togglePageMenu();"><h1>Past</h1><i class="fa fa-fw fa-caret-down"></i></a>
         </div>
         <div class="col-xs-3 text-right">
-            <a class="btn" data-toggle="modal" data-target="#modal-trip-search" onclick="closePageMenuInstant();"><i class="fa fa-fw fa-lg fa-search"></i></a>
+            <a class="btn hidden" data-toggle="modal" data-target="#modal-trip-search" onclick="closePageMenuInstant();"><i class="fa fa-fw fa-lg fa-search"></i></a>
         </div>
     </div>
     <?php echo $menu_list_trip; ?>

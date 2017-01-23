@@ -1,3 +1,6 @@
+<script type="text/javascript" src="<?php echo $this->templateResource('/javascript/swiper.jquery.min.js'); ?>"></script>
+
+
 <div class="content-header fixed-width noselect">
     <div class="row navbar navbar-primary navbar-file">
         <div class="col-xs-3 text-left">
@@ -7,7 +10,7 @@
             <h1>Trip</h1>
         </div>
         <div class="col-xs-3 text-right">
-            <a class="btn"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
+            <a class="btn hidden"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
         </div>
     </div>
 </div>
@@ -27,6 +30,14 @@
 	<div class="content-body-alert"></div>
     <div class="content-body-result"></div>
 </div>
+
+<!-- START: [modal] -->
+    <?php echo $modal_trip_gallery; ?>
+    <?php echo $modal_trip_photo; ?>
+<!-- END -->
+<!-- START: [script] -->
+	<?php echo $script_trip_frame; ?>
+<!-- END -->
 
 <script>
 	function refreshTrip() {
@@ -57,6 +68,7 @@
 	function runRefreshTrip(json) {
 		if(isset(json)) {
 			printTrip(json);
+			refreshTripPhoto();
 			$('.content-body-empty').hide();
 			$('.content-body-loading').fadeOut();
 		}
@@ -205,7 +217,14 @@
 		<!-- END -->
 		<!-- START: [content] -->
 			content = ''
-				+ '<img class="ca-img" src="resources/template/japan.png"/>'
+				+ '<div class="photo-frame" data-toggle="modal" data-target="#modal-trip-gallery">'
+					+ '<div class="photo-frame-background border-bottom">'
+						+ '<img src="resources/image/black.png"/>'
+					+ '</div>'
+					+ '<div class="photo-frame-empty absolute-center">'
+						+ '<img class="ca-img" src="resources/icon/gallery.gif"/>'
+					+ '</div>'
+				+ '</div>'
 				+ '<div style="margin: 20px 15px 5px 15px;">'
 					+ '<div>'
 						+ '<h1><b>' + data.name + '</b></h1>'
@@ -304,7 +323,7 @@
 							+ '</div>'
 						+ '</a>'
 						+ '<a>'
-							+ '<div class="la-row">'
+							+ '<div class="la-row hidden">'
 								+ '<div class="col-xs-10">'
 									+ '<div class="la-desc">'
 										+ '<div class="la-text">'
@@ -320,7 +339,7 @@
 							+ '</div>'
 						+ '</a>'
 						+ '<a>'
-							+ '<div class="la-row">'
+							+ '<div class="la-row hidden">'
 								+ '<div class="col-xs-10">'
 									+ '<div class="la-desc">'
 										+ '<div class="la-text">'

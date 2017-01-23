@@ -17,6 +17,15 @@ class ControllerPagesTripSummary extends AController {
 			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
 		//END
 		
+		//START: set script
+			$this->addChild('script/trip/frame', 'script_trip_frame', 'script/trip/frame.tpl');
+		//END
+		
+		//START: set modal
+			$this->addChild('modal/itinerary/trip/gallery', 'modal_trip_gallery', 'modal/itinerary/trip/gallery.tpl');
+			$this->addChild('modal/itinerary/trip/photo', 'modal_trip_photo', 'modal/itinerary/trip/photo.tpl');
+		//END
+		
 		//START: set link
 			$link['list/trip/upcoming'] = $this->html->getSecureURL('list/trip/upcoming');
 			$link['trip/itinerary/view'] = $this->html->getSecureURL('trip/itinerary/view');

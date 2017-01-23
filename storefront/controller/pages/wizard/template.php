@@ -330,10 +330,16 @@ class ControllerPagesWizardTemplate extends AController {
 			$column[$i]['thAlign'] = 'right';
 			$column[$i]['visible'] = 'true';
 		//END
+		
 		//START: set ajax
 			$ajax['wizard/ajax_trip'] = $this->html->getSecureURL('wizard/ajax_trip');
 			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
 		//END
+		
+		//START: set script
+			$this->addChild('script/trip/frame', 'script_trip_frame', 'script/trip/frame.tpl');
+		//END
+		
 		
 		//START: set link
 			$link['trip/itinerary'] = $this->html->getSecureURL('trip/itinerary');

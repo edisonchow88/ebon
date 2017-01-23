@@ -158,10 +158,10 @@
                     <div class="col-xs-3">
                     	<a class="btn btn-block btn-time" onclick="selectModalLineCustomTab('time');"><i class="fa fa-fw fa-lg fa-clock-o"></i></a>
                     </div>
-                    <div class="col-xs-3 hidden">
+                    <div class="col-xs-3">
                     	<a class="btn btn-block btn-location" onclick="selectModalLineCustomTab('location');"><i class="fa fa-fw fa-lg fa-map-marker"></i></a>
                     </div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-3 hidden">
                     	<a class="btn btn-block btn-photo" onclick="selectModalLineCustomTab('photo');"><i class="fa fa-fw fa-lg fa-picture-o"></i></a>
                     </div>
                     <div class="col-xs-3 hidden">
@@ -261,7 +261,7 @@
                                 </div>
                                 <div id="line-map"></div>
                             </div>
-                            <div class="tab tab-photo">
+                            <div class="tab tab-photo hidden">
                             	<div class="row">
                                 	<input type="hidden" name="photo_hidden"/>
                                 	<div class="col-xs-12 hidden"><input type="text" name="image_id"/></div>
@@ -304,7 +304,7 @@
                             </div>
                             <div class="tab tab-more">
                             	<div class="la la-50 la-border la-hover la-pointer noselect">
-                                	<div class="la-row" onclick="selectModalLineCustomTab('location');">
+                                	<div class="la-row hidden" onclick="selectModalLineCustomTab('location');">
                                     	<div class="la-icon">
                                         	<i class="fa fa-fw fa-lg fa-map-marker"></i>
                                         </div>
@@ -324,7 +324,7 @@
                                         	</div>
                                         </div>
                                     </div>
-                                    <div class="la-row button-duplicate-activity" data-dismiss="modal" onclick="duplicateLine();">
+                                    <div class="la-row hidden button-duplicate-activity" data-dismiss="modal" onclick="duplicateLine();">
                                     	<div class="la-icon">
                                         	<i class="fa fa-fw fa-lg fa-clone"></i>
                                         </div>

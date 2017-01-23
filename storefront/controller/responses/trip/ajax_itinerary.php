@@ -63,6 +63,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'save_trip_info') { $this->save_trip_info(); return; }
 			else if($this->data['action'] == 'refresh_trip_photo') { $this->refresh_trip_photo(); return; }
 			else if($this->data['action'] == 'upload_trip_photo') { $this->upload_trip_photo(); return; }
+			else if($this->data['action'] == 'delete_trip_photo') { $this->delete_trip_photo(); return; }
 			else if($this->data['action'] == 'search_user') { $this->search_user(); return; }
 			else if($this->data['action'] == 'refresh_member') { $this->refresh_member(); return; }
 			else if($this->data['action'] == 'get_member') { $this->get_member(); return; }
@@ -837,8 +838,10 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//START: get result
 			$photo = $this->model_travel_trip->getTripPhotoByTripId($trip_id);
 			foreach($photo as $k => $p) {
-				$result['photo'][] = $this->model_resource_photo->getPhoto($p['photo_id']);
+				$result['photo'][$p['photo_id']] = $this->model_resource_photo->getPhoto($p['photo_id']);
+				$result['photo'][$p['photo_id']]['trip_photo_id'] = $p['trip_photo_id'];
 			}
+			$result['photo'] = array_values($result['photo']);
 		//END
 		
 		//START: set response
@@ -900,6 +903,31 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		$response = json_encode($result);
 		echo $response;	
 		return;	
+	}
+	
+	public function delete_trip_photo() {
+		//START: set data
+			$data = $this->data;
+			$data['trip_photo_id'] = $this->data['trip_photo_id'];
+		//END
+		//START
+			$photo = $this->model_travel_trip->getTripPhoto($data['trip_photo_id']);
+			$photo_id = $photo['photo_id'];
+			$photo = $this->model_resource_photo->getPhoto($photo_id);
+			
+			$execution = $this->model_travel_trip->deleteTripPhoto($data['trip_photo_id']);
+			$execution = $this->model_resource_photo->deletePhoto($photo_id);
+		//END
+		//START: set response
+			if($execution == true) {
+				$result['success'] = 'Photo Deleted';
+			}
+			else {
+				$result['warning'] = 'System Error'; 
+			}
+			$response = json_encode($result);
+			echo $response;
+		//END
 	}
 	
 	public function search_user() {

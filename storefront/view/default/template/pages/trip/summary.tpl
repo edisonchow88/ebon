@@ -10,7 +10,7 @@
             <h1>Trip</h1>
         </div>
         <div class="col-xs-3 text-right">
-            <a class="btn"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
+            <a class="btn hidden"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>
         </div>
     </div>
 </div>
@@ -323,7 +323,7 @@
 							+ '</div>'
 						+ '</a>'
 						+ '<a>'
-							+ '<div class="la-row">'
+							+ '<div class="la-row hidden">'
 								+ '<div class="col-xs-10">'
 									+ '<div class="la-desc">'
 										+ '<div class="la-text">'
@@ -339,7 +339,7 @@
 							+ '</div>'
 						+ '</a>'
 						+ '<a>'
-							+ '<div class="la-row">'
+							+ '<div class="la-row hidden">'
 								+ '<div class="col-xs-10">'
 									+ '<div class="la-desc">'
 										+ '<div class="la-text">'

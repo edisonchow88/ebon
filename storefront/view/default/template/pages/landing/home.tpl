@@ -100,7 +100,7 @@
     </div>
     <hr />
     <div><b>Upcoming Updates</b><br /><br /></div>
-    <div class="la la-50">
+    <div class="la la-40">
         <div class="la-row">
             <div class="col-xs-12">
                 <div class="la-desc">
@@ -108,6 +108,17 @@
                 </div>
             </div>
         </div>
+        <div class="la-row">
+            <div class="col-xs-12">
+                <div class="la-desc">
+                    <div class="la-text la-text-clamp-2">2017-03-31&nbsp;&nbsp;&nbsp;Function to estimate travel budget</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="text-sub">
+    	<span>If you have any suggestion or discover any bug, feel free to send us an email to <a href="mailto:info@travelrevol.com?Subject=Feedback" target="_top">info@travelrevol.com</a></span>
     </div>
     <!--
     <hr />

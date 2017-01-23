@@ -445,6 +445,11 @@
 			text.website_link = convertTextToUrl(data.website);
 		}
 		
+		text.company = data.company;
+		text.address = data.address;
+		text.phone = data.phone;
+		text.fax = data.fax;
+		
 		return text;
 	}
 	
@@ -923,9 +928,19 @@
 			var hidden_time = 'hidden';
 			var hidden_duration = 'hidden';
 			var hidden_description = 'hidden';
+			var hidden_company = 'hidden';
+			var hidden_address = 'hidden';
+			var hidden_phone = 'hidden';
+			var hidden_fax = 'hidden';
+			var hidden_website = 'hidden';
 			if(isset(data.time)) { hidden_time = ''; }
 			if(isset(data.duration)) { hidden_duration = ''; }
 			if(isset(data.description)) { hidden_description = ''; }
+			if(isset(data.company)) { hidden_company = ''; }
+			if(isset(data.address)) { hidden_address = ''; }
+			if(isset(data.phone)) { hidden_phone = ''; }
+			if(isset(data.fax)) { hidden_fax = ''; }
+			if(isset(data.website)) { hidden_website = ''; }
 		<!-- END -->
 		<!-- START: [text] -->
 			var text = formatLine(data);
@@ -934,6 +949,7 @@
 			var html_line_bullet = '';
 			var html_line_content = '';
 			var html_line_button = '';
+			var html_line_get_direction = '';
 			var html_line_menu = '';
 			var html_line_transport = '';
 			var html_line_hidden_form = '';
@@ -970,6 +986,46 @@
 									+ '</span>'
 								+ '</span>'
 							+ '</div>'
+							+ '<div class="pa-bullet text-clamp-1 data-company ' + hidden_company + '">'
+								+ '<span>'
+									+ '<i class="fa fa-fw fa-building"></i><i class="fa fa-fw"></i>'
+									+ '<span class="text-company">' 
+										+ text.company
+									+ '</span>'
+								+ '</span>'
+							+ '</div>'
+							+ '<div class="pa-bullet text-clamp-1 data-address ' + hidden_address + '">'
+								+ '<span>'
+									+ '<i class="fa fa-fw fa-map-marker"></i><i class="fa fa-fw"></i>'
+									+ '<span class="text-address">' 
+										+ text.address
+									+ '</span>'
+								+ '</span>'
+							+ '</div>'
+							+ '<div class="pa-bullet text-clamp-1 data-phone ' + hidden_phone + '">'
+								+ '<span>'
+									+ '<i class="fa fa-fw fa-phone"></i><i class="fa fa-fw"></i>'
+									+ '<span class="text-phone">' 
+										+ text.phone
+									+ '</span>'
+								+ '</span>'
+							+ '</div>'
+							+ '<div class="pa-bullet text-clamp-1 data-fax ' + hidden_fax + '">'
+								+ '<span>'
+									+ '<i class="fa fa-fw fa-fax"></i><i class="fa fa-fw"></i>'
+									+ '<span class="text-fax">' 
+										+ text.fax
+									+ '</span>'
+								+ '</span>'
+							+ '</div>'
+							+ '<div class="pa-bullet text-clamp-1 data-website ' + hidden_website + '">'
+								+ '<span>'
+									+ '<i class="fa fa-fw fa-globe"></i><i class="fa fa-fw"></i>'
+									+ '<span class="text-website">' 
+										+ text.website
+									+ '</span>'
+								+ '</span>'
+							+ '</div>'
 							+ '<div class="pa-text data-description ' + hidden_description + '">'
 								+ '<span class="text-description">'
 									+ text.description
@@ -983,11 +1039,28 @@
 				if(isset(planFormat.lineButtonMore)) {
 					if(planFormat.lineButtonMore == true) {
 						html_line_button = ''
-							+ '<div class="pa-btn button-action">'
+							+ '<div class="pa-btn button-action hidden">'
 								+ '<i class="fa fa-fw fa-ellipsis-v"></i>'
 							+ '</div>'
 						;
 					}
+				}
+			<!-- END -->
+			<!-- START: [html_line_get_direction] -->
+				if(isset(data.lat) && isset(data.lng)) {
+					html_line_get_direction = ''
+						+ '<a href="https://maps.google.com?saddr=Current+Location&amp;daddr='+data.lat+','+data.lng+'" target="_blank">'
+							+ '<div class="la-row text-center border">'
+								+ '<div class="col-xs-12">'
+									+ '<div class="la-desc">'
+										+ '<div class="la-text">'
+											+ 'Get Direction'
+										+ '</div>'
+									+ '</div>'
+								+ '</div>'
+							+ '</div>'
+						+ '</a>'
+					;
 				}
 			<!-- END -->
 			<!-- START: [html_line_menu] -->
@@ -995,8 +1068,8 @@
 					if(planFormat.lineMenu == true) {
 						html_line_menu = ''
 							+ '<div class="plan-line-menu plan-line-' + data.line_id + '-menu pa-menu row '+hidden_line_menu+'">'
-								+ '<div class="la la-30 la-text-small la-border la-hover la-pointer border-top border-left border-right">'
-									+ '<a>'
+								+ '<div class="la la-30 la-text-small la-hover la-pointer">'
+									+ '<a class="hidden">'
 										+ '<div class="la-row text-center">'
 											+ '<div class="col-xs-12">'
 												+ '<div class="la-desc">'
@@ -1007,17 +1080,7 @@
 											+ '</div>'
 										+ '</div>'
 									+ '</a>'
-									+ '<a>'
-										+ '<div class="la-row text-center">'
-											+ '<div class="col-xs-12">'
-												+ '<div class="la-desc">'
-													+ '<div class="la-text">'
-														+ 'Get Direction'
-													+ '</div>'
-												+ '</div>'
-											+ '</div>'
-										+ '</div>'
-									+ '</a>'
+									+ html_line_get_direction
 								+ '</div>'
 							+ '</div>'
 						;
@@ -1042,7 +1105,7 @@
 						+ hidden_form
 					+ '</form>'
 				;
-			<!-- END -->	
+			<!-- END -->
 		<!-- END -->
 		<!-- START: [content] -->
 			if(planFormat.day == 'slide') { 

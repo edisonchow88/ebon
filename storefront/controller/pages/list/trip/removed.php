@@ -13,6 +13,10 @@ class ControllerPagesListTripRemoved extends AController {
 			$this->extensions->hk_InitData($this, __FUNCTION__);
 		//END
 		
+		//START
+			$this->document->setTitle('Removed Trips');
+		//END
+		
 		//START: set ajax
 			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
 		//END

@@ -13,6 +13,10 @@ class ControllerPagesTripItineraryView extends AController {
 			$this->extensions->hk_InitData($this, __FUNCTION__);
 		//END
 		
+		//START
+			$this->document->setTitle('View Itinerary');
+		//END
+		
 		//START: set model
 			$this->loadModel('travel/trip');
 		//END

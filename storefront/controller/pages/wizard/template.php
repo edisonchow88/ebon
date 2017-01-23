@@ -13,6 +13,10 @@ class ControllerPagesWizardTemplate extends AController {
 			$this->extensions->hk_InitData($this, __FUNCTION__);
 		//END
 		
+		//START
+			$this->document->setTitle('New Trip');
+		//END
+		
 		//START: set model
 			$this->loadModel('localisation/country');
 			$this->loadModel('resource/data');

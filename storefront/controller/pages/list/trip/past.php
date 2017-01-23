@@ -13,6 +13,10 @@ class ControllerPagesListTripPast extends AController {
 			$this->extensions->hk_InitData($this, __FUNCTION__);
 		//END
 		
+		//START
+			$this->document->setTitle('Past Trips');
+		//END
+		
 		//START: set ajax
 			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
 		//END

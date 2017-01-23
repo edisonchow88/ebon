@@ -13,6 +13,10 @@ class ControllerPagesListTripInvited extends AController {
 			$this->extensions->hk_InitData($this, __FUNCTION__);
 		//END
 		
+		//START
+			$this->document->setTitle('Invited Trips');
+		//END
+		
 		//START: set ajax
 			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
 		//END

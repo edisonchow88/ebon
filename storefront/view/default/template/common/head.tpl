@@ -42,6 +42,7 @@ if (window.location.host != 'localhost') {
 <link href="<?php echo $this->templateResource('/image/apple-touch-icon-120x120.png');?>" rel="apple-touch-icon" sizes="120x120" />
 <link href="<?php echo $this->templateResource('/image/apple-touch-icon-152x152.png');?>" rel="apple-touch-icon" sizes="152x152" />
 <link href="<?php echo $this->templateResource('/image/apple-touch-icon-precomposed.png');?>" rel="apple-touch-icon-precomposed" />
+<link rel="icon" type="image/ico" href="image/favicon.ico"/>
 
 <?php foreach ($links as $link) { ?>
 <link href="<?php echo $link['href']; ?>" rel="<?php echo $link['rel']; ?>" />

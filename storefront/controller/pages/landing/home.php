@@ -13,6 +13,10 @@ class ControllerPagesLandingHome extends AController {
 			$this->extensions->hk_InitData($this, __FUNCTION__);
 		//END
 		
+		//START
+			$this->document->setTitle('Home');
+		//END
+		
 		//START: set model
 			$this->loadModel('localisation/country');
 		//END

@@ -47,6 +47,10 @@ class ControllerPagesWizardNew extends AController {
 			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
 		//END
 		
+		//START: set script
+			$this->addChild('script/trip/frame', 'script_trip_frame', 'script/trip/frame.tpl');
+		//END
+		
 		//START: set link
 			$link['landing/home'] = $this->html->getSecureURL('landing/home');
 			$link['list/trip/upcoming'] = $this->html->getSecureURL('list/trip/upcoming');

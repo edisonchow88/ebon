@@ -2080,16 +2080,24 @@ class ModelTravelTrip extends Model{
 		}
 		
 		public function deleteTripPhoto($trip_photo_id) {
-			//START: table
-			$sql = "
-				DELETE FROM " . $this->db->table($this->table_photo) . " 
-				WHERE trip_photo_id = '" . (int)$trip_photo_id . "'
-			";
-			$query = $this->db->query($sql);
+			//START: run sql
+				$sql = "
+					DELETE FROM " . $this->db->table($this->table_photo) . " 
+					WHERE trip_photo_id = '" . (int)$trip_photo_id . "'
+				";
+				$query = $this->db->query($sql);
 			//END
 			
-			$this->cache->delete('photo');
-			return true;
+			//START: run chain reaction
+			//END
+			
+			//START: clear cache
+				$this->cache->delete('photo');
+			//END
+			
+			//START: return
+				return true;
+			//END
 		}
 		
 		public function deleteTripPhotoByTripId($trip_id) {

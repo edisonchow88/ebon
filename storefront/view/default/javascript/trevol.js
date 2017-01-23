@@ -1,6 +1,6 @@
 <!-- START: general -->
 	function isset(x) {
-		if(typeof x != 'undefined' && x != null && x != '') {
+		if(typeof x != 'undefined' && x != null && x != 'null' && x != '') {
 			return true;
 		}
 		else {

@@ -88,6 +88,11 @@
         </div>
     </div>
 </div>
+
+<!-- START: [script] -->
+	<?php echo $script_trip_frame; ?>
+<!-- END -->
+
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/swiper.jquery.min.js'); ?>"></script>
 <script>
 	var mySwiper;
@@ -295,6 +300,28 @@
 			}
 		}
     	return url;
+	}
+</script>
+<script>
+	function refreshTemplatePhoto(trip_id) {
+		<!-- START: set POST data -->
+			var data = {
+				"action":"refresh_trip_photo",
+				"trip_id":trip_id
+			};
+		<!-- END -->
+		<!-- START: send POST -->
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				if(isset(json)) {
+					var photoFrame = {
+						frame:'.photo-frame-'+trip_id,
+						photo:json.photo,
+						editable:false
+					}
+					printPhotoFrame(photoFrame);
+				}
+			}, "json");
+		<!-- END -->
 	}
 </script>
 <script>
@@ -568,7 +595,7 @@
 				+ '<div class="swiper-slide">'
 					+ '<div class="content-body fixed-width fixed-height scrollable-y">'
 						+ '<div class="navbar navbar-shadow"></div>'
-						+ '<div class="row action-bar">'
+						+ '<div class="row action-bar hidden">'
 							+ '<div class="col-xs-4 text-center">'
 								+ '<a>'
 									+ '<div>'
@@ -600,7 +627,8 @@
 								+ '</a>'
 							+ '</div>'
 						+ '</div>'
-						+ '<img class="ca-img" src="resources/template/japan.png"/>'
+						+ '<div class="ca-image photo-frame-'+data.trip_id+'">'
+						+ '</div>'
 						+ '<div class="padding">'
 							+ '<div>'
 								+ '<b>' + data.name + '</b>'
@@ -677,6 +705,9 @@
 			;
 			$('.swiper-wrapper').append(content);
 			refreshPlan(data.trip_id,'');
+		<!-- END -->
+		<!-- START -->
+			refreshTemplatePhoto(data.trip_id);
 		<!-- END -->
 	}
 	

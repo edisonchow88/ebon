@@ -13,8 +13,21 @@ class ControllerPagesTripSummary extends AController {
 			$this->extensions->hk_InitData($this, __FUNCTION__);
 		//END
 		
+		//START
+			$this->document->setTitle('Trip Summary');
+		//END
+		
 		//START: set ajax
 			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
+		//END
+		
+		//START: set script
+			$this->addChild('script/trip/frame', 'script_trip_frame', 'script/trip/frame.tpl');
+		//END
+		
+		//START: set modal
+			$this->addChild('modal/itinerary/trip/gallery', 'modal_trip_gallery', 'modal/itinerary/trip/gallery.tpl');
+			$this->addChild('modal/itinerary/trip/photo', 'modal_trip_photo', 'modal/itinerary/trip/photo.tpl');
 		//END
 		
 		//START: set link

@@ -4,7 +4,7 @@
             <a class="btn" data-toggle="modal" data-target="#menu-mobile-main" onclick="closePageMenuInstant();"><i class="fa fa-fw fa-lg fa-bars"></i></a>
         </div>
         <div class="col-xs-6 text-center">
-            <a onclick="togglePageMenu();"><h1>Invited</h1><i class="fa fa-fw fa-caret-down"></i></a>
+            <a onclick="togglePageMenu();"><h1>Invited / Requested</h1><i class="fa fa-fw fa-caret-down"></i></a>
         </div>
         <div class="col-xs-3 text-right">
             <a class="btn" data-toggle="modal" data-target="#modal-trip-search" onclick="closePageMenuInstant();"><i class="fa fa-fw fa-lg fa-search"></i></a>
@@ -87,7 +87,7 @@
 				<!-- START: [logged] -->
 					<!-- START: set data -->
 						var data = {
-							"action":"load_invited_trip",
+							"action":"load_invited_requested_trip",
 							"user_id":"<?php echo $this->user->getUserId(); ?>"
 						};
 					<!-- END -->

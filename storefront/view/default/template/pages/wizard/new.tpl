@@ -405,9 +405,14 @@
 			var month = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 			var month2 = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
 			if(isset(data.month)) {
-				for(m=0;m<data.month.length;m++) {
-					text_month += month[data.month[m]-1];
-					if(m<data.month.length-1) { text_month += ', '; }
+				if(data.month.length == 12) {
+					text_month = "Any month";
+				}
+				else {
+					for(m=0;m<data.month.length;m++) {
+						text_month += month[data.month[m]-1];
+						if(m<data.month.length-1) { text_month += ', '; }
+					}
 				}
 			}
 			
@@ -416,6 +421,11 @@
 			
 			var text_date_update = '';
 			text_date_update = fromNow(data.date_modified);
+			
+			var text_description = '';
+			if(isset(data.description)) {
+				text_description = data.description;
+			}
 			
 			<!-- START: -->
 				var country_id = $('#modal-trip-new-form select[name=country_id]').val();
@@ -445,6 +455,9 @@
 								+ '</div>'
 								+ '<div class="ca-text ca-text-main">' 
 									+ data.name
+								+ '</div>'
+								+ '<div class="ca-text ca-text-sub">' 
+									+ text_description
 								+ '</div>'
 								+ '<div class="ca-text ca-text-sub">' 
 									+ text_month

@@ -2361,6 +2361,7 @@ class ModelTravelTrip extends Model{
 				$sql = "
 					SELECT 
 						t1.name, 
+						t1.description,
 						t1.trip_id, 
 						t1.user_id, 
 						t1.date_modified, 
@@ -2385,6 +2386,7 @@ class ModelTravelTrip extends Model{
 					".$sql_month_condition."
 					".$sql_mode_condition."
 					GROUP BY t1.trip_id
+					ORDER BY t1.date_modified DESC
 				";
 				$query = $this->db->query($sql);
 			//END

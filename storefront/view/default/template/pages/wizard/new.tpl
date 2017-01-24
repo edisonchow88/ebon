@@ -272,14 +272,19 @@
 	}
 	
 	function newTripViaCookie() {
-		var title = $('#modal-trip-new-form input[name=name]').val();
-		var mode_id = $('#modal-trip-new-form select[name=mode_id]').val();
-		if(mode_id == 0) { mode_id = 1;}
-		var trip = '{"name":"'+title+'"}';
-		var plan = '{"name":"Plan 1","travel_date":"", "mode_id":"'+mode_id+'", "day":[{"day_id":1,"sort_order":1}]}';
-		setCookie('trip',trip,1);
-		setCookie('plan',plan,1);
-		window.location = '<?php echo $link["trip/itinerary/edit"]; ?>';
+		var trip = getCookie('trip');
+		if (isset(trip)) {
+			showHint('Log In to Create More Trip.');
+		}else{
+			var title = $('#modal-trip-new-form input[name=name]').val();
+			var mode_id = $('#modal-trip-new-form select[name=mode_id]').val();
+			if(mode_id == 0) { mode_id = 1;}
+			var trip = '{"name":"'+title+'"}';
+			var plan = '{"name":"Plan 1","travel_date":"", "mode_id":"'+mode_id+'", "day":[{"day_id":1,"sort_order":1}]}';
+			setCookie('trip',trip,1);
+			setCookie('plan',plan,1);
+			window.location = '<?php echo $link["trip/itinerary/edit"]; ?>';
+		}
 	}
 	
 	function verify_new_trip_condition() {

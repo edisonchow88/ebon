@@ -92,7 +92,7 @@
 <!-- START: [script] -->
 	<?php echo $script_trip_frame; ?>
 <!-- END -->
-
+<div class="cookie-serial hidden"></div>
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/swiper.jquery.min.js'); ?>"></script>
 <script>
 	var mySwiper;
@@ -127,6 +127,8 @@
 			$('.button-show-detail-'+line_id+' .fa').addClass('fa-flip-vertical');
 		}
 		else {
+
+
 			$('.plan-line-detail-'+line_id).addClass('hidden');
 			$('.button-show-detail-'+line_id+' .fa').removeClass('fa-flip-vertical');
 		}
@@ -351,6 +353,9 @@
 		<!-- START: send POST -->
 			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(plan) {
 				runRefreshPlan(trip_id, plan);
+				serial = plan_serialize(plan);
+				$(".cookie-serial").html(serial);
+				//alert(JSON.stringify(serial));
 			}, "json");
 		<!-- END -->
 	}
@@ -711,28 +716,121 @@
 		<!-- END -->
 	}
 	
+	function useTemplateViaCookies() {
+		var title = $('#wrapper-title-input').val();
+		var trip = '{"name":"My Trip (Template)"}';
+		setCookie('trip',trip,7);
+		
+		serial = $(".cookie-serial").html();	
+		setCookie('plan',serial,7);		
+	}
+	
 	function useTemplate(trip_id){
-		// cover the button with generating.
-		$('.content-body-loading').show();
-		<!-- START: set data -->
-				var data = {
-					"action":"use_template",
-					"trip_id":trip_id
-				};
+		// Verify login
+		<?php if($this->user->isLogged() == false) { ?>
+			<!-- START: [not logged] -->
+			// verify cookie have trip
+			var trip = getCookie('trip');
+			if (isset(trip)) {
+				showHint('Log In to Create More Trip.');
+			}else {
+				useTemplateViaCookies();
+				window.location = '<?php echo $redirect; ?>';	
+			}
+				
+			<!-- END -->
+		<?php } else { ?>
+			<!-- START: [logged] -->		
+			// cover the button with generating.
+			$('.content-body-loading').show();
+			<!-- START: set data -->
+			var data = {
+				"action":"use_template",
+				"trip_id":trip_id
+			};
 			<!-- END -->
 			
 			<!-- START: send POST -->
-				$.post("<?php echo $ajax['wizard/ajax_trip']; ?>", data, function(json) {
-					
-					if (!json.redirect) {
-						$('.content-body-loading').hide();
-						showHint("Failed to Create Trip.");						
-					}else {
-						window.location = json.redirect;
-					}
-				}, "json");
+			$.post("<?php echo $ajax['wizard/ajax_trip']; ?>", data, function(json) {
+				
+				if (!json.redirect) {
+					$('.content-body-loading').hide();
+					showHint("Failed to Create Trip.");						
+				}else {
+					window.location = json.redirect;
+				}
+			}, "json");
 			<!-- END -->
 			
+		<?php } ?>
+		
+			
+	}
+	
+	function plan_serialize(data) {
+		var serial = '';
+			serial += '{';
+				serial += '"name":"Plan 1"';
+				serial += ',';
+				serial += '"travel_date":""';
+				serial += ',';
+				serial += '"day":';
+				serial += '[';
+				<!-- START: [day] -->
+					$.each(data.day, function(i, val) {
+						serial += '{';
+						serial += '"day_id":"'+Number(i+1)+'"';
+						serial += ',';
+						serial += '"sort_order":';
+						serial += '"'+data.day[i].sort_order+'"'
+						<!-- START: [line] -->
+						/**/
+							if(data.day[i].line.length > 0) {
+								serial += ',';
+								serial += '"line":';
+								serial += '[';
+									$.each(data.day[i].line, function(j, val) {
+										serial += '{';
+										serial += '"day_id":"'+Number(i+1)+'"';
+										serial += ',';
+										serial += '"line_id":"'+Number(j+1)+'"';
+										serial += ',';
+										serial += '"type":"'+data.day[i].line[j].type+'"';
+										serial += ',';
+										serial += '"sort_order":"'+data.day[i].line[j].sort_order+'"';
+										serial += ',';
+										serial += '"image_id":"'+data.day[i].line[j].image_id+'"';
+										serial += ',';
+										serial += '"title":"'+data.day[i].line[j].title+'"';
+										serial += ',';
+										serial += '"activity":"'+data.day[i].line[j].activity+'"';
+										serial += ',';
+										serial += '"place":"'+data.day[i].line[j].place+'"';
+										serial += ',';
+										serial += '"place_id":"'+data.day[i].line[j].place_id+'"';
+										serial += ',';
+										serial += '"lat":"'+data.day[i].line[j].lat+'"';
+										serial += ',';
+										serial += '"lng":"'+data.day[i].line[j].lng+'"';
+										serial += '},';										
+									});
+									serial = serial.slice(0,-1);
+								serial += ']';
+							}
+						<!-- END -->
+						serial += '},';
+					});
+					serial = serial.slice(0,-1);
+				<!-- END -->
+				serial += ']';
+
+			serial += '}';
+			<!-- START: sort day according to sort_order -->
+				//data = JSON.parse(serial);
+				//data.day.sort(sortBySortOrder);
+				//serial = JSON.stringify(data);
+			<!-- END -->
+		return serial;
 	}
 		
 	$('#modal-trip-new-form').on('change',function() {

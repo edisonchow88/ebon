@@ -355,12 +355,17 @@ class ControllerPagesWizardTemplate extends AController {
 			$link['wizard/new'] = $this->html->getSecureURL('wizard/new') . '&country_id=' . $country_id . '&month=' . $month . '&mode_id=' . $mode_id . '&duration=' . $duration;
 		//END
 		
+		//START: set redirect
+			$redirect = $this->html->getSecureURL('trip/itinerary/edit');
+		//END
+		
 		//START: set variable
 			$this->view->batchAssign($this->data);
 			$this->view->assign('column',$column);
 			$this->view->assign('column_json',json_encode(array_values($column)));
 			if(count($result) > 0) { $this->view->assign('result', $result); }
 			if(count($link) > 0) { $this->view->assign('link', $link); }
+			if(count($redirect) > 0) { $this->view->assign('redirect', $redirect); }
 			if(count($ajax) > 0) { $this->view->assign('ajax', $ajax); }
 		//END
 		

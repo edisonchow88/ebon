@@ -113,7 +113,7 @@
 								+ '</div>'
 							+ '</div>'
 							+ '<div class="col-xs-2 text-right">'
-								+ '<a class="la-btn" data-toggle="modal" data-target="#modal-trip-action" onclick="setModalTripAction(\'upcoming\',\''+data.name+'\',0);"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>'
+								+ '<a class="la-btn" data-toggle="modal" data-target="#modal-trip-action" onclick="setModalTripAction(\'unsaved\',\''+data.name+'\',0);"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>'
 							+ '</div>'
 						+ '</a>'
 						+ '<form class="result-trip-form hidden">'
@@ -606,12 +606,32 @@
 		}
 	}
 	
+	// Added 2017/01/24
+	function openLinkNewTrip() {
+		var trip = getCookie('trip');
+		if(isset(trip)) { 
+			var content;
+			
+			trip_name = "My Trip";
+			content = '<div class="alert alert-warning"><b>'+trip_name+' is not saved.</b><br/>Please save or delete it before create a new trip.</div>';
+			$('.content-body-alert').html(content);
+			//showHint('My Trip is not saved. Please save or delete it before create a new trip.');
+		}
+		else {
+			$('.content-body-alert').html('');
+			window.location = "<?php echo $link['wizard/new']; ?>";
+		}
+	}
+	
 	function setModalTripAction(type,name,trip_id) {
 		$('.modal-trip-action-trip-name').html(name);
 		$('#modal-trip-action-form input[name=trip_id]').val(trip_id);
 		$('#modal-trip-action-form input[name=name]').val(name);
+		
+		$('.modal-trip-action-edit').hide();
 		if(type == 'unsaved') {
-			$('.modal-trip-action-save').show();
+			$('.modal-trip-action-edit').show();
+			$('.modal-trip-action-save').hide();
 			$('.modal-trip-action-share').hide();
 			$('.modal-trip-action-duplicate').hide();
 			$('.modal-trip-action-template').hide();

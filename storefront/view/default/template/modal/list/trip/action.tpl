@@ -32,6 +32,14 @@
                             </div>
                         </div>
                     </div>
+                    <div class="la-row modal-trip-action-edit" data-dismiss="modal" onclick="editTrip();">
+                        <div class="la-icon">
+                            <i class="fa fa-fw fa-lg fa-edit"></i>
+                        </div>
+                        <div class="la-desc">
+                            <div class="la-text">Edit</div>
+                        </div>
+                    </div>
                     <div class="la-row modal-trip-action-save" data-dismiss="modal">
                         <div class="la-icon">
                             <i class="fa fa-fw fa-lg fa-save"></i>
@@ -332,6 +340,10 @@
 	
 	function shareTrip() {
 		$('#modal-trip-share').modal('show');
+	}
+	
+	function editTrip() {
+		window.location = "<?php echo $link['trip/itinerary/edit']; ?>";	
 	}
 	
 	function triggerConfirmDeleteTrip() {

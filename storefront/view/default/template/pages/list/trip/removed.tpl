@@ -34,9 +34,11 @@
     </div>
 </div>
 <div class="content-body-empty fixed-width">
+	<div class="content-body-alert"></div>
     <div class="col-xs-12">
     	<div><b>No Removed Trip</b></div>
-        <div>Click to create a <a href="<?php echo $link['wizard/new']; ?>">new trip</a></div>
+         <!-- <div>Click to create a <a href="<?php echo $link['wizard/new']; ?>">new trip</a></div> -->
+        <div>Click to create a <a onclick="openLinkNewTrip();">new trip</a></div>
     </div>
 </div>
 <div class="content-body fixed-width">

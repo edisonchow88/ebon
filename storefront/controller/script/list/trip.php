@@ -20,6 +20,7 @@ class ControllerScriptListTrip extends AController {
 		//START: set link
 			$link['trip/view'] = $this->html->getSecureURL('trip/view');
 			$link['trip/itinerary'] = $this->html->getSecureURL('trip/itinerary');
+			$link['wizard/new'] = $this->html->getSecureURL('wizard/new');
 		//END
 		
 		//START: set variable

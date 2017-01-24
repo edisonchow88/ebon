@@ -87,7 +87,7 @@
 				<!-- START: [logged] -->
 					<!-- START: set data -->
 						var data = {
-							"action":"load_invited_trip",
+							"action":"load_invited_requested_trip",
 							"user_id":"<?php echo $this->user->getUserId(); ?>"
 						};
 					<!-- END -->

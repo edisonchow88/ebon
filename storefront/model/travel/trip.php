@@ -23,6 +23,7 @@ class ModelTravelTrip extends Model{
 	private $table_line_mode ="trip_line_mode";
 	private $table_path = "path";
 	private $table_path_custom = "path_custom";
+	private $table_invite_code = "trip_invite_code";
 	
 	public function getFields($table) {
 		$sql = "SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`='".$table."'";
@@ -127,8 +128,15 @@ class ModelTravelTrip extends Model{
 				//END
 				//START
 					$member = $this->getMemberByTripId($result['trip_id']);
-					$num_of_member = count($member);
-					$result['num_of_member'] = $num_of_member;
+					$num_active_member = 0;
+					foreach($member as $n_member){
+						if ($n_member['status_id'] != 5) $num_active_member++;
+					}
+					$total_member = count($member);
+					$result['num_of_member'] = $num_active_member;					
+					$result['total_member'] = $total_member;
+					
+					
 				//END
 				$output = $result;
 				return $output;
@@ -841,6 +849,21 @@ class ModelTravelTrip extends Model{
 			
 			return $output;
 		}
+		
+		public function getMemberUserIdByTripId($trip_id='') {
+			//START: run sql
+				$sql = "
+					SELECT user_id 
+					FROM " . $this->db->table($this->table_member) . " 
+					WHERE trip_id = '" . (int)$trip_id . "' 
+				";
+				$query = $this->db->query($sql);
+			//END
+				$output =  $query->rows;
+					
+			return $output;
+		}
+		
 		
 		public function addMember($data) {
 			//START: set data
@@ -1563,6 +1586,7 @@ class ModelTravelTrip extends Model{
 						AND t3.selected = 1
 						WHERE t1.user_id = '" . (int)$user_id . "'
 						AND t1.status_id > 1
+						AND t1.status_id != 5
 						AND t1.removed = 0
 						GROUP BY t1.trip_id
 						ORDER BY t3.travel_date ASC, t2.name ASC
@@ -1670,6 +1694,47 @@ class ModelTravelTrip extends Model{
 					foreach($query->rows as $result){
 						$output[$result['trip_id']] = $result;
 						$output[$result['trip_id']]['type'] = 'invited';
+						if(isset($result['travel_date'])) {
+							$output[$result['trip_id']]['end_date'] = date('Y-m-d', strtotime('+'.($result['num_of_day'] - 1).' days',strtotime($result['travel_date'])));
+						}
+					}
+				}
+				else {
+					return false;
+				}
+			//END
+			
+			return $output;
+		}
+		
+			public function getRequestedTripByUserId($user_id) {
+			$trip = array();
+			
+			//START: run sql
+				$sql = "
+						SELECT t1.status_id AS `member_status_id`, t2.*, t2.user_id AS `host_id`, t3.plan_id, t3.travel_date, COUNT(t4.day_id) AS `num_of_day`
+						FROM " . $this->db->table($this->table_member) . " t1
+						LEFT JOIN ".$this->db->table($this->table)." t2 
+						ON t1.trip_id = t2.trip_id 
+						LEFT JOIN ".$this->db->table($this->table_plan)." t3 
+						ON t1.trip_id = t3.trip_id 
+						LEFT JOIN ".$this->db->table($this->table_day)." t4 
+						ON t3.plan_id = t4.plan_id 
+						AND t3.selected = 1
+						WHERE t1.user_id = '" . (int)$user_id . "'
+						AND t1.status_id = 5
+						AND t1.removed = 0
+						GROUP BY t1.trip_id
+						ORDER BY t3.travel_date ASC, t2.name ASC
+				";
+				$query = $this->db->query($sql);
+			//END
+			
+			//START: set output
+				if($query->num_rows > 0) {
+					foreach($query->rows as $result){
+						$output[$result['trip_id']] = $result;
+						$output[$result['trip_id']]['type'] = 'requested';
 						if(isset($result['travel_date'])) {
 							$output[$result['trip_id']]['end_date'] = date('Y-m-d', strtotime('+'.($result['num_of_day'] - 1).' days',strtotime($result['travel_date'])));
 						}

@@ -38,26 +38,6 @@ class ControllerCommonPage extends AController {
 		$this->view->assign('success', $this->session->data['success']);
 		$this->document->addScript($this->view->templateResource('/javascript/tooltip.js'));
 		$this->document->addScript($this->view->templateResource('/javascript/fontawesome-markers.min.js'));
-		$this->document->addStyle(array(
-			'href' => $this->view->templateResource('/stylesheet/trevol.css'),
-			'rel' => 'stylesheet',
-			'media' => 'screen',
-		));
-		$this->document->addStyle(array(
-			'href' => $this->view->templateResource('/stylesheet/tooltip.css'),
-			'rel' => 'stylesheet',
-			'media' => 'screen',
-		));
-		$this->document->addStyle(array(
-			'href' => $this->view->templateResource('/stylesheet/jquery.smoothness.css'),
-			'rel' => 'stylesheet',
-			'media' => 'screen',
-		));
-		$this->document->addStyle(array(
-			'href' => $this->view->templateResource('/stylesheet/trip.css'),
-			'rel' => 'stylesheet',
-			'media' => 'screen',
-		));
 		$this->document->addScript($this->view->templateResource('/javascript/jquery-1.10.2.js'));
 		$this->document->addScript($this->view->templateResource('/javascript/jquery-ui.js'));
 		

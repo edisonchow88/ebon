@@ -3,11 +3,8 @@ if (! defined ( 'DIR_CORE' )) {
 	header ( 'Location: static_pages/' );
 }
 
-class ControllerModalListTripAction extends AController {
-	//START: set common variable
-		public $data = array();
-	//END
-	
+class ControllerModalItineraryMemberJoin extends AController {
+
   	public function main() {
         //START: init controller data
         	$this->extensions->hk_InitData($this,__FUNCTION__);
@@ -15,10 +12,6 @@ class ControllerModalListTripAction extends AController {
 		
 		//START: set ajax
 			$ajax['trip/ajax_itinerary'] = $this->html->getSecureURL('trip/ajax_itinerary');
-		//END
-		
-		//START: set modal
-			$this->addChild('modal/list/trip/share', 'modal_trip_share', 'modal/list/trip/share.tpl');
 		//END
 		
 		//START: set variable
@@ -29,7 +22,7 @@ class ControllerModalListTripAction extends AController {
 		//END
 		
 		//START: set template
-			$this->processTemplate('modal/list/trip/action.tpl' );
+			$this->processTemplate('modal/itinerary/member/join.tpl' );
 		//END
 
         //START: update controller data

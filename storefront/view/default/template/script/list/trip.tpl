@@ -176,11 +176,46 @@
 				content = ''
 					+ '<div class="la-row result-trip result-saved-trip" data-date="'+sort_date+'" data-saved="1">'
 						+ '<a href="'+data.url+'">'
-							+ '<div class="col-xs-10 text-left">'
+							+ '<div class="col-xs-7 text-left">'
 								+ '<div class="la-icon">' 
 									+ '<i class="fa fa-fw fa-lg fa-envelope" style="color:#555;"></i>'
 								+ '</div>'
 								+ text_description
+							+ '</div>'
+							+ '<div class="col-xs-3 text-right">'
+								+ '<div class="la-desc">'
+									+ '<div class="la-text text-sub">'
+										+ 'INVITED'
+									+ '</div>'
+								+ '</div>'
+							+ '</div>'
+							+ '<div class="col-xs-2 text-right">'
+								+ '<a class="la-btn" data-toggle="modal" data-target="#modal-trip-action" onclick="setModalTripAction(\''+data.type+'\',\''+data.name+'\',\''+data.trip_id+'\');"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>'
+							+ '</div>'
+						+ '</a>'
+						+ '<form class="result-trip-form hidden">'
+							+ '<input type="hidden" name="trip_id" value="'+data.trip_id+'"/>'
+						+ '</form>'
+					+ '</div>'
+				;
+				$('.content-body-result').append(content);
+			}
+			else if(data.type == 'requested') {
+				content = ''
+					+ '<div class="la-row result-trip result-saved-trip" data-date="'+sort_date+'" data-saved="1">'
+						+ '<a href="'+data.url+'">'
+							+ '<div class="col-xs-7 text-left">'
+								+ '<div class="la-icon">' 
+									+ '<i class="fa fa-fw fa-lg fa-envelope" style="color:#555;"></i>'
+								+ '</div>'
+								+ text_description
+							+ '</div>'
+							+ '<div class="col-xs-3 text-right">'
+								+ '<div class="la-desc">'
+									+ '<div class="la-text text-sub">'
+										+ 'REQUESTED'
+									+ '</div>'
+								+ '</div>'
 							+ '</div>'
 							+ '<div class="col-xs-2 text-right">'
 								+ '<a class="la-btn" data-toggle="modal" data-target="#modal-trip-action" onclick="setModalTripAction(\''+data.type+'\',\''+data.name+'\',\''+data.trip_id+'\');"><i class="fa fa-fw fa-lg fa-ellipsis-v"></i></a>'
@@ -221,7 +256,7 @@
 						+ '</div>'
 					;
 				}
-				else if(data.member_status_id == 1) { //removed invited trip
+				else if(data.member_status_id == 1 || data.member_status_id == 5) { //removed invited trip
 					content = ''
 						+ '<div class="la-row result-trip result-saved-trip" data-date="'+sort_date+'" data-saved="1">'
 							+ '<a href="'+data.url+'">'
@@ -615,6 +650,19 @@
 			$('.modal-trip-action-delete').hide();
 		}
 		else if(type == 'invited') {
+			$('.modal-trip-action-save').hide();
+			$('.modal-trip-action-share').hide();
+			$('.modal-trip-action-duplicate').hide();
+			$('.modal-trip-action-template').hide();
+			$('.modal-trip-action-cancel').hide();
+			$('.modal-trip-action-resume').hide();
+			$('.modal-trip-action-read').show();
+			$('.modal-trip-action-report').show();
+			$('.modal-trip-action-remove').show();
+			$('.modal-trip-action-restore').hide();
+			$('.modal-trip-action-delete').hide();
+		}
+		else if(type == 'requested') {
 			$('.modal-trip-action-save').hide();
 			$('.modal-trip-action-share').hide();
 			$('.modal-trip-action-duplicate').hide();

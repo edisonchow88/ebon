@@ -23,6 +23,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			|| $this->data['action'] == 'get_plan'
 			|| $this->data['action'] == 'get_line_mode_path'
 			|| $this->data['action'] == 'get_path_custom'
+			|| $this->data['action'] == 'request_join_trip'
 			) { 
 				$bypass = true;
 			}
@@ -49,7 +50,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'load_trip') { $this->load_trip(); return; }
 			else if($this->data['action'] == 'load_upcoming_trip') { $this->load_upcoming_trip(); return; }
 			else if($this->data['action'] == 'load_past_trip') { $this->load_past_trip(); return; }
-			else if($this->data['action'] == 'load_invited_trip') { $this->load_invited_trip(); return; }
+			else if($this->data['action'] == 'load_invited_requested_trip') { $this->load_invited_requested_trip(); return; }
 			else if($this->data['action'] == 'load_removed_trip') { $this->load_removed_trip(); return; }
 			else if($this->data['action'] == 'remove_trip') { $this->remove_trip(); return; }
 			else if($this->data['action'] == 'remove_multi_trip') { $this->remove_multi_trip(); return; }
@@ -96,6 +97,8 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'edit_path_custom') { $this->edit_path_custom(); return; }
 			else if($this->data['action'] == 'get_trip') { $this->get_trip(); return; }
 			else if($this->data['action'] == 'get_plan') { $this->get_plan(); return; }
+			else if($this->data['action'] == 'request_join_trip') { $this->request_join_trip(); return; }
+			else if($this->data['action'] == 'get_share_link') { $this->get_share_link(); return; }
 			
 			else { 
 				//IMPORTANT: Return responseText in order for xmlhttp to function properly 
@@ -390,9 +393,17 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		//END
 	} 
 	
-	public function load_invited_trip() {
+	public function load_invited_requested_trip() {
 		//START: get data
 			$result['trip'] = $this->model_travel_trip->getInvitedTripByUserId($this->data['user_id']);
+			$requested_trip = $this->model_travel_trip->getRequestedTripByUserId($this->data['user_id']);
+			if ($result['trip']) {
+				foreach ($requested_trip as $r_result) {
+					array_push($result['trip'], $r_result);
+				}
+			}else {
+				$result['trip'] = $requested_trip;
+			}
 		//END
 		//START: process trip
 			if($result['trip'] != false) {
@@ -1624,4 +1635,40 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		echo $response;
 	}
 	*/
+	
+	public function request_join_trip() {
+		// verify user 
+		$member = $this->model_travel_trip->getMemberUserIdByTripId($this->data['trip_id']);
+		
+		$user_exist = "0";
+		foreach ($member as $user) {
+			if ( $user['user_id'] == $this->data['user_id']) {
+				$user_exist = "1";		
+				$result['warning'] = 'User already in the Trip.'; 		
+			}
+		}
+		
+		if ( $user_exist == "0") {
+			$execution = $this->model_travel_trip->addMember($this->data);
+		}
+		
+		if($execution == true) {
+			$result['success'] = 'Your request has been sent.';
+			$result['redirect'] = $this->html->getSecureURL('list/trip/upcoming');
+		}else {
+			if (!$result['warning']) $result['warning'] = 'ERROR: Fail to save'; 
+		}
+		
+		$response = json_encode($result);
+		echo $response;		
+	}
+	
+	public function get_share_link(){
+		$code= $this->model_travel_trip->getTripCodeByTripId($this->data['trip_id']);
+		$link['preview'] = $this->html->getSEOURL('trip/preview','&trip='.$code);
+		
+		
+		$response = json_encode($link['preview']);
+		echo $response;		
+	}
 }

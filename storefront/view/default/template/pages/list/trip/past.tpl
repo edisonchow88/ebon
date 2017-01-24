@@ -16,7 +16,8 @@
             <a class="btn btn-edit-trip" onclick="openEditTrip();">Edit</a>
         </div>
         <div class="col-xs-6 text-right">
-            <a class="btn" href="<?php echo $link['wizard/new']; ?>">Add Trip</a>
+           <!--<a class="btn" href="<?php echo $link['wizard/new']; ?>">Add Trip</a>-->
+            <a class="btn" onclick="openLinkNewTrip();">Add Trip</a>
         </div>
     </div>
     <div class="row navbar navbar-secondary navbar-edit hidden">
@@ -34,9 +35,11 @@
     </div>
 </div>
 <div class="content-body-empty fixed-width">
+	<div class="content-body-alert"></div>
     <div class="col-xs-12">
     	<div><b>No Past Trip</b></div>
-        <div>Click to create a <a href="<?php echo $link['wizard/new']; ?>">new trip</a></div>
+        <!-- <div>Click to create a <a href="<?php echo $link['wizard/new']; ?>">new trip</a></div> -->
+        <div>Click to create a <a onclick="openLinkNewTrip();">new trip</a></div>
     </div>
 </div>
 <div class="content-body fixed-width">

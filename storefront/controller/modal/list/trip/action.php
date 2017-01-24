@@ -21,6 +21,10 @@ class ControllerModalListTripAction extends AController {
 			$this->addChild('modal/list/trip/share', 'modal_trip_share', 'modal/list/trip/share.tpl');
 		//END
 		
+		//START: set link
+			$link['trip/itinerary/edit'] = $this->html->getSecureURL('trip/itinerary/edit');
+		//END
+		
 		//START: set variable
 			$this->view->batchAssign($this->data);
 			if(count($result) > 0) { $this->view->assign('result', $result); }

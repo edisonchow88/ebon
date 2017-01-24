@@ -19,6 +19,9 @@
 </html>
 
 <script>
+	$('.popover-alert').hide();
+	$('.popover-hint').hide();
+	
 	function initHint() {
 		var hint = '<?php echo $hint; ?>';
 		if(hint != '') {

@@ -52,9 +52,13 @@ if (window.location.host != 'localhost') {
 <link href='//fonts.googleapis.com/css?family=Open+Sans:400,300italic,400italic,600,600italic' rel='stylesheet' type='text/css' />
 <link href='//fonts.googleapis.com/css?family=Crete+Round' rel='stylesheet' type='text/css' />
 -->
+
 <link href="<?php echo $this->templateResource('/stylesheet/style.css'); ?>" rel="stylesheet" type='text/css' />
 <link href="<?php echo $this->templateResource('/stylesheet/swiper.min.css'); ?>" rel="stylesheet" type='text/css' />
 <link href="<?php echo $this->templateResource('/stylesheet/ownicon.css'); ?>" rel="stylesheet" type='text/css' />
+<link href="<?php echo $this->templateResource('/stylesheet/tooltip.css'); ?>" rel="stylesheet" type='text/css' />
+<link href="<?php echo $this->templateResource('/stylesheet/jquery.smoothness.css'); ?>" rel="stylesheet" type='text/css' />
+<link href="<?php echo $this->templateResource('/stylesheet/trevol.css'); ?>?ver=1.0" rel="stylesheet" type='text/css' />
 
 <?php if ( $template_debug_mode ) {  ?>
 <link href="<?php echo $this->templateResource('/stylesheet/template_debug.css'); ?>" rel="stylesheet" />

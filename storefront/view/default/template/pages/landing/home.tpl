@@ -40,8 +40,6 @@
                 foreach($country as $key => $value) {
                     if($c) {
                          if($value['country_id'] == $c) { $selected = 'selected'; } else { $selected = ''; }
-                    }else{
-                        if($value['iso_code_2'] == 'MY') { $selected = 'selected'; } else { $selected = ''; }
                     }
                     echo '<option value="'.$value['country_id'].'" '.$selected.'>'.$value['name'].'</option>';
                     

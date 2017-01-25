@@ -92,7 +92,7 @@
 <!-- START: [script] -->
 	<?php echo $script_trip_frame; ?>
 <!-- END -->
-<div class="cookie-serial hidden"></div>
+
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/swiper.jquery.min.js'); ?>"></script>
 <script>
 	var mySwiper;
@@ -337,6 +337,8 @@
 		
 		<!-- START: send POST -->
 			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(trip) {
+				var serialized_trip = '{"name":"My '+trip.name+'"}';
+				$('.trip-'+trip_id+'-cookie input[name=trip]').val(serialized_trip);
 			}, "json");
 		<!-- END -->
 	}
@@ -353,9 +355,6 @@
 		<!-- START: send POST -->
 			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(plan) {
 				runRefreshPlan(trip_id, plan);
-				serial = plan_serialize(plan);
-				$(".cookie-serial").html(serial);
-				//alert(JSON.stringify(serial));
 			}, "json");
 		<!-- END -->
 	}
@@ -367,6 +366,11 @@
 		
 		<!-- START: set raw data -->
 			var data_raw = $.extend(true,{},plan); //IMPORTANT: to make sure clone without reference
+		<!-- END -->
+		
+		<!-- START -->
+			var serialized_plan = serializePlan(plan);
+			$('.trip-'+trip_id+'-cookie input[name=plan]').val(serialized_plan);
 		<!-- END -->
 		
 		<!-- START: set data format-->
@@ -708,7 +712,19 @@
 					+ '</div>'
 				+ '</div>'
 			;
+			<!-- START -->
+				content += ''
+					+ '<form class="trip-cookie trip-'+data.trip_id+'-cookie hidden">'
+						+ '<input name="trip"/>'
+						+ '<input name="plan"/>'
+					+ '</form>'
+				;
+			<!-- END -->
 			$('.swiper-wrapper').append(content);
+			<!-- START: [temporary measurement] -->
+				var serialized_trip = '{"name":"My '+data.name+'"}';
+				$('.trip-'+data.trip_id+'-cookie input[name=trip]').val(serialized_trip);
+			<!-- END -->
 			refreshPlan(data.trip_id,'');
 		<!-- END -->
 		<!-- START -->
@@ -716,13 +732,12 @@
 		<!-- END -->
 	}
 	
-	function useTemplateViaCookies() {
-		var title = $('#wrapper-title-input').val();
-		var trip = '{"name":"My Trip (Template)"}';
-		setCookie('trip',trip,7);
+	function useTemplateViaCookies(trip_id) {
+		serialized_trip = $('.trip-'+trip_id+'-cookie input[name=trip]').val();	
+		serialized_plan = $('.trip-'+trip_id+'-cookie input[name=plan]').val();
 		
-		serial = $(".cookie-serial").html();	
-		setCookie('plan',serial,7);		
+		setCookie('trip',serialized_trip,7);	
+		setCookie('plan',serialized_plan,7);		
 	}
 	
 	function useTemplate(trip_id){
@@ -734,7 +749,7 @@
 			if (isset(trip)) {
 				showHint('Log In to Create More Trip.');
 			}else {
-				useTemplateViaCookies();
+				useTemplateViaCookies(trip_id);
 				window.location = '<?php echo $redirect; ?>';	
 			}
 				
@@ -767,7 +782,7 @@
 			
 	}
 	
-	function plan_serialize(data) {
+	function serializePlan(data) {
 		var serial = '';
 			serial += '{';
 				serial += '"name":"Plan 1"';
@@ -777,12 +792,15 @@
 				serial += '"day":';
 				serial += '[';
 				<!-- START: [day] -->
+					var day_id = 0;
+					var line_id = 0;
 					$.each(data.day, function(i, val) {
+						day_id += 1;
 						serial += '{';
-						serial += '"day_id":"'+Number(i+1)+'"';
+						serial += '"day_id":"'+day_id+'"';
 						serial += ',';
 						serial += '"sort_order":';
-						serial += '"'+data.day[i].sort_order+'"'
+						serial += '"'+day_id+'"'
 						<!-- START: [line] -->
 						/**/
 							if(data.day[i].line.length > 0) {
@@ -790,10 +808,11 @@
 								serial += '"line":';
 								serial += '[';
 									$.each(data.day[i].line, function(j, val) {
+										line_id += 1;
 										serial += '{';
-										serial += '"day_id":"'+Number(i+1)+'"';
+										serial += '"day_id":"'+day_id+'"';
 										serial += ',';
-										serial += '"line_id":"'+Number(j+1)+'"';
+										serial += '"line_id":"'+line_id+'"';
 										serial += ',';
 										serial += '"type":"'+data.day[i].line[j].type+'"';
 										serial += ',';
@@ -825,11 +844,6 @@
 				serial += ']';
 
 			serial += '}';
-			<!-- START: sort day according to sort_order -->
-				//data = JSON.parse(serial);
-				//data.day.sort(sortBySortOrder);
-				//serial = JSON.stringify(data);
-			<!-- END -->
 		return serial;
 	}
 		

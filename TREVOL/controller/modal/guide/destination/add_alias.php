@@ -92,6 +92,14 @@ class ControllerModalGuideDestinationAddAlias extends AController {
 				$modal_input[$i]['type'] = 'text';
 				$modal_input[$i]['required'] = false;
 				$modal_input[$i]['value'] = 0;
+				
+			$i = 'origin';
+				$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$modal_input[$i]['id'] = str_replace("_","-",$i);
+				$modal_input[$i]['name'] = $i;
+				$modal_input[$i]['type'] = 'text';
+				$modal_input[$i]['required'] = false;
+				$modal_input[$i]['value'] = 0;
 		//END
 		
 		//START: Set Ajax	

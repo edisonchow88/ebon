@@ -36,6 +36,7 @@ class ControllerResponsesGuideAjaxPoiDescription extends AController {
 	public function get() {
 		$description_id = $this->data['description_id']; 
 		$result = $this->model_guide_poi->getPoiDescription($description_id);
+		$result['description'] = html_entity_decode($result['description']);
 		$response = json_encode($result);
 		echo $response;
 	}

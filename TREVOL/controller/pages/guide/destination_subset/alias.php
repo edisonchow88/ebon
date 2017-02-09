@@ -52,6 +52,7 @@ class ControllerPagesGuideDestinationSubsetAlias extends AController {
                     $result[$alias_id]['language'] = $language['name'];
                     $result[$alias_id]['name'] = $row['name'];
                     $result[$alias_id]['ranking'] = $row['ranking'];
+					$result[$alias_id]['origin'] = $row['origin'];
 				}
 			}
 		//END
@@ -122,6 +123,18 @@ class ControllerPagesGuideDestinationSubsetAlias extends AController {
             $column[$i]['type'] = '';
             $column[$i]['width'] = '';
             $column[$i]['order'] = 'desc';
+            $column[$i]['align'] = '';
+            $column[$i]['headerAlign'] = '';
+            $column[$i]['visible'] = 'true';
+            $column[$i]['sortable'] = 'true';
+            $column[$i]['searchable'] = 'false';
+			
+			$i = 'origin';
+            $column[$i]['name'] = $i;
+            $column[$i]['title'] = ucwords(str_replace("_"," ",$i));
+            $column[$i]['type'] = '';
+            $column[$i]['width'] = '';
+            $column[$i]['order'] = '';
             $column[$i]['align'] = '';
             $column[$i]['headerAlign'] = '';
             $column[$i]['visible'] = 'true';

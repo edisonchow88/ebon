@@ -57,6 +57,12 @@ class ControllerModalGuideEditPoi extends AController {
 			$modal_input[$i]['required'] = false;
 			$modal_input[$i]['type'] = 'hidden';
 			$modal_input[$i]['json'] = $i;
+			
+			$i = 'popularity';
+				$modal_input[$i]['label'] = ucwords(str_replace("_"," ",$i));
+				$modal_input[$i]['id'] = str_replace("_","-",$i);
+				$modal_input[$i]['name'] = $i;
+				$modal_input[$i]['required'] = false;
 				
 			$i = 'lat';
 			$modal_input[$i]['label'] = 'Latitude';

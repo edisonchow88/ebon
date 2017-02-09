@@ -71,7 +71,9 @@ class ControllerResponsesMainAjaxExplore extends AController {
 				//START: set data
 					$data = $this->model_guide_destination->getDestination($destination_id);
 				//END
-				
+				//START: modify data
+					$data['description'] = html_entity_decode($data['description']);
+				//END
 				//START: set result
 					if(count($data) > 0) {
 						foreach($data as $key => $value) { $result['current'][$key] = $data[$key]; }

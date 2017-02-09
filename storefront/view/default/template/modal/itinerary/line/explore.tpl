@@ -840,9 +840,10 @@
 		
 		//description
 		if(current.description != null) {
+			$('#wrapper-explore-current-form textarea[name=description]').val(current.description);
+			current.description =  current.description.replace(/\n/g, "<br />");
 			$('#wrapper-explore-current-description').html(current.description);
 			$('#wrapper-explore-current-description').show();
-			$('#wrapper-explore-current-form textarea[name=description]').val(current.description);
 		}
 		
 		//hour
@@ -859,6 +860,7 @@
 		
 		if(typeof current.opening_hours.periods != 'undefined' && current.opening_hours.periods != null) {
 			$('#wrapper-explore-current-hour').show();
+			var o = 0;
 			$.each(current.opening_hours.periods, function(index,value) {
 				if(typeof value.open != 'undefined' && value.open != null && typeof value.close != 'undefined' && value.close != null) {
 					$('#wrapper-explore-current-hour .detail').append(''
@@ -877,8 +879,12 @@
 							+ '</div>'
 						+ '</div>'
 					);
+					o += 1;
 				}
 			});
+			if(o == 0) { 
+				$('#wrapper-explore-current-hour').hide(); //to solve empty value periods from Google
+			}
 		}
 		
 		//address

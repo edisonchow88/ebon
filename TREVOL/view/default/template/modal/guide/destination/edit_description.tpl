@@ -163,7 +163,7 @@
 				<?php
                     foreach($modal_input as $i) {
 						if(!isset($i['section'])) { 
-							echo "document.getElementById('modal-edit-description-form-input-".$i['id']."').value = json.".$i['name'].";";
+							echo "$('#modal-edit-description-form-input-".$i['id']."').val(json.".$i['name'].");";
 							if(isset($i['json'])) {
 								echo "document.getElementById('modal-edit-description-form-text-".$i['id']."').innerHTML = json.".$i['json'].";";
 							}

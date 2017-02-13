@@ -1,0 +1,7 @@
+13 Feb 2017
+- Fix twins transport bug.
+- Add Short url link encode and decode.
+- Change htaccess file so link will be redirect to home if file path not found
+- Redirect page at home.tpl if given link is short link.
+- DATABASE: Added 1 column in table tr_trip > private (int(1), default 0).
+- DATABASE: Added 1 column in table tr_member > status_admin (int(1),default 1).

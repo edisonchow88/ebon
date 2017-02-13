@@ -1802,7 +1802,7 @@ function addGooglePlace() {
 				
 				var line_id, day_id, mode_id;
 				
-				if($(this).parents(".transport-row").parent().hasClass("plan-line-twins")) {
+				if($(this).parents(".plan-line-twins").hasClass("plan-line-twins")) {
 					//if this is twins, change the master also
 					line_id =  $(this).parents(".transport-row").parent().find(".master-line-id").html();
 					day_id =  $(this).parents(".transport-row").parent().find(".master-day-id").html();
@@ -2209,7 +2209,6 @@ function addGooglePlace() {
 
 			var info_name = $("#plan-line-"+line_id+"-form-hidden input[name=title]").val();
 			
-			
 			var twins_content = ''
 				+ '<div class="pa pa-40 plan-line-twins twins-'+line_id+' '+hidden_twin+'">'
 					+ '<div class="pa-row row">'
@@ -2226,6 +2225,10 @@ function addGooglePlace() {
 									+ '<div class="transport data-transport">'
 									+ '</div>'
 								+ '</div>'
+								+ '<div class="hidden">'
+									+'<span class="master-day-id">'+day_id+'</span>'
+									+'<span class="master-line-id">'+line_id+'</span>'
+								+'</div>'
 							+ '</div>'
 						+ '</div>'
 					+ '</div>'

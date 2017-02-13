@@ -17,6 +17,10 @@ class ControllerModalListTripShare extends AController {
 			$this->loadModel('travel/trip');
 		//END
 		
+		//START: set data
+			$this->data['user_id']= $this->user->getUserId();
+		//END
+		
 		//START: set link
 			//$this->data['trip_id'] = $this->trip->getTripId();
 			//code= $this->model_travel_trip->getTripCodeByTripId($trip_id);

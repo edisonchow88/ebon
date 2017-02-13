@@ -20,8 +20,23 @@ class ControllerPagesIndexHome extends AController {
 			$this->document->setKeywords( $this->config->get('config_meta_keywords') );
 		//END
 		
+		//////////////////////////////////////////
+		//START: set model tool
+			$this->loadModel('tool/short_url');
+		//END
+		
+		// get current URI (filepath without host)		
+			$link = $_SERVER['REQUEST_URI'];
+		// Get Long URL address			
+			$redirect_link = $this->model_tool_short_url->getLongUrl($link);
+			if(isset($redirect_link)) { 
+				$redirect= $redirect_link;
+			}else {
+				$redirect = $this->html->getSEOURL('landing/home');
+			}
+		//////////////////////////////////////////////////
 		//START: set redirect
-			$redirect = $this->html->getSEOURL('landing/home');
+			//$redirect = $this->html->getSEOURL('landing/home');
 		//END
 		
 		//START: set modal

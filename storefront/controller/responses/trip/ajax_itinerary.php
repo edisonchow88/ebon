@@ -40,7 +40,8 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			$this->loadModel('account/user');	
 			$this->loadModel('resource/photo');
 			$this->loadModel('localisation/country');
-			$this->loadModel('travel/trip');	
+			$this->loadModel('travel/trip');
+			$this->loadModel('tool/short_url');	
 			
 			if($this->data['action'] == 'refresh_trip') { $this->refresh_trip(); return; }
 			else if($this->data['action'] == 'refresh_plan') { $this->refresh_plan(); return; }
@@ -98,6 +99,7 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 			else if($this->data['action'] == 'get_trip') { $this->get_trip(); return; }
 			else if($this->data['action'] == 'get_plan') { $this->get_plan(); return; }
 			else if($this->data['action'] == 'request_join_trip') { $this->request_join_trip(); return; }
+			else if($this->data['action'] == 'get_trip_host_id') { $this->get_trip_host_id(); return; }
 			else if($this->data['action'] == 'get_share_link') { $this->get_share_link(); return; }
 			
 			else { 
@@ -1663,10 +1665,18 @@ class ControllerResponsesTripAjaxItinerary extends AController {
 		echo $response;		
 	}
 	
+	public function get_trip_host_id($trip_id){
+		$result = $this->model_travel_trip->getHostUserIdByTripId($this->data['trip_id']);
+		
+		$response = json_encode($result);
+		echo $response;		
+	}
+	
 	public function get_share_link(){
 		$code= $this->model_travel_trip->getTripCodeByTripId($this->data['trip_id']);
-		$link['preview'] = $this->html->getSEOURL('trip/preview','&trip='.$code);
-		
+		//$link['preview'] = $this->html->getSEOURL('trip/preview','&trip='.$code);
+		$page = "preview";
+		$link['preview'] = $this->model_tool_short_url->getShortUrl($page, $code, $show_join, $show_member );
 		
 		$response = json_encode($link['preview']);
 		echo $response;		

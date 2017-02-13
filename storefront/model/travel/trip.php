@@ -864,6 +864,58 @@ class ModelTravelTrip extends Model{
 			return $output;
 		}
 		
+		public function getHostUserIdByTripId($trip_id='') {
+			//START: run sql
+				$sql = "
+					SELECT user_id 
+					FROM " . $this->db->table($this->table) . " 
+					WHERE trip_id = '" . (int)$trip_id . "' 
+				";
+				$query = $this->db->query($sql);
+			//END
+				$output =  $query->row;
+					
+			return $output;
+		}
+		
+		public function isMemberByTripId($trip_id='', $user_id='') {
+			//START: run sql
+				$sql = "
+					SELECT user_id 
+					FROM " . $this->db->table($this->table_member) . " 
+					WHERE trip_id = '" . (int)$trip_id . "'
+					AND user_id = '" . (int)$user_id . "'
+				";
+				$query = $this->db->query($sql);
+			//END
+				$output =  $query->row;
+			if ($output) {
+				return true;
+			}else {
+				return false;
+			}			
+		}
+		
+		public function isAdminByTripId($trip_id='', $user_id='') {
+			//START: run sql
+				$sql = "
+					SELECT status_admin 
+					FROM " . $this->db->table($this->table) . " 
+					WHERE trip_id = '" . (int)$trip_id . "'
+					AND user_id = '" . (int)$user_id . "' 
+				";
+				$query = $this->db->query($sql);
+			//END
+				$output =  $query->row;
+					
+			if ($output['status_admin'] == 1) {
+				return true;
+			}else {
+				return false;
+			}		
+		}
+		
+		
 		
 		public function addMember($data) {
 			//START: set data

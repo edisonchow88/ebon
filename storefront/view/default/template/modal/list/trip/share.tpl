@@ -25,11 +25,14 @@
                 <div class="modal-member-join-alert">
                 </div>
                 <div>Anyone with the link can view</div>
+                <div>
                     	<textarea rows="4" readonly="readonly" onclick="selectShareTripLink();"></textarea>
                         <a type="button" class="btn btn-block btn-primary modal-button" onclick="copyShareTripLink();">Copy Link</a>
                         <a id="modal-trip-share-button-whatsapp" type="button" class="btn btn-block btn-default modal-button" onclick="shareViaWhatsapp();" data-action="share/whatsapp/share" href="">WhatsApp</a>
+           		</div>
+    
             </div>
-  
+
             </div>
         </div>
     </div>
@@ -73,19 +76,51 @@
 		ga('send', 'event','trip', 'share-trip-via-whatsapp');
 	}
 	
-	function getShareLink() {
-		
-		
-		
+	function verifyHost() {
+		trip_id = $('#modal-trip-action-form input[name=trip_id]').val();
+	<!-- START: set data -->
+			var data = {
+				"action" :"get_trip_host_id",
+				"trip_id" :trip_id
+			};
+		<!-- END -->
+		<!-- START: send POST -->
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				if (json.user_id == <?php echo $user_id; ?>) {		
+					printHostCard();
+				}
+			}, "json");
+		<!-- END -->				
 	}
 	
-	$("#modal-trip-share").on("show.bs.modal", function () {
+	function printHostCard() {
+		var output;
+		
+		output = '<div><div><strong>Advanced Options:</strong></div>'
+			+ '<div class="checkbox"><label><input type="checkbox" name="show-join-button">Show Join Button</label></div>'
+			+ '<div class="checkbox"><label><input type="checkbox" name="show-member-list">Show Member List</label></div>'
+			+ '<a type="button" class="btn btn-block btn-primary modal-button" onclick="getShareLink();">Re-Generate Link</a></div>'
+		;
+		
+		$('#host-card').html(output);
+		
+		$('input[type=checkbox]').on("click",function () {
+			$('#modal-trip-share .modal-body textarea').val("");
+		});
+	}
+	
+	function getShareLink () {
 		trip_id = $('#modal-trip-action-form input[name=trip_id]').val();
+		var show_join_button = $('input[name=show-join-button]').is(':checked');
+		var show_member_list = $("input[name=show-member-list]").is(':checked');		
 		
 		<!-- START: set data -->
 				var data = {
-					"action":"get_share_link",
-					"trip_id":trip_id
+					"action" :"get_share_link",
+					"trip_id" :trip_id,
+					"page" : "preview",
+					//"show_join" : show_join_button,
+					//"show_member" : show_member_list
 				};
 			<!-- END -->
 			<!-- START: send POST -->
@@ -93,15 +128,21 @@
 					$('#modal-trip-share .modal-body textarea').val(json);
 					
 					var title = $('#wrapper-title-input').val();
-					//var url = "<?php echo $link['preview']; ?>";
 					var url = json;
 					var text = encodeURIComponent('*' + title + '*') + '%0A' + encodeURIComponent(url);
 					$('#modal-trip-share-button-whatsapp').attr('href','whatsapp://send?text='+text);
 				}, "json");
-			<!-- END -->		
-			
+			<!-- END -->				
+	}
+	
+	$("#modal-trip-share").on("show.bs.modal", function () {
+		//verifyHost();	
+		getShareLink ();
 		
 		//Google Analytics Event
 		ga('send', 'event','trip', 'open-modal-trip-share');
 	});
+	
+
+	
 </script>

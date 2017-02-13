@@ -1,3 +1,9 @@
+<style>
+#host-card {
+		padding: 5px;
+		border:thin solid #DDD;			
+	}
+</style>
 <script type="text/javascript" src="<?php echo $this->templateResource('/javascript/swiper.jquery.min.js'); ?>"></script>
 
 
@@ -29,6 +35,7 @@
 	<div class="navbar navbar-shadow"></div>
 	<div class="content-body-alert"></div>
     <div class="content-body-result"></div>
+    <!--<div id="host-card"></div>-->
 </div>
 
 <!-- START: [modal] -->
@@ -67,6 +74,7 @@
 	
 	function runRefreshTrip(json) {
 		if(isset(json)) {
+			//verifyHost();
 			printTrip(json);
 			refreshTripPhoto();
 			$('.content-body-empty').hide();
@@ -164,6 +172,17 @@
 			return text;
 		}
 		
+		function formatTripPrivate(private_status) {
+			var text;
+			if(private_status == 1) {
+				text = 'Private';
+			}
+			else{
+				text = 'Public';
+			}
+			return text;
+		}
+		
 		function formatTripFee() {
 			var text;
 			return text;
@@ -194,6 +213,7 @@
 			}
 			text_duration 		= formatTripDuration(data.num_of_day);
 			text_member 		= formatTripMember(data.num_of_member);
+			text_private		= formatTripPrivate(data.private);
 		<!-- END -->
 		<!-- START: [html] -->
 			var html_country = '';
@@ -289,6 +309,18 @@
 							+ '</div>'
 						+ '</div>'
 					+ '</div>'
+					+ '<div class="la-row">'
+						+ '<div class="col-xs-12 text-left">'
+							+ '<div class="la-icon">'
+								+ '<i class="fa fa-fw fa-globe"></i>'
+							+ '</div>'
+							+ '<div class="la-desc">'
+								+ '<div class="la-text">'
+									+ text_private
+								+ '</div>'
+							+ '</div>'
+						+ '</div>'
+					+ '</div>'
 					/*
 					+ '<div class="la-row">'
 						+ '<div class="col-xs-12 text-left">'
@@ -359,6 +391,38 @@
 			;
 			$('.content-body-result').append(content);
 		<!-- END -->
+	}
+	
+	function printHostCard() {
+		var output;
+		
+		output = '<div>'
+			+ '<a type="button" class="btn btn-block btn-primary modal-button" onclick="getShareLink();">Edit Trip Info</a>'
+			+ '</div>'
+		;
+		
+		$('#host-card').html(output);
+		
+		$('input[type=checkbox]').on("click",function () {
+			$('#modal-trip-share .modal-body textarea').val("");
+		});
+	}
+	
+	function verifyHost() {
+		var trip_id = "<?php echo $this->trip->getTripId(); ?>";
+	<!-- START: set data -->
+			var data = {
+				"action" :"get_trip_host_id",
+				"trip_id" :trip_id
+			};
+		<!-- END -->
+		<!-- START: send POST -->
+			$.post("<?php echo $ajax['trip/ajax_itinerary']; ?>", data, function(json) {
+				if (json.user_id == <?php echo $this->user->getUserId(); ?>) {		
+					printHostCard();
+				}
+			}, "json");
+		<!-- END -->				
 	}
 	
 	refreshTrip();
